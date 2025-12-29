@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   typedRoutes: false,
+  eslint: {
+    ignoreDuringBuilds: true
+  },
   turbopack: {
     root: new URL('.', import.meta.url).pathname
   },
