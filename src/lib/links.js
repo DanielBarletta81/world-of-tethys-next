@@ -9,5 +9,5 @@ export function getAmazonBookUrl() {
 export function getMediaUrl(path = '') {
   const base = process.env.MEDIA_BASE_URL || '';
   if (!base) return '';
-  return `${base.replace(/\\/$/, '')}/${trimSlash(path)}`;
+  return `${base.replace(/\/$/, '')}/${trimSlash(path)}`;
 }
