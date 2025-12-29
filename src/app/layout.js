@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { getAmazonBookUrl } from '@/lib/links';
+import { auth0 } from '@/lib/auth0';
 import { TethysProvider } from '@/context/TethysContext';
 import AnaphaseWrapper from '@/components/AnaphaseWrapper';
+import AuthAppProvider from '@/components/AuthAppProvider';
 import './globals.css';
 
 export const metadata = {
@@ -9,8 +11,9 @@ export const metadata = {
   description: 'Headless Next.js frontend for World of Tethys'
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   const amazonUrl = getAmazonBookUrl();
+  const session = await auth0.getSession();
   const navItems = [
     { href: '/history', label: 'History' },
     { href: '/records', label: 'Records' },
@@ -25,34 +28,36 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="site-body">
-        <TethysProvider>
-          <div className="site-shell">
-            <header className="site-header">
-              <Link href="/" className="wordmark">
-                WORLD OF TETHYS
-              </Link>
-              <nav className="site-nav">
-                {navItems.map((item) => (
-                  <Link key={item.href} href={item.href}>
-                    {item.label}
-                  </Link>
-                ))}
-                {amazonUrl && (
-                  <a href={amazonUrl} target="_blank" rel="noreferrer">
-                    Book I (Amazon)
-                  </a>
-                )}
-              </nav>
-            </header>
-            <main className="site-main">
-              <AnaphaseWrapper>{children}</AnaphaseWrapper>
-            </main>
-            <footer className="site-footer">
-              <p className="footer-mark">WORLD OF TETHYS</p>
-              <p className="footer-credit">© 2025 D.C. Barletta</p>
-            </footer>
-          </div>
-        </TethysProvider>
+        <AuthAppProvider user={session?.user}>
+          <TethysProvider>
+            <div className="site-shell">
+              <header className="site-header">
+                <Link href="/" className="wordmark">
+                  WORLD OF TETHYS
+                </Link>
+                <nav className="site-nav">
+                  {navItems.map((item) => (
+                    <Link key={item.href} href={item.href}>
+                      {item.label}
+                    </Link>
+                  ))}
+                  {amazonUrl && (
+                    <a href={amazonUrl} target="_blank" rel="noreferrer">
+                      Book I (Amazon)
+                    </a>
+                  )}
+                </nav>
+              </header>
+              <main className="site-main">
+                <AnaphaseWrapper>{children}</AnaphaseWrapper>
+              </main>
+              <footer className="site-footer">
+                <p className="footer-mark">WORLD OF TETHYS</p>
+                <p className="footer-credit">© 2025 D.C. Barletta</p>
+              </footer>
+            </div>
+          </TethysProvider>
+        </AuthAppProvider>
       </body>
     </html>
   );

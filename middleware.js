@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import { auth0 } from './src/lib/auth0';
 
-export function middleware(request) {
+export async function middleware(request) {
   const hostname = request.headers.get('host');
   const protocol = request.headers.get('x-forwarded-proto');
 
@@ -11,7 +12,7 @@ export function middleware(request) {
     );
   }
 
-  return NextResponse.next();
+  return auth0.middleware(request);
 }
 
 export const config = {

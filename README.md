@@ -20,13 +20,20 @@ OAUTH_CLIENT_SECRET=
 OAUTH_AUDIENCE=
 OAUTH_SCOPE=
 OAUTH_GRANT_TYPE=client_credentials
+AUTH0_SECRET=
+APP_BASE_URL=http://localhost:3000
+AUTH0_DOMAIN=
+AUTH0_CLIENT_ID=
+AUTH0_CLIENT_SECRET=
+AUTH0_AUDIENCE=
+AUTH0_SCOPE='openid profile email offline_access'
 AMAZON_BOOK_URL=
 MEDIA_BASE_URL=
 MEDIA_PREVIEW_PATH=
 MEDIA_FULL_PATH=
 ```
 
-Add them locally in `.env` and in the Vercel dashboard (Project Settings → Environment Variables).
+Use `.env.example` as the template, duplicate it to `.env`, and keep Vercel Project Settings → Environment Variables in sync.
 
 ### Development
 
