@@ -12,6 +12,7 @@ import ParchmentShader from '@/components/ParchmentShader';
 import CategoryNav from '@/components/CategoryNav';
 import ArtifactPlate from '@/components/ArtifactPlate';
 import StaffPreview from '@/components/StaffPreview';
+import StaffVisualizer from '@/components/StaffVisualizer';
 import { useExpedition } from '@/lib/useExpedition';
 import { generateStaffProfile } from '@/lib/staffSequencer';
 
@@ -327,8 +328,13 @@ export default function MapBridge() {
         ))}
       </ParchmentShader>
 
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <StaffPreview profile={staffProfile} />
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <ParchmentShader className="artifact-card">
+          <StaffPreview profile={staffProfile} />
+        </ParchmentShader>
+        <ParchmentShader className="artifact-card">
+          <StaffVisualizer staffData={staffProfile} />
+        </ParchmentShader>
         <ParchmentShader className="artifact-card">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-ancient-accent">
             Scholar&apos;s Chronometer
