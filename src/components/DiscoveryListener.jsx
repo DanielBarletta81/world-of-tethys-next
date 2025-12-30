@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { buildInkDropEnvelope, selectActiveEvent } from '@/lib/inkDrop';
 
 /**
  * Triggers a discovery claim when the marker element is fully in view.
@@ -24,6 +25,20 @@ export default function DiscoveryListener({ postId, weight }) {
 
         if (res.ok) {
           window.dispatchEvent(new CustomEvent('tethys:evolved', { detail: { weight } }));
+          try {
+            const [archRes, eventsRes] = await Promise.all([
+              fetch(`/api/tethys/archival_post/${postId}`),
+              fetch('/api/tethys/active-events')
+            ]);
+            const archival = archRes.ok ? await archRes.json() : null;
+            const events = eventsRes.ok ? await eventsRes.json() : [];
+            const envelope = buildInkDropEnvelope(archival, selectActiveEvent(events));
+            if (envelope) {
+              window.dispatchEvent(new CustomEvent('tethys:inkdrop', { detail: envelope }));
+            }
+          } catch (fetchErr) {
+            console.warn('Ink envelope build failed', fetchErr);
+          }
           if (endRef.current) observer.unobserve(endRef.current);
         }
       } catch (error) {

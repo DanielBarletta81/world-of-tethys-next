@@ -13,6 +13,8 @@ import CategoryNav from '@/components/CategoryNav';
 import ArtifactPlate from '@/components/ArtifactPlate';
 import StaffPreview from '@/components/StaffPreview';
 import StaffVisualizer from '@/components/StaffVisualizer';
+import CelestialDisk from '@/components/CelestialDisk';
+import LandingSequence from '@/components/LandingSequence';
 import { useExpedition } from '@/lib/useExpedition';
 import { generateStaffProfile } from '@/lib/staffSequencer';
 
@@ -93,6 +95,7 @@ export default function MapBridge() {
   const [activeEvent, setActiveEvent] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [markerError, setMarkerError] = useState(null);
+  const [isClient, setIsClient] = useState(false);
   const { sessionTime, inventory } = useExpedition();
 
   useEffect(() => {
@@ -241,6 +244,8 @@ export default function MapBridge() {
       transition={{ duration: 1.5, ease: 'easeOut' }}
       className="min-h-screen p-6 lg:p-12 flex flex-col gap-8 bg-ancient-bg/80 text-ancient-ink rounded-[2.5rem] border border-ancient-ink/20 shadow-[18px_18px_0_rgba(43,38,33,0.25)] font-body"
     >
+      <LandingSequence />
+      <CelestialDisk />
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-ancient-ink/20 pb-6">
         <div>
           <h1 className="text-4xl md:text-5xl font-display tracking-tight uppercase">
@@ -462,3 +467,14 @@ export default function MapBridge() {
     </motion.div>
   );
 }
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="loading-shimmer" aria-busy="true">
+        Igniting Vellum Grid…
+      </div>
+    );
+  }

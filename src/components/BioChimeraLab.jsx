@@ -313,9 +313,16 @@ Format the response as JSON with these keys:
                       className="w-full h-full object-contain rounded-lg border border-ancient-ink/10 shadow-lg"
                     />
                   ) : (
-                    <div className="text-center opacity-50">
-                      <Shield className="w-10 h-10 mx-auto mb-3" />
-                      <p className="text-sm">Awaiting visual confirmation</p>
+                    <div className="text-center opacity-80 relative w-full h-full">
+                      <img
+                        src="/chimera-tank.jpg"
+                        className="w-full h-full object-cover rounded-lg opacity-50 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700"
+                        alt="Chimera tank"
+                      />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <Shield className="w-10 h-10 mb-3 text-white/50" />
+                        <p className="text-sm text-white/70 shadow-black drop-shadow-md">Awaiting visual confirmation</p>
+                      </div>
                     </div>
                   )}
 

@@ -1,4 +1,5 @@
 import { getPageBySlug } from '@/lib/graphql';
+import CharacterCarousel from '@/components/CharacterCarousel';
 
 export default async function CharactersIndexPage() {
   const page = await getPageBySlug('/characters');
@@ -16,6 +17,7 @@ export default async function CharactersIndexPage() {
       ) : (
         <p className="placeholder">No character index exists yet.</p>
       )}
+      <CharacterCarousel />
     </section>
   );
 }

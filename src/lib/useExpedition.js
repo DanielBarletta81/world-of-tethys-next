@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 const UNLOCKS = [
   { time: 300, item: 'Compass' }, // 5 minutes
   { time: 900, item: 'SurveyorLens' }, // 15 minutes
-  { time: 1800, item: 'Kith' } // 30 minutes
+  { time: 1800, item: 'Kith' }, // 30 minutes
+  { time: 2700, item: 'ArchitectKey' } // 45 minutes
 ];
 
 function loadInventory() {

@@ -1,1 +1,8 @@
-<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M32 4L35 15L48 18L38 28L42 42L32 35L22 42L26 28L16 18L29 15L32 4Z"
+        stroke="#7a3a23" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M32 15V35M29 15L22 25M35 15L42 25" stroke="#7a3a23" stroke-width="1" opacity="0.4"/>
+  <circle cx="32" cy="28" r="3" fill="#7a3a23" opacity="0.5">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="5s" repeatCount="indefinite" />
+  </circle>
+</svg>

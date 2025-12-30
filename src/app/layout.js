@@ -5,6 +5,7 @@ import { TethysProvider } from '@/context/TethysContext';
 import AnaphaseWrapper from '@/components/AnaphaseWrapper';
 import AuthAppProvider from '@/components/AuthAppProvider';
 import AtmosphericLayer from '@/components/AtmosphericLayer';
+import InkDropOverlay from '@/components/InkDropOverlay';
 import './globals.css';
 
 export const metadata = {
@@ -23,12 +24,13 @@ export default async function RootLayout({ children }) {
     { href: '/mystics', label: 'Mystics', description: 'Orders & rites' },
     { href: '/humans', label: 'Humans', description: 'Settlements mapped' },
     { href: '/registry', label: 'Registry', description: 'Artifacts logged' },
-    { href: '/listen', label: 'Listen', description: 'Signal archives' }
+    { href: '/listen', label: 'Listen', description: 'Signal archives' },
+    { href: '/science', label: 'Science Annex', description: 'Real-world biology' }
   ];
   const navMetrics = [
-    { label: 'Expedition', value: 'Relay VII' },
-    { label: 'Biome Index', value: '67% charted' },
-    { label: 'Reliquaries', value: '12 active' }
+    { label: 'Volume', value: 'Book I — The Watcher' },
+    { label: 'Author', value: 'D.C. Barletta' },
+    { label: 'Release', value: 'Hardcover Out Now' }
   ];
 
   return (
@@ -37,6 +39,7 @@ export default async function RootLayout({ children }) {
         <AuthAppProvider user={session?.user}>
           <TethysProvider>
             <AtmosphericLayer />
+            <InkDropOverlay />
             <div className="site-shell">
               <header className="site-header">
                 <div className="nav-banner">
@@ -46,7 +49,7 @@ export default async function RootLayout({ children }) {
                       WORLD OF TETHYS
                     </Link>
                     <p className="nav-banner__lede">
-                      Field researchers charting the ruins and living archives of forgotten biomes.
+                      Author D.C. Barletta&apos;s living archive of the Tethys Inundation.
                     </p>
                   </div>
                   <div className="nav-banner__metrics">
@@ -64,7 +67,7 @@ export default async function RootLayout({ children }) {
                       rel="noreferrer"
                       className="nav-banner__cta"
                     >
-                      Field Manual
+                      Acquire the Full Record (Amazon)
                     </a>
                   )}
                 </div>
@@ -80,9 +83,21 @@ export default async function RootLayout({ children }) {
               <main className="site-main">
                 <AnaphaseWrapper>{children}</AnaphaseWrapper>
               </main>
-              <footer className="site-footer">
-                <p className="footer-mark">WORLD OF TETHYS</p>
-                <p className="footer-credit">© 2025 D.C. Barletta</p>
+              <footer className="site-footer mt-20 border-t border-ancient-ink/10 pt-10 pb-20 text-center">
+                <div className="wordmark text-2xl mb-2">Author D.C. Barletta</div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-40 mb-6">
+                  Architect of the Cambrian 9 • World of Tethys
+                </p>
+                {amazonUrl && (
+                  <a
+                    href={amazonUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center px-6 py-3 border border-ancient-accent text-ancient-accent text-[11px] font-mono uppercase tracking-[0.4em] hover:bg-ancient-accent hover:text-white transition-colors"
+                  >
+                    Enter the Dinosaur Factory
+                  </a>
+                )}
               </footer>
             </div>
           </TethysProvider>

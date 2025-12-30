@@ -27,7 +27,8 @@ async function proxy(request, { params }) {
       method: request.method,
       headers: {
         Authorization: `Basic ${auth}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': 'Tethys-World-Engine/1.0'
       },
       body
     });
