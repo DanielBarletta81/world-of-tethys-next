@@ -154,3 +154,39 @@ export function generateStaffProfile({
     environmentStamp: environment.biome || 'Unknown Biome'
   };
 }
+
+/**
+ * Legacy/simple DNA generator for staff composition.
+ * Maps reading history -> dominant traits -> hash/description + basic stats.
+ */
+export function generateStaffDNA(readingHistory = []) {
+  const weights = readingHistory.reduce((acc, post) => {
+    const raw = post?.category_slug;
+    if (!raw) return acc;
+    const key = String(raw).toLowerCase();
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  const geologyCount = weights.geology || 0;
+  const humanCount = weights.human || 0;
+  const hybridCount = weights.hybrids || weights.hybrid || 0;
+  const creatureCount = weights.creature || 0;
+  const loreCount = weights.lore || 0;
+
+  const dominantCore = geologyCount > 10 ? 'Basalt' : 'Weathered_Oak';
+  const dominantBinding = humanCount > 15 ? 'Silurian_Hide' : 'Linen_Wrap';
+  const dominantApex = hybridCount > 0 ? 'Chimera_Eye' : 'Glass_Lens';
+
+  const staffHash = `C-${dominantCore}_B-${dominantBinding}_A-${dominantApex}_T-${Date.now()}`;
+
+  return {
+    dna: staffHash,
+    description: `A ${dominantCore} staff bound in ${dominantBinding}, crowned with a ${dominantApex}.`,
+    stats: {
+      aquatic: creatureCount * 1.2,
+      thermal: geologyCount * 1.5,
+      mystic: loreCount * 2.0
+    }
+  };
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import DiscoveryToast from './DiscoveryToast';
 import { usePathname } from 'next/navigation';
 
 export default function AnaphaseWrapper({ children }) {
@@ -16,6 +17,7 @@ export default function AnaphaseWrapper({ children }) {
         transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
       >
         {children}
+        <DiscoveryToast />
       </motion.div>
     </AnimatePresence>
   );
