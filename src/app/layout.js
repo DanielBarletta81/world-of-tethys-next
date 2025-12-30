@@ -4,6 +4,7 @@ import { auth0 } from '@/lib/auth0';
 import { TethysProvider } from '@/context/TethysContext';
 import AnaphaseWrapper from '@/components/AnaphaseWrapper';
 import AuthAppProvider from '@/components/AuthAppProvider';
+import AtmosphericLayer from '@/components/AtmosphericLayer';
 import './globals.css';
 
 export const metadata = {
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }) {
       <body className="site-body ancient-overlay">
         <AuthAppProvider user={session?.user}>
           <TethysProvider>
+            <AtmosphericLayer />
             <div className="site-shell">
               <header className="site-header">
                 <div className="nav-banner">
