@@ -1,0 +1,28 @@
+[
+  {
+    "title": "The Albian Awakening",
+    "acf": {
+      "event_timing": {
+        "start_time": "2025-12-30 00:00:00",
+        "end_time": "2026-01-05 23:59:59"
+      },
+      "effect_payload": "{\"event_id\": \"LAUNCH_2025\", \"map_pulse\": \"rgba(0, 255, 200, 0.4)\", \"global_shader\": \"contrast(1.2) brightness(1.1)\", \"luck_multiplier\": 5.0, \"hud_message\": \"INCUBATION COMPLETE: THE TWIN STRAIGHTS ARE LIVE\"}",
+      "requirements": {
+        "req_lore": 0
+      }
+    }
+  },
+  {
+    "title": "Season of the Rising Talon",
+    "acf": {
+      "event_timing": {
+        "start_time": "2026-10-01 00:00:00",
+        "end_time": "2026-10-31 23:59:59"
+      },
+      "effect_payload": "{\"event_id\": \"TALON_DRIFT\", \"map_pulse\": \"rgba(255, 50, 0, 0.3)\", \"global_shader\": \"sepia(0.5) hue-rotate(-20deg)\", \"luck_multiplier\": 3.0, \"hud_message\": \"CELESTIAL ALIGNMENT: THE EYE OF DIER WATCHES THE ROOKERY\"}",
+      "requirements": {
+        "req_lore": 50
+      }
+    }
+  }
+]
