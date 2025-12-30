@@ -91,6 +91,8 @@ export default function MapBridge() {
   const audioCtxRef = useRef(null);
   const [activeTab, setActiveTab] = useState('Geodes');
   const [activeEvent, setActiveEvent] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [markerError, setMarkerError] = useState(null);
   const { sessionTime, inventory } = useExpedition();
 
   useEffect(() => {
@@ -181,6 +183,32 @@ export default function MapBridge() {
     };
   }, [applyGlobalEffects]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadMarkers = async () => {
+      try {
+        const res = await fetch('/api/tethys/archival_post', { signal: controller.signal });
+        if (!res.ok) {
+          throw new Error(`WP markers failed: ${res.status}`);
+        }
+        const data = await res.json();
+        const valid = Array.isArray(data)
+          ? data.filter(
+              (post) =>
+                post?.acf?.map_coords?.map_x !== undefined &&
+                post?.acf?.map_coords?.map_y !== undefined
+            )
+          : [];
+        setMarkers(valid);
+      } catch (err) {
+        console.warn('Map Load Failure:', err);
+        setMarkerError('The vellum is tearing. Please refresh the archive.');
+      }
+    };
+    loadMarkers();
+    return () => controller.abort();
+  }, []);
+
   const activeArtifacts = useMemo(() => sampleArtifacts[activeTab] || [], [activeTab]);
 
   const readingStats = useMemo(
@@ -248,7 +276,22 @@ export default function MapBridge() {
       </header>
 
       <ParchmentShader className="bg-gradient-to-br from-[#e2d7c5] to-[#c7b6a1] shadow-inner-lg border border-ancient-ink/20 rounded-[2rem]">
-        <UnfoldingMap mapImageUrl="/globe.svg" />
+        {markerError && (
+          <div className="artifact-card text-sm text-ancient-accent">{markerError}</div>
+        )}
+        <UnfoldingMap
+          mapImageUrl="/globe.svg"
+          points={
+            markers.length
+              ? markers.map((post) => ({
+                  id: post.id,
+                  label: post?.title?.rendered || 'Unknown Site',
+                  top: `${post?.acf?.map_coords?.map_y}%`,
+                  left: `${post?.acf?.map_coords?.map_x}%`
+                }))
+              : undefined
+          }
+        />
       </ParchmentShader>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-grow">
