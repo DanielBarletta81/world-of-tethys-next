@@ -15,37 +15,64 @@ export default async function RootLayout({ children }) {
   const amazonUrl = getAmazonBookUrl();
   const session = await auth0.getSession();
   const navItems = [
-    { href: '/history', label: 'History' },
-    { href: '/records', label: 'Records' },
-    { href: '/characters', label: 'Characters' },
-    { href: '/creatures', label: 'Creatures' },
-    { href: '/mystics', label: 'Mystics' },
-    { href: '/humans', label: 'Humans' },
-    { href: '/registry', label: 'Registry' },
-    { href: '/listen', label: 'Listen' }
+    { href: '/history', label: 'Chronicles', description: 'Eras & cataclysms' },
+    { href: '/records', label: 'Records', description: 'Expedition briefs' },
+    { href: '/characters', label: 'Characters', description: 'Living legends' },
+    { href: '/creatures', label: 'Creatures', description: 'Biodome sightings' },
+    { href: '/mystics', label: 'Mystics', description: 'Orders & rites' },
+    { href: '/humans', label: 'Humans', description: 'Settlements mapped' },
+    { href: '/registry', label: 'Registry', description: 'Artifacts logged' },
+    { href: '/listen', label: 'Listen', description: 'Signal archives' }
+  ];
+  const navMetrics = [
+    { label: 'Expedition', value: 'Relay VII' },
+    { label: 'Biome Index', value: '67% charted' },
+    { label: 'Reliquaries', value: '12 active' }
   ];
 
   return (
     <html lang="en">
-      <body className="site-body">
+      <body className="site-body ancient-overlay">
         <AuthAppProvider user={session?.user}>
           <TethysProvider>
             <div className="site-shell">
               <header className="site-header">
-                <Link href="/" className="wordmark">
-                  WORLD OF TETHYS
-                </Link>
-                <nav className="site-nav">
-                  {navItems.map((item) => (
-                    <Link key={item.href} href={item.href}>
-                      {item.label}
+                <div className="nav-banner">
+                  <div className="nav-banner__identity">
+                    <p className="nav-banner__eyebrow">Atlas Initiative</p>
+                    <Link href="/" className="wordmark">
+                      WORLD OF TETHYS
                     </Link>
-                  ))}
+                    <p className="nav-banner__lede">
+                      Field researchers charting the ruins and living archives of forgotten biomes.
+                    </p>
+                  </div>
+                  <div className="nav-banner__metrics">
+                    {navMetrics.map((metric) => (
+                      <div key={metric.label} className="nav-badge">
+                        <span className="nav-badge__label">{metric.label}</span>
+                        <span className="nav-badge__value">{metric.value}</span>
+                      </div>
+                    ))}
+                  </div>
                   {amazonUrl && (
-                    <a href={amazonUrl} target="_blank" rel="noreferrer">
-                      Book I (Amazon)
+                    <a
+                      href={amazonUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="nav-banner__cta"
+                    >
+                      Field Manual
                     </a>
                   )}
+                </div>
+                <nav className="ancient-nav" aria-label="Discovery routes">
+                  {navItems.map((item) => (
+                    <Link key={item.href} href={item.href} className="ancient-nav__item">
+                      <span className="ancient-nav__label">{item.label}</span>
+                      <span className="ancient-nav__desc">{item.description}</span>
+                    </Link>
+                  ))}
                 </nav>
               </header>
               <main className="site-main">

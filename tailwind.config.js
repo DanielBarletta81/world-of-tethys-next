@@ -13,9 +13,15 @@ module.exports = {
         'sync-violet': '#8b5cf6',
         'sync-glow': '#22d3ee',
         'nute-emerald': '#10b981',
-        'dissonant-red': '#ef4444'
+        'dissonant-red': '#ef4444',
+        'ancient-bg': '#e2d7c5',
+        'ancient-ink': '#2b2621',
+        'ancient-accent': '#7a3a23'
       },
       fontFamily: {
+        display: ['"Cormorant Garamond"', 'serif'],
+        body: ['"EB Garamond"', 'serif'],
+        mono: ['"Courier Prime"', 'monospace'],
         serif: ['"Crimson Pro"', 'serif'],
         sans: ['"Inter"', 'sans-serif']
       },
