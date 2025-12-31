@@ -1,7 +1,12 @@
-<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M32 4L56 20V44L32 60L8 44V20L32 4Z" stroke="#7a3a23" stroke-width="2"/>
-  <path d="M32 4V60M8 20L56 44M56 20L8 44" stroke="#7a3a23" stroke-width="1" opacity="0.3"/>
-  <circle cx="32" cy="32" r="8" fill="#7a3a23" opacity="0.2">
-    <animate attributeName="opacity" values="0.1;0.4;0.1" dur="3s" repeatCount="indefinite" />
-  </circle>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M40 100 L60 40 L140 30 L170 90 L150 160 L70 170 Z" stroke="#3D2B1F" stroke-width="3" stroke-linejoin="bevel" fill="none"/>
+  
+  <path d="M60 100 L100 70 L140 100 L100 140 Z" stroke="#8A3C23" stroke-width="1.5" fill="rgba(138, 60, 35, 0.1)"/>
+  <path d="M100 70 L100 30" stroke="#3D2B1F" stroke-width="1"/>
+  <path d="M140 100 L180 100" stroke="#3D2B1F" stroke-width="1"/>
+  <path d="M100 140 L100 180" stroke="#3D2B1F" stroke-width="1"/>
+  <path d="M60 100 L20 100" stroke="#3D2B1F" stroke-width="1"/>
+  
+  <line x1="80" y1="85" x2="120" y2="115" stroke="#3D2B1F" stroke-width="0.5"/>
+  <line x1="120" y1="85" x2="80" y2="115" stroke="#3D2B1F" stroke-width="0.5"/>
 </svg>

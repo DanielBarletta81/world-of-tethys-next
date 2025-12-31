@@ -16,6 +16,7 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const amazonUrl = getAmazonBookUrl();
   const session = await auth0.getSession();
+
   const navItems = [
     { href: '/history', label: 'Chronicles', description: 'Eras & cataclysms' },
     { href: '/records', label: 'Records', description: 'Expedition briefs' },
@@ -27,10 +28,11 @@ export default async function RootLayout({ children }) {
     { href: '/listen', label: 'Listen', description: 'Signal archives' },
     { href: '/science', label: 'Science Annex', description: 'Real-world biology' }
   ];
+
   const navMetrics = [
-    { label: 'Volume', value: 'Book I — The Watcher' },
-    { label: 'Author', value: 'D.C. Barletta' },
-    { label: 'Release', value: 'Hardcover Out Now' }
+    { label: 'Volume', value: 'Book I — Sky City' },
+    { label: 'Author', value: 'D.C. Barletta', href: 'https://www.dcbarletta.com' },
+    { label: 'Inbound', value: 'Feb 28 Release' }
   ];
 
   return (
@@ -52,25 +54,40 @@ export default async function RootLayout({ children }) {
                       Author D.C. Barletta&apos;s living archive of the Tethys Inundation.
                     </p>
                   </div>
+
                   <div className="nav-banner__metrics">
                     {navMetrics.map((metric) => (
                       <div key={metric.label} className="nav-badge">
                         <span className="nav-badge__label">{metric.label}</span>
-                        <span className="nav-badge__value">{metric.value}</span>
+                        {metric.href ? (
+                          <a
+                            href={metric.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="nav-badge__value underline decoration-dotted hover:text-[#8a3c23] transition-colors"
+                          >
+                            {metric.value}
+                          </a>
+                        ) : (
+                          <span className="nav-badge__value">{metric.value}</span>
+                        )}
                       </div>
                     ))}
                   </div>
+
                   {amazonUrl && (
                     <a
                       href={amazonUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="nav-banner__cta"
+                      className="nav-banner__cta group"
                     >
-                      Acquire the Full Record (Amazon)
+                      <span className="group-hover:hidden">View Archive Status</span>
+                      <span className="hidden group-hover:inline text-[#8a3c23] font-bold">Secure Book I</span>
                     </a>
                   )}
                 </div>
+
                 <nav className="ancient-nav" aria-label="Discovery routes">
                   {navItems.map((item) => (
                     <Link key={item.href} href={item.href} className="ancient-nav__item">
@@ -80,12 +97,14 @@ export default async function RootLayout({ children }) {
                   ))}
                 </nav>
               </header>
+
               <main className="site-main">
                 <AnaphaseWrapper>{children}</AnaphaseWrapper>
               </main>
-              <footer className="site-footer mt-20 border-t border-ancient-ink/10 pt-10 pb-20 text-center">
-                <div className="wordmark text-2xl mb-2">Author D.C. Barletta</div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-40 mb-6">
+
+              <footer className="site-footer mt-20 border-t border-[#3d2b1f]/20 pt-10 pb-20 text-center">
+                <div className="wordmark text-2xl mb-2 text-[#1a1510]">Author D.C. Barletta</div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-40 mb-6 text-[#5c4f43]">
                   Architect of the Cambrian 9 • World of Tethys
                 </p>
                 {amazonUrl && (
@@ -93,9 +112,9 @@ export default async function RootLayout({ children }) {
                     href={amazonUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-ancient-accent text-ancient-accent text-[11px] font-mono uppercase tracking-[0.4em] hover:bg-ancient-accent hover:text-white transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 border border-[#8a3c23] text-[#8a3c23] text-[11px] font-mono uppercase tracking-[0.4em] hover:bg-[#8a3c23] hover:text-[#e6ded0] transition-colors"
                   >
-                    Enter the Dinosaur Factory
+                    Pre-Order "Sky City" (Feb 28)
                   </a>
                 )}
               </footer>

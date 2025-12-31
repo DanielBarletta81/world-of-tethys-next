@@ -15,6 +15,10 @@ import StaffPreview from '@/components/StaffPreview';
 import StaffVisualizer from '@/components/StaffVisualizer';
 import CelestialDisk from '@/components/CelestialDisk';
 import LandingSequence from '@/components/LandingSequence';
+import PlayerAvatar from '@/components/PlayerAvatar';
+import KithOracle from '@/components/KithOracle';
+import BookManifest from '@/components/BookManifest';
+import PaleoGraph from '@/components/PaleoGraph';
 import { useExpedition } from '@/lib/useExpedition';
 import { generateStaffProfile } from '@/lib/staffSequencer';
 
@@ -93,11 +97,14 @@ const sampleArtifacts = {
 export default function MapBridge() {
   const { syncFrequency, setSyncFrequency, oilLevel, setOilLevel, isNuteRoaring } = useTethys();
   const audioCtxRef = useRef(null);
+  const droneRef = useRef(null);
   const [activeTab, setActiveTab] = useState('Geodes');
   const [activeEvent, setActiveEvent] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [markerError, setMarkerError] = useState(null);
   const [isClient, setIsClient] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [isMuted, setIsMuted] = useState(true); // Default to true initially to match server render
   const { sessionTime, inventory } = useExpedition();
 
   // 1. Mount Effect
@@ -113,6 +120,38 @@ export default function MapBridge() {
       audioCtxRef.current?.close?.();
     };
   }, []);
+
+  // Ambient drone (Hydrophone)
+  useEffect(() => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return undefined;
+
+    if (!isMuted) {
+      if (ctx.state === 'suspended') ctx.resume();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 55;
+      gain.gain.value = 0.05;
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      droneRef.current = osc;
+      return () => {
+        try {
+          osc.stop();
+        } catch {}
+        droneRef.current = null;
+      };
+    }
+
+    if (droneRef.current) {
+      try {
+        droneRef.current.stop();
+      } catch {}
+      droneRef.current = null;
+    }
+    return undefined;
+  }, [isMuted]);
 
   // 2. Audio Logic
   const playRustle = useCallback(() => {
@@ -152,6 +191,14 @@ export default function MapBridge() {
     },
     [playRustle, setOilLevel]
   );
+
+  const handlePointClick = useCallback((point) => {
+    setSelectedMarker(point);
+    const detail = document.getElementById('artifact-detail');
+    if (detail) {
+      detail.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
 
   // 3. Data Fetching
   useEffect(() => {
@@ -235,6 +282,7 @@ export default function MapBridge() {
       // IN-WORLD STYLE: Darker text, thicker border, larger padding
       className="min-h-screen p-8 lg:p-16 flex flex-col gap-10 bg-[#e6ded0] text-[#1a1510] border-[3px] border-[#3d2b1f] font-body relative overflow-hidden shadow-2xl"
     >
+      <PlayerAvatar />
       <LandingSequence />
       
       {/* Background Texture Overlay */}
@@ -268,6 +316,13 @@ export default function MapBridge() {
               </span>
             </div>
             <div className="text-right">
+              <button
+                type="button"
+                onClick={() => setIsMuted((prev) => !prev)}
+                className="text-xs uppercase font-bold tracking-widest mb-1 hover:text-[#8a3c23]"
+              >
+                Hydrophone: {isMuted ? 'Off' : 'Live'}
+              </button>
               <span className="block text-xs text-[#5c4f43] uppercase font-bold tracking-widest mb-1">Oil Yield</span>
               <span className="text-4xl font-display text-[#1a1510]">{oilLevel}%</span>
             </div>
@@ -292,11 +347,30 @@ export default function MapBridge() {
                     id: post.id,
                     label: post?.title?.rendered || 'Unknown Site',
                     top: `${post?.acf?.map_coords?.map_y}%`,
-                    left: `${post?.acf?.map_coords?.map_x}%`
+                    left: `${post?.acf?.map_coords?.map_x}%`,
+                    content: post?.content?.rendered || ''
                   }))
                 : undefined
             }
+            onPointClick={handlePointClick}
           />
+        </ParchmentShader>
+
+        <ParchmentShader id="artifact-detail" className="rounded-lg border-2 border-[#3d2b1f] shadow-lg p-6">
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#8a3c23] mb-2">
+            Artifact Record
+          </p>
+          {selectedMarker ? (
+            <div className="space-y-3">
+              <h3 className="font-display text-2xl text-[#1a1510]">{selectedMarker.label}</h3>
+              <div
+                className="prose prose-sm max-w-none text-[#3d2b1f]"
+                dangerouslySetInnerHTML={{ __html: selectedMarker.content || '<p>No transcript available.</p>' }}
+              />
+            </div>
+          ) : (
+            <p className="text-sm text-[#5c4f43]">Tap a map marker to open its field report.</p>
+          )}
         </ParchmentShader>
 
         {/* Dashboard Grid: Cards look like physical plates */}
@@ -304,6 +378,12 @@ export default function MapBridge() {
           
           {/* Left Column: Controls (Recessed inputs) */}
           <aside className="lg:col-span-3 space-y-8">
+            <div className="bg-[#1a1510] border-2 border-[#3d2b1f] p-4 shadow-[6px_6px_0_rgba(61,43,31,0.2)]">
+              <KithOracle />
+            </div>
+
+            <PaleoGraph />
+
             <div className="bg-[#f2eadd] border-2 border-[#3d2b1f] p-6 shadow-[6px_6px_0_rgba(61,43,31,0.15)]">
               <h3 className="text-[#8a3c23] font-mono text-[10px] uppercase tracking-[0.4em] mb-4 text-center">
                 Biometric: Nute
@@ -355,6 +435,7 @@ export default function MapBridge() {
 
           {/* Right Column: Puzzles (Interactive Plate) */}
           <aside className="lg:col-span-3 flex flex-col gap-6">
+            <BookManifest />
             <div className="bg-[#f2eadd] border-2 border-[#3d2b1f] p-1 shadow-[6px_6px_0_rgba(61,43,31,0.15)]">
               <SluiceGatePuzzle onOpen={() => console.log('Sluice unlocked')} />
             </div>

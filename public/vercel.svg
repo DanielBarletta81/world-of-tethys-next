@@ -1,8 +1,12 @@
-<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M32 4L35 15L48 18L38 28L42 42L32 35L22 42L26 28L16 18L29 15L32 4Z"
-        stroke="#7a3a23" stroke-width="2" stroke-linejoin="round"/>
-  <path d="M32 15V35M29 15L22 25M35 15L42 25" stroke="#7a3a23" stroke-width="1" opacity="0.4"/>
-  <circle cx="32" cy="28" r="3" fill="#7a3a23" opacity="0.5">
-    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="5s" repeatCount="indefinite" />
-  </circle>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M100 20 V 180" stroke="#3D2B1F" stroke-width="4" stroke-linecap="round"/>
+  <line x1="80" y1="30" x2="120" y2="30" stroke="#3D2B1F" stroke-width="4" stroke-linecap="round"/>
+  <line x1="80" y1="170" x2="120" y2="170" stroke="#3D2B1F" stroke-width="4" stroke-linecap="round"/>
+  
+  <path d="M70 50 Q 130 70 70 90 Q 130 110 70 130 Q 130 150 70 170" stroke="#8A3C23" stroke-width="2" fill="none"/>
+  <path d="M130 50 Q 70 70 130 90 Q 70 110 130 130 Q 70 150 130 170" stroke="#8A3C23" stroke-width="2" fill="none" stroke-dasharray="4 2"/>
+  
+  <circle cx="100" cy="70" r="3" fill="#3D2B1F"/>
+  <circle cx="100" cy="110" r="3" fill="#3D2B1F"/>
+  <circle cx="100" cy="150" r="3" fill="#3D2B1F"/>
 </svg>

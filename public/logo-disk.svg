@@ -1,13 +1,14 @@
-<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="95" stroke="#7a3a23" stroke-width="2" stroke-dasharray="10 5" opacity="0.6" />
-  <g stroke="#7a3a23" stroke-width="4" stroke-linecap="round">
-    <line x1="100" y1="5" x2="100" y2="15" />
-    <line x1="195" y1="100" x2="185" y2="100" />
-    <line x1="100" y1="195" x2="100" y2="185" />
-    <line x1="5" y1="100" x2="15" y2="100" />
-  </g>
-  <path d="M70 60H130M100 60V140M85 140H115" stroke="#7a3a23" stroke-width="8" stroke-linecap="square"/>
-  <circle cx="100" cy="100" r="40" stroke="#7a3a23" stroke-width="0.5" opacity="0.4">
-    <animate attributeName="r" values="35;45;35" dur="4s" repeatCount="indefinite" />
-  </circle>
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="150" cy="150" r="145" stroke="#8A3C23" stroke-width="2"/>
+  <circle cx="150" cy="150" r="135" stroke="#3D2B1F" stroke-width="1" stroke-dasharray="2 4"/>
+  
+  <path d="M150 10 L150 290" stroke="#3D2B1F" stroke-width="1" opacity="0.5"/>
+  <path d="M10 150 L290 150" stroke="#3D2B1F" stroke-width="1" opacity="0.5"/>
+  
+  <path d="M150 150 L220 80 L250 100 L150 150" stroke="#8A3C23" stroke-width="1" fill="rgba(138, 60, 35, 0.1)"/>
+  <circle cx="220" cy="80" r="3" fill="#3D2B1F"/>
+  <circle cx="250" cy="100" r="2" fill="#3D2B1F"/>
+  
+  <path d="M140 40 L160 40 L150 60 Z" fill="#3D2B1F"/> <rect x="145" y="270" width="10" height="10" stroke="#3D2B1F"/> <circle cx="150" cy="150" r="10" stroke="#8A3C23" stroke-width="3"/>
+  <circle cx="150" cy="150" r="4" fill="#3D2B1F"/>
 </svg>
