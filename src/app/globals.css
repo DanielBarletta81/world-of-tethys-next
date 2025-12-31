@@ -843,3 +843,81 @@ h2::first-letter {
   transform: rotate(-3deg);
   pointer-events: none;
 }
+/* --- NEW ADDITIONS FOR TETHYS FEATURES --- */
+
+/* 1. SVG Ink Blending (The "Vellum" Look) */
+img[src$=".svg"] {
+  mix-blend-mode: multiply;
+  opacity: 0.82;
+  filter: contrast(1.1) sepia(0.25);
+  pointer-events: none;
+}
+
+/* Override for Celestial Disk & Tesla Node to keep them glowing/vibrant */
+.rotating-logo img, 
+.celestial-disk-logo img, 
+.tesla-node img {
+  mix-blend-mode: normal;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 8px rgba(122, 58, 35, 0.4));
+  pointer-events: auto;
+}
+
+/* 2. The Solemn Reminder Quote */
+.extinction-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--ancient-accent);
+  text-align: center;
+  max-width: 650px;
+  margin: 3rem auto;
+  opacity: 0.85;
+  position: relative;
+  line-height: 1.8;
+}
+
+.extinction-quote::before, 
+.extinction-quote::after {
+  content: "—";
+  display: block;
+  text-align: center;
+  font-size: 1.5rem;
+  opacity: 0.3;
+  margin: 1rem 0;
+  color: var(--ancient-ink);
+}
+
+/* 3. Character Carousel Utilities */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 4. Jagged Stakes / Pyramids (Landing Sequence) */
+.clip-path-pyramid {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background: linear-gradient(to top, #0f172a, #3d2b1f);
+}
+
+/* 5. Refined Artifact Cards (Singed Edges) */
+.artifact-card {
+  /* Ensure the base styles from earlier in the file aren't overridden negatively */
+  clip-path: polygon(
+    0% 2%, 2% 0%, 98% 1%, 100% 98%, 
+    50% 100%, 0% 99%
+  ); /* Subtle irregularity */
+}
+
+/* 6. Discovery Toast Animation */
+@keyframes slideUpFade {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.discovery-toast {
+  animation: slideUpFade 0.5s ease-out forwards;
+}
