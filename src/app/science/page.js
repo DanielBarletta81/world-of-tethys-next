@@ -1,6 +1,8 @@
 import BioChimeraLab from '@/components/BioChimeraLab';
 import SluiceGatePuzzle from '@/components/SluiceGatePuzzle';
 import PunnettScrambler from '@/components/PunnettScrambler';
+import TheBlankSlate from '@/components/TheBlankSlate';
+import SuggestionBox from '@/components/SuggestionBox';
 
 const anchors = [
   {
@@ -84,6 +86,11 @@ export default function ScienceAnnex() {
             <SluiceGatePuzzle />
           </div>
         </div>
+      </div>
+
+      <div className="border-t border-ancient-ink/20 pt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <TheBlankSlate />
+        <SuggestionBox />
       </div>
     </section>
   );

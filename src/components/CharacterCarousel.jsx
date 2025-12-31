@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const cambrianNine = [
   { name: 'Bol', role: 'The Muralist', archetype: 'Witness', color: 'text-sync-violet' },
@@ -11,6 +12,15 @@ const cambrianNine = [
 ];
 
 export default function CharacterCarousel() {
+  const [bondedChar, setBondedChar] = useState(null);
+
+  const handleBond = (name) => {
+    setBondedChar((prev) => (prev === name ? null : name));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('tethys:bond', { detail: { name } }));
+    }
+  };
+
   return (
     <div className="w-full overflow-hidden py-12 px-4">
       <motion.div
@@ -29,6 +39,12 @@ export default function CharacterCarousel() {
             </div>
             <div className="border-t border-ancient-ink/20 pt-3 text-center">
               <p className="text-[11px] font-mono uppercase tracking-[0.3em]">{char.role}</p>
+              <button
+                onClick={() => handleBond(char.name)}
+                className="mt-4 w-full py-2 text-[10px] font-mono uppercase tracking-widest border-t border-ancient-ink/10 hover:bg-ancient-ink/5 transition-colors"
+              >
+                {bondedChar === char.name ? 'Bond Active' : 'Initiate Bond'}
+              </button>
             </div>
           </motion.div>
         ))}
