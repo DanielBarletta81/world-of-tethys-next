@@ -2,7 +2,7 @@ import { fetchAPI } from '@/lib/wordpress';
 
 const query = `
   query TimelineEvents {
-    events(first: 50, where: { orderby: { field: DATE, order: DESC } }) {
+    tethysEvents(first: 50, where: { orderby: { field: DATE, order: DESC } }) {
       nodes {
         slug
         title
@@ -30,7 +30,7 @@ const TimelineEvent = ({ event }) => (
 
 export default async function HistoryPage() {
   const data = await fetchAPI(query);
-  const events = data?.events?.nodes || [];
+  const events = data?.tethysEvents?.nodes || [];
 
   // Sort by timelineDate if present, falling back to original order.
   const sorted = [...events].sort((a, b) => {

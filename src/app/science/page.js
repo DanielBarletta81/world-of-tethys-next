@@ -1,5 +1,6 @@
 import BioChimeraLab from '@/components/BioChimeraLab';
 import SluiceGatePuzzle from '@/components/SluiceGatePuzzle';
+import PunnettScrambler from '@/components/PunnettScrambler';
 
 const anchors = [
   {
@@ -73,8 +74,15 @@ export default function ScienceAnnex() {
           These classroom instruments tie the lore to measurable biology. The Punnett Raceway predicts Omega Oil
           outputs, while the sluice puzzle trains reflexes for Mitosis Overdrive drills.
         </p>
-        <div className="max-w-md mx-auto">
-          <SluiceGatePuzzle />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="artifact-card">
+            <h3 className="font-display text-xl mb-4">Punnett Raceway Simulator</h3>
+            <PunnettScrambler />
+          </div>
+          <div className="artifact-card">
+            <h3 className="font-display text-xl mb-4">Sluice Gate Reflex Drill</h3>
+            <SluiceGatePuzzle />
+          </div>
         </div>
       </div>
     </section>
