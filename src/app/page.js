@@ -148,17 +148,7 @@ export default function MapBridge() {
     [playRustle, setOilLevel]
   );
 
-   useEffect(() => {
-    setIsClient(true);
-  }, []);
 
-  if (!isClient) {
-    return (
-      <div className="loading-shimmer" aria-busy="true">
-        Igniting Vellum Grid…
-      </div>
-    );
-  }
 
   const applyGlobalEffects = useCallback((eventPayload) => {
     if (typeof document === 'undefined') return;
@@ -247,6 +237,18 @@ export default function MapBridge() {
       }),
     [readingStats, inventory]
   );
+
+    useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="loading-shimmer" aria-busy="true">
+        Igniting Vellum Grid…
+      </div>
+    );
+  }
 
   return (
     <motion.div
