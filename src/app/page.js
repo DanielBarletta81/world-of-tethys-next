@@ -18,6 +18,8 @@ import LandingSequence from '@/components/LandingSequence';
 import { useExpedition } from '@/lib/useExpedition';
 import { generateStaffProfile } from '@/lib/staffSequencer';
 
+// --- DATA ARRAYS (Restored) ---
+
 const geodePlates = [
   {
     id: 'lazuli',
@@ -98,7 +100,9 @@ export default function MapBridge() {
   const [isClient, setIsClient] = useState(false);
   const { sessionTime, inventory } = useExpedition();
 
+  // 1. Mount Effect
   useEffect(() => {
+    setIsClient(true);
     if (typeof window !== 'undefined') {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (AudioContextClass) {
@@ -110,6 +114,7 @@ export default function MapBridge() {
     };
   }, []);
 
+  // 2. Audio Logic
   const playRustle = useCallback(() => {
     const ctx = audioCtxRef.current;
     if (!ctx) return;
@@ -148,54 +153,24 @@ export default function MapBridge() {
     [playRustle, setOilLevel]
   );
 
-
-
-  const applyGlobalEffects = useCallback((eventPayload) => {
-    if (typeof document === 'undefined') return;
-    const root = document.documentElement;
-    if (eventPayload?.shader?.filter) {
-      root.style.setProperty('--tethys-event-filter', eventPayload.shader.filter);
-    }
-    if (eventPayload?.hudMessage) {
-      console.info('[Tethys Event]', eventPayload.hudMessage);
-    }
-  }, []);
-
+  // 3. Data Fetching
   useEffect(() => {
     const controller = new AbortController();
-    const fetchEvents = async () => {
-      try {
-        const res = await fetch('/wp-json/tethys/v1/active-events', { signal: controller.signal });
-        if (!res.ok) return;
-        const data = await res.json();
+    
+    // Fetch Events
+    fetch('/wp-json/tethys/v1/active-events', { signal: controller.signal })
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
         if (Array.isArray(data) && data.length > 0) {
           setActiveEvent(data[0]);
-          applyGlobalEffects(data[0]);
         }
-      } catch (error) {
-        if (error.name !== 'AbortError') {
-          console.warn('Failed to load Tethys events', error);
-        }
-      }
-    };
+      })
+      .catch(() => {});
 
-    fetchEvents();
-    return () => {
-      controller.abort();
-      if (typeof document !== 'undefined') {
-        document.documentElement.style.removeProperty('--tethys-event-filter');
-      }
-    };
-  }, [applyGlobalEffects]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const loadMarkers = async () => {
-      try {
-        const res = await fetch('/api/tethys/archival_post', { signal: controller.signal });
-        if (!res.ok) {
-          throw new Error(`WP markers failed: ${res.status}`);
-        }
+    // Fetch Markers (The Map Data)
+    fetch('/api/tethys/archival_post', { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
         const valid = Array.isArray(data)
           ? data.filter(
@@ -205,12 +180,17 @@ export default function MapBridge() {
             )
           : [];
         setMarkers(valid);
-      } catch (err) {
-        console.warn('Map Load Failure:', err);
-        setMarkerError('The vellum is tearing. Please refresh the archive.');
-      }
-    };
-    loadMarkers();
+        if (valid.length === 0 && Array.isArray(data) && data.length > 0) {
+          console.warn("Posts found but no coordinates. Check ACF settings.");
+        }
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') {
+          console.warn('Map Load Failure:', err);
+          setMarkerError('Map uplink severed (API Error).');
+        }
+      });
+
     return () => controller.abort();
   }, []);
 
@@ -238,14 +218,11 @@ export default function MapBridge() {
     [readingStats, inventory]
   );
 
-    useEffect(() => {
-    setIsClient(true);
-  }, []);
-
+  // --- CRITICAL: Loading check MUST be last before final return ---
   if (!isClient) {
     return (
-      <div className="loading-shimmer" aria-busy="true">
-        Igniting Vellum Grid…
+      <div className="loading-shimmer text-xl tracking-widest text-ancient-accent" aria-busy="true">
+        IGNITING VELLUM GRID...
       </div>
     );
   }
@@ -253,232 +230,255 @@ export default function MapBridge() {
   return (
     <motion.div
       initial={{ opacity: 0, filter: 'blur(10px)' }}
-      whileInView={{ opacity: 1, filter: 'blur(0px)' }}
-      viewport={{ once: true }}
+      animate={{ opacity: 1, filter: 'blur(0px)' }}
       transition={{ duration: 1.5, ease: 'easeOut' }}
-      className="min-h-screen p-6 lg:p-12 flex flex-col gap-8 bg-ancient-bg/80 text-ancient-ink rounded-[2.5rem] border border-ancient-ink/20 shadow-[18px_18px_0_rgba(43,38,33,0.25)] font-body"
+      // IN-WORLD STYLE: Darker text, thicker border, larger padding
+      className="min-h-screen p-8 lg:p-16 flex flex-col gap-10 bg-[#e6ded0] text-[#1a1510] border-[3px] border-[#3d2b1f] font-body relative overflow-hidden shadow-2xl"
     >
       <LandingSequence />
-      <CelestialDisk />
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-ancient-ink/20 pb-6">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-display tracking-tight uppercase">
-            Tethys <span className="text-ancient-accent">Overseer</span>
-          </h1>
-          <p className="text-xs font-mono text-ancient-accent uppercase tracking-[0.4em] mt-1">
-            Sector: Sub-Basalt / Resonance Site Alpha
-          </p>
-          {activeEvent ? (
-            <p className="text-[11px] font-mono text-ancient-ink/70 mt-2">
-              Event: <span className="text-ancient-accent">{activeEvent.title || activeEvent.slug}</span>
+      
+      {/* Background Texture Overlay */}
+      <div className="absolute inset-0 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-60 mix-blend-multiply z-0" />
+
+      <div className="relative z-10 flex flex-col gap-10">
+        <CelestialDisk />
+        
+        {/* Header: High Contrast, "Stamped" Look */}
+        <header className="flex flex-col md:flex-row justify-between items-end gap-6 border-b-2 border-[#3d2b1f] pb-6">
+          <div>
+            <h1 className="text-6xl font-display uppercase tracking-tighter leading-none text-[#2b221b] drop-shadow-sm">
+              Tethys <span className="text-[#8a3c23]">Overseer</span>
+            </h1>
+            <p className="text-sm font-mono text-[#8a3c23] uppercase tracking-[0.3em] mt-2 font-bold">
+              Sector: Sub-Basalt // Resonance Site Alpha
             </p>
-          ) : (
-            <p className="text-[11px] font-mono text-ancient-ink/50 mt-2">Event: None detected</p>
-          )}
-        </div>
-        <div className="flex gap-6">
-          <div className="text-right">
-            <span className="block text-[10px] text-ancient-accent uppercase font-mono">Sync Frequency</span>
-            <span
-              className={`text-2xl font-display ${
-                syncFrequency < 400 ? 'text-ancient-accent animate-pulse' : 'text-ancient-ink'
-              }`}
-            >
-              {syncFrequency.toFixed(1)} Hz
-            </span>
+            {activeEvent ? (
+              <p className="text-[11px] font-mono text-[#5c4f43] mt-2">
+                Event: <span className="text-[#8a3c23]">{activeEvent.title || activeEvent.slug}</span>
+              </p>
+            ) : (
+              <p className="text-[11px] font-mono text-[#5c4f43]/50 mt-2">Event: None detected</p>
+            )}
           </div>
-          <div className="text-right">
-            <span className="block text-[10px] text-ancient-accent uppercase font-mono">Omega-Oil Yield</span>
-            <span className="text-2xl font-display text-ancient-ink">{oilLevel}%</span>
-          </div>
-        </div>
-      </header>
-
-      <ParchmentShader className="bg-gradient-to-br from-[#e2d7c5] to-[#c7b6a1] shadow-inner-lg border border-ancient-ink/20 rounded-[2rem]">
-        {markerError && (
-          <div className="artifact-card text-sm text-ancient-accent">{markerError}</div>
-        )}
-        <UnfoldingMap
-          mapImageUrl="/globe.svg"
-          points={
-            markers.length
-              ? markers.map((post) => ({
-                  id: post.id,
-                  label: post?.title?.rendered || 'Unknown Site',
-                  top: `${post?.acf?.map_coords?.map_y}%`,
-                  left: `${post?.acf?.map_coords?.map_x}%`
-                }))
-              : undefined
-          }
-        />
-      </ParchmentShader>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-grow">
-        <aside className="lg:col-span-3 space-y-6">
-          <div className="artifact-card text-center space-y-4">
-            <h3 className="text-ancient-accent font-mono text-[10px] uppercase tracking-[0.4em]">
-              Biometric: Nute
-            </h3>
-            <NutePulse />
-            <div className="text-[11px] text-ancient-ink/70 italic">
-              {isNuteRoaring ? 'CAVITATION DETECTED' : 'HEART RATE STABLE'}
+          <div className="flex gap-8">
+            <div className="text-right">
+              <span className="block text-xs text-[#5c4f43] uppercase font-bold tracking-widest mb-1">Frequency</span>
+              <span className={`text-4xl font-display ${syncFrequency < 400 ? 'text-[#8a3c23] animate-pulse' : 'text-[#1a1510]'}`}>
+                {syncFrequency} <span className="text-lg">Hz</span>
+              </span>
+            </div>
+            <div className="text-right">
+              <span className="block text-xs text-[#5c4f43] uppercase font-bold tracking-widest mb-1">Oil Yield</span>
+              <span className="text-4xl font-display text-[#1a1510]">{oilLevel}%</span>
             </div>
           </div>
+        </header>
 
-          <div className="artifact-card space-y-4">
-            <h3 className="text-ancient-accent font-mono text-[10px] uppercase tracking-[0.4em]">Sluice Maintenance</h3>
-            <label className="text-[10px] text-ancient-ink/70 uppercase">Resonance Load</label>
-            <input
-              type="range"
-              min="300"
-              max="600"
-              value={syncFrequency}
-              onChange={(e) => handleSyncChange(Number(e.target.value))}
-              className="w-full h-1 bg-ancient-ink/20 rounded-lg appearance-none cursor-pointer accent-ancient-accent"
-            />
-
-            <label className="text-[10px] text-ancient-ink/70 uppercase">Oil Harvest</label>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={oilLevel}
-              onChange={(e) => handleOilChange(Number(e.target.value))}
-              className="w-full h-1 bg-ancient-ink/20 rounded-lg appearance-none cursor-pointer accent-ancient-accent"
-            />
+        {/* The Map: Frame it like a window */}
+        <ParchmentShader className="bg-[#dcd3c0] shadow-[inset_0_0_40px_rgba(61,43,31,0.15)] border-2 border-[#3d2b1f] rounded-lg min-h-[600px] relative">
+          <div className="absolute top-4 left-4 z-10 bg-[#f5efe4] border border-[#3d2b1f] px-3 py-1 text-xs font-mono uppercase tracking-widest shadow-[2px_2px_0_#3d2b1f]">
+            Live Cartography
           </div>
-        </aside>
-
-        <main className="lg:col-span-6">
-          <div className="artifact-card relative flex items-center justify-center overflow-hidden min-h-[400px]">
-            <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_center,rgba(122,58,35,0.18),transparent_70%)]" />
-            <TeslaNode />
-          </div>
-        </main>
-
-        <aside className="lg:col-span-3 flex flex-col gap-6">
-          <div className="artifact-card">
-            <SluiceGatePuzzle onOpen={() => console.log('Sluice unlocked')} />
-          </div>
-
-          <div className="artifact-card flex flex-col justify-end">
-            <h4 className="text-ancient-ink text-lg font-display mb-2 italic">Exile Log: Igzier</h4>
-            <p className="text-sm text-ancient-ink/80 leading-relaxed">
-              “The staff realigned mid-plunge. The Wild Hybrid led me to the Sinking Sluice. Melden’s truth runs deeper than basalt.”
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              className="mt-4 py-2 border border-ancient-accent text-ancient-accent text-[11px] font-mono uppercase tracking-[0.4em] hover:bg-ancient-accent hover:text-white transition-all rounded-none"
-            >
-              Open Codex
-            </motion.button>
-          </div>
-        </aside>
-      </div>
-
-      <ParchmentShader className="main-compendium-area rounded-[2rem] border border-ancient-ink/10">
-        <CategoryNav activeTab={activeTab} setActiveTab={setActiveTab} />
-        {activeArtifacts.map((artifact) => (
-          <ArtifactPlate
-            key={artifact.id}
-            artifact={{
-              ...artifact,
-              title: artifact.title,
-              content: artifact.content
-            }}
+          {markerError && (
+            <div className="p-4 text-red-800 font-bold text-center bg-red-100/50 border-b border-red-900">
+              {markerError}
+            </div>
+          )}
+          <UnfoldingMap
+            mapImageUrl="/globe.svg"
+            points={
+              markers.length
+                ? markers.map((post) => ({
+                    id: post.id,
+                    label: post?.title?.rendered || 'Unknown Site',
+                    top: `${post?.acf?.map_coords?.map_y}%`,
+                    left: `${post?.acf?.map_coords?.map_x}%`
+                  }))
+                : undefined
+            }
           />
-        ))}
-      </ParchmentShader>
-
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <ParchmentShader className="artifact-card">
-          <StaffPreview profile={staffProfile} />
-        </ParchmentShader>
-        <ParchmentShader className="artifact-card">
-          <StaffVisualizer staffData={staffProfile} />
-        </ParchmentShader>
-        <ParchmentShader className="artifact-card">
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-ancient-accent">
-            Scholar&apos;s Chronometer
-          </p>
-          <h3 className="font-display text-2xl mb-2">Session Resonance</h3>
-          <p className="text-sm">
-            Time on site: <span className="font-mono">{Math.floor(sessionTime / 60)}m {sessionTime % 60}s</span>
-          </p>
-          <div className="mt-4">
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-ancient-accent mb-2">
-              Inventory
-            </p>
-            <ul className="text-sm list-disc list-inside space-y-1">
-              {inventory.length === 0 && <li>Empty satchel (stay longer to awaken relics)</li>}
-              {inventory.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </ParchmentShader>
-      </section>
-
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <ParchmentShader className="plate-card">
-          <h2 className="text-2xl font-display mb-4 uppercase tracking-wide">The Compendium — Geodes</h2>
-          <div className="space-y-4">
-            {geodePlates.map((plate) => (
-              <article key={plate.id} className="flex flex-col gap-2 border border-ancient-ink/15 p-4">
-                <p className="text-sm font-mono text-ancient-accent uppercase">{plate.title}</p>
-                <p className="text-lg font-display">{plate.specimen}</p>
-                <p className="text-sm text-ancient-ink/80">{plate.description}</p>
-              </article>
-            ))}
-          </div>
         </ParchmentShader>
 
-        <ParchmentShader className="plate-card">
-          <h2 className="text-2xl font-display mb-4 uppercase tracking-wide">Civilization Scroll</h2>
-          <div className="scroll-timeline">
-            {civilizations.map((entry) => (
-              <div key={entry.year} className="scroll-entry">
-                <p className="text-sm font-mono text-ancient-accent uppercase">{entry.year}</p>
-                <p className="text-base">{entry.event}</p>
+        {/* Dashboard Grid: Cards look like physical plates */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Left Column: Controls (Recessed inputs) */}
+          <aside className="lg:col-span-3 space-y-8">
+            <div className="bg-[#f2eadd] border-2 border-[#3d2b1f] p-6 shadow-[6px_6px_0_rgba(61,43,31,0.15)]">
+              <h3 className="text-[#8a3c23] font-mono text-[10px] uppercase tracking-[0.4em] mb-4 text-center">
+                Biometric: Nute
+              </h3>
+              <NutePulse />
+              <div className="text-[11px] text-[#5c4f43] italic text-center mt-2">
+                {isNuteRoaring ? 'CAVITATION DETECTED' : 'HEART RATE STABLE'}
               </div>
+            </div>
+
+            <div className="bg-[#f2eadd] border-2 border-[#3d2b1f] p-6 shadow-[6px_6px_0_rgba(61,43,31,0.15)] space-y-6">
+              <h3 className="text-[#8a3c23] font-mono text-[10px] uppercase tracking-[0.4em] mb-2">
+                Sluice Maintenance
+              </h3>
+              
+              <div>
+                 <label className="text-xs font-bold uppercase tracking-widest text-[#5c4f43] mb-2 block">Resonance Tuning</label>
+                 <input
+                  type="range"
+                  min="300"
+                  max="600"
+                  value={syncFrequency}
+                  onChange={(e) => handleSyncChange(Number(e.target.value))}
+                  className="w-full h-3 bg-[#2b221b] rounded-full appearance-none cursor-pointer accent-[#8a3c23] shadow-inner"
+                 />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold uppercase tracking-widest text-[#5c4f43] mb-2 block">Oil Harvest</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={oilLevel}
+                  onChange={(e) => handleOilChange(Number(e.target.value))}
+                  className="w-full h-3 bg-[#2b221b] rounded-full appearance-none cursor-pointer accent-[#8a3c23] shadow-inner"
+                />
+              </div>
+            </div>
+          </aside>
+
+          {/* Center: The Node (Visual Anchor) */}
+          <main className="lg:col-span-6">
+            <div className="bg-[#1a1510] border-2 border-[#3d2b1f] flex items-center justify-center min-h-[500px] shadow-[8px_8px_0_rgba(0,0,0,0.25)] relative overflow-hidden">
+               <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] mix-blend-overlay"></div>
+               <TeslaNode />
+            </div>
+          </main>
+
+          {/* Right Column: Puzzles (Interactive Plate) */}
+          <aside className="lg:col-span-3 flex flex-col gap-6">
+            <div className="bg-[#f2eadd] border-2 border-[#3d2b1f] p-1 shadow-[6px_6px_0_rgba(61,43,31,0.15)]">
+              <SluiceGatePuzzle onOpen={() => console.log('Sluice unlocked')} />
+            </div>
+
+            <div className="bg-[#f2eadd] border-2 border-[#3d2b1f] p-6 shadow-[6px_6px_0_rgba(61,43,31,0.15)] flex flex-col justify-end">
+              <h4 className="text-[#1a1510] text-lg font-display mb-2 italic">Exile Log: Igzier</h4>
+              <p className="text-sm text-[#5c4f43] leading-relaxed">
+                “The staff realigned mid-plunge. The Wild Hybrid led me to the Sinking Sluice. Melden’s truth runs deeper than basalt.”
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                className="mt-4 py-3 border-2 border-[#8a3c23] text-[#8a3c23] font-bold text-xs font-mono uppercase tracking-[0.2em] hover:bg-[#8a3c23] hover:text-[#f2eadd] transition-all"
+              >
+                Open Codex
+              </motion.button>
+            </div>
+          </aside>
+        </div>
+
+        {/* Compendium Area */}
+        <ParchmentShader className="main-compendium-area rounded-lg border-2 border-[#3d2b1f] shadow-lg p-8">
+          <CategoryNav activeTab={activeTab} setActiveTab={setActiveTab} />
+          {activeArtifacts.map((artifact) => (
+            <ArtifactPlate
+              key={artifact.id}
+              artifact={{
+                ...artifact,
+                title: artifact.title,
+                content: artifact.content
+              }}
+            />
+          ))}
+        </ParchmentShader>
+
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <ParchmentShader className="artifact-card">
+            <StaffPreview profile={staffProfile} />
+          </ParchmentShader>
+          <ParchmentShader className="artifact-card">
+            <StaffVisualizer staffData={staffProfile} />
+          </ParchmentShader>
+          <ParchmentShader className="artifact-card">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#8a3c23]">
+              Scholar&apos;s Chronometer
+            </p>
+            <h3 className="font-display text-2xl mb-2">Session Resonance</h3>
+            <p className="text-sm">
+              Time on site: <span className="font-mono">{Math.floor(sessionTime / 60)}m {sessionTime % 60}s</span>
+            </p>
+            <div className="mt-4">
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#8a3c23] mb-2">
+                Inventory
+              </p>
+              <ul className="text-sm list-disc list-inside space-y-1">
+                {inventory.length === 0 && <li>Empty satchel (stay longer to awaken relics)</li>}
+                {inventory.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </ParchmentShader>
+        </section>
+
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <ParchmentShader className="plate-card">
+            <h2 className="text-2xl font-display mb-4 uppercase tracking-wide">The Compendium — Geodes</h2>
+            <div className="space-y-4">
+              {geodePlates.map((plate) => (
+                <article key={plate.id} className="flex flex-col gap-2 border border-[#3d2b1f]/15 p-4">
+                  <p className="text-sm font-mono text-[#8a3c23] uppercase">{plate.title}</p>
+                  <p className="text-lg font-display">{plate.specimen}</p>
+                  <p className="text-sm text-[#5c4f43]">{plate.description}</p>
+                </article>
+              ))}
+            </div>
+          </ParchmentShader>
+
+          <ParchmentShader className="plate-card">
+            <h2 className="text-2xl font-display mb-4 uppercase tracking-wide">Civilization Scroll</h2>
+            <div className="scroll-timeline">
+              {civilizations.map((entry) => (
+                <div key={entry.year} className="scroll-entry">
+                  <p className="text-sm font-mono text-[#8a3c23] uppercase">{entry.year}</p>
+                  <p className="text-base">{entry.event}</p>
+                </div>
+              ))}
+            </div>
+          </ParchmentShader>
+        </section>
+
+        <ParchmentShader className="plate-card">
+          <h2 className="text-2xl font-display mb-6 uppercase tracking-wide">Biodiversity Plates</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {biodiversity.map((bio) => (
+              <figure key={bio.id} className="biodiversity-figure relative group">
+                <img src={bio.image} alt={bio.name} className="plate-image border border-[#3d2b1f]" />
+                <figcaption>
+                  <motion.span whileHover={{ color: '#7a3a23' }} className="cursor-help underline decoration-dotted font-bold">
+                    {bio.name}
+                    <motion.div
+                      initial={{ opacity: 0, x: 10 }}
+                      whileHover={{ opacity: 1, x: 20 }}
+                      className="absolute hidden md:block w-32 text-[10px] font-mono leading-tight text-[#5c4f43] border-l border-[#8a3c23] pl-2 top-0 left-full bg-[#f5efe4] p-2 shadow-md z-20"
+                    >
+                      Field note: {bio.note}
+                    </motion.div>
+                  </motion.span>
+                  <p className="text-sm text-[#5c4f43]">{bio.note}</p>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </ParchmentShader>
-      </section>
 
-      <ParchmentShader className="plate-card">
-        <h2 className="text-2xl font-display mb-6 uppercase tracking-wide">Biodiversity Plates</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {biodiversity.map((bio) => (
-            <figure key={bio.id} className="biodiversity-figure relative group">
-              <img src={bio.image} alt={bio.name} className="plate-image" />
-              <figcaption>
-                <motion.span whileHover={{ color: '#7a3a23' }} className="cursor-help underline decoration-dotted">
-                  {bio.name}
-                  <motion.div
-                    initial={{ opacity: 0, x: 10 }}
-                    whileHover={{ opacity: 1, x: 20 }}
-                    className="absolute hidden md:block w-32 text-[10px] font-mono leading-tight text-stone-600 border-l border-stone-400 pl-2 top-0 left-full"
-                  >
-                    Field note: {bio.note}
-                  </motion.div>
-                </motion.span>
-                <p className="text-sm text-ancient-ink/70">{bio.note}</p>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </ParchmentShader>
-
-      <motion.div
-        initial={{ opacity: 0, filter: 'blur(10px)' }}
-        whileInView={{ opacity: 1, filter: 'blur(0px)' }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: 'easeOut' }}
-      >
-        <WordPressDebug />
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0, filter: 'blur(10px)' }}
+          whileInView={{ opacity: 1, filter: 'blur(0px)' }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          className="opacity-80 hover:opacity-100 transition-opacity"
+        >
+          <WordPressDebug />
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
- 
