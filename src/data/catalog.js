@@ -6,7 +6,7 @@ export const catalogItems = [
     format: 'Kindle',
     price: '$4.99',
     url: 'https://www.amazon.com/dp/B0G572X42L',
-    cover: '/images/covers/sky-city.jpg',
+    cover: '/img/book1-cover.png',
     type: 'book',
     boost: '+12% explorer multiplier (7 days)'
   },
@@ -17,7 +17,7 @@ export const catalogItems = [
     format: 'E-Book',
     price: '$2.99',
     url: 'https://www.amazon.com/dp/B0GB5CR6HX',
-    cover: '/images/covers/ravel-mystics.jpg',
+    cover: '/img/ravel-kindle.png',
     type: 'book',
     boost: '+8% explorer multiplier (7 days)'
   },
@@ -28,7 +28,7 @@ export const catalogItems = [
     format: 'Kindle',
     price: '$2.99',
     url: 'https://www.amazon.com/dp/B0G672S7YC',
-    cover: '/images/covers/roots-remember.jpg',
+    cover: '/img/roots-remember.png',
     type: 'book',
     boost: '+8% explorer multiplier (7 days)'
   },
@@ -39,7 +39,7 @@ export const catalogItems = [
     format: 'Paperback',
     price: '$7.99',
     url: 'https://www.amazon.com/dp/B0GB9D9H3Z',
-    cover: '/images/covers/ravel-paperback.jpg',
+    cover: '/img/ravel-paperback.png',
     type: 'book',
     boost: '+8% explorer multiplier (7 days)'
   },

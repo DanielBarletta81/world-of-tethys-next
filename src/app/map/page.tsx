@@ -1,89 +1,130 @@
 'use client';
-import React from 'react';
-import { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import MapPlaceholder from '@/components/MapPlaceholder';
-import HydroValvePuzzle from '@/components/HydroValvePuzzle';
 import Link from 'next/link';
+import HydroValvePuzzle from '@/components/HydroValvePuzzle'; 
 
 export default function MapPage() {
   const [isGateOpen, setIsGateOpen] = useState(false);
   const [showReward, setShowReward] = useState(false);
 
-  // Listen for the puzzle completion
-  // In a real app, you'd pass a callback to the puzzle component, 
-  // but for now we can simulate it or wrap the puzzle state.
-  // actually, let's update the Puzzle component to accept an 'onSolve' prop in the next step if needed,
-  // but for now, we'll wrap the puzzle in a way that implies connection.
-  
-  // NOTE: You will need to slightly update your HydroValvePuzzle to accept an "onSolve" prop
-  // or we can just use the internal state if we move logic up. 
-  // For this drop, I'll assume the puzzle handles its own win state visually, 
-  // and we show the map regardless, but "fogged" until they click a "Check Pressure" button or similar.
-  // BETTER YET: Let's assume you pass a callback.
-  
   const handlePuzzleSolve = () => {
     setIsGateOpen(true);
-    setTimeout(() => setShowReward(true), 1500); // Delay for dramatic effect
+    // Wait 1.5s for the gate animation to finish, then show the reward popup
+    setTimeout(() => setShowReward(true), 1500); 
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-stone-200 p-6 pt-32 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0c0a09] text-stone-200 p-6 pt-32 relative overflow-hidden font-mono">
       
       {/* BACKGROUND ATMOSPHERE */}
       <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none"></div>
-      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-900/20 blur-[100px] rounded-full"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-900/10 blur-[100px] rounded-full"></div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         
         {/* LEFT COL: THE MAP (The Prize) */}
         <div className="relative">
+          {/* Header for the Map */}
           <div className="mb-6">
             <h1 className="text-4xl font-serif text-white mb-2">Sector 4: The Undercity</h1>
             <p className="text-stone-500 text-sm uppercase tracking-widest">
-              Status: {isGateOpen ? <span className="text-emerald-400">HYDRAULICS ACTIVE</span> : <span className="text-red-500">PRESSURE LOCKED</span>}
+              Status: {isGateOpen ? <span className="text-emerald-400 animate-pulse">HYDRAULICS ACTIVE</span> : <span className="text-red-500">PRESSURE LOCKED</span>}
             </p>
           </div>
 
-          <div className="relative rounded-xl overflow-hidden border border-stone-800 shadow-2xl group">
-            {/* The Actual Map Component */}
-            <div className={`transition-all duration-1000 ${isGateOpen ? 'blur-0 opacity-100' : 'blur-md opacity-30 grayscale'}`}>
-               <MapPlaceholder />
+          {/* The Map Container */}
+          <div className="relative aspect-square rounded-xl overflow-hidden border border-stone-800 shadow-2xl bg-[#1c1917] group">
+            
+            {/* 1. THE MAP IMAGE (The Base Layer) */}
+            <div className={`relative w-full h-full transition-all duration-[2000ms] ${isGateOpen ? 'blur-0 opacity-100' : 'blur-xl opacity-20 grayscale'}`}>
+               
+               {/* Actual Map Image */}
+               <img 
+                 src="/img/sector-4-map.jpg" 
+                 alt="Sector 4 Blueprint" 
+                 className="w-full h-full object-cover"
+               />
+
+               {/* 2. INTERACTIVE HOTSPOTS (Only visible/clickable when Open) */}
+               {isGateOpen && (
+                 <>
+                   {/* Hotspot A: The Foundry */}
+                   <MapHotspot 
+                     x="25%" y="30%" 
+                     label="The Foundry" 
+                     href="/locations/foundry" 
+                   />
+
+                   {/* Hotspot B: The Sluice */}
+                   <MapHotspot 
+                     x="60%" y="55%" 
+                     label="Sluice Gate" 
+                     href="/locations/sluice" 
+                   />
+
+                   {/* Hotspot C: Unknown Signal */}
+                   <MapHotspot 
+                     x="80%" y="20%" 
+                     label="???" 
+                     href="/creatures/unknown" 
+                     isSecret 
+                   />
+                 </>
+               )}
             </div>
 
-            {/* Locked Overlay */}
-            {!isGateOpen && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-black/40">
-                <div className="text-6xl mb-4">🔒</div>
-                <div className="text-red-500 font-mono text-xs uppercase tracking-[0.2em] bg-black/80 px-4 py-2 border border-red-900 rounded">
-                  Sluice Gate Closed
-                </div>
-              </div>
+            {/* LOCKED OVERLAY (Disappears when solved) */}
+            <AnimatePresence>
+              {!isGateOpen && (
+                <motion.div 
+                  exit={{ opacity: 0, y: -50 }}
+                  transition={{ duration: 1 }}
+                  className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-black/60 backdrop-blur-sm"
+                >
+                  <div className="text-6xl mb-4">🔒</div>
+                  <div className="text-red-500 font-mono text-xs uppercase tracking-[0.2em] bg-black/80 px-4 py-2 border border-red-900 rounded shadow-lg">
+                    Sluice Gate Closed
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            {/* GATE ANIMATION (The Slats opening) */}
+            {isGateOpen && (
+              <motion.div 
+                initial={{ height: "100%" }}
+                animate={{ height: "0%" }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+                className="absolute bottom-0 left-0 w-full bg-stone-900/90 z-20 border-t-4 border-emerald-500/50"
+              />
             )}
           </div>
         </div>
 
         {/* RIGHT COL: THE PUZZLE (The Key) */}
-        <div className="space-y-12">
+        <div className="space-y-8">
           
           {/* Instructions */}
-          <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
+          <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg shadow-lg relative overflow-hidden">
+             <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500"></div>
              <h3 className="text-amber-500 font-bold uppercase text-xs tracking-widest mb-2">Engineer's Note</h3>
              <p className="text-stone-400 font-serif italic">
-               "The main valves are rusted stuck. You need to balance the pressure to 50 / 80 / 20 to bypass the lock mechanism. Watch the lights."
+               "The main valves are rusted stuck. You need to balance the pressure to <strong className="text-stone-200">50 / 80 / 20</strong> to bypass the lock mechanism. Watch the lights."
              </p>
           </div>
 
-          {/* The Puzzle Component */}
-          {/* We will pass a prop here. Ensure you update the component to accept it. */}
-          <div className={isGateOpen ? 'pointer-events-none opacity-50 transition-opacity' : ''}>
+          {/* THE INTERACTIVE PUZZLE */}
+          {/* We pass the handlePuzzleSolve function here */}
+          <div className={isGateOpen ? 'pointer-events-none opacity-50 transition-opacity grayscale' : ''}>
              <HydroValvePuzzle onSolve={handlePuzzleSolve} />
           </div>
 
         </div>
       </div>
 
-      {/* REWARD MODAL (Appears after solving) */}
+      {/* REWARD POPUP */}
       <AnimatePresence>
         {showReward && (
           <motion.div 
@@ -99,6 +140,8 @@ export default function MapPage() {
             <p className="text-stone-300 font-serif text-sm mb-4">
               "You have drained the lower levels. A path to the <span className="text-emerald-300">Foundry District</span> is now visible."
             </p>
+            
+            {/* Link to the next area */}
             <Link href="/creatures" className="block w-full py-2 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-400 text-center text-xs uppercase tracking-widest border border-emerald-800 rounded transition-colors">
               Access Bestiary &rarr;
             </Link>
@@ -114,5 +157,31 @@ export default function MapPage() {
       </div>
 
     </div>
+  );
+}
+
+// --- HELPER COMPONENT FOR THE DOTS ---
+function MapHotspot({ x, y, label, href, isSecret }) {
+  return (
+    <Link 
+      href={href}
+      className="absolute group/spot z-30"
+      style={{ top: y, left: x }}
+    >
+      {/* The Pulsing Dot */}
+      <div className={`w-4 h-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-all duration-300
+        ${isSecret 
+          ? 'border-amber-500 bg-amber-900/50 shadow-[0_0_15px_rgba(245,158,11,0.5)]' 
+          : 'border-emerald-400 bg-emerald-900/50 shadow-[0_0_15px_rgba(52,211,153,0.5)]'
+        } group-hover/spot:scale-150`}
+      ></div>
+
+      {/* The Tooltip Label (Appears on Hover) */}
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover/spot:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+        <div className="bg-black/80 text-white text-[10px] uppercase tracking-widest px-2 py-1 rounded border border-stone-700">
+          {label}
+        </div>
+      </div>
+    </Link>
   );
 }
