@@ -72,7 +72,7 @@ export default async function RootLayout({ children }) {
 
               {/* GLOBAL FOOTER */}
               <footer className="border-t border-[#292524] bg-[#0c0a09]/90 backdrop-blur-md pt-12 pb-8 mt-20">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-end gap-6">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
                   <div>
                    <h4 className="font-header text-forge text-lg uppercase tracking-widest">
   World of Tethys
