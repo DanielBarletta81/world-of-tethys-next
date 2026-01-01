@@ -1,50 +1,79 @@
-const plugin = require('tailwindcss/plugin');
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   theme: {
     extend: {
-      colors: {
-        'tethys-bg': '#020617',
-        'tethys-card': '#0f172a',
-        'tethys-muted': '#334155',
-        'tethys-gold': '#fbbf24',
-        'tethys-dark': '#0f172a',
-        'sync-violet': '#8b5cf6',
-        'oil-gold': '#f59e0b',
-        'oil-dark': '#78350f',
-        'nute-green': '#10b981',
-        'sync-glow': '#22d3ee',
-        'nute-emerald': '#10b981',
-        'dissonant-red': '#ef4444',
-        'ancient-bg': '#e2d7c5',
-        'ancient-ink': '#2b2621',
-        'ancient-accent': '#7a3a23'
-      },
-      animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-      },
+      // 1. FONTS (Connected to layout.js)
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'serif'],
-        body: ['"EB Garamond"', 'serif'],
-        mono: ['"Courier Prime"', 'monospace'],
-        serif: ['"Crimson Pro"', 'serif'],
-        sans: ['"Inter"', 'sans-serif']
+        header: ['var(--font-header)', 'serif'], // Cinzel
+        body: ['var(--font-body)', 'serif'],     // Newsreader
+        mono: ['var(--font-mono)', 'monospace'], // JetBrains Mono
       },
-      boxShadow: {
-        'glow-cyan': '0 0 60px rgba(34, 211, 238, 0.4)',
-        'glow-red': '0 0 40px rgba(239, 68, 68, 0.6)'
-      }
-    }
-  },
-  plugins: [
-    plugin(function ({ addUtilities }) {
-      addUtilities({
-        '.clip-path-pyramid': {
-          clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
+      
+      // 2. COLORS (Aligned with your "Stone/Ash" aesthetic)
+      // I swapped your 'slate' hexes for 'stone' hexes to keep the "Ancient" warmth.
+      colors: {
+        'tethys-bg': '#0c0a09',     // Stone 950 (The Deep Dark)
+        'tethys-card': '#1c1917',   // Stone 900 (The UI Cards)
+        'tethys-muted': '#44403c',  // Stone 700 (Borders)
+        
+        // Faction Colors
+        'amber-glow': '#f59e0b',    // Sky City / Oil
+        'cyan-glow': '#22d3ee',     // Science / Echoes
+        'emerald-glow': '#10b981',  // Ironwood / Nature
+        'rose-glow': '#f43f5e',     // Danger / Magma
+        
+        // Paper/Study Mode
+        'ancient-bg': '#e7e5e4',    // Stone 200
+        'ancient-ink': '#292524',   // Stone 800
+        'ancient-accent': '#78350f' // Amber 900
+      },
+
+      // 3. ANIMATIONS (The Magic)
+      // These support the Weather, Login, and Whispers components
+      animation: {
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'spin-slow': 'spin 12s linear infinite',
+        'scan': 'scan 4s ease-in-out infinite',
+        'fall': 'fall 10s linear infinite',
+        'rain': 'rain 0.5s linear infinite',
+        'flash': 'flash 4s infinite',
+      },
+      
+      // 4. KEYFRAMES (The Math behind the Magic)
+      keyframes: {
+        scan: {
+          '0%, 100%': { backgroundPosition: '0% 0%' },
+          '50%': { backgroundPosition: '0% 100%' },
+        },
+        fall: {
+          '0%': { transform: 'translateY(-10%)', opacity: '0' },
+          '50%': { opacity: '0.5' },
+          '100%': { transform: 'translateY(100%)', opacity: '0' },
+        },
+        rain: {
+          '0%': { backgroundPosition: '0% 0%' },
+          '100%': { backgroundPosition: '0% 100%' },
+        },
+        flash: {
+          '0%, 95%': { opacity: '0' },
+          '96%': { opacity: '0.8' },
+          '98%': { opacity: '0' },
+          '99%': { opacity: '0.3' },
+          '100%': { opacity: '0' },
         }
-      });
-    })
-  ]
+      },
+
+      // 5. BACKGROUND IMAGES (Shortcuts)
+      backgroundImage: {
+        'noise': "url('/noise.svg')",
+        'grid': "url('/grid-pattern.svg')",
+      }
+    },
+  },
+  plugins: [],
 };

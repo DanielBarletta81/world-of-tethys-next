@@ -3,6 +3,25 @@ import { createContext, useContext, useEffect, useState, useRef } from 'react';
 
 const TethysContext = createContext();
 
+const BASE_STATS = {
+  human: 25,
+  creature: 40,
+  lore: 30,
+  geography: 35,
+  geology: 28,
+  hybrid: 5
+};
+
+function loadStats() {
+  if (typeof window === 'undefined') return BASE_STATS;
+  try {
+    const stored = window.localStorage.getItem('tethys_stats');
+    return stored ? { ...BASE_STATS, ...JSON.parse(stored) } : BASE_STATS;
+  } catch {
+    return BASE_STATS;
+  }
+}
+
 export function TethysProvider({ children }) {
   // --- 1. WORLD STATE (With Persistence) ---
   const [worldState, setWorldState] = useState('dormant');
