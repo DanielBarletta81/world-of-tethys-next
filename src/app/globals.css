@@ -51,29 +51,36 @@ a {
 }
 
 .site-shell {
-  max-width: 1080px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 20px 48px;
+  padding: 28px 22px 52px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  background: radial-gradient(circle at center, rgba(226, 215, 197, 0.4) 0%, rgba(10, 8, 6, 0.95) 100%);
-  border: 1px solid rgba(43, 38, 33, 0.45);
-  box-shadow: 0 0 80px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(6px);
-  mask-image: url('/textures/edge-burn.png');
-  mask-size: 100% 100%;
+  gap: 28px;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 90, 30, 0.08), transparent 40%),
+    radial-gradient(circle at 70% 10%, rgba(255, 200, 120, 0.08), transparent 35%),
+    linear-gradient(140deg, #0c0907 0%, #0f0b09 45%, #120c0a 100%);
+  border: 1px solid rgba(255, 122, 66, 0.25);
+  box-shadow:
+    0 0 120px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(255, 122, 66, 0.08);
+  backdrop-filter: blur(8px);
   position: relative;
+  color: #f4eee2;
 }
 
 .main-compendium-area {
-  background: #e2d7c5;
-  background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+  background: radial-gradient(circle at 20% 20%, rgba(255, 130, 70, 0.08), transparent 45%),
+    linear-gradient(135deg, #1b1511 0%, #120d0b 60%, #0d0907 100%);
+  background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
   max-width: 1100px;
   margin: 0 auto;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    0 0 120px rgba(0, 0, 0, 0.55),
+    inset 0 0 50px rgba(255, 122, 66, 0.06);
   min-height: 50vh;
   position: relative;
+  border: 1px solid rgba(255, 140, 80, 0.22);
 }
 
 .ancient-overlay::before {
@@ -84,9 +91,11 @@ a {
   height: 100%;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.04;
-  background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
-  filter: contrast(150%) brightness(100%);
+  opacity: 0.08;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 90, 30, 0.08), transparent 35%),
+    radial-gradient(circle at 80% 10%, rgba(255, 180, 90, 0.08), transparent 30%),
+    url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+  filter: contrast(140%) brightness(90%);
 }
 
 .ancient-border {
@@ -345,10 +354,15 @@ img[src$='.svg'] {
 }
 
 .wordmark {
-  font-size: 1rem;
-  letter-spacing: 0.14em;
-  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  font-weight: 800;
   text-transform: uppercase;
+  color: #f6e0c7;
+  text-shadow:
+    0 0 10px rgba(255, 102, 51, 0.6),
+    0 0 25px rgba(255, 70, 20, 0.45),
+    0 0 45px rgba(255, 140, 80, 0.35);
 }
 
 .nav-banner {
@@ -356,10 +370,14 @@ img[src$='.svg'] {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
   padding: 20px;
-  border: 1px solid rgba(43, 38, 33, 0.35);
+  border: 1px solid rgba(255, 120, 60, 0.25);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: 6px 6px 0 rgba(43, 38, 33, 0.25);
+  background: radial-gradient(circle at 20% 20%, rgba(255, 90, 40, 0.08), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(255, 200, 120, 0.08), transparent 45%),
+    linear-gradient(135deg, #16100c 0%, #0f0a08 55%, #0b0807 100%);
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 24px rgba(255, 120, 60, 0.1);
   position: relative;
 }
 
@@ -368,7 +386,7 @@ img[src$='.svg'] {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px dashed rgba(43, 38, 33, 0.25);
+  border: 1px dashed rgba(255, 140, 80, 0.2);
   pointer-events: none;
 }
 
@@ -383,14 +401,14 @@ img[src$='.svg'] {
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ancient-teal);
+  color: #f9c58d;
 }
 
 .nav-banner__lede {
   margin: 0;
-  color: rgba(43, 38, 33, 0.8);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  color: rgba(245, 238, 224, 0.82);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .nav-banner__metrics {
@@ -403,10 +421,13 @@ img[src$='.svg'] {
 .nav-badge {
   flex: 1;
   min-width: 140px;
-  border: 1px solid rgba(43, 38, 33, 0.3);
+  border: 1px solid rgba(255, 140, 80, 0.25);
   border-radius: 14px;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.6);
+  background: linear-gradient(145deg, rgba(25, 19, 15, 0.95), rgba(18, 13, 10, 0.9));
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.55),
+    inset 0 0 18px rgba(255, 120, 60, 0.08);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -416,31 +437,39 @@ img[src$='.svg'] {
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: rgba(245, 238, 224, 0.6);
 }
 
 .nav-badge__value {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--ancient-gold);
+  color: #ff9b55;
+  text-shadow: 0 0 10px rgba(255, 140, 80, 0.4);
 }
 
 .nav-banner__cta {
   align-self: flex-start;
   padding: 12px 18px;
   border-radius: 999px;
-  border: 1px solid rgba(122, 58, 35, 0.6);
-  color: var(--ancient-accent);
+  border: 1px solid rgba(255, 140, 80, 0.7);
+  color: #ffdcc3;
   font-size: 0.85rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  background: linear-gradient(120deg, rgba(255, 110, 60, 0.35), rgba(255, 180, 120, 0.3));
+  box-shadow:
+    0 0 18px rgba(255, 110, 60, 0.3),
+    inset 0 0 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-banner__cta:hover,
 .nav-banner__cta:focus-visible {
   transform: translateY(-1px);
-  border-color: var(--ancient-gold);
+  border-color: #ffc48f;
+  box-shadow:
+    0 0 28px rgba(255, 140, 80, 0.5),
+    inset 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .ancient-nav {
@@ -451,8 +480,8 @@ img[src$='.svg'] {
 
 .ancient-nav__item {
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(43, 38, 33, 0.3);
+  background: linear-gradient(160deg, rgba(25, 19, 15, 0.95), rgba(15, 12, 10, 0.9));
+  border: 1px solid rgba(255, 120, 60, 0.22);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -460,6 +489,9 @@ img[src$='.svg'] {
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s ease, transform 0.2s ease;
+  box-shadow:
+    4px 6px 16px rgba(0, 0, 0, 0.5),
+    inset 0 0 12px rgba(255, 120, 60, 0.08);
 }
 
 .ancient-nav__item::after {
@@ -476,7 +508,7 @@ img[src$='.svg'] {
 
 .ancient-nav__item:hover,
 .ancient-nav__item:focus-visible {
-  border-color: rgba(244, 201, 138, 0.6);
+  border-color: rgba(255, 160, 100, 0.7);
   transform: translateY(-2px);
 }
 
@@ -489,48 +521,70 @@ img[src$='.svg'] {
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ancient-teal);
+  color: #f6e0c7;
+  text-shadow: 0 0 12px rgba(255, 140, 80, 0.25);
 }
 
 .ancient-nav__desc {
   font-size: 0.9rem;
-  color: rgba(43, 38, 33, 0.8);
+  color: rgba(245, 238, 224, 0.8);
 }
 
 .artifact-card {
-  border: 1px solid #3d2b1f;
+  border: 1px solid rgba(255, 140, 80, 0.35);
   padding: 2rem;
-  background: #d4c4a8;
+  background: linear-gradient(150deg, #1a1410, #0f0b09);
   box-shadow:
-    inset 0 0 50px rgba(0, 0, 0, 0.4),
-    12px 12px 30px rgba(0, 0, 0, 0.6);
+    10px 12px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 60px rgba(255, 120, 60, 0.08);
   clip-path: polygon(2% 0%, 98% 1%, 100% 98%, 1% 100%);
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  color: #f6eee2;
 }
 
 .artifact-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 180, 120, 0.12);
   pointer-events: none;
   clip-path: polygon(2% 0%, 98% 1%, 100% 98%, 1% 100%);
-  background: radial-gradient(circle at 70% 20%, rgba(139, 69, 19, 0.05), transparent 55%);
+  background: radial-gradient(circle at 70% 20%, rgba(255, 120, 60, 0.08), transparent 55%);
 }
 
 .artifact-card:hover {
   transform: translate(-1px, -1px);
   box-shadow:
-    inset 0 0 60px rgba(0, 0, 0, 0.45),
+    inset 0 0 60px rgba(255, 140, 80, 0.12),
     14px 14px 35px rgba(0, 0, 0, 0.75);
+  border-color: rgba(255, 180, 120, 0.5);
 }
 
 .plate-card {
-  border: 1px solid rgba(43, 38, 33, 0.45);
+  border: 1px solid rgba(255, 140, 80, 0.3);
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 6px 6px 0 rgba(43, 38, 33, 0.2);
+  background: linear-gradient(160deg, #191310, #0f0b09);
+  box-shadow:
+    inset 0 0 40px rgba(255, 120, 60, 0.06),
+    10px 10px 26px rgba(0, 0, 0, 0.55);
+  color: #f6eee2;
+}
+
+.plate-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 120, 60, 0.08), transparent 40%);
+  pointer-events: none;
+}
+
+.plate-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 180, 120, 0.12);
+  pointer-events: none;
 }
 
 .plate-image {

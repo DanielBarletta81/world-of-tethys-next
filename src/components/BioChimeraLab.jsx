@@ -17,19 +17,23 @@ const DINOSAURS = [
   { id: 'acro', name: 'Acrocanthosaurus', clade: 'Theropod', trait: 'Aggression' },
   { id: 'spino', name: 'Spinosaurus', clade: 'Aegyptiacus', trait: 'Aquatic Mastery' },
   { id: 'tenon', name: 'Tenontosaurus', clade: 'Ornithopod', trait: 'Endurance' },
-  { id: 'sauro', name: 'Sauroposeidon', clade: 'Sauropod', trait: 'Massive Scale' }
+  { id: 'sauro', name: 'Sauroposeidon', clade: 'Sauropod', trait: 'Massive Scale' },
+  { id: 'giga', name: 'Giganotosaurus', clade: 'Theropod', trait: 'Muscle Torque' },
+  { id: 'anky', name: 'Ankylosaurus', clade: 'Armored', trait: 'Impact Shield' }
 ];
 
 const PTEROSAURS = [
   { id: 'quetz', name: 'Quetzalcoatlus', type: 'Giant Azhdarchid', trait: 'High-Altitude Vision' },
   { id: 'tape', name: 'Tapejara', type: 'Short-winged', trait: 'Aerial Agility' },
-  { id: 'anhang', name: 'Anhanguera', type: 'Fish-eater', trait: 'Diving Velocity' }
+  { id: 'anhang', name: 'Anhanguera', type: 'Fish-eater', trait: 'Diving Velocity' },
+  { id: 'pteroswift', name: 'Pteroswift', type: 'Relay Hybrid', trait: 'Peregrine Dive' }
 ];
 
 const SYMBIOSES = [
   { id: 'biolum', name: 'Bioluminescent Algae', benefit: 'Deep-Sea Communication' },
   { id: 'mycel', name: 'Neural Mycelium', benefit: 'Hive Intelligence' },
-  { id: 'coral', name: 'Calcified Coral Plate', benefit: 'Reactive Armor' }
+  { id: 'coral', name: 'Calcified Coral Plate', benefit: 'Reactive Armor' },
+  { id: 'selen', name: 'Selenite Crust', benefit: 'Magnetic Orientation' }
 ];
 
 /**

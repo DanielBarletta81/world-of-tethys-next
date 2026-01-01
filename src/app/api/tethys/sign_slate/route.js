@@ -50,3 +50,36 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Failed to etch signature.' }, { status: 500 });
   }
 }
+
+export async function GET() {
+  const wpBase = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, '');
+  const wpUser = process.env.WP_USER;
+  const wpAppPass = process.env.WP_APP_PASS;
+
+  if (!wpBase || !wpUser || !wpAppPass) {
+    return NextResponse.json({ error: 'Config missing' }, { status: 500 });
+  }
+
+  try {
+    const auth = Buffer.from(`${wpUser}:${wpAppPass}`).toString('base64');
+    const wpRes = await fetch(
+      `${wpBase}/wp-json/wp/v2/guest_signature?per_page=5&_fields=title,content,date`,
+      {
+        headers: { Authorization: `Basic ${auth}` },
+        next: { revalidate: 60 }
+      }
+    );
+
+    if (!wpRes.ok) throw new Error('Fetch failed');
+    const posts = await wpRes.json();
+    const signatures = posts.map((p) => ({
+      handle: p?.title?.rendered,
+      message: (p?.content?.rendered || '').replace(/<[^>]*>?/gm, ''),
+      date: p?.date ? new Date(p.date).toLocaleDateString() : ''
+    }));
+
+    return NextResponse.json(signatures);
+  } catch (error) {
+    return NextResponse.json([], { status: 200 });
+  }
+}

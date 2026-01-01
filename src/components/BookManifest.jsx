@@ -16,7 +16,7 @@ export default function BookManifest() {
         <div className="flex justify-between items-start">
           <div>
             <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-[#8a3c23] block mb-1">
-              Physical Artifact
+              Incoming Artifact
             </span>
             <h3 className="font-display text-xl text-[#1a1510] leading-none">Book I: Sky City</h3>
           </div>
@@ -26,13 +26,13 @@ export default function BookManifest() {
         <div className="flex items-center gap-3 border-y border-[#3d2b1f]/10 py-3">
           <Calendar className="w-4 h-4 text-[#5c4f43]" />
           <div>
-            <span className="block text-[9px] font-mono uppercase tracking-widest text-[#5c4f43]">Launch Window</span>
+            <span className="block text-[9px] font-mono uppercase tracking-widest text-[#5c4f43]">Drop Date</span>
             <span className="font-bold text-[#1a1510] font-display text-lg">February 28</span>
           </div>
         </div>
 
         <p className="text-xs font-serif italic text-[#5c4f43] leading-relaxed">
-          "The digital archive is only a fragment. The full record requires a physical key."
+          "The digital archive is active now. The physical key arrives in February."
         </p>
 
         <motion.a
@@ -43,7 +43,7 @@ export default function BookManifest() {
           className="flex items-center justify-center gap-2 w-full py-3 bg-[#8a3c23] text-[#e6ded0] font-mono text-[10px] uppercase tracking-[0.25em] hover:bg-[#1a1510] transition-colors"
         >
           <ShoppingBag className="w-3 h-3" />
-          <span>Secure Copy</span>
+          <span>Pre-Order Now</span>
         </motion.a>
       </div>
 

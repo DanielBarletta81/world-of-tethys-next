@@ -32,7 +32,7 @@ export default async function RootLayout({ children }) {
   const navMetrics = [
     { label: 'Volume', value: 'Book I — Sky City' },
     { label: 'Author', value: 'D.C. Barletta', href: 'https://www.dcbarletta.com' },
-    { label: 'Inbound', value: 'Feb 28 Release' }
+    { label: 'Status', value: 'Pre-Order (Feb 28)' }
   ];
 
   return (
@@ -82,8 +82,8 @@ export default async function RootLayout({ children }) {
                       rel="noreferrer"
                       className="nav-banner__cta group"
                     >
-                      <span className="group-hover:hidden">View Archive Status</span>
-                      <span className="hidden group-hover:inline text-[#8a3c23] font-bold">Secure Book I</span>
+                      <span className="group-hover:hidden">View Supply Drop</span>
+                      <span className="hidden group-hover:inline text-[#8a3c23] font-bold">Pre-Order Book I</span>
                     </a>
                   )}
                 </div>
@@ -114,7 +114,7 @@ export default async function RootLayout({ children }) {
                     rel="noreferrer"
                     className="inline-flex items-center justify-center px-6 py-3 border border-[#8a3c23] text-[#8a3c23] text-[11px] font-mono uppercase tracking-[0.4em] hover:bg-[#8a3c23] hover:text-[#e6ded0] transition-colors"
                   >
-                    Pre-Order "Sky City" (Feb 28)
+                    Reserve "Sky City" (Launch Feb 28)
                   </a>
                 )}
               </footer>

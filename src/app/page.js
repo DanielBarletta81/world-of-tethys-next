@@ -121,36 +121,45 @@ export default function MapBridge() {
     };
   }, []);
 
-  // Ambient drone (Hydrophone)
+  // Load persisted mute preference
+  useEffect(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('tethys_mute') : null;
+    if (saved !== null) {
+      setIsMuted(JSON.parse(saved));
+    }
+  }, []);
+
+  // Hydrophone (Drone) Logic with gain ramp and persistence
   useEffect(() => {
     const ctx = audioCtxRef.current;
-    if (!ctx) return undefined;
+    if (!ctx) return;
 
-    if (!isMuted) {
-      if (ctx.state === 'suspended') ctx.resume();
+    if (!droneRef.current) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
       osc.frequency.value = 55;
-      gain.gain.value = 0.05;
+      gain.gain.value = 0;
       osc.connect(gain).connect(ctx.destination);
       osc.start();
-      droneRef.current = osc;
-      return () => {
-        try {
-          osc.stop();
-        } catch {}
-        droneRef.current = null;
-      };
+      droneRef.current = { osc, gain };
     }
 
-    if (droneRef.current) {
-      try {
-        droneRef.current.stop();
-      } catch {}
-      droneRef.current = null;
+    const { gain } = droneRef.current;
+    const now = ctx.currentTime;
+
+    if (!isMuted) {
+      if (ctx.state === 'suspended') ctx.resume();
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.linearRampToValueAtTime(0.05, now + 2);
+    } else {
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.linearRampToValueAtTime(0, now + 1);
     }
-    return undefined;
+
+    localStorage.setItem('tethys_mute', JSON.stringify(isMuted));
   }, [isMuted]);
 
   // 2. Audio Logic
@@ -436,6 +445,19 @@ export default function MapBridge() {
           {/* Right Column: Puzzles (Interactive Plate) */}
           <aside className="lg:col-span-3 flex flex-col gap-6">
             <BookManifest />
+            <motion.a
+              whileHover={{ scale: 1.02 }}
+              href="/bookstore"
+              className="bg-[#1a1510] border-2 border-[#ff8c50]/50 p-4 rounded-lg shadow-[8px_10px_24px_rgba(0,0,0,0.45),inset_0_0_30px_rgba(255,120,60,0.08)] flex items-center justify-between text-[#f6eee2]"
+            >
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#ffb87a] font-mono">Supply Drop</p>
+                <p className="text-lg font-display">Store & Signals</p>
+              </div>
+              <span className="px-3 py-1 text-[10px] font-mono border border-[#ff8c50]/40 rounded-full text-[#ffdcc3]">
+                /bookstore
+              </span>
+            </motion.a>
             <div className="bg-[#f2eadd] border-2 border-[#3d2b1f] p-1 shadow-[6px_6px_0_rgba(61,43,31,0.15)]">
               <SluiceGatePuzzle onOpen={() => console.log('Sluice unlocked')} />
             </div>

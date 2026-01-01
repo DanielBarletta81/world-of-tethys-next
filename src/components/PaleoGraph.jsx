@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PenTool, Save, CheckCircle } from 'lucide-react';
+import RecentMarks from './RecentMarks';
 
 export default function PaleoGraph() {
   const [name, setName] = useState('');
@@ -115,6 +116,8 @@ export default function PaleoGraph() {
           )}
         </AnimatePresence>
       </div>
+
+      <RecentMarks />
     </div>
   );
 }
