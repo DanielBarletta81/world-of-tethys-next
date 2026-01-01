@@ -1,23 +1,29 @@
 "use client";
-
 import { createContext, useContext, useState } from 'react';
 
-// 1. Create the Context
 const TethysContext = createContext();
 
-// 2. Create the Provider (Wraps your app)
 export function TethysProvider({ children }) {
-  const [worldState, setWorldState] = useState('dormant'); 
-  const [energyLevel, setEnergyLevel] = useState(0);
+  // Global World States
+  const [worldState, setWorldState] = useState('dormant');
+  
+  // Resources & Puzzle States (The missing pieces)
+  const [energyLevel, setEnergyLevel] = useState(50);
+  const [harvestPressure, setHarvestPressure] = useState(0); // For Sluice Gate
+  const [oilLevel, setOilLevel] = useState(20);             // For Sluice Gate
 
   return (
-    <TethysContext.Provider value={{ worldState, setWorldState, energyLevel, setEnergyLevel }}>
+    <TethysContext.Provider value={{ 
+      worldState, setWorldState, 
+      energyLevel, setEnergyLevel,
+      harvestPressure, setHarvestPressure, // Exporting these is crucial
+      oilLevel, setOilLevel                // Exporting these is crucial
+    }}>
       {children}
     </TethysContext.Provider>
   );
 }
 
-// 3. Export the Hook (This is what you are trying to import)
 export function useTethys() {
   return useContext(TethysContext);
 }
