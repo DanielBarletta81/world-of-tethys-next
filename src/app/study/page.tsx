@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 const BOOKS = [
   {
     id: 'book1',
-    title: 'Book I: The Spark',
+    title: 'Book I: Sky City',
     subtitle: 'The Ash Age Begins',
     cover: '/img/book1-cover.jpg', // Make sure you have this image
     desc: 'The surface is silent. The Undercity is waking up. Follow the journey of Kaelen as he descends into the spires to find the truth behind the silence.',

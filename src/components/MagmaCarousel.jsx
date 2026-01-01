@@ -3,17 +3,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import React from 'react';
 
-// Define the shape of a Card for TypeScript safety
-interface Card {
-  id: number;
-  name: string;
-  blurb: string;
-  image: string;
-}
-
-const CARDS: Card[] = [
+const CARDS = [
   { 
     id: 1, 
     name: 'Ash Drake', 
@@ -32,7 +23,6 @@ const CARDS: Card[] = [
     blurb: '"Ink freezes in the upper air. We write in blood."', 
     image: '/img/creatures/scribe.jpg' 
   },
-  // Added a 4th card so you can actually scroll/test the carousel effect
   { 
     id: 4, 
     name: 'Cinder Wisp', 
@@ -42,10 +32,9 @@ const CARDS: Card[] = [
 ];
 
 export default function MagmaCarousel() {
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState(null);
 
   return (
-    <>
     <div className="relative w-full">
       {/* Scrollable Container */}
       <div className="flex space-x-8 overflow-x-auto pb-12 pt-4 px-6 snap-x hide-scrollbar">
@@ -91,7 +80,12 @@ export default function MagmaCarousel() {
                       : 'grayscale-[50%] group-hover:grayscale-0 group-hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]'
                   }`}
                 >
-                  <Image src={card.image} alt={card.name} fill className="object-cover" />
+                  <Image 
+                    src={card.image} 
+                    alt={card.name} 
+                    fill 
+                    className="object-cover" 
+                  />
                 </div>
 
                 {/* NAME */}
@@ -137,6 +131,5 @@ export default function MagmaCarousel() {
         })}
       </div>
     </div>
-    </>
   );
 }

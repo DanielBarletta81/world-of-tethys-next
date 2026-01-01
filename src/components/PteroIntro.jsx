@@ -1,9 +1,9 @@
 'use client';
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
 
-export default function PteroIntro({ onComplete }: { onComplete: () => void }) {
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+export default function PteroIntro({ onComplete }) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function PteroIntro({ onComplete }: { onComplete: () => void }) {
           {/* 2. THE PTERO FLOCK (Silhouettes flying past) */}
           {/* Ptero 1: Large, close, fast */}
           <motion.img
-            src="/img/ptero-silhouette.png" // Make sure this exists, or use a placeholder shape
+            src="/img/ptero-silhouette.png" // Ensure this image exists in your public folder
             alt="Ptero"
             className="absolute w-96 opacity-10 blur-sm top-1/3"
             initial={{ x: '-20vw', y: 50, scale: 1.5 }}

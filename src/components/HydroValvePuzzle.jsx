@@ -1,17 +1,17 @@
 'use client';
-import React from 'react';
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 
-export default function HydroValvePuzzle({ onSolve }: { onSolve?: () => void }) {
+export default function HydroValvePuzzle({ onSolve }) {
   // 3 Levers: Values 0-100. Target is roughly 50, 80, 20.
   const [valves, setValves] = useState([10, 10, 10]);
   const TARGETS = [50, 80, 20]; 
   const TOLERANCE = 10; // How easy it is (bigger number = easier)
   const [unlocked, setUnlocked] = useState(false);
 
-  const handleSlide = (index: number, value: number) => {
+  const handleSlide = (index, value) => {
     const newValves = [...valves];
     newValves[index] = value;
     setValves(newValves);

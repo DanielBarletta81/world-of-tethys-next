@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Scroll, Fingerprint, Map as MapIcon, ChevronDown, ChevronUp } from 'lucide-react';
+import { User, Scroll, Fingerprint, Map as MapIcon, X } from 'lucide-react';
 
 const RANKS = [
   { threshold: 0, title: 'Drifter' },
@@ -16,29 +16,59 @@ export default function PlayerAvatar() {
   const [isOpen, setIsOpen] = useState(false);
   const [stats, setStats] = useState({ lore: 0, creature: 0, geology: 0, total: 0 });
   const [rank, setRank] = useState(RANKS[0]);
+  const [nextRank, setNextRank] = useState(RANKS[1]);
+  
+  // Ref for "Click Outside" detection
+  const menuRef = useRef(null);
 
-  // Load & Listen for Evolution
+  // 1. CLICK OUTSIDE LISTENER
   useEffect(() => {
-    // 1. Load initial from storage
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('tethys_player_stats') : null;
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setStats(parsed);
-      updateRank(parsed.total);
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuRef]);
+
+  // 2. LOAD & LISTEN (With improved safety)
+  useEffect(() => {
+    const updateRankLogic = (currentTotal) => {
+      const current = RANKS.slice().reverse().find(r => currentTotal >= r.threshold) || RANKS[0];
+      const next = RANKS.find(r => r.threshold > currentTotal) || { threshold: 100, title: 'Ascended' };
+      setRank(current);
+      setNextRank(next);
+    };
+
+    // Load initial
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('tethys_player_stats');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setStats(parsed);
+          updateRankLogic(parsed.total || 0);
+        } catch (e) {
+          console.error("Corrupted archive found.", e);
+        }
+      }
     }
 
-    // 2. Listen for 'tethys:evolved' (triggered by discoveries)
+    // Listen for evolution
     const handleEvolution = (e) => {
-      const { weight } = e.detail; // e.g., 'creature', 'lore'
+      const { weight } = e.detail || {}; // Safety check
+      if (!weight) return;
+
       setStats(prev => {
-        const next = { 
+        const nextStats = { 
           ...prev, 
           [weight]: (prev[weight] || 0) + 1,
           total: (prev.total || 0) + 1
         };
-        localStorage.setItem('tethys_player_stats', JSON.stringify(next));
-        updateRank(next.total);
-        return next;
+        localStorage.setItem('tethys_player_stats', JSON.stringify(nextStats));
+        updateRankLogic(nextStats.total);
+        return nextStats;
       });
     };
 
@@ -46,49 +76,47 @@ export default function PlayerAvatar() {
     return () => window.removeEventListener('tethys:evolved', handleEvolution);
   }, []);
 
-  const updateRank = (total) => {
-    const newRank = RANKS.slice().reverse().find(r => total >= r.threshold) || RANKS[0];
-    setRank(newRank);
-  };
-
-  // Dynamic Avatar Color based on dominant stat
+  // Dynamic Avatar Color
   const getSoulColor = () => {
     const { lore, creature, geology } = stats;
-    if (creature > lore && creature > geology) return 'text-[#10b981]'; // Emerald (Life)
-    if (geology > lore && geology > creature) return 'text-[#ef4444]'; // Red (Earth)
-    if (lore > creature && lore > geology) return 'text-[#8b5cf6]'; // Violet (Mystery)
-    return 'text-[#8a3c23]'; // Default Rust (Tethys)
+    if (creature > lore && creature > geology) return 'text-emerald-500 border-emerald-500/50';
+    if (geology > lore && geology > creature) return 'text-red-500 border-red-500/50';
+    if (lore > creature && lore > geology) return 'text-violet-500 border-violet-500/50';
+    return 'text-amber-600 border-amber-600/50'; // Default
   };
 
+  // Calculate Progress % to next rank
+  const progressPercent = Math.min(100, Math.max(0, 
+    ((stats.total - rank.threshold) / (nextRank.threshold - rank.threshold)) * 100
+  ));
+
   return (
-    <div className="fixed top-24 right-0 z-[5000] font-body">
-      {/* The Tab Handle (Collapsed) */}
+    <div ref={menuRef} className="fixed top-24 right-0 z-[50] font-sans">
+      
+      {/* TOGGLE HANDLE */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         initial={{ x: 20 }}
         animate={{ x: isOpen ? -10 : 0 }}
         whileHover={{ x: -5 }}
-        className="flex items-center gap-2 bg-[#1a1510] text-[#e6ded0] border-l-2 border-y-2 border-[#8a3c23] p-3 rounded-l-lg shadow-[4px_4px_0_rgba(0,0,0,0.5)] relative group"
+        className={`flex items-center justify-center w-12 h-14 bg-[#1c1917] text-stone-300 border-l-2 border-y-2 border-stone-800 rounded-l-lg shadow-xl relative group transition-colors ${isOpen ? 'bg-stone-900' : ''}`}
+        aria-label="Toggle Player Stats"
       >
-        {/* Ghost Scroll Icon Animation */}
-        <div className={`relative ${getSoulColor()}`}>
-          <Fingerprint className="w-6 h-6 opacity-80 group-hover:opacity-100 transition-opacity" />
-          <motion.div 
-            animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.2, 1] }} 
-            transition={{ duration: 3, repeat: Infinity }}
-            className="absolute inset-0 blur-md bg-current rounded-full" 
-          />
+        <div className={`relative transition-colors duration-500 ${getSoulColor().split(' ')[0]}`}>
+          {isOpen ? <X className="w-6 h-6" /> : <Fingerprint className="w-6 h-6 opacity-80 group-hover:opacity-100" />}
+          
+          {/* Pulse Effect (Only when closed) */}
+          {!isOpen && (
+            <motion.div 
+              animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.2, 1] }} 
+              transition={{ duration: 3, repeat: Infinity }}
+              className="absolute inset-0 blur-md bg-current rounded-full" 
+            />
+          )}
         </div>
-        
-        {/* Vertical Text Label (Hidden when open) */}
-        {!isOpen && (
-          <span className="writing-vertical-rl text-[10px] font-mono uppercase tracking-widest opacity-60">
-            Identity
-          </span>
-        )}
       </motion.button>
 
-      {/* The Dropdown (Expanded) */}
+      {/* DROPDOWN MENU */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -96,35 +124,53 @@ export default function PlayerAvatar() {
             animate={{ opacity: 1, x: 0, height: 'auto' }}
             exit={{ opacity: 0, x: 50, height: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="absolute top-full right-4 mt-2 w-64 bg-[#e6ded0] border-2 border-[#3d2b1f] shadow-[8px_8px_0_rgba(0,0,0,0.4)] overflow-hidden rounded-bl-3xl"
+            className="absolute top-full right-4 mt-2 w-72 bg-[#1c1917] border border-stone-700 shadow-2xl rounded-bl-3xl overflow-hidden"
           >
             {/* Header: Rank & Avatar */}
-            <div className="bg-[#1a1510] p-4 text-center relative overflow-hidden">
-              {/* "Illuminates the place" - Glow behind avatar */}
-              <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full blur-2xl opacity-20 bg-current ${getSoulColor()}`} />
+            <div className="bg-black/40 p-6 text-center relative overflow-hidden border-b border-stone-800">
               
-              <div className="relative z-10 flex flex-col items-center gap-2">
-                 <div className={`p-3 rounded-full border-2 border-[#8a3c23] bg-[#2b221b] ${getSoulColor()}`}>
+              {/* Background Glow */}
+              <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full blur-[60px] opacity-20 bg-current ${getSoulColor().split(' ')[0]}`} />
+              
+              <div className="relative z-10 flex flex-col items-center gap-3">
+                 <div className={`p-4 rounded-full border-2 bg-[#0c0a09] shadow-lg ${getSoulColor()}`}>
                     <User className="w-8 h-8" />
                  </div>
                  <div>
-                   <h3 className="text-[#e6ded0] font-display text-xl uppercase tracking-wider">{rank.title}</h3>
-                   <p className="text-[10px] font-mono text-[#8a3c23] uppercase tracking-[0.3em]">Clearance Level {Math.floor(stats.total / 5)}</p>
+                   <h3 className="text-stone-200 font-serif text-xl uppercase tracking-widest">{rank.title}</h3>
+                   <p className="text-[10px] font-mono text-stone-500 uppercase tracking-[0.3em]">
+                     Clearance Level {Math.floor(stats.total / 5)}
+                   </p>
                  </div>
+              </div>
+
+              {/* Progress Bar to Next Rank */}
+              <div className="mt-4 relative h-1 w-full bg-stone-800 rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercent}%` }}
+                  transition={{ duration: 1 }}
+                  className={`absolute top-0 left-0 h-full ${getSoulColor().split(' ')[0].replace('text-', 'bg-')}`}
+                />
+              </div>
+              <div className="mt-1 flex justify-between text-[9px] text-stone-600 font-mono uppercase">
+                <span>{stats.total} XP</span>
+                <span>Next: {nextRank.title} ({nextRank.threshold})</span>
               </div>
             </div>
 
-            {/* Scroll: Stats List */}
-            <div className="p-4 space-y-4 relative">
-              <div className="absolute inset-0 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-40 mix-blend-multiply" />
+            {/* Stats List */}
+            <div className="p-6 space-y-5 relative">
+               {/* Paper Texture Overlay */}
+               <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-5 pointer-events-none mix-blend-overlay"></div>
               
-              <StatRow label="Lore Knowledge" value={stats.lore} icon={<Scroll className="w-3 h-3" />} />
-              <StatRow label="Bio-Resonance" value={stats.creature} icon={<Fingerprint className="w-3 h-3" />} />
-              <StatRow label="Geo-Mapping" value={stats.geology} icon={<MapIcon className="w-3 h-3" />} />
+              <StatRow label="Lore Knowledge" value={stats.lore} icon={<Scroll className="w-4 h-4" />} color="text-violet-400" />
+              <StatRow label="Bio-Resonance" value={stats.creature} icon={<Fingerprint className="w-4 h-4" />} color="text-emerald-400" />
+              <StatRow label="Geo-Mapping" value={stats.geology} icon={<MapIcon className="w-4 h-4" />} color="text-red-400" />
 
-              <div className="pt-4 mt-4 border-t border-[#3d2b1f]/20 text-center">
-                 <p className="text-[9px] font-mono text-[#5c4f43] uppercase italic">
-                   "The archive remembers your path."
+              <div className="pt-4 border-t border-stone-800 text-center">
+                 <p className="text-[10px] font-mono text-stone-600 uppercase italic">
+                   "The archive remembers."
                  </p>
               </div>
             </div>
@@ -135,16 +181,24 @@ export default function PlayerAvatar() {
   );
 }
 
-function StatRow({ label, value, icon }) {
+// 3. IMPROVED ROW COMPONENT (With number animation)
+function StatRow({ label, value, icon, color }) {
   return (
     <div className="flex items-center justify-between group">
-      <div className="flex items-center gap-2 text-[#5c4f43]">
+      <div className={`flex items-center gap-3 text-stone-500 group-hover:${color} transition-colors`}>
         {icon}
-        <span className="text-xs font-bold uppercase tracking-wide">{label}</span>
+        <span className="text-xs font-bold uppercase tracking-widest">{label}</span>
       </div>
       <div className="flex items-center gap-1">
-        <span className="text-sm font-display text-[#1a1510]">{value}</span>
-        {/* Small "tick" animation when value changes would go here */}
+        {/* Key changes trigger a pop animation */}
+        <motion.span 
+          key={value}
+          initial={{ scale: 1.5, color: '#fff' }}
+          animate={{ scale: 1, color: '#a8a29e' }}
+          className="text-sm font-mono text-stone-400"
+        >
+          {value}
+        </motion.span>
       </div>
     </div>
   );
