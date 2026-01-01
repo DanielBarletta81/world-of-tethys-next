@@ -28,7 +28,7 @@ export default function PteroIntro({ onComplete }) {
           {/* 2. THE PTERO FLOCK (Silhouettes flying past) */}
           {/* Ptero 1: Large, close, fast */}
           <motion.img
-            src="/img/ptero-silhouette.png" // Ensure this image exists in your public folder
+            src="/img/ptero-silhouette.svg"
             alt="Ptero"
             className="absolute w-96 opacity-10 blur-sm top-1/3"
             initial={{ x: '-20vw', y: 50, scale: 1.5 }}
@@ -38,7 +38,7 @@ export default function PteroIntro({ onComplete }) {
 
           {/* Ptero 2: Small, distant, flock */}
           <motion.img
-            src="/img/ptero-silhouette.png"
+            src="/img/ptero-silhouette.svg"
             className="absolute w-32 opacity-30 top-1/4"
             initial={{ x: '-10vw', rotate: 10 }}
             animate={{ x: '110vw' }}
