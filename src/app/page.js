@@ -2,25 +2,25 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useTethys } from '@/context/TethysContext';
-import TeslaNode from '@/components/TeslaNode';
-import NutePulse from '@/components/NutePulse';
-import SluiceGatePuzzle from '@/components/SluiceGatePuzzle';
-import WordPressDebug from '@/components/WordPressDebug';
-import UnfoldingMap from '@/components/UnfoldingMap';
-import ParchmentShader from '@/components/ParchmentShader';
-import CategoryNav from '@/components/CategoryNav';
-import ArtifactPlate from '@/components/ArtifactPlate';
-import StaffPreview from '@/components/StaffPreview';
-import StaffVisualizer from '@/components/StaffVisualizer';
-import CelestialDisk from '@/components/CelestialDisk';
-import LandingSequence from '@/components/LandingSequence';
-import PlayerAvatar from '@/components/PlayerAvatar';
-import KithOracle from '@/components/KithOracle';
-import BookManifest from '@/components/BookManifest';
-import PaleoGraph from '@/components/PaleoGraph';
-import { useExpedition } from '@/lib/useExpedition';
-import { generateStaffProfile } from '@/lib/staffSequencer';
+import { useTethys } from '../context/TethysContext';
+import TeslaNode from '../components/TeslaNode';
+import NutePulse from '../components/NutePulse';
+import SluiceGatePuzzle from '../components/SluiceGatePuzzle';
+import WordPressDebug from '../components/WordPressDebug';
+import UnfoldingMap from '../components/UnfoldingMap';
+import ParchmentShader from '../components/ParchmentShader';
+import CategoryNav from '../components/CategoryNav';
+import ArtifactPlate from '../components/ArtifactPlate';
+import StaffPreview from '../components/StaffPreview';
+import StaffVisualizer from '../components/StaffVisualizer';
+import CelestialDisk from '../components/CelestialDisk';
+import LandingSequence from '../components/LandingSequence';
+import PlayerAvatar from '../components/PlayerAvatar';
+import KithOracle from '../components/KithOracle';
+import BookManifest from '../components/BookManifest';
+import PaleoGraph from '../components/PaleoGraph';
+import { useExpedition } from '../lib/useExpedition';
+import { generateStaffProfile } from '../lib/staffSequencer';
 
 // --- DATA ARRAYS (Restored) ---
 

@@ -54,7 +54,6 @@ export async function getPageBySlug(slug) {
       page(id: $id, idType: URI) {
         title
         content
-        excerpt
         slug
       }
     }`,

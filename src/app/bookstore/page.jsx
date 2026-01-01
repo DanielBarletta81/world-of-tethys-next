@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { catalogItems } from "@/data/catalog";
+import { catalogItems } from "../../data/catalog";
 
 export default function BookstorePage() {
   const books = catalogItems.filter((item) => item.type === "book");
