@@ -1,0 +1,7 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="300" fill="#0f172a"/>
+<path d="M60 200 C120 140 200 180 260 140 C320 100 340 60 360 80" stroke="#f97316" stroke-width="6" fill="none" stroke-linecap="round"/>
+<circle cx="180" cy="160" r="24" fill="#1e293b" stroke="#fbbf24" stroke-width="3"/>
+<path d="M175 155 L190 150 L185 165 Z" fill="#fbbf24"/>
+<text x="24" y="36" fill="#f8fafc" font-family="monospace" font-size="14">Ash Drake Placeholder</text>
+</svg>

@@ -19,6 +19,7 @@ import PlayerAvatar from '../components/PlayerAvatar';
 import KithOracle from '../components/KithOracle';
 import BookManifest from '../components/BookManifest';
 import PaleoGraph from '../components/PaleoGraph';
+import MapPlaceholder from '../components/MapPlaceholder';
 import { useExpedition } from '../lib/useExpedition';
 import { generateStaffProfile } from '../lib/staffSequencer';
 
