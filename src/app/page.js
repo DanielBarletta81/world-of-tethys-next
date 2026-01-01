@@ -303,9 +303,9 @@ export default function MapBridge() {
         {/* Header: High Contrast, "Stamped" Look */}
         <header className="flex flex-col md:flex-row justify-between items-end gap-6 border-b-2 border-[#3d2b1f] pb-6">
           <div>
-            <h1 className="text-6xl font-display uppercase tracking-tighter leading-none text-[#2b221b] drop-shadow-sm">
-              Tethys <span className="text-[#8a3c23]">Overseer</span>
-            </h1>
+            <h1 className="text-7xl md:text-9xl font-header tracking-widest mb-6 text-forge-intense animate-forge-pulse">
+  World of Tethys
+</h1>
             <p className="text-sm font-mono text-[#8a3c23] uppercase tracking-[0.3em] mt-2 font-bold">
               Sector: Sub-Basalt // Resonance Site Alpha
             </p>
@@ -318,24 +318,24 @@ export default function MapBridge() {
             )}
           </div>
           <div className="flex gap-8">
-            <div className="text-right">
+            {/* Sync Frequency Display */}
               <span className="block text-xs text-[#5c4f43] uppercase font-bold tracking-widest mb-1">Frequency</span>
               <span className={`text-4xl font-display ${syncFrequency < 400 ? 'text-[#8a3c23] animate-pulse' : 'text-[#1a1510]'}`}>
                 {syncFrequency} <span className="text-lg">Hz</span>
               </span>
             </div>
-            <div className="text-right">
-              <button
-                type="button"
-                onClick={() => setIsMuted((prev) => !prev)}
-                className="text-xs uppercase font-bold tracking-widest mb-1 hover:text-[#8a3c23]"
-              >
-                Hydrophone: {isMuted ? 'Off' : 'Live'}
-              </button>
-              <span className="block text-xs text-[#5c4f43] uppercase font-bold tracking-widest mb-1">Oil Yield</span>
-              <span className="text-4xl font-display text-[#1a1510]">{oilLevel}%</span>
-            </div>
-          </div>
+
+           <Link 
+  href="/study" 
+  // Using group to trigger hover effects easily
+  className="group relative px-8 py-3 bg-stone-900 border-2 border-stone-700 hover:border-forge transition-all duration-500 overflow-hidden"
+>
+  {/* Add a molten glow background on hover */}
+  <div className="absolute inset-0 bg-gradient-to-r from-forge-red/0 via-forge-orange/20 to-forge-red/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+  <span className="relative text-stone-300 group-hover:text-forge uppercase tracking-widest text-xs">
+    Enter The Study
+  </span>
+</Link>
         </header>
 
         {/* The Map: Frame it like a window */}

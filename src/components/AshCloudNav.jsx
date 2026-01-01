@@ -40,19 +40,19 @@ export default function AshCloudNav() {
                 className="relative px-4 py-2 rounded-full transition-all group/link"
                 onMouseEnter={() => setHoveredPath(item.path)}
               >
-                <span className={`relative z-10 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-colors duration-300 
-                  ${isActive ? 'text-cyan-200 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]' : 'text-stone-500 group-hover/link:text-stone-200'}`}
-                >
-                  {item.name}
-                </span>
-
+               <span className={`relative z-10 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all duration-300 
+  ${isActive ? 'text-forge' : 'text-stone-500 group-hover/link:text-stone-200'}`}
+>
+  {item.name}
+</span>
                 {/* Active "Zap" Border */}
                 {isActive && (
                   <motion.div
-                    layoutId="nav-lightning"
-                    className="absolute inset-0 rounded-full border border-cyan-500/30 shadow-[0_0_10px_rgba(34,211,238,0.1)]"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
+  layoutId="nav-lightning"
+  // Using our new border utility and adding a pulse animation
+  className="absolute inset-0 rounded-full border-forge animate-forge-pulse opacity-70"
+  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+/>
                 )}
               </Link>
             );

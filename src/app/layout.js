@@ -74,20 +74,21 @@ export default async function RootLayout({ children }) {
               <footer className="border-t border-[#292524] bg-[#0c0a09]/90 backdrop-blur-md pt-12 pb-8 mt-20">
                 <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-end gap-6">
                   <div>
-                    <h4 className="font-header text-amber-500/80 text-lg uppercase tracking-widest">
-                      World of Tethys
-                    </h4>
-                    <p className="font-mono text-[10px] text-stone-600 uppercase tracking-[0.2em] mt-2">
+                   <h4 className="font-header text-forge text-lg uppercase tracking-widest">
+  World of Tethys
+</h4>
+                    <p className="font-mono text-[10px] text-forge uppercase tracking-[0.2em] mt-2">
                       System Status: Ash Fall Critical
                     </p>
-                    <p className="font-mono text-[10px] text-stone-600 uppercase tracking-[0.2em] mt-1">
+                    <p className="font-mono text-[10px] text-forge uppercase tracking-[0.2em] mt-1">
                       &copy; {currentYear} D.C. Barletta.
                     </p>
                   </div>
                   {amazonUrl && (
-                    <a href={amazonUrl} target="_blank" rel="noreferrer" className="text-[10px] font-mono text-stone-700 hover:text-stone-400 transition-colors">
+                    <a href={amazonUrl} target="_blank" rel="noreferrer" className="text-[10px] font-mono text-forge hover:text-forge-intense transition-colors">
                       [ External Link: Amazon Datastream ]
                     </a>
+
                   )}
                 </div>
               </footer>

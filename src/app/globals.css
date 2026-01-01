@@ -980,3 +980,74 @@ img[src$=".svg"] {
 .discovery-toast {
   animation: slideUpFade 0.5s ease-out forwards;
 }
+
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ... keep your existing body/html styles ... */
+
+@layer utilities {
+  /* === THE MOLTEN TEXT EFFECT === 
+    Looks like metal pulled straight from the fire.
+  */
+  .text-forge {
+    /* 1. The Color Gradient (White-hot center to orange edges) */
+    @apply bg-gradient-to-b from-forge-white via-forge-yellow to-forge-orange;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    
+    /* 2. The Heat Bloom (Layered Shadows) */
+    /* Layer 1: Tight white hot glow */
+    /* Layer 2: Wider yellow halo */
+    /* Layer 3: Wide red atmospheric bloom */
+    text-shadow: 
+      0 0 4px rgba(255, 255, 255, 0.8),
+      0 0 10px rgba(245, 158, 11, 0.8),
+      0 0 20px rgba(220, 38, 38, 0.5);
+  }
+
+  /* An optional, intense version for main titles */
+  .text-forge-intense {
+    @apply text-forge;
+    text-shadow: 
+      0 0 5px rgba(255, 255, 255, 0.9),
+      0 0 15px rgba(245, 158, 11, 1),
+      0 0 30px rgba(220, 38, 38, 0.7),
+      0 0 50px rgba(220, 38, 38, 0.4);
+  }
+
+
+  /* === THE MOLTEN BORDER EFFECT === 
+    Looks like glowing metal bars surrounding elements.
+  */
+  .border-forge {
+    /* The physical border color (the coolest part of the metal) */
+    border-color: #ea580c; /* forge-orange */
+    
+    /* The glow emanating from it */
+    box-shadow: 
+      0 0 5px #f59e0b,   /* Inner yellow glow */
+      0 0 10px #dc2626,  /* Outer red bloom */
+      inset 0 0 5px #f59e0b; /* Inner glow reflecting on the container */
+  }
+
+  /* === THE FLICKER ANIMATION === 
+    Molten metal isn't static; heat radiates unevenly.
+    Adds a subtle pulse to the glow.
+  */
+  .animate-forge-pulse {
+    animation: forgePulse 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes forgePulse {
+    0% {
+      filter: brightness(100%) drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
+    }
+    100% {
+      filter: brightness(120%) drop-shadow(0 0 20px rgba(245, 158, 11, 0.7));
+    }
+  }
+}

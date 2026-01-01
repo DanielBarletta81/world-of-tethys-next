@@ -26,7 +26,21 @@ module.exports = {
         'cyan-glow': '#22d3ee',     // Science / Echoes
         'emerald-glow': '#10b981',  // Ironwood / Nature
         'rose-glow': '#f43f5e',     // Danger / Magma
+        'violet-glow': '#a78bfa',  // Mystery / Spire
         
+
+
+
+          // ... your other colors (keep tethys-bg etc) ...
+  
+         // THE FORGE PALETTE
+        'forge-white': '#fffbeb',   // Almost white-hot center
+        'forge-yellow': '#f59e0b',  // Bright yellow heat
+        'forge-orange': '#ea580c',  // Cooling orange edge
+        'forge-red': '#dc2626',     // Deep red glow surrounding
+        'forge-dark': '#1c1917',    // Dark stone background
+
+
         // Paper/Study Mode
         'ancient-bg': '#e7e5e4',    // Stone 200
         'ancient-ink': '#292524',   // Stone 800
