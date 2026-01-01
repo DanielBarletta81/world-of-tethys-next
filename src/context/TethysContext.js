@@ -1,36 +1,23 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
-const TethysContext = createContext(null);
+// 1. Create the Context
+const TethysContext = createContext();
 
+// 2. Create the Provider (Wraps your app)
 export function TethysProvider({ children }) {
-  const [syncFrequency, setSyncFrequency] = useState(528);
-  const [oilLevel, setOilLevel] = useState(72);
-  const [harvestPressure, setHarvestPressure] = useState(3);
+  const [worldState, setWorldState] = useState('dormant'); 
+  const [energyLevel, setEnergyLevel] = useState(0);
 
-  const isNuteRoaring = syncFrequency < 410 || harvestPressure > 7;
-
-  const value = useMemo(
-    () => ({
-      syncFrequency,
-      setSyncFrequency,
-      oilLevel,
-      setOilLevel,
-      harvestPressure,
-      setHarvestPressure,
-      isNuteRoaring
-    }),
-    [syncFrequency, oilLevel, harvestPressure, isNuteRoaring]
+  return (
+    <TethysContext.Provider value={{ worldState, setWorldState, energyLevel, setEnergyLevel }}>
+      {children}
+    </TethysContext.Provider>
   );
-
-  return <TethysContext.Provider value={value}>{children}</TethysContext.Provider>;
 }
 
+// 3. Export the Hook (This is what you are trying to import)
 export function useTethys() {
-  const context = useContext(TethysContext);
-  if (!context) {
-    throw new Error('useTethys must be used within a TethysProvider');
-  }
-  return context;
+  return useContext(TethysContext);
 }
