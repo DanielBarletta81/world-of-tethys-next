@@ -1,3 +1,5 @@
+ 'use client';
+
 import BioChimeraLab from '@/components/BioChimeraLab';
 import SluiceGatePuzzle from '@/components/SluiceGatePuzzle';
 import PunnettScrambler from '@/components/PunnettScrambler';
