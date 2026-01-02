@@ -1,7 +1,7 @@
 // src/app/layout.js
 import './globals.css';
 import { Cinzel, Newsreader, JetBrains_Mono } from 'next/font/google';
-import AshCloudNav from '@/components/AshCloudNav';
+import WayfinderNav from '@/components/WayFinderNav';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import AtmosphericLayer from '@/components/AtmosphericLayer'; // (From previous steps)
 import { TethysProvider } from '@/context/TethysContext';
@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
        <AtmosphericLayer />  {/* Subtle background effects */}
 
         {/* B. GLOBAL HUD (Z-50) */}
-        <AshCloudNav />      {/* Top Center Navigation */}
+        <WayfinderNav />     {/* Top Center Navigation */}
         <PlayerAvatar />     {/* Top Right Thermal Monitor */}
 
         {/* C. PAGE CONTENT (Z-10) */}
