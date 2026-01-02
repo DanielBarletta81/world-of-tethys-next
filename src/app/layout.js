@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${fontHeader.variable} ${fontBody.variable} ${fontMono.variable}`}>
       <body className="bg-[#0c0a09] text-stone-200 font-serif overflow-x-hidden selection:bg-forge-orange selection:text-white">
-        
+        <TethysProvider>
         {/* A. GLOBAL ATMOSPHERE (Z-0) */}
        <AtmosphericLayer />  {/* Subtle background effects */}
 
@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
         <main className="relative z-10 flex flex-col min-h-screen pt-24">
           {children}
         </main>
-
+</TethysProvider>
       </body>
     </html>
   );

@@ -3,7 +3,7 @@ function trimSlash(value = '') {
 }
 
 export function getAmazonBookUrl() {
-  return process.env.AMAZON_BOOK_URL || '';
+  return process.env.AMAZON_BOOK1_URL || '';
 }
 
 export function getMediaUrl(path = '') {

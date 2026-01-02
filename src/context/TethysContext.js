@@ -1,117 +1,41 @@
-"use client";
-import { createContext, useContext, useEffect, useState, useRef } from 'react';
+'use client';
+
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const TethysContext = createContext();
 
-const BASE_STATS = {
-  human: 25,
-  creature: 40,
-  lore: 30,
-  geography: 35,
-  geology: 28,
-  hybrid: 5
-};
-
-function loadStats() {
-  if (typeof window === 'undefined') return BASE_STATS;
-  try {
-    const stored = window.localStorage.getItem('tethys_stats');
-    return stored ? { ...BASE_STATS, ...JSON.parse(stored) } : BASE_STATS;
-  } catch {
-    return BASE_STATS;
-  }
-}
-
 export function TethysProvider({ children }) {
-  // --- 1. WORLD STATE (With Persistence) ---
-  const [worldState, setWorldState] = useState('dormant');
-  
-  // Default values
-  const [energyLevel, setEnergyLevel] = useState(50);
-  const [harvestPressure, setHarvestPressure] = useState(0); 
-  const [oilLevel, setOilLevel] = useState(20);
-  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  // Default to 500 Resin (The "Starter" Pack)
+  const [resin, setResin] = useState(500);
+  const [unlockedArtifacts, setUnlockedArtifacts] = useState([]);
 
-  // Keep a reference to the AudioContext so we don't garbage collect it
-  const audioCtxRef = useRef(null);
-
-  // --- 2. HYDRATION (Load from LocalStorage) ---
+  // Load from LocalStorage on boot
   useEffect(() => {
-    // Check if we are in the browser
-    if (typeof window !== 'undefined') {
-      const savedEnergy = localStorage.getItem('tethys_energy');
-      const savedOil = localStorage.getItem('tethys_oil');
-      
-      if (savedEnergy) setEnergyLevel(parseInt(savedEnergy));
-      if (savedOil) setOilLevel(parseInt(savedOil));
+    const savedResin = localStorage.getItem('tethys_resin');
+    const savedUnlocks = localStorage.getItem('tethys_unlocks');
+    
+    if (savedResin) setResin(parseInt(savedResin));
+    if (savedUnlocks) setUnlockedArtifacts(JSON.parse(savedUnlocks));
+  }, []);
+
+  // Save changes automatically
+  useEffect(() => {
+    localStorage.setItem('tethys_resin', resin);
+    localStorage.setItem('tethys_unlocks', JSON.stringify(unlockedArtifacts));
+  }, [resin, unlockedArtifacts]);
+
+  // The "Burn" Action
+  const burnResin = (amount, artifactId) => {
+    if (resin >= amount) {
+      setResin((prev) => prev - amount);
+      setUnlockedArtifacts((prev) => [...prev, artifactId]);
+      return true; // Success
     }
-  }, []);
-
-  // --- 3. AUTO-SAVE (Save to LocalStorage) ---
-  useEffect(() => {
-    localStorage.setItem('tethys_energy', energyLevel.toString());
-    localStorage.setItem('tethys_oil', oilLevel.toString());
-  }, [energyLevel, oilLevel]);
-
-  // --- 4. AUDIO UNLOCK (Enhanced for Mobile) ---
-  useEffect(() => {
-    const handleInteraction = () => {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-
-        // Only create if it doesn't exist
-        if (!audioCtxRef.current) {
-          audioCtxRef.current = new AudioCtx();
-        }
-
-        const ctx = audioCtxRef.current;
-        if (ctx.state === 'suspended') {
-          ctx.resume().then(() => {
-            console.log("Tethys Audio Engine: Online");
-            setAudioUnlocked(true);
-          });
-        } else {
-          setAudioUnlocked(true);
-        }
-      } catch (err) {
-        console.warn('Audio unlock failed:', err);
-      } finally {
-        // Clean up listeners immediately to avoid double-firing
-        ['click', 'keydown', 'touchstart'].forEach(evt => 
-          window.removeEventListener(evt, handleInteraction)
-        );
-      }
-    };
-
-    // Add touchstart for better mobile support
-    ['click', 'keydown', 'touchstart'].forEach(evt => 
-      window.addEventListener(evt, handleInteraction)
-    );
-
-    return () => {
-      ['click', 'keydown', 'touchstart'].forEach(evt => 
-        window.removeEventListener(evt, handleInteraction)
-      );
-    };
-  }, []);
-
-  // Optional: A helper to play sound effects using the unlocked context
-  const playGlobalSound = (url) => {
-    if (!audioUnlocked) return;
-    const audio = new Audio(url);
-    audio.play().catch(e => console.warn("Audio blocked", e));
+    return false; // Not enough funds
   };
 
   return (
-    <TethysContext.Provider value={{ 
-      worldState, setWorldState, 
-      energyLevel, setEnergyLevel,
-      harvestPressure, setHarvestPressure,
-      oilLevel, setOilLevel,
-      audioUnlocked,
-      playGlobalSound // Exported helper
-    }}>
+    <TethysContext.Provider value={{ resin, unlockedArtifacts, burnResin }}>
       {children}
     </TethysContext.Provider>
   );

@@ -8,6 +8,10 @@ import HydroValvePuzzle from '@/components/HydroValvePuzzle';
 export default function MapPage() {
   const [isGateOpen, setIsGateOpen] = useState(false);
   const [showReward, setShowReward] = useState(false);
+  const [activeLocation, setActiveLocation] = useState({
+    proxy: 'Da Nang, VN',
+    biome: 'Monsoon'
+  });
 
   const handlePuzzleSolve = () => {
     setIsGateOpen(true);
@@ -46,7 +50,14 @@ export default function MapPage() {
                  alt="Sector 4 Blueprint" 
                  className="w-full h-full object-cover"
                />
+{/* 2. ADD THE TOTEM HERE */}
+         {/* It sits on top of the map image */}
+         <AtmosphericTotem 
+           proxyCity={activeLocation.proxy}
+           biome={activeLocation.biome}
+         />
 
+         {/* ... existing hotspots ... */}
                {/* 2. INTERACTIVE HOTSPOTS (Only visible/clickable when Open) */}
                {isGateOpen && (
                  <>
