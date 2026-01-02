@@ -6,7 +6,7 @@ const defaultPoints = [
   { id: 'fen', label: 'Fen of Lanterns', top: '42%', left: '18%' }
 ];
 
-export default function UnfoldingMap({ mapImageUrl = '/globe.svg', points = defaultPoints, onPointClick = () => {} }) {
+export default function UnfoldingMap({ mapImageUrl = '/img/sector-4-map.jpg', points = defaultPoints, onPointClick = () => {} }) {
   return (
     <div className="perspective-1000 flex justify-center items-center py-10">
       <motion.div

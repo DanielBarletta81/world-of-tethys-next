@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
 // Titles based on specific stat thresholds
-function pickTitle(scores: { lore?: number; creature?: number; geology?: number }) {
+function pickTitle(scores) {
   const lore = scores.lore || 0;
   const creature = scores.creature || 0;
   const geology = scores.geology || 0;
@@ -25,7 +25,7 @@ export default function SeedVisualizer({ initialSeed = 'H-0000', scores = { lore
 
   // Robust Event Listener
   useEffect(() => {
-    const handler = (e: any) => {
+    const handler = (e) => {
       // If the event carries new data, use it. Otherwise, refresh from state.
       if (e.detail) {
         setCurrentScores((prev) => ({ ...prev, ...e.detail }));
@@ -82,7 +82,7 @@ export default function SeedVisualizer({ initialSeed = 'H-0000', scores = { lore
 }
 
 // Helper Component for the Bars
-function StatBar({ label, value, color }: { label: string, value: number, color: string }) {
+function StatBar({ label, value, color }) {
   // Cap value at 100 for visual width
   const percent = Math.min(value, 100);
   

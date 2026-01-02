@@ -6,14 +6,14 @@ import Image from 'next/image';
 import React from 'react';
 
 // Define the shape of a Card for TypeScript safety
-interface Card {
-  id: number;
-  name: string;
-  blurb: string;
-  image: string;
-}
+// interface Card {
+//   id: number;
+//   name: string;
+//   blurb: string;
+//   image: string;
+// }
 
-const CARDS: Card[] = [
+const CARDS = [
   { 
     id: 1, 
     name: 'Ash Drake', 
@@ -42,7 +42,7 @@ const CARDS: Card[] = [
 ];
 
 export default function MagmaCarousel() {
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState(null);
 
   return (
     <>
