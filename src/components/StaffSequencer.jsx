@@ -10,6 +10,8 @@ export default function StaffSequencer() {
   // 1. GET REAL STATS FROM LOCAL STORAGE (Where PlayerAvatar saves them)
   const [stats, setStats] = useState({ geology: 0, creature: 0, lore: 0, human: 0 });
   const [staff, setStaff] = useState(null);
+  const [path, setPath] = useState(null);
+  const { resin = 0 } = useTethys();
 
   useEffect(() => {
     // Hydrate from storage on mount
@@ -23,6 +25,8 @@ export default function StaffSequencer() {
           console.error("Staff Sequencer: Corrupted Data");
         }
       }
+      const savedPath = localStorage.getItem('tethys_path');
+      if (savedPath) setPath(savedPath);
     }
   }, []);
 
@@ -64,6 +68,10 @@ export default function StaffSequencer() {
                 : 'border-stone-500/50 text-stone-400 bg-stone-800/20'
             }`}>
               Class: {staff.rarity}
+            </div>
+            <div className="mt-2 flex gap-3 text-[11px] text-stone-400">
+              {path && <span className="uppercase tracking-[0.2em]">Path: {path.replace(/-/g, ' ')}</span>}
+              <span className="uppercase tracking-[0.2em]">Resin: {resin}</span>
             </div>
           </div>
         </div>

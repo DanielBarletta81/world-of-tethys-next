@@ -44,25 +44,36 @@ export const catalogItems = [
     boost: '+8% explorer multiplier (7 days)'
   },
   {
+    id: 'sky-city-audible',
+    title: 'Sky City of Tethys — Audiobook',
+    subtitle: 'Exclusive on Audible/Amazon',
+    format: 'Audible',
+    price: '$0.00 with trial',
+    url: process.env.AUDIBLE_SKYCITY_URL || 'https://www.audible.com/',
+    cover: '/img/watcher-ashfall.svg',
+    type: 'audio',
+    boost: '+10% explorer multiplier (7 days)'
+  },
+  {
     id: 'author-store',
     title: 'Author Storefront',
     subtitle: 'All books by D.C. Barletta',
     format: 'Amazon',
     price: '',
     url: 'https://www.amazon.com/stores/author/B0G5LM24FM/allbooks?ingress=0&visitId=349c42e6-42bc-462d-9ce5-c016543eb9ca&ref_=aufs_ap_ahdr_dsk_aa&ccs_id=83e6c44b-5c4a-4693-8ceb-05a13dba2ff8',
-    cover: '/images/covers/author-store.jpg',
+    cover: '/img/book1-cover.png',
     type: 'link',
     boost: ''
   },
   // Placeholders for audio/podcast/field cards
   {
     id: 'audiobook-placeholder',
-    title: 'Audiobook — Sky City',
-    subtitle: 'Preview + Download (CDN link TBD)',
+    title: 'Signals from the Archive',
+    subtitle: 'Audio drops via resin unlock',
     format: 'Audio',
-    price: '$3.99',
-    url: '#',
-    cover: '/images/covers/audiobook.jpg',
+    price: 'Resin 50',
+    url: '/signals',
+    cover: '/img/watcher-ashfall.svg',
     type: 'audio',
     boost: '+10% explorer multiplier (7 days)'
   },
@@ -72,8 +83,8 @@ export const catalogItems = [
     subtitle: 'Free stream + download',
     format: 'Audio',
     price: 'Free',
-    url: '#',
-    cover: '/images/covers/podcast.jpg',
+    url: '/broadcast',
+    cover: '/img/watcher-ashfall.svg',
     type: 'podcast',
     boost: '+5% explorer multiplier (3 days)'
   },
@@ -82,9 +93,9 @@ export const catalogItems = [
     title: 'Field Cards Pack',
     subtitle: 'Imagery + short stories',
     format: 'Download',
-    price: '$1.99',
-    url: '#',
-    cover: '/images/covers/field-cards.jpg',
+    price: 'Resin 35',
+    url: '/archives',
+    cover: '/img/watcher-ashfall.svg',
     type: 'download',
     boost: '+6% explorer multiplier (5 days)'
   }

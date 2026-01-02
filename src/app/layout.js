@@ -44,6 +44,14 @@ export default function RootLayout({ children }) {
         {/* C. PAGE CONTENT (Z-10) */}
         <main className="relative z-10 flex flex-col min-h-screen pt-24">
           {children}
+          <footer className="mt-auto border-t border-[#2f261f] bg-[#0b0908]/80 backdrop-blur-sm relative z-10">
+            <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-stone-400 tracking-wide">
+              <span className="uppercase tracking-[0.2em] text-stone-500">World of Tethys</span>
+              <span className="text-stone-500">
+                © {new Date().getFullYear()} Daniel C. Barletta — All rights reserved.
+              </span>
+            </div>
+          </footer>
         </main>
 </TethysProvider>
       </body>

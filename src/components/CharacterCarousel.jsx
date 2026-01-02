@@ -4,11 +4,15 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 const cambrianNine = [
-  { name: 'Bol', role: 'The Muralist', archetype: 'Witness', color: 'text-sync-violet' },
-  { name: 'Rosa-Lyn', role: 'The Engineer', archetype: 'Architect', color: 'text-sync-glow' },
-  { name: 'Melden', role: 'The Geneticist', archetype: 'Archivist', color: 'text-ancient-gold' },
-  { name: 'Kith Weaver', role: 'Mycelial Oracle', archetype: 'Symbiote', color: 'text-ancient-teal' },
-  { name: 'Orrix', role: 'Sky Cartographer', archetype: 'Navigator', color: 'text-ancient-accent' }
+  { name: 'Melden', role: 'Legendary Geneticist', archetype: 'Archivist', color: 'text-amber-glow', image: '/img/characters/marros_hero2.PNG' },
+  { name: 'Igzier', role: 'Apprentice • Exile', archetype: 'Survivor', color: 'text-emerald-glow', image: '/img/characters/Igzier_Stryker_hero2.png' },
+  { name: 'Karys', role: 'Greenhouse Engineer', archetype: 'Cohort', color: 'text-rose-glow', image: '/img/characters/karys_hero.png' },
+  { name: 'Ravel', role: 'Root Whisperer • Mystic', archetype: 'Symbiote', color: 'text-emerald-glow', image: '/img/characters/marros_hero.PNG' },
+  { name: 'The Weep', role: 'Exile Rite • Chance at Air', archetype: 'Faction', color: 'text-cyan-glow', image: '/img/locations/the_weep_hero.png' },
+  { name: 'Stryker', role: 'Ash Raptor Bond', archetype: 'Guardian', color: 'text-amber-glow', image: '/img/characters/stryker_hero_alt1.PNG' },
+  { name: 'Shadehound Handler', role: 'Caravan Peace-Sign', archetype: 'Witness', color: 'text-violet-glow', image: '/img/characters/jairo_hero.png' },
+  { name: 'Triumvirate Ledger', role: 'Ledger Sovereign', archetype: 'Regime', color: 'text-amber-glow', image: '/img/characters/jairo_hero2.PNG' },
+  { name: 'Ravel’s Map', role: 'Bad Ideas, Good Timing', archetype: 'Guide', color: 'text-cyan-glow', image: '/img/locations/archive_hero.PNG' }
 ];
 
 export default function CharacterCarousel() {
@@ -35,7 +39,8 @@ export default function CharacterCarousel() {
               <h3 className={`text-3xl font-display mt-2 ${char.color}`}>{char.name}</h3>
             </div>
             <div className="flex-grow flex items-center justify-center grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
-              <img src="/vercel.svg" alt={`${char.name} sigil`} className="w-20 h-20" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={char.image} alt={`${char.name} portrait`} className="w-36 h-36 object-cover rounded-md border border-ancient-ink/30 shadow-lg" />
             </div>
             <div className="border-t border-ancient-ink/20 pt-3 text-center">
               <p className="text-[11px] font-mono uppercase tracking-[0.3em]">{char.role}</p>

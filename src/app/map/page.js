@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import HydroValvePuzzle from '@/components/HydroValvePuzzle'; 
 import AtmosphericTotem from '@/components/AtmosphericTotem';
+import UnfoldingMap from '@/components/UnfoldingMap';
 
 
 export default function MapPage() {
@@ -40,52 +41,12 @@ export default function MapPage() {
             </p>
           </div>
 
-          {/* The Map Container */}
-          <div className="relative aspect-square rounded-xl overflow-hidden border border-stone-800 shadow-2xl bg-[#1c1917] group">
-            
-            {/* 1. THE MAP IMAGE (The Base Layer) */}
-            <div className={`relative w-full h-full transition-all duration-[2000ms] ${isGateOpen ? 'blur-0 opacity-100' : 'blur-xl opacity-20 grayscale'}`}>
-               
-               {/* Actual Map Image */}
-               <img 
-                 src="/img/sector-4-map.jpg" 
-                 alt="Sector 4 Blueprint" 
-                 className="w-full h-full object-cover"
-               />
-{/* 2. ADD THE TOTEM HERE */}
-         {/* It sits on top of the map image */}
-         <AtmosphericTotem 
-           proxyCity={activeLocation.proxy}
-           biome={activeLocation.biome}
-         />
-
-         {/* ... existing hotspots ... */}
-               {/* 2. INTERACTIVE HOTSPOTS (Only visible/clickable when Open) */}
-               {isGateOpen && (
-                 <>
-                   {/* Hotspot A: The Foundry */}
-                   <MapHotspot 
-                     x="25%" y="30%" 
-                     label="The Foundry" 
-                     href="/locations/foundry" 
-                   />
-
-                   {/* Hotspot B: The Sluice */}
-                   <MapHotspot 
-                     x="60%" y="55%" 
-                     label="Sluice Gate" 
-                     href="/locations/sluice" 
-                   />
-
-                   {/* Hotspot C: Unknown Signal */}
-                   <MapHotspot 
-                     x="80%" y="20%" 
-                     label="???" 
-                     href="/creatures/unknown" 
-                     isSecret 
-                   />
-                 </>
-               )}
+          <div className="relative rounded-xl overflow-hidden border border-stone-800 shadow-2xl bg-[#1c1917] group">
+            <div className={`transition-all duration-[1500ms] ${isGateOpen ? 'opacity-100 blur-0' : 'opacity-20 blur-md grayscale pointer-events-none'}`}>
+              <UnfoldingMap
+                mapImageUrl="/img/map/epic_map_hero.PNG"
+                onPointClick={(point) => setActiveLocation({ proxy: point.label, biome: point.tag || 'Unknown' })}
+              />
             </div>
 
             {/* LOCKED OVERLAY (Disappears when solved) */}
@@ -103,16 +64,14 @@ export default function MapPage() {
                 </motion.div>
               )}
             </AnimatePresence>
-            
-            {/* GATE ANIMATION (The Slats opening) */}
-            {isGateOpen && (
-              <motion.div 
-                initial={{ height: "100%" }}
-                animate={{ height: "0%" }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-                className="absolute bottom-0 left-0 w-full bg-stone-900/90 z-20 border-t-4 border-emerald-500/50"
-              />
-            )}
+          </div>
+
+          {/* Atmospheric readout of the last point clicked */}
+          <div className="mt-4">
+            <AtmosphericTotem 
+              proxyCity={activeLocation.proxy}
+              biome={activeLocation.biome}
+            />
           </div>
         </div>
 
@@ -170,31 +129,5 @@ export default function MapPage() {
       </div>
 
     </div>
-  );
-}
-
-// --- HELPER COMPONENT FOR THE DOTS ---
-function MapHotspot({ x, y, label, href, isSecret }) {
-  return (
-    <Link 
-      href={href}
-      className="absolute group/spot z-30"
-      style={{ top: y, left: x }}
-    >
-      {/* The Pulsing Dot */}
-      <div className={`w-4 h-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-all duration-300
-        ${isSecret 
-          ? 'border-amber-500 bg-amber-900/50 shadow-[0_0_15px_rgba(245,158,11,0.5)]' 
-          : 'border-emerald-400 bg-emerald-900/50 shadow-[0_0_15px_rgba(52,211,153,0.5)]'
-        } group-hover/spot:scale-150`}
-      ></div>
-
-      {/* The Tooltip Label (Appears on Hover) */}
-      <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover/spot:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-        <div className="bg-black/80 text-white text-[10px] uppercase tracking-widest px-2 py-1 rounded border border-stone-700">
-          {label}
-        </div>
-      </div>
-    </Link>
   );
 }

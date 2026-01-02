@@ -1,8 +1,0 @@
-<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="400" height="300" fill="#111827"/>
-<rect x="60" y="70" width="280" height="160" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="3"/>
-<path d="M90 120 H310" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
-<path d="M90 150 H280" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
-<path d="M90 180 H240" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
-<text x="72" y="100" fill="#f97316" font-family="monospace" font-size="14">The Scribe Placeholder</text>
-</svg>
