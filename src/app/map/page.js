@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import HydroValvePuzzle from '@/components/HydroValvePuzzle'; 
+import AtmosphericTotem from '@/components/AtmosphericTotem';
+
 
 export default function MapPage() {
   const [isGateOpen, setIsGateOpen] = useState(false);
