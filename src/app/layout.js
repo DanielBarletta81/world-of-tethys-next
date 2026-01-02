@@ -4,8 +4,9 @@ import { Cinzel, Newsreader, JetBrains_Mono } from 'next/font/google';
 import AshCloudNav from '@/components/AshCloudNav';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import AtmosphericLayer from '@/components/AtmosphericLayer'; // (From previous steps)
+import { TethysProvider } from '@/context/TethysContext';
 
-// 1. SETUP FONTS
+// 1. S
 const fontHeader = Cinzel({ 
   subsets: ['latin'], 
   variable: '--font-header',
