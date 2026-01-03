@@ -1,21 +1,30 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  typedRoutes: false,
-  eslint: {
-    ignoreDuringBuilds: true
-  },
-  turbopack: {
-    root: new URL('.', import.meta.url).pathname
-  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cms.dcbarletta.com'
-      }
-    ]
-  }
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Google Auth Avatars
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com', // GitHub Auth Avatars
+      },
+      {
+        protocol: 'https',
+        hostname: 'secure.gravatar.com', // WordPress Gravatars
+      },
+    ],
+  },
+  // Ensure we can handle the distinct styling modules without conflict
+  compiler: {
+    styledComponents: true,
+  },
 };
 
 export default nextConfig;

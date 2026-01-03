@@ -1,7 +1,7 @@
 import { getPageBySlug } from '@/lib/graphql';
 
 import React from 'react';
-import '@/styles/mystics.css';
+import './modules.mystics.css';
 
 export default async function MysticsPage() {
   const page = await getPageBySlug('/mystics');

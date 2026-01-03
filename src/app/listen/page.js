@@ -8,10 +8,10 @@ import Link from 'next/link';
 const TRACKS = [
   {
     id: 1,
-    title: 'Log 001: The Descent',
-    type: 'Audiobook - Chapter 1',
-    duration: '14:20',
-    src: '/audio/sample-chapter.mp3', // Placeholder path
+    title: 'Log 001: The Weep',
+    type: 'Audiobook - Episode 1 Preview',
+    duration: '07:20',
+    src: '/audio/Ep_01_Preview.mp3', // Placeholder path
     locked: false,
   },
   {

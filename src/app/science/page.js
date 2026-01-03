@@ -33,7 +33,9 @@ export default function ScienceAnnex() {
   const geminiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 
   return (
+
     <section className="section-shell">
+    <TheBlankSlate className="artifact-card" />
       <header className="mb-12">
         <p className="eyebrow">Scientific Annex</p>
         <h1 className="text-4xl font-display">The Genetics of Tethys</h1>
@@ -53,7 +55,7 @@ export default function ScienceAnnex() {
       </div>
 
       <section className="extinction-container py-20">
-        <blockquote className="extinction-quote">
+        <blockquote className="extinction-quote mb-12 max-w-3xl mx-auto text-center text --forge-intense">
           &quot;99.9% of all life that has ever graced this Earth has vanished into the silt. The records we hold are
           fragments of a ghost story. My renditions are not just fiction—they are the probable echoes of a world fossils
           were never meant to tell.&quot;

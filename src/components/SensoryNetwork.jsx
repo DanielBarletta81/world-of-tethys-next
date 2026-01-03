@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import AtmosphericTotem from './AtmosphericTotem';
 
 // --- THE DATA: SENSORY CHANNELS ---
 const CHANNELS = [
@@ -90,6 +92,7 @@ export default function SensoryNetwork() {
   return (
     <div className="fixed bottom-6 left-6 z-40 max-w-sm pointer-events-none font-serif">
       <AnimatePresence mode='wait'>
+      <AtmosphericTotem className="absolute -top-20 left-1/2 -translate-x-1/2 w-16 h-16 mb-4 pointer-events-auto" />
         <motion.div 
           key={currentChannel.id + msgIndex} // Re-animate on change
           initial={{ opacity: 0, x: -20 }}

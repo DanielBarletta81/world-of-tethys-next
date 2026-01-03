@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { generateStaffProfile } from '@/lib/staff-utils';
-import { useTethys } from '@/context/TethysContext'; // Uncomment if using real context
+import { useTethys } from '@/context/TethysContext';
 
 
 
@@ -145,7 +145,7 @@ export default function StaffSequencer() {
 function ComponentRow({ label, value }) {
   return (
     <div className="flex justify-between items-center text-xs">
-      <span className="text-stone-500 uppercase tracking-wide">{label}</span>
+      <span className="text-uppercase tracking-wide">{label}</span>
       <span className="text-stone-300 font-serif">{value}</span>
     </div>
   );

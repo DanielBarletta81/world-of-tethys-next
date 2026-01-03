@@ -1,6 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import React from 'react';
+//import { useTethys } from '@/context/TethysContext';
+//import StaffSequencer from './StaffSequencer';
 
 /**
  * Visual representation of the staff using core/binding/apex/aura segments.

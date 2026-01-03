@@ -7,6 +7,8 @@ import LandingSequence from '@/components/LandingSequence';
 import MagmaCarousel from '@/components/MagmaCarousel';
 import CharacterCarousel from '@/components/CharacterCarousel';
 
+
+
 export default function HomeContent({ creatures, characters }) {
   const [introFinished, setIntroFinished] = useState(false);
 

@@ -1,140 +1,130 @@
 'use client';
 
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useAuth } from './AuthContext';
 
 const TethysContext = createContext();
 
-const DEFAULT_READING = {
-  human: 25,
-  creature: 40,
-  lore: 30,
-  geography: 35,
-  geology: 28,
-  hybrid: 5
-};
-
-const loadJSON = (key, fallback) => {
-  if (typeof window === 'undefined') return fallback;
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
-};
-
 export function TethysProvider({ children }) {
-  const [worldState, setWorldState] = useState('dormant');
-  const [syncFrequency, setSyncFrequency] = useState(440);
-  const [oilLevel, setOilLevel] = useState(20);
-  const [harvestPressure, setHarvestPressure] = useState(0);
-  const [isNuteRoaring, setIsNuteRoaring] = useState(false);
-  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  const { user } = useAuth();
+  const userId = user?.uid || 'guest_node';
 
-  const [resin, setResin] = useState(() => (typeof window === 'undefined' ? 500 : Number(window.localStorage.getItem('tethys_resin')) || 500));
-  const [unlockedArtifacts, setUnlockedArtifacts] = useState(() => loadJSON('tethys_unlocks', []));
-  const [readingStats, setReadingStats] = useState(() => loadJSON('tethys_stats', DEFAULT_READING));
-  const [mode, setMode] = useState(() => (typeof window === 'undefined' ? 'explore' : window.localStorage.getItem('tethys_mode') || 'explore'));
+  // --- STATE ---
+  const [currentLocation, setCurrentLocation] = useState('pteros');
+  const [unlockedNodes, setUnlockedNodes] = useState(['pteros', 'sky-city']);
+  
+  // Inventory & Stats
+  const [inventory, setInventory] = useState([]);
+  const [equippedStaff, setEquippedStaff] = useState(null);
+  const [lastHarvestDate, setLastHarvestDate] = useState(null);
+  
+  // Stats (Added 'resin' specifically)
+  const [stats, setStats] = useState({ 
+    kith: 50,    
+    igzier: 50,  
+    sanity: 100,
+    resin: 0 // The currency
+  });
+  
+  const [canHarvest, setCanHarvest] = useState(false);
 
-  const audioCtxRef = useRef(null);
+  // --- STORAGE KEY ---
+  const STORAGE_KEY = `tethys_data_v1_${userId}`;
 
-  // Persist core fields
+  // --- LOAD DATA ---
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    window.localStorage.setItem('tethys_resin', String(resin));
-    window.localStorage.setItem('tethys_unlocks', JSON.stringify(unlockedArtifacts));
-    window.localStorage.setItem('tethys_stats', JSON.stringify(readingStats));
-    window.localStorage.setItem('tethys_mode', mode);
-  }, [resin, unlockedArtifacts, readingStats, mode]);
-
-  // Audio unlock on first gesture
-  useEffect(() => {
-    const handleInteraction = () => {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        if (!audioCtxRef.current) audioCtxRef.current = new AudioCtx();
-        const ctx = audioCtxRef.current;
-        if (ctx.state === 'suspended') {
-          ctx.resume().then(() => setAudioUnlocked(true));
-        } else {
-          setAudioUnlocked(true);
-        }
-      } catch (err) {
-        console.warn('Audio unlock failed:', err);
-      } finally {
-        ['click', 'keydown', 'touchstart'].forEach((evt) => window.removeEventListener(evt, handleInteraction));
-      }
-    };
-    ['click', 'keydown', 'touchstart'].forEach((evt) => window.addEventListener(evt, handleInteraction));
-    return () => {
-      ['click', 'keydown', 'touchstart'].forEach((evt) => window.removeEventListener(evt, handleInteraction));
-    };
-  }, []);
-
-  // Economy helpers
-  const earnResin = (amount = 0, source = 'action') => {
-    const val = Math.max(0, Math.floor(amount));
-    setResin((prev) => prev + val);
-    return true;
-  };
-
-  const spendResin = (amount = 0, artifactId) => {
-    const cost = Math.max(0, Math.floor(amount));
-    let success = false;
-    setResin((prev) => {
-      if (prev < cost) return prev;
-      success = true;
-      return prev - cost;
-    });
-    if (success && artifactId) {
-      setUnlockedArtifacts((prev) => (prev.includes(artifactId) ? prev : [...prev, artifactId]));
+    
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      setInventory(parsed.inventory || []);
+      setEquippedStaff(parsed.equippedStaff || null);
+      setStats(prev => ({ ...prev, ...(parsed.stats || {}) })); // Merge to ensure new keys like 'resin' exist
+      setLastHarvestDate(parsed.lastHarvestDate || null);
     }
-    return success;
+  }, [userId]);
+
+  // --- SAVE DATA ---
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Only save if we have data to prevent overwriting with defaults on initial hydration
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      inventory,
+      equippedStaff,
+      stats,
+      lastHarvestDate
+    }));
+  }, [inventory, equippedStaff, stats, lastHarvestDate, userId]);
+
+  // --- HARVEST CHECKER ---
+  useEffect(() => {
+    if (!lastHarvestDate) {
+      setCanHarvest(true);
+      return;
+    }
+    const now = new Date();
+    const last = new Date(lastHarvestDate);
+    
+    // Check if it's a different calendar day
+    const isToday = now.getDate() === last.getDate() && 
+                    now.getMonth() === last.getMonth() && 
+                    now.getFullYear() === last.getFullYear();
+    
+    setCanHarvest(!isToday);
+  }, [lastHarvestDate]);
+
+  // --- ACTIONS ---
+  
+  const performDailyHarvest = useCallback((newStaff, newItems, newStats) => {
+    // 1. Hard Check: If UI is out of sync, stop here.
+    if (!canHarvest) {
+      console.warn("Harvest attempted but currently locked.");
+      return false;
+    }
+
+    const now = new Date().toISOString();
+
+    // 2. Update State
+    setEquippedStaff(newStaff);
+    setInventory(newItems);
+    
+    // 3. Add Resin Reward (e.g., +10 to +50 random)
+    const resinReward = Math.floor(Math.random() * 40) + 10;
+    
+    setStats(prev => ({ 
+      ...prev, 
+      ...newStats,
+      resin: (prev.resin || 0) + resinReward 
+    }));
+
+    // 4. Lock immediately
+    setLastHarvestDate(now);
+    setCanHarvest(false);
+    return true;
+  }, [canHarvest]);
+
+  const travelTo = (locationId) => {
+    setCurrentLocation(locationId);
+    if (!unlockedNodes.includes(locationId)) {
+      setUnlockedNodes(prev => [...prev, locationId]);
+    }
   };
 
-  const burnResin = (amount, artifactId) => spendResin(amount, artifactId); // alias for legacy calls
-
-  const incrementStats = (updates = {}) => {
-    setReadingStats((prev) => {
-      const next = { ...prev };
-      Object.entries(updates).forEach(([k, v]) => {
-        next[k] = (next[k] || 0) + (Number(v) || 0);
-      });
-      return next;
-    });
-  };
-
-  const setModeChoice = (next) => {
-    setMode(next);
-    if (typeof window !== 'undefined') window.localStorage.setItem('tethys_mode', next);
+  const value = {
+    userId,
+    currentLocation,
+    inventory,
+    equippedStaff,
+    stats,
+    canHarvest,
+    performDailyHarvest,
+    travelTo
   };
 
   return (
-    <TethysContext.Provider
-      value={{
-        worldState,
-        setWorldState,
-        syncFrequency,
-        setSyncFrequency,
-        oilLevel,
-        setOilLevel,
-        harvestPressure,
-        setHarvestPressure,
-        isNuteRoaring,
-        setIsNuteRoaring,
-        audioUnlocked,
-        resin,
-        earnResin,
-        spendResin,
-        burnResin,
-        unlockedArtifacts,
-        readingStats,
-        incrementStats,
-        mode,
-        setModeChoice
-      }}
-    >
+    <TethysContext.Provider value={value}>
       {children}
     </TethysContext.Provider>
   );
