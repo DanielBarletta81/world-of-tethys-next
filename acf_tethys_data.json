@@ -1,0 +1,82 @@
+[
+    {
+        "key": "group_tethys_data",
+        "title": "Tethys Data",
+        "fields": [
+            {
+                "key": "field_threat_level",
+                "label": "Threat Level",
+                "name": "threat_level",
+                "type": "select",
+                "instructions": "How dangerous is this subject to a Surveyor?",
+                "required": 0,
+                "choices": {
+                    "Safe": "Safe",
+                    "Caution": "Caution",
+                    "Lethal": "Lethal"
+                },
+                "return_format": "value"
+            },
+            {
+                "key": "field_kith_req",
+                "label": "Kith Requirement",
+                "name": "kith_requirement",
+                "type": "number",
+                "instructions": "Wisdom stat required to view full details (0-100).",
+                "required": 0,
+                "default_value": 0,
+                "min": 0,
+                "max": 100
+            },
+            {
+                "key": "field_real_world_analog",
+                "label": "Real World Analog",
+                "name": "real_world_analog",
+                "type": "text",
+                "instructions": "The real scientific creature or phenomenon this is based on (e.g. 'Komodo Dragon' or a URL).",
+                "required": 0
+            },
+            {
+                "key": "field_bio_traits",
+                "label": "Biological Traits",
+                "name": "biological_traits",
+                "type": "repeater",
+                "instructions": "Key stats like 'Heat Resistance' or 'Diet'.",
+                "layout": "table",
+                "sub_fields": [
+                    {
+                        "key": "field_trait_name",
+                        "label": "Trait Name",
+                        "name": "trait",
+                        "type": "text"
+                    },
+                    {
+                        "key": "field_trait_val",
+                        "label": "Value",
+                        "name": "value",
+                        "type": "text"
+                    }
+                ]
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "archive_entry"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_graphql": 1,
+        "graphql_field_name": "tethysData"
+    }
+]
