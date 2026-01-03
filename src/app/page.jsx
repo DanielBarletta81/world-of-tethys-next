@@ -18,6 +18,7 @@ import TethysNexus from '@/components/TethysNexus';
 import AtmosphericLayer from '@/components/AtmosphericLayer';
 import WayfinderNav from '@/components/WayFinderNav';
 import BookBanner from '@/components/BookBanner';
+import LoginWidget from '@/components/LoginWidget';
 
 
 export default function Home() {
@@ -56,6 +57,8 @@ export default function Home() {
 
   return (
     <TethysProvider>
+      <AtmosphericLayer />
+      <WayfinderNav />
       <div className="min-h-screen pb-32">
       
       {/* 1. THE INTRO SEQUENCE */}
@@ -80,12 +83,15 @@ export default function Home() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5, duration: 1 }}
             >
-              <h1 className="text-7xl md:text-9xl font-header tracking-widest mb-6 text-forge-intense animate-forge-pulse">
+              <h1 className="text-6xl md:text-9xl font-header tracking-widest mb-6 text-forge-intense animate-forge-pulse">
                 World of Tethys
               </h1>
-              <p className="max-w-xl mx-auto text-stone-400 text-lg md:text-xl italic mb-10">
+              <p className="max-w-xl mx-auto text-stone-400 text-xl md:text-xl italic mb-10">
                 "The sky is choked with soot, but the heat beneath our feet... that is where the life is."
               </p>
+              <LoginWidget className="mb-6 mx-auto w-48 " />
+              <BookBanner className="mb-6" />
+              <MagmaCarousel className="mb-6" />
               
               <AtmosphericTotem className="mx-auto mb-8 w-24 h-24" />
               <Link 
