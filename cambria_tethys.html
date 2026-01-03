@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cambria Archive | World of Tethys</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Palette Configuration -->
+    <!-- 
+        Palette Name: Deep Sea Bioluminescence
+        Background: #0f172a (Slate 900)
+        Card BG: #1e293b (Slate 800)
+        Text Main: #e2e8f0 (Slate 200)
+        Text Muted: #94a3b8 (Slate 400)
+        Accent Cyan: #06b6d4 (Cyan 500)
+        Accent Violet: #8b5cf6 (Violet 500)
+        Accent Emerald: #10b981 (Emerald 500)
+        Accent Rose: #f43f5e (Rose 500)
+    -->
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tethys: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            text: '#e2e8f0',
+                            muted: '#94a3b8',
+                            cyan: '#06b6d4',
+                            violet: '#8b5cf6',
+                            emerald: '#10b981',
+                            rose: '#f43f5e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Chart Container Styling Rules */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width constraint */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height constraint */
+        }
+
+        /* Responsive adjustments for chart height */
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Utility for the pyramid diagram */
+        .pyramid-level {
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+        }
+    </style>
+    
+    <!-- 
+        NARRATIVE PLAN:
+        1. Hero: Intro to Cambria and the concept of 111 MYA bio-tech.
+        2. Composition: Pie chart showing the source DNA types (Dino/Pterosaur/Marine).
+        3. Efficiency: Bar chart comparing survival rates of hybrids vs biological norms.
+        4. The Apex: Radar chart analyzing a specific hybrid attributes.
+        5. Timeline: Line chart showing the rise in genetic instability leading to the fall.
+        6. Hierarchy: CSS Diagram of Cambria's social/scientific structure.
+    -->
+    
+    <!-- 
+        VISUALIZATION CHOICES (No SVG, No Mermaid):
+        1. DNA Sources -> Goal: Compare/Composition -> Donut Chart (Chart.js)
+        2. Survival Rates -> Goal: Compare -> Bar Chart (Chart.js)
+        3. Apex Stats -> Goal: Inform/Multivariate -> Radar Chart (Chart.js)
+        4. Instability -> Goal: Change -> Line Chart (Chart.js)
+        5. Hierarchy -> Goal: Organize -> HTML/CSS Stacked Divs
+    -->
+</head>
+<body class="bg-tethys-bg text-tethys-text font-sans antialiased selection:bg-tethys-cyan selection:text-tethys-bg">
+
+    <!-- Navigation / Progress Indicator -->
+    <nav class="sticky top-0 z-50 bg-tethys-bg/90 backdrop-blur-sm border-b border-tethys-card shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl font-bold text-tethys-cyan tracking-tighter">CAMBRIA</span>
+                    <span class="text-xs bg-tethys-card px-2 py-1 rounded border border-tethys-muted/30">ARCHIVE 111-MYA</span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-tethys-muted">
+                    <span class="hover:text-tethys-cyan cursor-default">Genesis</span>
+                    <span class="hover:text-tethys-violet cursor-default">Symbiosis</span>
+                    <span class="hover:text-tethys-emerald cursor-default">Timeline</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- Section 1: Hero / Introduction -->
+        <section class="text-center space-y-6">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-tethys-cyan via-tethys-violet to-tethys-emerald pb-2">
+                The Genetic Forge of the Cretaceous
+            </h1>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-tethys-muted leading-relaxed">
+                111 million years ago, beneath the waves of the Tethys Ocean, the city of Cambria thrived not on machinery, but on biology. Accessing unexplainable knowledge, its architects spliced the DNA of dinosaurs, pterosaurs, and marine reptiles to engineer a society capable of surviving the unsurvivable.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <div class="bg-tethys-card p-6 rounded-lg border border-tethys-cyan/20 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                    <div class="text-3xl font-bold text-tethys-cyan mb-2">111 MYA</div>
+                    <div class="text-sm text-tethys-muted">Temporal Location</div>
+                </div>
+                <div class="bg-tethys-card p-6 rounded-lg border border-tethys-violet/20 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
+                    <div class="text-3xl font-bold text-tethys-violet mb-2">4,200+</div>
+                    <div class="text-sm text-tethys-muted">Viable Chimeras Created</div>
+                </div>
+                <div class="bg-tethys-card p-6 rounded-lg border border-tethys-emerald/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                    <div class="text-3xl font-bold text-tethys-emerald mb-2">Zero</div>
+                    <div class="text-sm text-tethys-muted">Mechanical Dependence</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Hybrid Composition (Donut Chart) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6 order-2 md:order-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-2 h-8 bg-tethys-cyan rounded-full"></div>
+                    <h2 class="text-3xl font-bold text-tethys-text">The Genetic Source Code</h2>
+                </div>
+                <p class="text-tethys-muted leading-relaxed">
+                    Cambria's bio-engineers did not create life from nothing; they borrowed it from the giants. By harvesting genetic material from the dominant fauna of the Aptian stage, they created specialized classes of servitor organisms. 
+                </p>
+                <p class="text-tethys-muted leading-relaxed">
+                    The chart illustrates the dominance of <strong>Theropod DNA</strong> (for aggression and metabolism) and <strong>Sauropod DNA</strong> (for structural integrity and size) in the city's foundational hybrids.
+                </p>
+                <div class="bg-tethys-card/50 p-4 rounded border-l-4 border-tethys-cyan text-sm italic">
+                    "Flesh is the clay, DNA is the kiln." - Arch-Geneticist Vaal
+                </div>
+            </div>
+            
+            <div class="bg-tethys-card rounded-xl p-6 shadow-lg border border-white/5 order-1 md:order-2">
+                <h3 class="text-lg font-semibold mb-4 text-center text-tethys-text">DNA Contribution by Clade</h3>
+                <div class="chart-container">
+                    <canvas id="compositionChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-tethys-muted mt-4">Data Source: Cambria Central Gene-Bank Fragments</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Symbiotic Efficiency (Bar Chart) -->
+        <section class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-tethys-text mb-4">Survival Through Symbiosis</h2>
+                <p class="text-tethys-muted">
+                    In the harsh, oxygen-rich, and predator-dense world of the Early Cretaceous, singular organisms struggled. Cambria's breakthrough was <strong>Forced Symbiosis</strong>—pairing a host (often a modified dinosaur) with a symbiotic partner (parasitic or mutualistic flora/fauna) to enhance biological output.
+                </p>
+            </div>
+
+            <div class="bg-tethys-card rounded-xl p-6 md:p-8 shadow-lg border border-white/5">
+                <h3 class="text-lg font-semibold mb-6 text-tethys-text">Survival Rates: Natural vs. Engineered Symbiosis</h3>
+                <div class="chart-container md:max-w-4xl">
+                    <canvas id="survivalChart"></canvas>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div class="text-center">
+                        <span class="block text-2xl font-bold text-tethys-violet">+145%</span>
+                        <span class="text-xs text-tethys-muted uppercase tracking-wide">Longevity Increase</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-2xl font-bold text-tethys-emerald">-40%</span>
+                        <span class="text-xs text-tethys-muted uppercase tracking-wide">Caloric Requirement</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-2xl font-bold text-tethys-rose">99.9%</span>
+                        <span class="text-xs text-tethys-muted uppercase tracking-wide">Reproductive Control</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: The Apex Project (Radar Chart) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="bg-tethys-card rounded-xl p-6 shadow-lg border border-white/5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-tethys-text">Project: "Tethys Titan"</h3>
+                    <span class="px-2 py-1 bg-tethys-rose/20 text-tethys-rose text-xs font-bold rounded border border-tethys-rose/30">RESTRICTED</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-tethys-muted mt-4">Comparative Analysis: Titan Hybrid vs. Natural Tyrannosaur</p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-2 h-8 bg-tethys-violet rounded-full"></div>
+                    <h2 class="text-3xl font-bold text-tethys-text">Engineering the Ultimate Guardian</h2>
+                </div>
+                <p class="text-tethys-muted leading-relaxed">
+                    The "Tethys Titan" represents the pinnacle of Cambrian bio-engineering. While natural apex predators like the <em>Acrocanthosaurus</em> were formidable, they lacked the cognitive capacity and aquatic adaptability required to defend the city.
+                </p>
+                <p class="text-tethys-muted leading-relaxed">
+                    The radar chart reveals the trade-offs. The Titan sacrifices <strong>Reproductive Rate</strong> and pure <strong>Sprint Speed</strong> for massive gains in <strong>Intelligence</strong>, <strong>Armor Density</strong>, and <strong>Hydrodynamic Efficiency</strong>.
+                </p>
+                <ul class="space-y-2 text-sm text-tethys-muted mt-4">
+                    <li class="flex items-center gap-2">
+                        <span class="text-tethys-emerald">●</span> Enhanced Neural Cortex (Raptor base)
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-tethys-emerald">●</span> Osteoderm Plating (Ankylosaur base)
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-tethys-emerald">●</span> Gills/Lung Hybrid System (Mosasaur splice)
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 5: The Decline (Line Chart) -->
+        <section class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-tethys-text mb-4">The Cost of Hubris</h2>
+                <p class="text-tethys-muted">
+                    Perfection is unstable. As Cambria pushed the boundaries of genetic manipulation, the stability of the hybrid genome began to fracture. The "Cascade Failure" marks the period where mutations outpaced corrections.
+                </p>
+            </div>
+
+            <div class="bg-tethys-card rounded-xl p-6 md:p-8 shadow-lg border border-white/5">
+                <h3 class="text-lg font-semibold mb-6 text-tethys-text">Genetic Instability Index Over Eras</h3>
+                <div class="chart-container md:max-w-5xl">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Cambrian Hierarchy (CSS Diagram) -->
+        <section class="space-y-12">
+             <div class="flex items-center gap-3 justify-center mb-8">
+                <div class="w-2 h-8 bg-tethys-emerald rounded-full"></div>
+                <h2 class="text-3xl font-bold text-tethys-text">The Societal Structure</h2>
+            </div>
+
+            <!-- CSS Constructed Pyramid - No SVG, No Mermaid -->
+            <div class="max-w-2xl mx-auto flex flex-col gap-1 items-center">
+                
+                <!-- Level 1 -->
+                <div class="w-24 h-20 relative flex items-center justify-center bg-tethys-violet/20 border-2 border-tethys-violet text-tethys-violet font-bold text-center p-2 rounded-t-lg shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 transition-transform cursor-pointer group">
+                    <span class="text-xs group-hover:hidden">The High Council</span>
+                    <span class="hidden group-hover:block text-[10px] leading-tight">Keepers of the Source Code</span>
+                </div>
+
+                <!-- Level 2 -->
+                <div class="w-64 h-24 relative flex items-center justify-center bg-tethys-cyan/20 border-2 border-tethys-cyan text-tethys-cyan font-bold text-center p-2 shadow-[0_0_15px_rgba(6,182,212,0.2)] hover:bg-tethys-cyan/30 transition-colors">
+                    <div class="flex flex-col">
+                        <span class="uppercase tracking-widest text-sm">Bio-Architects</span>
+                        <span class="text-[10px] text-tethys-muted font-normal mt-1">Designers of Flesh & Bone</span>
+                    </div>
+                </div>
+
+                <!-- Level 3 -->
+                <div class="w-96 h-24 relative flex items-center justify-center bg-tethys-emerald/20 border-2 border-tethys-emerald text-tethys-emerald font-bold text-center p-2 shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-tethys-emerald/30 transition-colors">
+                    <div class="flex flex-col">
+                        <span class="uppercase tracking-widest text-sm">The Symbiotes</span>
+                        <span class="text-[10px] text-tethys-muted font-normal mt-1">Integrated Citizenry & Handlers</span>
+                    </div>
+                </div>
+
+                <!-- Level 4 -->
+                <div class="w-full max-w-lg h-24 relative flex items-center justify-center bg-slate-700/30 border-2 border-slate-600 text-slate-400 font-bold text-center p-2 hover:bg-slate-700/50 transition-colors rounded-b-lg">
+                    <div class="flex flex-col">
+                        <span class="uppercase tracking-widest text-sm">The Vat-Born</span>
+                        <span class="text-[10px] text-slate-500 font-normal mt-1">Servitor Hybrids & Labor Beasts</span>
+                    </div>
+                </div>
+
+            </div>
+            
+            <p class="text-center text-tethys-muted text-sm max-w-lg mx-auto italic">
+                Cambria was strictly stratified. Your genetic purity determined your station. The Vat-Born, despite their strength, held no rights within the crystalline walls.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-tethys-card pt-12 pb-6 text-center">
+            <h4 class="text-2xl font-bold text-tethys-text tracking-tighter mb-4">WORLD OF TETHYS</h4>
+            <div class="flex justify-center gap-6 mb-8 text-sm text-tethys-muted">
+                <a href="#" class="hover:text-tethys-cyan transition-colors">The Archives</a>
+                <a href="#" class="hover:text-tethys-violet transition-colors">Species Database</a>
+                <a href="#" class="hover:text-tethys-emerald transition-colors">Map of Cambria</a>
+            </div>
+            <p class="text-xs text-tethys-muted/50">
+                Data visualization generated for the Cambria Historical Preservation Project. <br>
+                Restricted Access: Level 5 Clearance Required.
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- Chart.js Configuration Script -->
+    <script>
+        // ---------------------------------------------------------
+        // UTILITY FUNCTIONS (MANDATORY REQUIREMENTS)
+        // ---------------------------------------------------------
+
+        /**
+         * Processes labels for Chart.js.
+         * If a label is > 16 characters, it splits it into an array of strings 
+         * (lines) based on word boundaries.
+         */
+        function processLabels(labels) {
+            return labels.map(label => {
+                if (label.length <= 16) return label;
+                
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if ((currentLine + " " + words[i]).length <= 16) {
+                        currentLine += " " + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            });
+        }
+
+        /**
+         * Global Tooltip Configuration for Multi-line Labels
+         */
+        const globalTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleColor: '#06b6d4',
+            bodyColor: '#e2e8f0',
+            borderColor: '#1e293b',
+            borderWidth: 1,
+            padding: 10
+        };
+
+        // Standard chart options for responsiveness
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#94a3b8',
+                        font: { family: 'Inter' }
+                    }
+                },
+                tooltip: globalTooltipConfig
+            }
+        };
+
+        // ---------------------------------------------------------
+        // CHART 1: HYBRID COMPOSITION (DONUT)
+        // ---------------------------------------------------------
+        const ctxComposition = document.getElementById('compositionChart').getContext('2d');
+        const rawLabelsComp = [
+            'Theropod Aggressors (Carnivores)', 
+            'Sauropod Titans (Structural)', 
+            'Pterosaur Scouts (Aerial)', 
+            'Marine Leviathans (Aquatic)', 
+            'Insectoid Symbiotes (Utility)'
+        ];
+        
+        new Chart(ctxComposition, {
+            type: 'doughnut',
+            data: {
+                labels: processLabels(rawLabelsComp),
+                datasets: [{
+                    data: [35, 25, 20, 15, 5],
+                    backgroundColor: [
+                        '#f43f5e', // Rose (Aggression)
+                        '#8b5cf6', // Violet (Structure)
+                        '#06b6d4', // Cyan (Air)
+                        '#0ea5e9', // Sky Blue (Water)
+                        '#10b981'  // Emerald (Utility)
+                    ],
+                    borderColor: '#1e293b',
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '60%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#94a3b8' }
+                    }
+                }
+            }
+        });
+
+        // ---------------------------------------------------------
+        // CHART 2: SYMBIOTIC EFFICIENCY (BAR)
+        // ---------------------------------------------------------
+        const ctxSurvival = document.getElementById('survivalChart').getContext('2d');
+        const rawLabelsSurv = [
+            'Deep Sea Pressure Resistance', 
+            'Low Oxygen Tolerance', 
+            'Toxin Filtration Capacity', 
+            'Wound Regeneration Speed',
+            'Caloric Efficiency Rate'
+        ];
+
+        new Chart(ctxSurvival, {
+            type: 'bar',
+            data: {
+                labels: processLabels(rawLabelsSurv),
+                datasets: [
+                    {
+                        label: 'Natural Baseline (Wild)',
+                        data: [40, 55, 30, 20, 45],
+                        backgroundColor: '#334155', // Slate 700
+                        borderRadius: 4,
+                        barPercentage: 0.6
+                    },
+                    {
+                        label: 'Engineered Hybrid (Cambria)',
+                        data: [95, 88, 92, 85, 90],
+                        backgroundColor: '#06b6d4', // Cyan
+                        borderRadius: 4,
+                        barPercentage: 0.6
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' },
+                        max: 100
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', autoSkip: false }
+                    }
+                }
+            }
+        });
+
+        // ---------------------------------------------------------
+        // CHART 3: APEX PROJECT (RADAR)
+        // ---------------------------------------------------------
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        const rawLabelsRadar = [
+            'Hydrodynamic Efficiency',
+            'Bite Force Pressure',
+            'Cognitive Problem Solving',
+            'Camouflage Capability',
+            'Reproductive Rate',
+            'Armor Density Rating'
+        ];
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: processLabels(rawLabelsRadar),
+                datasets: [{
+                    label: 'Tethys Titan (Engineered)',
+                    data: [90, 95, 85, 70, 20, 88],
+                    fill: true,
+                    backgroundColor: 'rgba(139, 92, 246, 0.2)', // Violet Alpha
+                    borderColor: '#8b5cf6',
+                    pointBackgroundColor: '#8b5cf6',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#8b5cf6'
+                }, {
+                    label: 'Wild Acrocanthosaurus',
+                    data: [30, 85, 40, 40, 80, 50],
+                    fill: true,
+                    backgroundColor: 'rgba(148, 163, 184, 0.2)', // Slate Alpha
+                    borderColor: '#94a3b8',
+                    pointBackgroundColor: '#94a3b8',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#94a3b8'
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    r: {
+                        angleLines: { color: '#334155' },
+                        grid: { color: '#334155' },
+                        pointLabels: {
+                            color: '#e2e8f0',
+                            font: { size: 11 }
+                        },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+
+        // ---------------------------------------------------------
+        // CHART 4: THE DECLINE (LINE)
+        // ---------------------------------------------------------
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        const rawLabelsLine = [
+            'Founding Era (Year 0-100)',
+            'Golden Age of Splicing (100-300)',
+            'The Expansion Era (300-450)',
+            'The Stagnation Period (450-500)',
+            'The Mutation Cascade (500-550)',
+            'The Fall of Cambria (550+)'
+        ];
+
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: processLabels(rawLabelsLine),
+                datasets: [
+                    {
+                        label: 'Genetic Instability Index',
+                        data: [5, 12, 18, 45, 88, 98],
+                        borderColor: '#f43f5e', // Rose
+                        backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Technological Output',
+                        data: [20, 80, 95, 90, 60, 10],
+                        borderColor: '#06b6d4', // Cyan
+                        borderDash: [5, 5],
+                        backgroundColor: 'transparent',
+                        tension: 0.2,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' },
+                        title: { display: true, text: 'Index Value (0-100)', color: '#64748b' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', maxRotation: 0 }
+                    }
+                }
+            }
+        });
+
+    </script>
+    
+    <!-- NO SVG USED. NO MERMAID USED. PURE HTML/CSS + CANVAS -->
+</body>
+</html>
