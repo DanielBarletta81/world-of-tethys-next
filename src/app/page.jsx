@@ -5,12 +5,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 // Import your components
+import { TethysProvider } from '@/context/TethysContext';
 import LandingSequence from '@/components/LandingSequence';
 import MagmaCarousel from '@/components/MagmaCarousel';
 import CharacterCarousel from '@/components/CharacterCarousel';
 import { catalogItems } from '../data/catalog';
 import PathSelector from '@/components/PathSelector';
+import AtmosphericTotem from '@/components/AtmosphericTotem';
 import FieldKit from '@/components/FieldKit';
+import PterosDashboard from '@/components/PterosDashboard';
+import TethysNexus from '@/components/TethysNexus';
+import AtmosphericLayer from '@/components/AtmosphericLayer';
+import WayfinderNav from '@/components/WayFinderNav';
+import BookBanner from '@/components/BookBanner';
+
 
 export default function Home() {
   const [introFinished, setIntroFinished] = useState(false);
@@ -47,7 +55,8 @@ export default function Home() {
   }, [entryLog]);
 
   return (
-    <div className="min-h-screen pb-32">
+    <TethysProvider>
+      <div className="min-h-screen pb-32">
       
       {/* 1. THE INTRO SEQUENCE */}
       {/* Only show the rest of the page once this finishes */}
@@ -72,12 +81,13 @@ export default function Home() {
               transition={{ delay: 0.5, duration: 1 }}
             >
               <h1 className="text-7xl md:text-9xl font-header tracking-widest mb-6 text-forge-intense animate-forge-pulse">
-                IRONWOOD
+                World of Tethys
               </h1>
               <p className="max-w-xl mx-auto text-stone-400 text-lg md:text-xl italic mb-10">
                 "The sky is choked with soot, but the heat beneath our feet... that is where the life is."
               </p>
               
+              <AtmosphericTotem className="mx-auto mb-8 w-24 h-24" />
               <Link 
                 href="/map" 
                 className="px-8 py-3 border border-forge-orange/50 text-forge-orange hover:bg-forge-orange/10 hover:border-forge-orange uppercase tracking-[0.2em] text-xs transition-all"
@@ -86,6 +96,16 @@ export default function Home() {
               </Link>
             </motion.div>
           </section>
+
+
+
+          {/* TETHYS NEXUS MAP */}
+          <section className="relative py-20 border-t border-stone-800 bg-[#0c0a09]">
+            <div className="max-w-7xl mx-auto px-4">
+              <TethysNexus />
+            </div>
+          </section>
+
 
           {/* Entry Points via Books */}
           <section className="relative py-16 border-t border-stone-800 bg-[#0e0c0b]">
@@ -130,6 +150,13 @@ export default function Home() {
             </div>
           </section>
 
+          {/* PTEROS DASHBOARD */}
+          <section className="relative py-20 border-t border-stone-800 bg-[#0c0a09]">
+            <div className="max-w-7xl mx-auto px-4">
+              <PterosDashboard />
+            </div>
+          </section>
+
           {/* B. THE BESTIARY (Magma Carousel) */}
           <section className="relative py-24 border-t border-stone-800 bg-[#141210]">
              <div className="max-w-7xl mx-auto px-6 mb-12">
@@ -161,7 +188,9 @@ export default function Home() {
           </section>
 
         </motion.div>
+
       )}
-    </div>
+      </div>
+    </TethysProvider>
   );
 }

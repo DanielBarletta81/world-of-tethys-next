@@ -5,17 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import HydroValvePuzzle from '@/components/HydroValvePuzzle'; 
 import AtmosphericTotem from '@/components/AtmosphericTotem';
-import UnfoldingMap from '@/components/UnfoldingMap';
+import TethysNexus from '@/components/TethysNexus';
 
 
 export default function MapPage() {
   const [isGateOpen, setIsGateOpen] = useState(false);
   const [showReward, setShowReward] = useState(false);
-  const [activeLocation, setActiveLocation] = useState({
-    proxy: 'Da Nang, VN',
-    biome: 'Monsoon'
-  });
-
   const handlePuzzleSolve = () => {
     setIsGateOpen(true);
     // Wait 1.5s for the gate animation to finish, then show the reward popup
@@ -43,10 +38,7 @@ export default function MapPage() {
 
           <div className="relative rounded-xl overflow-hidden border border-stone-800 shadow-2xl bg-[#1c1917] group">
             <div className={`transition-all duration-[1500ms] ${isGateOpen ? 'opacity-100 blur-0' : 'opacity-20 blur-md grayscale pointer-events-none'}`}>
-              <UnfoldingMap
-                mapImageUrl="/img/map/epic_map_hero.PNG"
-                onPointClick={(point) => setActiveLocation({ proxy: point.label, biome: point.tag || 'Unknown' })}
-              />
+              <TethysNexus />
             </div>
 
             {/* LOCKED OVERLAY (Disappears when solved) */}
@@ -64,14 +56,6 @@ export default function MapPage() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-
-          {/* Atmospheric readout of the last point clicked */}
-          <div className="mt-4">
-            <AtmosphericTotem 
-              proxyCity={activeLocation.proxy}
-              biome={activeLocation.biome}
-            />
           </div>
         </div>
 

@@ -1,12 +1,10 @@
-'use client';
-
 import React, { useState } from 'react';
-import { MapPin, Network, Activity, X, Mountain, Waves, Trees } from 'lucide-react';
+import { Network, X } from 'lucide-react';
 
 const LOCATIONS = [
   {
     id: 'watcher',
-    x: 20, y: 15, // Northwest corner
+    x: 80, y: 15, // North of Iron Sands
     name: 'Watcher Mountain',
     type: 'Active Volcano',
     proxy: 'Mt. Bromo, Indonesia',
@@ -86,7 +84,6 @@ const TethysNexus = () => {
 
       {/* The Danian River (Stylized SVG Background) */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20 z-0">
-        {/* River Flowing North to South, splitting around Pteros */}
         <path 
           d="M 500 0 C 520 200, 480 300, 500 350 S 500 600, 550 800" 
           stroke="#06b6d4" 
@@ -115,7 +112,7 @@ const TethysNexus = () => {
             className="absolute transition-all duration-500"
             style={{ left: `${loc.x}%`, top: `${loc.y}%` }}
           >
-            {/* Connection Lines (Visual Flair) */}
+            {/* Connection Lines */}
             {activeNode?.id === loc.id && (
               <>
                  <div className="absolute w-[120px] h-[1px] bg-gradient-to-r from-amber-600 to-transparent -translate-y-1/2 rotate-[-45deg] origin-left animate-in fade-in duration-300" style={{ left: '20px', top: '0' }}></div>
