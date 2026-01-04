@@ -8,7 +8,7 @@ import StarterLoadout from '../components/StarterLoadout';
 import BookBanner from '../components/BookBanner';
 import LoginWidget from '../components/LoginWidget'; // The sticky top-right one
 import LoginCard from '../components/LoginCard'; 
-import StarterLoadout from '../components/'    // The new big center card
+   // The new big center card
 import Footer from '@/components/Footer';
 import { Anchor, BookOpen, Database, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
