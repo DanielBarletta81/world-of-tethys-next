@@ -16,12 +16,13 @@ export default function StaffSequencer({
   const [stats, setStats] = useState(initialStats || { geology: 0, creature: 0, lore: 0, human: 0 });
   const [staff, setStaff] = useState(null);
   const [path, setPath] = useState(initialPath || null);
-  const { resin = 0 } = useTethys();
+  const { resin = 0, inventory = [] } = useTethys();
 
   const inventoryPool = useMemo(() => {
     if (inventoryOverride && inventoryOverride.length) return inventoryOverride;
+    if (inventory.length) return inventory.map((item) => item.id || item.name).filter(Boolean);
     return ['Map_fragment'];
-  }, [inventoryOverride]);
+  }, [inventoryOverride, inventory]);
 
   useEffect(() => {
     // Hydrate from props or storage
@@ -50,8 +51,6 @@ export default function StaffSequencer({
 
   useEffect(() => {
     // 2. GENERATE STAFF DYNAMICALLY
-    // We pass the stats we just loaded. 
-    // We also pass a mock inventory for now, but you can load that from localStorage too.
     const profile = generateStaffProfile(stats, inventoryPool); 
     setStaff(profile);
     onProfile?.(profile);

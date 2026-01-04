@@ -15,14 +15,22 @@ const RANKS = [
 
 export default function PlayerAvatar({ statsOverride }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [stats, setStats] = useState(statsOverride || { lore: 0, creature: 0, geology: 0, total: 0 });
+  const [stats, setStats] = useState(statsOverride || { lore: 0, creature: 0, geology: 0, human: 0, total: 0 });
   const [rank, setRank] = useState(RANKS[0]);
   const [nextRank, setNextRank] = useState(RANKS[1]);
   const menuRef = useRef(null);
+  const [hydrated, setHydrated] = useState(false);
+  const STORAGE_KEY = 'tethys_player_stats';
 
-  // ... (Keep your existing useEffect logic for loading/saving stats) ...
-  // Re-paste the useEffects here from your previous file
-  // ---------------------------------------------------------
+  const normalizeStats = (raw = {}) => {
+    const lore = raw.lore ?? 0;
+    const creature = raw.creature ?? 0;
+    const geology = raw.geology ?? 0;
+    const human = raw.human ?? 0;
+    const total = raw.total ?? Math.round((lore + creature + geology + human) / 10);
+    return { lore, creature, geology, human, total };
+  };
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -34,15 +42,47 @@ export default function PlayerAvatar({ statsOverride }) {
   }, [menuRef]);
 
   useEffect(() => {
-    // Simplified logic for brevity in this snippet
     if (statsOverride) {
-      setStats(statsOverride);
-    } else if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('tethys_player_stats');
-      if (stored) setStats(JSON.parse(stored));
+      setStats(normalizeStats(statsOverride));
+      setHydrated(true);
+      return;
+    }
+    if (typeof window === 'undefined') return;
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        setStats(normalizeStats(JSON.parse(stored)));
+      }
+    } catch {
+      // ignore parse failures
+    } finally {
+      setHydrated(true);
     }
   }, [statsOverride]);
-  // ---------------------------------------------------------
+
+  useEffect(() => {
+    if (statsOverride || !hydrated || typeof window === 'undefined') return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    } catch {
+      // ignore storage failures
+    }
+  }, [stats, hydrated, statsOverride]);
+
+  useEffect(() => {
+    if (statsOverride || typeof window === 'undefined') return;
+    const handleStorage = (event) => {
+      if (event.key === STORAGE_KEY && event.newValue) {
+        try {
+          setStats(normalizeStats(JSON.parse(event.newValue)));
+        } catch {
+          // ignore
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [statsOverride]);
 
   useEffect(() => {
     const current = [...RANKS].reverse().find(r => stats.total >= r.threshold) || RANKS[0];

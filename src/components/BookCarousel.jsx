@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import Link from 'next/link';
 
 const BOOKS = [
   {
@@ -23,18 +23,16 @@ const BOOKS = [
   }
 ];
 
-const BookBanner = () => {
-  const looped = useMemo(() => [...BOOKS, ...BOOKS], []);
+export default function BookCarousel() {
+  const strip = [...BOOKS, ...BOOKS]; // Duplicate for seamless loop
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto overflow-hidden py-3 px-4 mb-8 border border-amber-900/30 bg-[#0c0a09]/80 backdrop-blur-md rounded-sm shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(251,191,36,0.05),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.05),transparent_35%)] pointer-events-none" />
-      <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0c0a09] to-transparent pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0c0a09] to-transparent pointer-events-none" />
-
-      <div className="flex items-center gap-4 marquee" aria-label="Book carousel with Amazon links">
-        {looped.map((book, idx) => (
-          <a
+    <div className="relative w-full max-w-5xl mx-auto overflow-hidden py-3 mb-6 border border-amber-900/30 bg-[#0c0a09]/80 backdrop-blur-md rounded-sm shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(251,191,36,0.04),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.04),transparent_35%)] pointer-events-none" />
+      
+      <div className="relative flex items-center gap-4 pl-4 marquee">
+        {strip.map((book, idx) => (
+          <Link
             key={`${book.id}-${idx}`}
             href={book.amazonLink}
             target="_blank"
@@ -47,17 +45,15 @@ const BookBanner = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-[0.2em] text-amber-500 font-mono">Amazon</span>
-              <span className="text-sm text-stone-200 font-serif whitespace-nowrap group-hover:text-amber-200 transition-colors">
-                {book.title}
-              </span>
+              <span className="text-sm text-stone-200 font-serif whitespace-nowrap group-hover:text-amber-200 transition-colors">{book.title}</span>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
 
       <style jsx>{`
         .marquee {
-          animation: scroll 32s linear infinite;
+          animation: scroll 28s linear infinite;
           width: max-content;
         }
         .marquee:hover {
@@ -70,6 +66,4 @@ const BookBanner = () => {
       `}</style>
     </div>
   );
-};
-
-export default BookBanner;
+}

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import LandingSequence from '@/components/LandingSequence';
 import MagmaCarousel from '@/components/MagmaCarousel';
 import CharacterCarousel from '@/components/CharacterCarousel';
+import FirebaseLogin from '@/components/FirebaseLogin';
 
 
 
@@ -24,16 +25,21 @@ export default function HomeContent({ creatures, characters }) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
+          transition={{ duration: 2.5 }}
         >
           {/* Hero Section */}
           <section className="relative h-[80vh] flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-7xl md:text-9xl font-header tracking-widest mb-6 text-forge-intense animate-forge-pulse">
-              IRONWOOD
+                THE ATLAS OF TETHYS
             </h1>
             <Link href="/map" className="px-8 py-3 border border-forge-orange text-forge-orange uppercase">
               Open The Atlas
             </Link>
+          </section>
+
+          {/* Identity / Auth */}
+          <section className="relative max-w-4xl mx-auto px-6 -mt-20">
+            <FirebaseLogin />
           </section>
 
           {/* Magma Carousel (With Real Data!) */}

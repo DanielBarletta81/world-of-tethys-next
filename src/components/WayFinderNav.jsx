@@ -4,18 +4,30 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useTethys } from '@/context/TethysContext'; // Hook into the economy
-import { Compass, Map, Scroll, Users, Diamond } from 'lucide-react';
+import { Compass, Map, Scroll, Users, Diamond, BookOpen, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const NAV_LINKS = [
-  { name: 'The Hub', path: '/', icon: <Compass size={14} /> },
-  { name: 'Atlas', path: '/map', icon: <Map size={14} /> },
-  { name: 'Lineage', path: '/factions', icon: <Users size={14} /> },
-  { name: 'Archives', path: '/archives', icon: <Scroll size={14} /> }, // The new store
+  { name: 'Books', path: '#books', icon: <BookOpen size={14} /> },
+  { name: 'Join the World', path: '#join', icon: <Sparkles size={14} /> },
+  { name: 'Mystics', path: '#mystics', icon: <Scroll size={14} /> },
+  { name: 'Creatures', path: '/creatures', icon: <Compass size={14} /> },
+  { name: 'Locations', path: '#locations', icon: <Map size={14} /> },
+  { name: 'Author Bio', path: '#author', icon: <Users size={14} /> },
 ];
 
 export default function WayfinderNav() {
   const pathname = usePathname();
+  const [hash, setHash] = useState('');
   const { resin } = useTethys(); // Get live balance
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const updateHash = () => setHash(window.location.hash || '');
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
+  }, []);
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 h-16 bg-[#0c0a09]/95 backdrop-blur-md border-b border-[#3d3834] flex items-center justify-center">
@@ -38,7 +50,9 @@ export default function WayfinderNav() {
         {/* CENTER: THE LINKS (The Compass) */}
         <nav className="flex items-center gap-1 md:gap-2">
           {NAV_LINKS.map((item) => {
-            const isActive = pathname === item.path;
+            const isActive = item.path.startsWith('#')
+              ? hash === item.path
+              : pathname === item.path;
             
             return (
               <Link 

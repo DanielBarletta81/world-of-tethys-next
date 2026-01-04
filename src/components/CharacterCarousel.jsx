@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const cambrianNine = [
   { name: 'Melden', role: 'Legendary Geneticist', archetype: 'Archivist', color: 'text-amber-glow', image: '/img/characters/marros_hero2.PNG' },
@@ -15,8 +15,9 @@ const cambrianNine = [
   { name: 'Ravel’s Map', role: 'Bad Ideas, Good Timing', archetype: 'Guide', color: 'text-cyan-glow', image: '/img/locations/archive_hero.PNG' }
 ];
 
-export default function CharacterCarousel() {
+export default function CharacterCarousel({ characters }) {
   const [bondedChar, setBondedChar] = useState(null);
+  const roster = useMemo(() => (characters && characters.length ? characters : cambrianNine), [characters]);
 
   const handleBond = (name) => {
     setBondedChar((prev) => (prev === name ? null : name));
@@ -32,21 +33,37 @@ export default function CharacterCarousel() {
         dragConstraints={{ left: -600, right: 0 }}
         className="flex gap-6 cursor-grab active:cursor-grabbing"
       >
-        {cambrianNine.map((char) => (
-          <motion.div key={char.name} className="artifact-card min-w-[260px] max-w-[300px] h-[380px] flex flex-col justify-between">
-            <div className="border-b border-ancient-ink/20 pb-3">
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-ancient-ink/60">{char.archetype}</span>
-              <h3 className={`text-3xl font-display mt-2 ${char.color}`}>{char.name}</h3>
-            </div>
-            <div className="flex-grow flex items-center justify-center grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+        {roster.map((char) => (
+          <motion.div 
+            key={char.name} 
+            className="artifact-card min-w-[260px] max-w-[320px] h-[420px] flex flex-col justify-between rounded-xl overflow-hidden border border-ancient-ink/30 bg-gradient-to-b from-[#0f0b09] via-[#14100e] to-[#0c0a09] shadow-[0_15px_35px_rgba(0,0,0,0.45)] group"
+          >
+            <div className="relative h-56 w-full overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={char.image} alt={`${char.name} portrait`} className="w-36 h-36 object-cover rounded-md border border-ancient-ink/30 shadow-lg" />
+              <img
+                src={char.image}
+                alt={`${char.name} portrait`}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute bottom-3 left-4 z-20">
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-amber-300/70">
+                  {char.archetype}
+                </span>
+                <h3 className={`text-3xl font-display mt-1 drop-shadow-lg ${char.color || 'text-stone-100'}`}>
+                  {char.name}
+                </h3>
+              </div>
             </div>
-            <div className="border-t border-ancient-ink/20 pt-3 text-center">
-              <p className="text-[11px] font-mono uppercase tracking-[0.3em]">{char.role}</p>
+
+            <div className="flex-1 flex flex-col px-4 pb-5 pt-4">
+              <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-stone-400 text-center">{char.role}</p>
+              {char.desc && (
+                <p className="text-sm text-stone-400/90 mt-2 text-center px-2">{char.desc}</p>
+              )}
               <button
                 onClick={() => handleBond(char.name)}
-                className="mt-4 w-full py-2 text-[10px] font-mono uppercase tracking-widest border-t border-ancient-ink/10 hover:bg-ancient-ink/5 transition-colors"
+                className="mt-auto w-full py-2.5 text-[10px] font-mono uppercase tracking-widest border border-ancient-ink/20 rounded-sm hover:bg-ancient-ink/10 transition-colors"
               >
                 {bondedChar === char.name ? 'Bond Active' : 'Initiate Bond'}
               </button>
