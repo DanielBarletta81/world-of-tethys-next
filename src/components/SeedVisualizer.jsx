@@ -14,7 +14,7 @@ function pickTitle(scores) {
   if (geology > 50) return { title: 'Rift Walker', color: 'text-orange-400', border: 'border-orange-500/50' };
   if (creature > 50) return { title: 'Apex Hybrid', color: 'text-emerald-400', border: 'border-emerald-500/50' };
   if (lore > 50) return { title: 'Chronicler', color: 'text-cyan-400', border: 'border-cyan-500/50' };
-  return { title: 'Hatchling', color: 'text-stone-400', border: 'border-stone-700' };
+  return { title: 'Hatchling', color: 'text-amber-200', border: 'border-amber-600/40' };
 }
 
 export default function SeedVisualizer({ initialSeed = 'H-0000', scores = { lore: 0, creature: 0, geology: 0 } }) {
@@ -39,28 +39,31 @@ export default function SeedVisualizer({ initialSeed = 'H-0000', scores = { lore
   return (
     <motion.div 
       layout
-      className={`relative p-6 rounded-xl bg-stone-900/80 backdrop-blur-md border ${border} shadow-2xl w-full max-w-xs`}
+      className={`relative p-6 rounded-xl bg-gradient-to-b from-[#0f0b09] via-[#14100e] to-[#0c0a09] border ${border} shadow-[0_20px_60px_rgba(0,0,0,0.45)] w-full max-w-xs overflow-hidden`}
     >
+      <div className="absolute inset-0 pointer-events-none opacity-30" style={{ backgroundImage: "url('/noise.svg')" }} />
+      <div className="absolute inset-x-6 top-0 h-12 bg-gradient-to-b from-amber-900/20 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-cyan-900/10 to-transparent" />
       {/* 1. Header: The Seed ID */}
       <div className="flex justify-between items-start mb-4">
         <div>
-          <div className="text-[10px] uppercase tracking-[0.3em] text-stone-500">Genetic ID</div>
-          <div className="font-mono text-xl text-stone-200 tracking-wider">{seed}</div>
+          <div className="text-[10px] uppercase tracking-[0.3em] text-amber-500">Hatching ID</div>
+          <div className="font-mono text-xl text-amber-100 tracking-wider">{seed}</div>
         </div>
-        {/* Rank Icon placeholder */}
-        <div className={`w-8 h-8 rounded-full border ${border} flex items-center justify-center`}>
-           <div className={`w-2 h-2 rounded-full ${color.replace('text-', 'bg-')} animate-pulse`} />
+        {/* Rank Icon */}
+        <div className={`w-10 h-10 rounded-full border ${border} flex items-center justify-center bg-[#1a120e]/80 shadow-[0_0_10px_rgba(251,191,36,0.35)]`}>
+           <div className={`w-2.5 h-2.5 rounded-full ${color.replace('text-', 'bg-')} animate-pulse`} />
         </div>
       </div>
 
       {/* 2. The Title (Glow Effect) */}
       <div className="mb-6">
-        <div className="text-[10px] uppercase tracking-[0.3em] text-stone-500 mb-1">Current Class</div>
+        <div className="text-[10px] uppercase tracking-[0.3em] text-amber-400 mb-1">Hatching Class</div>
         <motion.h3 
           key={title} // Triggers animation when title changes
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`font-serif text-2xl ${color} drop-shadow-md`}
+          className={`font-serif text-2xl ${color} drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]`}
         >
           {title}
         </motion.h3>
@@ -68,14 +71,14 @@ export default function SeedVisualizer({ initialSeed = 'H-0000', scores = { lore
 
       {/* 3. Stat Bars (The "Robust" Part) */}
       <div className="space-y-3">
-        <StatBar label="Lore" value={currentScores.lore || 0} color="bg-cyan-500" />
-        <StatBar label="Creature" value={currentScores.creature || 0} color="bg-emerald-500" />
-        <StatBar label="Geology" value={currentScores.geology || 0} color="bg-orange-500" />
+        <StatBar label="Lore" value={currentScores.lore || 0} color="bg-cyan-400" />
+        <StatBar label="Creature" value={currentScores.creature || 0} color="bg-emerald-400" />
+        <StatBar label="Geology" value={currentScores.geology || 0} color="bg-amber-500" />
       </div>
 
-      {/* Decorative Corner Scanlines */}
-      <div className="absolute top-0 right-0 p-2 opacity-20">
-         <div className="w-16 h-16 border-t border-r border-white rounded-tr-lg" />
+      {/* Decorative sand glyph */}
+      <div className="absolute bottom-3 right-4 text-[10px] uppercase tracking-[0.3em] text-amber-500/60 font-mono">
+        Pteros Hatchery
       </div>
     </motion.div>
   );

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useAuth } from '@/context/AuthContext';
 
 export default function TheBlankSlate() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const [signed, setSigned] = useState(false);
   const [error, setError] = useState(null);
 
@@ -57,7 +57,7 @@ export default function TheBlankSlate() {
             <label className="block text-[10px] font-mono uppercase mb-1">Explorer Name</label>
             <input
               name="name"
-              defaultValue={user.name}
+              defaultValue={user.displayName || user.email || ''}
               className="w-full bg-white/50 border border-ancient-ink/20 p-2 font-display text-lg focus:border-ancient-accent outline-none"
             />
           </div>

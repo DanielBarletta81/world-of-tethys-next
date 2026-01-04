@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 
 const NAV_LINKS = [
   { name: 'Books', path: '#books', icon: <BookOpen size={14} /> },
-  { name: 'Join the World', path: '#join', icon: <Sparkles size={14} /> },
+  { name: 'Join the World', path: '/community', icon: <Sparkles size={14} /> },
   { name: 'Mystics', path: '#mystics', icon: <Scroll size={14} /> },
   { name: 'Creatures', path: '/creatures', icon: <Compass size={14} /> },
   { name: 'Locations', path: '#locations', icon: <Map size={14} /> },

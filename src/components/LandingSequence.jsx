@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SEQUENCE_STEPS = [
-  { text: 'Judicial Exile: Initiated', sub: 'Watcher Volcano /// Ashfall Heavy' },
-  { text: 'Approaching The Weep', sub: 'Velocity: Terminal' },
-  { text: 'Clearing Basalt Stakes', sub: 'Deploying Vitrified Staff...' },
-  { text: 'Impact: Leidenfrost Cushion', sub: 'Welcome to the Bone-Rookery' }
+  { text: 'Descent Confirmed', sub: 'Ash corridor stable. Brace.' },
+  { text: 'Root Signal Found', sub: 'Ravel hum detected at 43.7 Hz' },
+  { text: 'Seal Opened', sub: 'Welcome to Tethys. Watch your footing.' }
 ];
 
 export default function LandingSequence({ onComplete }) {
@@ -15,10 +14,10 @@ export default function LandingSequence({ onComplete }) {
 
   useEffect(() => {
     if (step < SEQUENCE_STEPS.length) {
-      const timer = setTimeout(() => setStep((prev) => prev + 1), 1200);
+      const timer = setTimeout(() => setStep((prev) => prev + 1), 900);
       return () => clearTimeout(timer);
     }
-    const finishTimer = setTimeout(() => onComplete?.(), 800);
+    const finishTimer = setTimeout(() => onComplete?.(), 400);
     return () => clearTimeout(finishTimer);
   }, [step, onComplete]);
 
@@ -31,28 +30,12 @@ export default function LandingSequence({ onComplete }) {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 1.5, ease: 'circIn' } }}
         >
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-[#0f0c09] to-black" />
           <motion.div
-            className="absolute inset-0 pointer-events-none opacity-40"
-            style={{
-              backgroundImage: `url('/watcher-ashfall.jpg')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              filter: 'sepia(0.5) contrast(1.2)'
-            }}
-            animate={{ backgroundPosition: ['50% 50%', '50% 48%', '50% 50%'], opacity: [0.35, 0.5, 0.35] }}
+            className="absolute inset-0 opacity-30 pointer-events-none"
+            animate={{ background: ['radial-gradient(circle at 50% 40%, rgba(255,125,40,0.08), transparent 45%)', 'radial-gradient(circle at 55% 45%, rgba(59,130,246,0.08), transparent 45%)', 'radial-gradient(circle at 50% 40%, rgba(255,125,40,0.08), transparent 45%)'] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
           />
-
-          <motion.div
-            className="absolute inset-0 flex items-end justify-between px-10 opacity-30"
-            initial={{ y: 200 }}
-            animate={{ y: step > 1 ? -100 : 200 }}
-            transition={{ duration: 2, ease: 'anticipate' }}
-          >
-            <div className="w-24 h-96 bg-ancient-ink clip-path-pyramid" />
-            <div className="w-32 h-64 bg-ancient-ink clip-path-pyramid" />
-            <div className="w-16 h-80 bg-ancient-ink clip-path-pyramid" />
-          </motion.div>
 
           <AnimatePresence mode="wait">
             {step < SEQUENCE_STEPS.length && (

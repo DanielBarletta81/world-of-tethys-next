@@ -30,11 +30,16 @@ export default function HomeContent({ creatures, characters }) {
           {/* Hero Section */}
           <section className="relative h-[80vh] flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-7xl md:text-9xl font-header tracking-widest mb-6 text-forge-intense animate-forge-pulse">
-                THE ATLAS OF TETHYS
+                WORLD OF TETHYS
             </h1>
-            <Link href="/map" className="px-8 py-3 border border-forge-orange text-forge-orange uppercase">
-              Open The Atlas
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link href="/map" className="px-8 py-3 border border-forge-orange text-forge-orange uppercase">
+                Open The Atlas
+              </Link>
+              <Link href="/community" className="px-8 py-3 border border-amber-700 text-amber-200 uppercase bg-amber-900/20 hover:bg-amber-900/30">
+                Join the World
+              </Link>
+            </div>
           </section>
 
           {/* Identity / Auth */}

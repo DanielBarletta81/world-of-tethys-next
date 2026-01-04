@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import TethysNexus from '@/components/TethysNexus';
 import StaffSequencer from '@/components/StaffSequencer';
+import AtmosphericTotem from '@/components/AtmosphericTotem';
 
 
 export default function MapPage() {
@@ -16,6 +17,7 @@ export default function MapPage() {
       {/* BACKGROUND ATMOSPHERE */}
       <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none"></div>
       <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-900/10 blur-[100px] rounded-full"></div>
+      <AtmosphericTotem proxyCity="Athens, GR" biome="High_Altitude" />
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         

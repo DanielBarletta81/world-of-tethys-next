@@ -5,13 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import React from 'react';
 
-// Define the shape of a Card for TypeScript safety
-// interface Card {
-//   id: number;
-//   name: string;
-//   blurb: string;
-//   image: string;
-// }
 
 const CARDS = [
   {
