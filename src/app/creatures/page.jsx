@@ -85,6 +85,40 @@ const BESTIARY = [
         image: '/img/creatures/protostegid.png'
       }
     ]
+  },
+  {
+    era: 'Tethys Survivors',
+    subtitle: 'Ancient lineages that endured every cataclysm',
+    entries: [
+      {
+        name: 'Iron-Back (Sturgeon)',
+        tag: 'Canal Dredger',
+        niche: 'Armored bottom-feeders that clear Sky City intake valves and donate scutes for lightweight shields.',
+        science: 'Living fossils armored with bony scutes; electro-sensitive barbels patrol the mud for centuries-old migrations.',
+        image: '/img/creatures/ironback_sturgeon.png'
+      },
+      {
+        name: 'Silt-Hunter (Hybodont Shark)',
+        tag: 'Scavenger of Dier',
+        niche: 'Trash-compactor swarms that strip wrecks and drowned beasts; cephalic spines double as deterrent.',
+        science: 'Ancient sharks with dual tooth sets and head spines; opportunists that survived the Permian wipeout.',
+        image: '/img/creatures/silt_hunter.png'
+      },
+      {
+        name: 'Void-Shell (Sea Turtle)',
+        tag: 'Living Raft',
+        niche: 'Platformed shells carved with current maps; immune to the psionic static of trench depths.',
+        science: 'Protostegid analogs with fenestrated shells to save weight; early sea turtles like Santanachelys.',
+        image: '/img/creatures/void_shell.png'
+      },
+      {
+        name: 'Mud-Wing (Skate & Ray)',
+        tag: 'Minefield',
+        niche: 'Thousands bury in the mudflats; a step triggers bio-electric shock to power devices or stun intruders.',
+        science: 'Sediment-hiding rays with acute electroreception; flattened bodies optimized for ambush.',
+        image: '/img/creatures/mud_wing.png'
+      }
+    ]
   }
 ];
 

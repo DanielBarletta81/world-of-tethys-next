@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { LogIn, Shield, Ghost, X } from 'lucide-react';
+import { LogIn, Shield, Ghost, X, Send } from 'lucide-react';
 
 export default function SideAuthPanel() {
-  const { user, loading, loginGoogle, loginGhost } = useAuth();
+  const { user, loading, loginGoogle, loginGhost, loginEmailLink } = useAuth();
   const [open, setOpen] = useState(true);
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('');
 
   if (user || loading) return null;
 
@@ -46,6 +48,28 @@ export default function SideAuthPanel() {
             >
               <Ghost size={14} /> Enter as Ghost
             </button>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="flex-1 bg-black/40 border border-amber-800/40 text-amber-50 text-sm px-3 py-2 rounded-sm placeholder:text-amber-200/50 focus:border-amber-500 outline-none"
+                />
+                <button
+                  onClick={async () => {
+                    setStatus('');
+                    const ok = await loginEmailLink?.(email);
+                    setStatus(ok ? 'Magic link sent. Check your email.' : 'Failed to send link.');
+                  }}
+                  className="px-3 py-2 bg-amber-800/60 border border-amber-700/70 text-amber-50 rounded-sm hover:bg-amber-700 flex items-center gap-2 text-[11px] uppercase tracking-[0.15em]"
+                >
+                  <Send size={14} /> Link
+                </button>
+              </div>
+              {status && <p className="text-[11px] text-amber-200">{status}</p>}
+            </div>
             <p className="text-[11px] text-stone-400 leading-relaxed">
               Collapses after login. Use Google for cloud sync; Ghost keeps you local.
             </p>

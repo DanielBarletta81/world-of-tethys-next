@@ -3,7 +3,7 @@
 Plugin Name: Tethys Data Seeder
 Description: Populate archive entries from bundled lore and allow authenticated explorers to seed new records via proxy data.
 Version: 1.3
-Author: World of Tethys
+Author: World of Tethys - D.C. Barletta
 */
 
 if (!defined('ABSPATH')) {
