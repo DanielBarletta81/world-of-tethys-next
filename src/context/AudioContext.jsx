@@ -37,7 +37,7 @@ export function AudioProvider({ children }) {
         audioRef.current.load();
         if (isPlaying) audioRef.current.play().catch(e => console.log("Autoplay prevented:", e));
     }
-  }, [currentTrack]);
+  }, [currentTrack, isPlaying]);
 
   // Effect: Handle Play/Pause
   useEffect(() => {

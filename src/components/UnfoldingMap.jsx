@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import Image from 'next/image';
 
 // Your Lore Seeds (These match the "points of interest" in your story)
 // You will likely need to tweak 'top' and 'left' to match your specific image art.
@@ -24,11 +24,15 @@ export default function UnfoldingMap({ onPointClick }) {
         
         {/* === 1. THE MAP ARTIFACT === */}
         {/* Ensure 'epic_map_hero.PNG' is inside your 'public/img/map/' folder */}
-        <img 
-          src="/img/map/epic_map_hero.PNG" 
-          alt="Map of Tethys" 
-          className="absolute inset-0 w-full h-full object-cover opacity-90 sepia-[0.3] contrast-125"
-        />
+        <div className="absolute inset-0">
+          <Image 
+            src="/img/map/epic_map_hero.PNG" 
+            alt="Map of Tethys" 
+            fill
+            priority
+            className="object-cover opacity-90 sepia-[0.3] contrast-125"
+          />
+        </div>
 
         {/* Optional: A subtle vignette to darken the edges */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] pointer-events-none"></div>

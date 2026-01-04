@@ -43,7 +43,7 @@ export function TethysProvider({ children }) {
       setStats(prev => ({ ...prev, ...(parsed.stats || {}) })); // Merge to ensure new keys like 'resin' exist
       setLastHarvestDate(parsed.lastHarvestDate || null);
     }
-  }, [userId]);
+  }, [userId, STORAGE_KEY]);
 
   // --- SAVE DATA ---
   useEffect(() => {
@@ -56,7 +56,7 @@ export function TethysProvider({ children }) {
       stats,
       lastHarvestDate
     }));
-  }, [inventory, equippedStaff, stats, lastHarvestDate, userId]);
+  }, [inventory, equippedStaff, stats, lastHarvestDate, userId, STORAGE_KEY]);
 
   // --- HARVEST CHECKER ---
   useEffect(() => {
