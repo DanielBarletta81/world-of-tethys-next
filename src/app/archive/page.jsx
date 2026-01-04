@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, Skull, Shield, Database, Microscope } from 'lucide-react';
-// import Link from 'next/link'; // Using <a> for preview
+import Link from 'next/link'; 
 
 const SECTORS = [
   {
@@ -39,9 +39,9 @@ export default function ArchiveIndex() {
       
       {/* NAV */}
       <div className="max-w-6xl mx-auto mb-16">
-        <a href="/" className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#78716c] hover:text-orange-500 transition-colors">
+        <Link href="/" className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#78716c] hover:text-orange-500 transition-colors">
           <ArrowLeft size={14} /> Return to Surface
-        </a>
+        </Link>
       </div>
 
       {/* HEADER */}
@@ -58,7 +58,7 @@ export default function ArchiveIndex() {
       {/* SECTOR GRID */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {SECTORS.map((sector) => (
-          <a 
+          <Link
             key={sector.id} 
             href={sector.link}
             className="group bg-[#1c1917] border border-[#292524] p-8 hover:border-orange-900/50 transition-all duration-500 relative overflow-hidden flex items-center gap-8"
@@ -81,7 +81,7 @@ export default function ArchiveIndex() {
 
             {/* Corner Bracket */}
             <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#292524] group-hover:border-orange-900/30 transition-colors"></div>
-          </a>
+          </Link>
         ))}
       </div>
 
