@@ -13,9 +13,9 @@ const RANKS = [
   { threshold: 50, title: 'Molten Core' }
 ];
 
-export default function PlayerAvatar() {
+export default function PlayerAvatar({ statsOverride }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [stats, setStats] = useState({ lore: 0, creature: 0, geology: 0, total: 0 });
+  const [stats, setStats] = useState(statsOverride || { lore: 0, creature: 0, geology: 0, total: 0 });
   const [rank, setRank] = useState(RANKS[0]);
   const [nextRank, setNextRank] = useState(RANKS[1]);
   const menuRef = useRef(null);
@@ -35,12 +35,21 @@ export default function PlayerAvatar() {
 
   useEffect(() => {
     // Simplified logic for brevity in this snippet
-    if (typeof window !== 'undefined') {
+    if (statsOverride) {
+      setStats(statsOverride);
+    } else if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('tethys_player_stats');
       if (stored) setStats(JSON.parse(stored));
     }
-  }, []);
+  }, [statsOverride]);
   // ---------------------------------------------------------
+
+  useEffect(() => {
+    const current = [...RANKS].reverse().find(r => stats.total >= r.threshold) || RANKS[0];
+    const idx = RANKS.findIndex(r => r.threshold === current.threshold);
+    setRank(current);
+    setNextRank(RANKS[Math.min(idx + 1, RANKS.length - 1)]);
+  }, [stats.total]);
 
   // DYNAMIC HEAT COLOR (Based on dominant stat)
   const getThermalState = () => {

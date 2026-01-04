@@ -1,42 +1,61 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { generateStaffProfile } from '@/lib/staff-utils';
 import { useTethys } from '@/context/TethysContext';
 
 
 
-export default function StaffSequencer() {
+export default function StaffSequencer({
+  initialStats,
+  initialPath,
+  inventoryOverride,
+  onProfile
+}) {
   // 1. GET REAL STATS FROM LOCAL STORAGE (Where PlayerAvatar saves them)
-  const [stats, setStats] = useState({ geology: 0, creature: 0, lore: 0, human: 0 });
+  const [stats, setStats] = useState(initialStats || { geology: 0, creature: 0, lore: 0, human: 0 });
   const [staff, setStaff] = useState(null);
-  const [path, setPath] = useState(null);
+  const [path, setPath] = useState(initialPath || null);
   const { resin = 0 } = useTethys();
 
+  const inventoryPool = useMemo(() => {
+    if (inventoryOverride && inventoryOverride.length) return inventoryOverride;
+    return ['Map_fragment'];
+  }, [inventoryOverride]);
+
   useEffect(() => {
-    // Hydrate from storage on mount
-    if (typeof window !== 'undefined') {
+    // Hydrate from props or storage
+    if (initialStats) {
+      setStats(initialStats);
+    } else if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('tethys_player_stats');
       if (stored) {
         try {
-          const parsed = JSON.parse(stored);
-          setStats(parsed);
+          setStats(JSON.parse(stored));
         } catch (e) {
           console.error("Staff Sequencer: Corrupted Data");
         }
       }
+    }
+  }, [initialStats]);
+
+  useEffect(() => {
+    if (initialPath) {
+      setPath(initialPath);
+    } else if (typeof window !== 'undefined') {
       const savedPath = localStorage.getItem('tethys_path');
       if (savedPath) setPath(savedPath);
     }
-  }, []);
+  }, [initialPath]);
 
   useEffect(() => {
     // 2. GENERATE STAFF DYNAMICALLY
     // We pass the stats we just loaded. 
     // We also pass a mock inventory for now, but you can load that from localStorage too.
-    const profile = generateStaffProfile(stats, ['Map_fragment']); 
+    const profile = generateStaffProfile(stats, inventoryPool); 
     setStaff(profile);
-  }, [stats]);
+    onProfile?.(profile);
+  }, [stats, inventoryPool, onProfile]);
 
   if (!staff) return <div className="text-xs font-mono text-cyan-500 animate-pulse">Initializing Fabricator...</div>;
 
