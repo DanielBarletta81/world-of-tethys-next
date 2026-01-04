@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import ParchmentShader from './ParchmentShader';
 
 export default function ArtifactPlate({ artifact }) {

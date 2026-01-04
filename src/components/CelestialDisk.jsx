@@ -1,5 +1,5 @@
 'use client';
-
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useEffect, useState, useMemo } from 'react';
 
@@ -35,7 +35,7 @@ export default function CelestialDisk({ label = CYCLE_LABEL, className = 'tethys
       >
         <div className="absolute inset-2 rounded-full border border-amber-900/30"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.08),transparent_60%)]"></div>
-        <img src="/logo-disk.png" alt="Tethys Celestial Disk" className="w-full h-full object-contain opacity-80" />
+        <Image src="/logo-disk.png" alt="Tethys Celestial Disk" className="w-full h-full object-contain opacity-80" />
       </motion.div>
       <div className="text-center space-y-1">
         <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400 font-mono">{label}</p>

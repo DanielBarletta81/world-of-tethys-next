@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Eye, Waves, MessageCircle } from 'lucide-react';
-// Correct relative path: Up from 'components' to 'app', then down to 'mystics'
-import styles from '../mystics/mystics.module.css';
+// Use global styles; whisper text now just uses inline classes
 
 const WHISPERS_POOL = [
   { gibberish: "0101...kzzt...root...break", translation: "The Magma rises from the south. The roots are burning." },
@@ -110,7 +109,7 @@ const OraclePool = () => {
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 text-center w-full max-w-lg pointer-events-none">
         {activeWhisper ? (
           <div className="bg-black/60 backdrop-blur-md p-6 rounded-lg border-t border-teal-500/30 animate-in slide-in-from-bottom-4">
-            <p className={`text-sm mb-2 ${styles.whisperText}`}>
+            <p className="text-sm mb-2 text-emerald-200 font-mono tracking-[0.15em] uppercase">
               {activeWhisper.reveal ? "..." : activeWhisper.gibberish}
             </p>
             {activeWhisper.reveal && (

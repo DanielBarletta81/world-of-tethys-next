@@ -7,6 +7,12 @@ import TethysNexus from '@/components/TethysNexus';
 import StaffSequencer from '@/components/StaffSequencer';
 import AtmosphericTotem from '@/components/AtmosphericTotem';
 
+const WEATHER_NODES = [
+  { id: 'sky-city', city: 'Athens, GR', biome: 'High_Altitude', top: '20%', left: '70%' },
+  { id: 'pteros', city: 'Reykjavik, IS', biome: 'High_Altitude', top: '60%', left: '30%' },
+  { id: 'lonely-span', city: 'Lisbon, PT', biome: 'Coastal', top: '45%', left: '50%' },
+  { id: 'strait-of-dier', city: 'Cairo, EG', biome: 'Desert', top: '65%', left: '80%' }
+];
 
 export default function MapPage() {
   const [hatched, setHatched] = useState(false);
@@ -37,6 +43,16 @@ export default function MapPage() {
                 <TethysNexus />
                 {/* Mask to focus on Pteros Island region */}
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,125,40,0.18),rgba(12,10,9,0.8))] mix-blend-screen" />
+                {/* Weather overlays */}
+                {WEATHER_NODES.map((node) => (
+                  <div
+                    key={node.id}
+                    className="absolute"
+                    style={{ top: node.top, left: node.left, transform: 'translate(-50%, -50%)', width: '260px', maxWidth: '70vw' }}
+                  >
+                    <AtmosphericTotem proxyCity={node.city} biome={node.biome} />
+                  </div>
+                ))}
               </div>
             </div>
           </div>

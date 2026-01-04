@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
@@ -47,7 +48,7 @@ export default function FirebaseLogin() {
         <div className="flex items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {user.photoURL ? (
-            <img src={user.photoURL} alt="avatar" className="w-10 h-10 rounded-full border border-stone-700" />
+            <Image src={user.photoURL} alt="avatar" className="w-10 h-10 rounded-full border border-stone-700" />
           ) : (
             <div className="w-10 h-10 rounded-full border border-stone-700 flex items-center justify-center text-stone-400">
               <User size={16} />

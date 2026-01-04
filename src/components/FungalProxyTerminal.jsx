@@ -1,5 +1,5 @@
 'use client';
-
+import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
 import { Microscope, Dna, Leaf, AlertTriangle, ScanEye, RefreshCw } from 'lucide-react';
 // Relative import to the file created above
@@ -71,7 +71,7 @@ export default function FungalProxyTerminal() {
             >
               <div className="w-10 h-10 rounded bg-black border border-teal-900/50 overflow-hidden shrink-0">
                 {spec.realWorld.imageUrl ? (
-                  <img src={spec.realWorld.imageUrl} alt="Fungi" className="w-full h-full object-cover opacity-80" />
+                  <Image src={spec.realWorld.imageUrl} alt="Fungi" className="w-full h-full object-cover opacity-80" />
                 ) : (
                   <Leaf className="w-full h-full p-2 text-teal-900" />
                 )}
@@ -93,7 +93,7 @@ export default function FungalProxyTerminal() {
             {/* HERO IMAGE */}
             <div className="h-1/2 relative overflow-hidden group shrink-0">
               {selectedSpecimen.realWorld.imageUrl && (
-                <img 
+                <Image 
                   src={selectedSpecimen.realWorld.imageUrl} 
                   alt="Specimen" 
                   className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"

@@ -6,7 +6,16 @@ import BookBanner from '@/components/BookBanner';
 import SideAuthPanel from '@/components/SideAuthPanel';
 import FirebaseLogin from '@/components/FirebaseLogin';
 import TheBlankSlate from '@/components/TheBlankSlate';
+import dynamic from 'next/dynamic';
 import Footer from '@/components/Footer';
+
+const FungalProxyPanel = dynamic(() => import('@/components/FungalProxyPanel'), { ssr: false });
+const MythicCard = dynamic(() => import('@/components/MythicCard'), { ssr: false });
+
+const COMMUNITY_MYTHICS = [
+  { name: 'Prime Signal', symbol: 'PSI', trait: 'Ignited the Cambrian wave; a harmonic that still rings.' },
+  { name: 'Luminous Chorus', symbol: 'STAR', trait: 'Crown of lights over the Weep; gifted crest code.' }
+];
 
 export default function CommunityPage() {
   return (
@@ -30,6 +39,15 @@ export default function CommunityPage() {
               <FirebaseLogin />
             </div>
             <TheBlankSlate />
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <FungalProxyPanel />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {COMMUNITY_MYTHICS.map((m) => (
+                <MythicCard key={m.name} entity={m} />
+              ))}
+            </div>
           </div>
         </section>
       </div>
