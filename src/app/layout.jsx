@@ -46,9 +46,9 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <TethysProvider>
             <AudioProvider>
-              <GlobalAtmosphere >
+              <GlobalAtmosphere />
               {children}
-              </GlobalAtmosphere>
+             
               <GlobalAudioPlayer/>
             </AudioProvider>
           </TethysProvider>
