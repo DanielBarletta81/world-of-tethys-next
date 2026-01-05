@@ -1,6 +1,7 @@
 /// src/hooks/useSoundFX.js
 'use client';
 
+
 // SILENT MODE: Allows the site to run without audio files
 export default function useSoundFX() {
   return {

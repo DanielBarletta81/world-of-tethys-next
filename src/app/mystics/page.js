@@ -1,7 +1,7 @@
 // src/app/mystics/page.jsx
 'use client';
 
-import WayFinderNav from '@/components/TriFoldNav';
+import TriFoldNav from '@/components/TrifoldNav';
 import MysticsClient from '@/components/MysticsClient'; // Contains OraclePool, etc.
 import PathSelector from '@/components/PathSelector';
 import StaffSequencer from '@/components/StaffSequencer';
@@ -22,7 +22,7 @@ export default function MysticsPage() {
         </p>
       </header>
 
-      <WayFinderNav />
+      <TriFoldNav />
 
       <div className="max-w-5xl mx-auto">
         

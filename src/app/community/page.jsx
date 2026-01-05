@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import WayFinderNav from '@/components/TriFoldNav';
+import TriFoldNav from '@/components/TrifoldNav';
 import BookBanner from '@/components/BookBanner';
 import SideAuthPanel from '@/components/SideAuthPanel';
 import FirebaseLogin from '@/components/FirebaseLogin';
@@ -20,7 +20,7 @@ const COMMUNITY_MYTHICS = [
 export default function CommunityPage() {
   return (
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif selection:bg-amber-900 selection:text-white relative overflow-x-hidden">
-      <WayFinderNav />
+      <TriFoldNav />
       <SideAuthPanel />
       <div className="pt-20 space-y-10">
         <BookBanner />

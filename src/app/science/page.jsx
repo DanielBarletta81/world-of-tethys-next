@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import TriFoldNav from '@/components/TriFoldNav';
+import TriFoldNav from '@/components/TrifoldNav';
 import PterosDashboard from '@/components/PterosDashboard';
 import PaleoRealityCheck from '@/components/PaleoRealityCheck';
 import MineralMap from '@/components/MineralMap';
@@ -92,7 +92,7 @@ export default function FieldStationPage() {
                 <CinematicTerminal 
                   videoId="dQw4w9WgXcQ" // Replace with your real trailer ID
                   title="Expedition Log: The Weep" 
-                  thumbnail="/img/video-thumb-1.jpg" // Ensure this image exists
+                  thumbnail="/img/books/ravel-paperback.jpg" // Ensure this image exists
                 />
               </div>
             </motion.div>

@@ -1,102 +1,167 @@
+// src/app/map/page.js
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { useTethys } from '@/context/TethysContext';
 import TethysNexus from '@/components/TethysNexus';
 import StaffSequencer from '@/components/StaffSequencer';
-import AtmosphericTotem from '@/components/AtmosphericTotem';
-
-const WEATHER_NODES = [
-  { id: 'sky-city', city: 'Athens, GR', biome: 'High_Altitude', top: '20%', left: '70%' },
-  { id: 'pteros', city: 'Reykjavik, IS', biome: 'High_Altitude', top: '60%', left: '30%' },
-  { id: 'lonely-span', city: 'Lisbon, PT', biome: 'Coastal', top: '45%', left: '50%' },
-  { id: 'strait-of-dier', city: 'Cairo, EG', biome: 'Desert', top: '65%', left: '80%' }
-];
+import Incubator from '@/components/Incubator';
+import TriFoldNav from '@/components/TrifoldNav';
 
 export default function MapPage() {
-  const [hatched, setHatched] = useState(false);
+  const { equippedStaff, unlockedNodes, travelTo } = useTethys();
+  const [viewState, setViewState] = useState('loading'); // loading, egg, forge, map
+
+
+
+  // 1. Determine Initial State based on User Progress
+  useEffect(() => {
+    if (equippedStaff) {
+      setViewState('map');
+    } else {
+      setViewState('egg');
+    }
+  }, [equippedStaff]);
+
+  // 2. Progression Handlers
+  const onEggHatch = () => {
+    // Egg hatches -> Move to Forge
+    setViewState('forge');
+  };
+
+  const onStaffComplete = (profile) => {
+    // Forge done -> Unlock Map Node -> Move to Map
+    // We unlock 'sky-city' as the reward for finishing the tutorial
+    travelTo('sky-city'); 
+    setViewState('map');
+  };
 
   return (
     <div className="min-h-screen bg-[#0c0a09] text-stone-200 p-6 pt-32 relative overflow-hidden font-mono">
       
-      {/* BACKGROUND ATMOSPHERE */}
-      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none"></div>
-      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-900/10 blur-[100px] rounded-full"></div>
-      <AtmosphericTotem proxyCity="Athens, GR" biome="High_Altitude" />
-
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-        
-        {/* LEFT COL: THE MAP (The Prize) */}
-        <div className="relative">
-          {/* Header for the Map */}
-          <div className="mb-6">
-            <h1 className="text-4xl font-serif text-white mb-2">Sector 4: The Undercity</h1>
-            <p className="text-stone-500 text-sm uppercase tracking-widest">
-              Status: <span className="text-emerald-400 animate-pulse">Survey Open</span>
-            </p>
-          </div>
-
-          <div className="relative rounded-xl overflow-hidden border border-stone-800 shadow-2xl bg-[#1c1917] group">
-            <div className="transition-all duration-700">
-              <div className="relative">
-                <TethysNexus />
-                {/* Mask to focus on Pteros Island region */}
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,125,40,0.18),rgba(12,10,9,0.8))] mix-blend-screen" />
-                {/* Weather overlays */}
-                {WEATHER_NODES.map((node) => (
-                  <div
-                    key={node.id}
-                    className="absolute"
-                    style={{ top: node.top, left: node.left, transform: 'translate(-50%, -50%)', width: '260px', maxWidth: '70vw' }}
-                  >
-                    <AtmosphericTotem proxyCity={node.city} biome={node.biome} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* HEADER */}
+      <div className="max-w-7xl mx-auto mb-8 flex justify-between items-end relative z-10">
+      <TriFoldNav/>
+        <div>
+          <Link href="/" className="text-xs text-stone-500 hover:text-white uppercase tracking-widest flex items-center gap-2 mb-4 transition-colors">
+            <ArrowLeft size={14} /> Return to Hub
+          </Link>
+          <h1 className="text-4xl font-serif text-white">
+            {viewState === 'map' ? 'The Atlas' : 'Pteros Hatchery'}
+          </h1>
         </div>
-
-        {/* RIGHT COL: HATCH + PROFILE */}
-        <div className="space-y-8">
-          
-          <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg shadow-lg relative overflow-hidden">
-             <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500"></div>
-             <h3 className="text-amber-500 font-bold uppercase text-xs tracking-widest mb-2">Hatch Protocol</h3>
-             <p className="text-stone-400 font-serif italic">
-               "Only the Pteros Island strait is visible. Anchor your egg here to sync staff, profile, and bond traits."
-             </p>
-             <div className="mt-4 flex flex-col gap-3">
-               <button
-                 onClick={() => setHatched(true)}
-                 className="px-4 py-3 bg-amber-900/30 border border-amber-700/50 text-amber-200 uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-amber-900/50 transition"
-               >
-                 Hatch at Pteros Island
-               </button>
-               <p className="text-[11px] text-stone-500">
-                 Hatching links your staff components, egg imprint, and profile. Once linked, the Registry can export VR metadata.
-               </p>
-             </div>
+        
+        {/* Progress Stepper (Visible during tutorial) */}
+        {viewState !== 'map' && (
+          <div className="flex gap-2">
+            <StepIndicator label="Incubate" active={viewState === 'egg'} completed={viewState === 'forge'} />
+            <div className="w-8 h-[1px] bg-stone-800 self-center" />
+            <StepIndicator label="Forge" active={viewState === 'forge'} completed={false} />
           </div>
+        )}
+      </div>
 
-          {hatched && (
-            <div className="bg-[#0c0a09] border border-emerald-800/40 rounded-lg p-4 shadow-lg">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-400 font-mono mb-2">Staff Sequencer</p>
-              <StaffSequencer />
-            </div>
+      <div className="max-w-7xl mx-auto relative z-10">
+        <AnimatePresence mode="wait">
+          
+          {/* PHASE 1: THE EGG */}
+          {viewState === 'egg' && (
+            <motion.div
+              key="egg"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+              className="flex flex-col items-center py-12"
+            >
+              <Incubator onHatch={onEggHatch} />
+              <p className="mt-12 text-stone-500 max-w-md text-center text-sm font-serif italic">
+                "The map is silent until you hatch a guide. Break the seal to begin."
+              </p>
+            </motion.div>
           )}
 
-        </div>
-      </div>
+          {/* PHASE 2: THE FORGE */}
+          {viewState === 'forge' && (
+            <motion.div
+              key="forge"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="max-w-3xl mx-auto"
+            >
+              <div className="mb-6 p-4 bg-emerald-900/10 border border-emerald-900/50 rounded flex items-center gap-3 text-emerald-400 text-xs uppercase tracking-widest">
+                <CheckCircle size={16} />
+                <span>Lifeform Detected. Syncing Staff Sequencer...</span>
+              </div>
+              <StaffSequencer onProfile={onStaffComplete} />
+            </motion.div>
+          )}
 
-      {/* BACK LINK */}
-      <div className="absolute top-6 left-6">
-         <Link href="/" className="text-stone-500 hover:text-white text-xs uppercase tracking-widest transition-colors">
-           &larr; Return to Hub
-         </Link>
-      </div>
+          {/* PHASE 3: THE MAP */}
+          {viewState === 'map' && (
+            <motion.div
+              key="map"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+            >
+              <div className="lg:col-span-2">
+                <TethysNexus />
+              </div>
+              
+              <div className="space-y-6">
+                {/* Your Staff (Inventory Display) */}
+                <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
+                  <h3 className="text-amber-500 text-xs uppercase tracking-widest mb-4">Equipped Artifact</h3>
+                  {equippedStaff ? (
+                    <div>
+                      <div className="text-xl font-serif text-white">{equippedStaff.name}</div>
+                      <div className="text-xs text-stone-500 font-mono mt-1">{equippedStaff.id}</div>
+                      <div className="mt-4 flex gap-2">
+                        <span className="px-2 py-1 bg-stone-800 text-stone-300 text-[10px] uppercase rounded">
+                          {equippedStaff.rarity}
+                        </span>
+                        <span className="px-2 py-1 bg-stone-800 text-stone-300 text-[10px] uppercase rounded">
+                          Power: {equippedStaff.stats?.power || 0}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-stone-600 italic">No artifact synced.</div>
+                  )}
+                </div>
 
+                {/* Quick Nav */}
+                <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
+                  <h3 className="text-cyan-500 text-xs uppercase tracking-widest mb-4">System Access</h3>
+                  <div className="space-y-2">
+                    <Link href="/science" className="block px-4 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 rounded text-xs text-stone-300 transition-colors">
+                      Open Field Station &rarr;
+                    </Link>
+                    <Link href="/mystics" className="block px-4 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 rounded text-xs text-stone-300 transition-colors">
+                      Consult The Veil &rarr;
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// UI Helper
+function StepIndicator({ label, active, completed }) {
+  return (
+    <div className={`flex items-center gap-2 text-[10px] uppercase tracking-widest ${active ? 'text-white' : completed ? 'text-emerald-500' : 'text-stone-600'}`}>
+      <div className={`w-2 h-2 rounded-full ${active ? 'bg-white animate-pulse' : completed ? 'bg-emerald-500' : 'bg-stone-700'}`} />
+      {label}
     </div>
   );
 }

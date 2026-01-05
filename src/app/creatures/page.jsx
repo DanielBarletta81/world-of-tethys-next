@@ -3,7 +3,7 @@
 
 import React from 'react';
 import BookBanner from '@/components/BookBanner';
-import WayFinderNav from '@/components/TriFoldNav';
+import TriFoldNav from '@/components/TrifoldNav';
 import Footer from '@/components/Footer';
 
 const BESTIARY = [
@@ -148,7 +148,7 @@ function CreatureCard({ entry }) {
 export default function CreaturesPage() {
   return (
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif selection:bg-amber-900 selection:text-white relative overflow-x-hidden">
-      <WayFinderNav />
+      <TriFoldNav />
       <div className="pt-20">
         <BookBanner />
         <section className="max-w-6xl mx-auto px-6 py-12">
