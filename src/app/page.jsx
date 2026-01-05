@@ -9,6 +9,7 @@ import { Gem, Map, Shield, User } from "lucide-react";
 import LandingSequence from '@/components/LandingSequence';
 import TriFoldNav from "@/components/TriFoldNav";
 import Link from "next/link";
+import MarineShowcase from "@/components/MarineShowcase";
 
 export default function Home() {
   const { user, loading: authLoading } = useAuth();
@@ -35,18 +36,19 @@ export default function Home() {
       {/* 2. Main Hub UI */}
       {introFinished && (
         <div className="animate-in fade-in duration-1000">
-          <TriFoldNav />
+       
           {/* Background Atmosphere */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-900/20 rounded-full blur-[128px]"></div>
              <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10"></div>
           </div>
+             <TriFoldNav />
 
           {/* Navigation Bar */}
           <nav className="relative z-20 flex items-center justify-between p-6 border-b border-slate-800 bg-slate-950/80 backdrop-blur">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 border border-orange-600 bg-orange-900/20 flex items-center justify-center rounded">
-                <span className="font-header text-orange-500 font-bold text-xl">T</span>
+                <span className="font-header text --forge-700 font-bold text-xl">W.O.T.</span>
               </div>
               <h1 className="text-xl font-bold tracking-widest text-slate-200 uppercase hidden md:block">
                 World of Tethys
@@ -110,15 +112,16 @@ export default function Home() {
 
               {isGuest && (
                 <div className="mt-auto p-4 bg-orange-900/10 border border-orange-900/30 rounded text-center">
-                  <p className="text-[10px] text-orange-400 uppercase tracking-widest mb-2">Data Volatile</p>
+                  <p className="text-[10px] text-orange-400 uppercase tracking-widest mb-2">Comms Volatile</p>
                   <Link href="/login" className="text-xs text-white underline hover:text-orange-400">
-                    Secure Uplink (Login)
+                    Secure Roots (Login)
                   </Link>
                 </div>
               )}
             </div>
 
           </div>
+          <MarineShowcase />
         </div>
       )}
     </main>
