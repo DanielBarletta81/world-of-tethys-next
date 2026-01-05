@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import TriFoldNav from '@/components/TrifoldNav';
+import TriFoldNav from '@/components/TriFoldNav';
 import BookBanner from '@/components/BookBanner';
 import SideAuthPanel from '@/components/SideAuthPanel';
 import FirebaseLogin from '@/components/FirebaseLogin';

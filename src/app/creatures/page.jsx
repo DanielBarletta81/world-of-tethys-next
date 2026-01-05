@@ -3,7 +3,7 @@
 
 import React from 'react';
 import BookBanner from '@/components/BookBanner';
-import TriFoldNav from '@/components/TrifoldNav';
+import TriFoldNav from '@/components/TriFoldNav';
 import Footer from '@/components/Footer';
 
 const BESTIARY = [

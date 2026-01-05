@@ -9,7 +9,7 @@ import { useTethys } from '@/context/TethysContext';
 import TethysNexus from '@/components/TethysNexus';
 import StaffSequencer from '@/components/StaffSequencer';
 import Incubator from '@/components/Incubator';
-import TriFoldNav from '@/components/TrifoldNav';
+import TriFoldNav from '@/components/TriFoldNav';
 
 export default function MapPage() {
   const { equippedStaff, unlockedNodes, travelTo } = useTethys();

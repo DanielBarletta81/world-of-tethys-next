@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import TriFoldNav from '@/components/TrifoldNav';
+import TriFoldNav from '@/components/TriFoldNav';
 import BookManifest from '@/components/BookManifest';
 import BondForge from '@/components/BondForge';
 import CharacterCarousel from '@/components/CharacterCarousel';

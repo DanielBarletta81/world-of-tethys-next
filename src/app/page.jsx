@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
-import TriFoldNav from "@/components/TrifoldNav";
+import TriFoldNav from "@/components/TriFoldNav";
 import MarineShowcase from "@/components/MarineShowcase";
 import BookCarousel from "@/components/BookCarousel";
 import { Gem, User, Activity, Globe, Zap } from "lucide-react";

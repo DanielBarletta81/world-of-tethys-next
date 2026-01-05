@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import TriFoldNav from '@/components/TrifoldNav';
+import TriFoldNav from '@/components/TriFoldNav';
 import PterosDashboard from '@/components/PterosDashboard';
 import PaleoRealityCheck from '@/components/PaleoRealityCheck';
 import MineralMap from '@/components/MineralMap';
