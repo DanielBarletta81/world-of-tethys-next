@@ -1,141 +1,156 @@
 // src/app/page.jsx
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
-import { MagmaButton } from "@/components/MagmaUI";
-import { Gem, Map, Shield, User } from "lucide-react";
 import LandingSequence from '@/components/LandingSequence';
 import TriFoldNav from "@/components/TriFoldNav";
-import Link from "next/link";
 import MarineShowcase from "@/components/MarineShowcase";
+import { Gem, User, Activity, Globe, Zap } from "lucide-react";
+import Link from "next/link";
+
 
 export default function Home() {
   const { user, loading: authLoading } = useAuth();
   const { stats, isGuest, loadingData } = useTethys();
   const [introFinished, setIntroFinished] = useState(false);
-  const router = useRouter();
-
-  // Redirect to login if absolutely no auth state is found after load
-  useEffect(() => {
-    if (!authLoading && !user && !loadingData) {
-      // Optional: Uncomment to force login on home
-      // router.push("/login");
-    }
-  }, [user, authLoading, loadingData, router]);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 font-serif overflow-hidden relative">
+    <main className="min-h-screen bg-[#050403] text-slate-100 font-serif overflow-x-hidden relative selection:bg-orange-900 selection:text-white">
       
-      {/* 1. Intro Sequence (Plays once) */}
+      {/* 1. INTRO SEQUENCE (Blocking) */}
       {!introFinished && (
         <LandingSequence onComplete={() => setIntroFinished(true)} />
       )}
 
-      {/* 2. Main Hub UI */}
+      {/* 2. THE MAGMA FORGE INTERFACE */}
       {introFinished && (
-        <div className="animate-in fade-in duration-1000">
-       
-          {/* Background Atmosphere */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-900/20 rounded-full blur-[128px]"></div>
-             <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10"></div>
+        <div className="animate-in fade-in duration-[2000ms] relative z-10">
+          
+          {/* CINEMATIC BACKGROUND */}
+          <div className="fixed inset-0 z-0">
+            {/* The Getty Image goes here */}
+            <div className="absolute inset-0 bg-[url('/img/bg/magma-forge-hero.jpg')] bg-cover bg-center opacity-40 mix-blend-screen" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#050403] via-transparent to-[#050403]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050403_90%)]" />
           </div>
-             <TriFoldNav />
 
-          {/* Navigation Bar */}
-          <nav className="relative z-20 flex items-center justify-between p-6 border-b border-slate-800 bg-slate-950/80 backdrop-blur">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 border border-orange-600 bg-orange-900/20 flex items-center justify-center rounded">
-                <span className="font-header text --forge-700 font-bold text-xl">W.O.T.</span>
-              </div>
-              <h1 className="text-xl font-bold tracking-widest text-slate-200 uppercase hidden md:block">
-                World of Tethys
+          {/* TOP BAR: SYSTEM STATUS */}
+          <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#050403]/80 backdrop-blur-md">
+            <div className="flex items-center gap-4">
+              {/* THE BRAND: Magma Burn Text */}
+              <h1 className="text-4xl font-black tracking-tighter text-magma-burn font-sans italic transform -skew-x-6">
+                W.O.T.
               </h1>
+              <div className="hidden md:flex h-6 w-[1px] bg-white/10" />
+              <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] text-stone-500 font-mono">
+                System: Online
+              </span>
             </div>
 
             <div className="flex items-center gap-6">
-              {/* Resin Counter (Live Data) */}
-              <div className="flex items-center gap-2 px-4 py-2 border border-slate-800 bg-black/40 rounded-full">
-                <Gem size={14} className="text-orange-500" />
-                <span className="font-mono text-sm text-orange-100">{loadingData ? '...' : stats.resin}</span>
+              {/* Resin Output */}
+              <div className="flex items-center gap-2 px-3 py-1.5 border border-orange-900/30 bg-orange-950/10 rounded-full">
+                <Gem size={12} className="text-orange-500 animate-pulse" />
+                <span className="font-mono text-xs text-orange-200">{loadingData ? '...' : stats.resin}</span>
               </div>
               
-              {/* User Status */}
-              <div className="flex items-center gap-2">
-                <User size={16} className={isGuest ? "text-slate-500" : "text-emerald-500"} />
-                <span className="text-xs uppercase tracking-widest text-slate-400">
-                  {authLoading ? '...' : (isGuest ? 'Guest Uplink' : user.displayName || 'Commander')}
-                </span>
+              {/* User ID */}
+              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-stone-400">
+                <User size={14} className={isGuest ? "text-stone-600" : "text-emerald-500"} />
+                {authLoading ? '...' : (isGuest ? 'Guest_Proxy' : user?.displayName || 'Warden')}
               </div>
             </div>
           </nav>
 
-          {/* Content Grid */}
-          <div className="relative z-10 max-w-7xl mx-auto p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="relative z-10 pt-32 pb-24 max-w-7xl mx-auto px-6 space-y-20">
             
-            {/* HERO CARD */}
-            <div className="lg:col-span-2 p-8 border border-slate-800 bg-slate-900/50 rounded-xl shadow-2xl relative overflow-hidden group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-red-600 opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
-              <div className="relative z-10">
-                <h2 className="text-4xl font-header text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-4">
-                  The Ash Age
-                </h2>
-                <p className="text-slate-400 text-lg leading-relaxed mb-8">
-                  The surface is silent. The Undercity wakes. Your resin stores are synced to the magma core.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  <Link href="/map">
-                    <MagmaButton>Enter The Atlas</MagmaButton>
-                  </Link>
-                  <Link href="/creatures">
-                    <button className="px-6 py-3 border border-slate-600 text-slate-300 hover:border-orange-500 hover:text-orange-500 uppercase tracking-widest text-sm rounded transition-all">
-                      View Bestiary
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
+            {/* HERO SECTION: "Just Getting Started" */}
+            <section className="text-center space-y-6">
+              <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-stone-100 to-stone-600 tracking-tight uppercase">
+                Worlds Within <span className="text-orange-600">The World</span>
+              </h2>
+              <p className="max-w-2xl mx-auto text-lg text-stone-400 leading-relaxed font-sans">
+                The surface is silent, but the <span className="text-orange-400">Magma Layer</span> is active. 
+                Choose your vector: Science, Mysticism, or the Chronicle.
+              </p>
+            </section>
 
-            {/* STATS / STATUS CARD */}
-            <div className="p-6 border border-slate-800 bg-black/40 rounded-xl flex flex-col gap-6">
-              <h3 className="text-xs uppercase tracking-[0.3em] text-orange-500 font-bold border-b border-slate-800 pb-4">
-                Vital Signs
-              </h3>
+            {/* THE GATEWAY (TriFold) */}
+            <TriFoldNav />
+
+            {/* GAMER PATH: IMMERSION DASHBOARD */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
-              <div className="space-y-4">
-                <StatRow label="Sanity" value={stats.sanity + "%"} icon={<Shield size={14} className="text-emerald-500"/>} />
-                <StatRow label="Kith Affinity" value={stats.kith} icon={<Map size={14} className="text-cyan-500"/>} />
-                <StatRow label="Igzier Bond" value={stats.igzier} icon={<Gem size={14} className="text-purple-500"/>} />
+              {/* 1. MAP PREVIEW (The Lens) */}
+              <div className="lg:col-span-8 group relative aspect-video rounded-xl border border-stone-800 overflow-hidden shadow-2xl">
+                <div className="absolute inset-0 bg-[url('/img/map/epic_map_hero.PNG')] bg-cover bg-center transition-transform duration-[3s] group-hover:scale-105 opacity-60 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050403] via-transparent to-transparent" />
+                
+                <div className="absolute bottom-6 left-6 space-y-1">
+                  <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono uppercase tracking-widest">
+                    <Activity size={14} className="animate-pulse" /> Live Feed
+                  </div>
+                  <h3 className="text-3xl font-display text-white">Sector 4: Pteros Estuary</h3>
+                  <p className="text-stone-400 text-sm max-w-md">Turbulence detected in the West Strait. Biological assets deployed.</p>
+                </div>
+
+                <Link href="/map" className="absolute inset-0 z-20 focus:outline-none" aria-label="Enter Map" />
               </div>
 
-              {isGuest && (
-                <div className="mt-auto p-4 bg-orange-900/10 border border-orange-900/30 rounded text-center">
-                  <p className="text-[10px] text-orange-400 uppercase tracking-widest mb-2">Comms Volatile</p>
-                  <Link href="/login" className="text-xs text-white underline hover:text-orange-400">
-                    Secure Roots (Login)
-                  </Link>
+              {/* 2. SYSTEM STATUS (The Data) */}
+              <div className="lg:col-span-4 flex flex-col gap-4">
+                <StatusCard 
+                  label="Field Station" 
+                  value="Active" 
+                  icon={<Globe size={16} />} 
+                  color="text-cyan-400" 
+                  href="/pteros/science"
+                />
+                <StatusCard 
+                  label="The Veil" 
+                  value="Thinning" 
+                  icon={<Zap size={16} />} 
+                  color="text-purple-400" 
+                  href="/mystics"
+                />
+                
+                {/* Visual Filler: The "Core" */}
+                <div className="flex-1 bg-orange-950/10 border border-orange-900/20 rounded-xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20" />
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-600 to-red-900 blur-2xl animate-pulse opacity-40" />
+                  <div className="relative z-10 space-y-2">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-orange-500 font-mono">Core Temp</span>
+                    <span className="text-4xl font-mono text-white">111<span className="text-lg text-stone-500">MYA</span></span>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
+
+            {/* MARINE SHOWCASE (The Creatures) */}
+            <MarineShowcase />
 
           </div>
-          <MarineShowcase />
         </div>
       )}
     </main>
   );
 }
 
-function StatRow({ label, value, icon }) {
+// Micro-Component for the Status Sidebars
+function StatusCard({ label, value, icon, color, href }) {
   return (
-    <div className="flex justify-between items-center group">
-      <div className="flex items-center gap-3 text-slate-400 group-hover:text-white transition-colors">
-        {icon}
-        <span className="text-sm font-serif">{label}</span>
+    <Link href={href} className="group glass-obsidian p-5 rounded-xl flex items-center justify-between hover:border-white/10 transition-all">
+      <div className="flex items-center gap-3">
+        <div className={`p-2 rounded-full bg-white/5 ${color} group-hover:text-white transition-colors`}>
+          {icon}
+        </div>
+        <span className="text-sm font-bold uppercase tracking-wide text-stone-300 group-hover:text-white">{label}</span>
       </div>
-      <span className="font-mono text-slate-200">{value}</span>
-    </div>
+      <div className="flex items-center gap-2">
+        <span className={`w-1.5 h-1.5 rounded-full ${color.replace('text', 'bg')} animate-pulse`} />
+        <span className="text-xs font-mono text-stone-500">{value}</span>
+      </div>
+    </Link>
   );
 }
