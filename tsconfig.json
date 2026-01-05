@@ -32,7 +32,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/map/page.jsx"  ],
+, "src/app/map/page.js"  ],
   "exclude": [
     "node_modules"
   ]
