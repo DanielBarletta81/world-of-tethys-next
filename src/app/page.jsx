@@ -7,6 +7,7 @@ import { useTethys } from "@/context/TethysContext";
 import { MagmaButton } from "@/components/MagmaUI";
 import { Gem, Map, Shield, User } from "lucide-react";
 import LandingSequence from '@/components/LandingSequence';
+import TriFoldNav from "@/components/TriFoldNav";
 import Link from "next/link";
 
 export default function Home() {
@@ -34,7 +35,7 @@ export default function Home() {
       {/* 2. Main Hub UI */}
       {introFinished && (
         <div className="animate-in fade-in duration-1000">
-          
+          <TriFoldNav />
           {/* Background Atmosphere */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-900/20 rounded-full blur-[128px]"></div>

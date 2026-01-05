@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import TrifoldNav from '@/components/TrifoldNav';
+import TriFoldNav from '@/components/TriFoldNav';
 import PaleoRealityCheck from '@/components/PaleoRealityCheck';
 import PterosDashboard from '@/components/PterosDashboard'; // Ensure this export exists
 import MineralMap from '@/components/MineralMap';
@@ -12,7 +12,7 @@ import AssetCrate from '@/components/AssetCrate'; // Or Terminal
 import { FlaskConical, Globe, Dna } from 'lucide-react';
 
 
-import { ASSET_MANIFEST } from '@/lib/assets-manifest';
+import { ASSET_MANIFEST } from '@/lib/asset-manifest';
 
 export default function SciencePage() {
   const [activeTab, setActiveTab] = useState('data'); // data, map, fossil
@@ -29,7 +29,7 @@ export default function SciencePage() {
         </p>
       </header>
 
-      <TrifoldNav />
+      <TriFoldNav />
 
       {/* Internal Science Nav */}
       <div className="flex justify-center gap-4 mb-8">

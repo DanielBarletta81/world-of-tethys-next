@@ -1,7 +1,11 @@
 // src/components/AssetCrate.jsx
 'use client';
+import React from 'react';
 import { Download, Box, FileText } from 'lucide-react';
-import useSoundFX from '@/app/hooks/useSoundFX';
+//import useSoundFX from '@/app/hooks/useSoundFX';
+import Lock from 'next/link';
+
+
 
 export default function AssetCrate({ title, size, format, cdnUrl, restricted = false }) {
   const handleDownload = () => {

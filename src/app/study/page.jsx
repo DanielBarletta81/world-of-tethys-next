@@ -1,9 +1,10 @@
 'use client';
-import WayFinderNav from '@/components/WayFinderNav';
+import Link from 'next/link';
+import TriFoldNav from '@/components/TriFoldNav';
 import BookManifest from '@/components/BookManifest';
 import BondForge from '@/components/BondForge';
 import CharacterCarousel from '@/components/CharacterCarousel';
-import { getCleanCharacters } from '@/lib/tethysData'; // Assuming you have data fetching
+//import { getCleanCharacters } from '@/lib/tethysData'; // Assuming you have data fetching
 import { useState, useEffect } from 'react';
 
 export default function StudyPage() {
@@ -22,7 +23,7 @@ export default function StudyPage() {
         </p>
       </header>
 
-      <WayFinderNav />
+      <TriFoldNav />
 
       <div className="max-w-7xl mx-auto space-y-24">
         

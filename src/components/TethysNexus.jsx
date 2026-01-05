@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Network, X, Lock, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTethys } from '@/context/TethysContext';
-import {useSoundFX} from '@/app/hooks/useSoundFX';
+import useSoundFX from '@/app/hooks/useSoundFX';
 
 const LOCATIONS = [
   {

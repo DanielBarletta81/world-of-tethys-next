@@ -1,7 +1,7 @@
 // src/app/mystics/page.jsx
 'use client';
 
-import WayFinderNav from '@/components/WayFinderNav';
+import WayFinderNav from '@/components/TriFoldNav';
 import MysticsClient from '@/components/MysticsClient'; // Contains OraclePool, etc.
 import PathSelector from '@/components/PathSelector';
 import StaffSequencer from '@/components/StaffSequencer';

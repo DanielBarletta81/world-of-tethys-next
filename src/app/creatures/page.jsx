@@ -3,7 +3,7 @@
 
 import React from 'react';
 import BookBanner from '@/components/BookBanner';
-import WayFinderNav from '@/components/WayFinderNav';
+import WayFinderNav from '@/components/TriFoldNav';
 import Footer from '@/components/Footer';
 
 const BESTIARY = [

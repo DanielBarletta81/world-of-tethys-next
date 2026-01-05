@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import WayFinderNav from '@/components/WayFinderNav';
+import WayFinderNav from '@/components/TriFoldNav';
 import BookBanner from '@/components/BookBanner';
 import SideAuthPanel from '@/components/SideAuthPanel';
 import FirebaseLogin from '@/components/FirebaseLogin';
