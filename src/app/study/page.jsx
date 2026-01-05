@@ -4,6 +4,7 @@ import TriFoldNav from '@/components/TriFoldNav';
 import BookManifest from '@/components/BookManifest';
 import BondForge from '@/components/BondForge';
 import CharacterCarousel from '@/components/CharacterCarousel';
+import BookCarousel from '@/components/BookCarousel';
 //import { getCleanCharacters } from '@/lib/tethysData'; // Assuming you have data fetching
 import { useState, useEffect } from 'react';
 
@@ -21,6 +22,7 @@ export default function StudyPage() {
         <p className="text-stone-400 text-sm max-w-xl mx-auto font-sans">
           For the readers. Dive into the narrative, forge emotional bonds, and access the library.
         </p>
+        <BookCarousel />
       </header>
 
       <TriFoldNav />
@@ -30,19 +32,13 @@ export default function StudyPage() {
         {/* 1. The Bookshelf */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-3xl text-amber-100 font-header">The Ash Age Trilogy</h2>
+            <h2 className="text-3xl text-amber-100 font-header">World of Tethys Book 1</h2>
             <p className="text-lg text-stone-400 leading-relaxed">
               When Igzier refuses to play along with a poisoned verdict, the city gives him a choice: execution or exile. He chooses the fall.
             </p>
-            <div className="flex gap-4">
-               {/* Primary CTA */}
-               <Link href="https://amazon.com/..." className="px-8 py-3 bg-amber-700 text-white font-bold uppercase tracking-widest text-xs rounded hover:bg-amber-600 transition">
-                 Read Book I
-               </Link>
-            </div>
-          </div>
+         </div>
           <div className="flex justify-center">
-            <BookManifest /> {/* This serves as the featured item */}
+            <BookManifest /> 
           </div>
         </section>
 

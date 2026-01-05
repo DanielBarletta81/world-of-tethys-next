@@ -6,6 +6,7 @@ import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
 import TriFoldNav from "@/components/TriFoldNav";
 import MarineShowcase from "@/components/MarineShowcase";
+import BookCarousel from "@/components/BookCarousel";
 import { Gem, User, Activity, Globe, Zap } from "lucide-react";
 import Link from "next/link";
 
@@ -39,13 +40,11 @@ export default function Home() {
           <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#050403]/80 backdrop-blur-md">
             <div className="flex items-center gap-4">
               {/* THE BRAND: Magma Burn Text */}
-              <h1 className="text-4xl font-black tracking-tighter text-magma-burn font-sans italic transform -skew-x-6">
+              <h1 className="text-4xl font--forge tracking-tighter text-forge font-sans italic transform -skew-x-6">
                 W.O.T.
               </h1>
               <div className="hidden md:flex h-6 w-[1px] bg-white/10" />
-              <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] text-stone-500 font-mono">
-                System: Online
-              </span>
+             <BookCarousel/>
             </div>
 
             <div className="flex items-center gap-6">

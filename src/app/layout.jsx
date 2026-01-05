@@ -6,6 +6,7 @@ import { AudioProvider } from '../context/AudioContext';
 import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 import GlobalAtmosphere from '../components/GlobalAtmosphere';
 import './globals.css';
+import Footer from '@/components/Footer';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -53,6 +54,7 @@ export default function RootLayout({ children }) {
             </AudioProvider>
           </TethysProvider>
         </AuthProvider>
+        <Footer />
       </body>
     </html>
   );
