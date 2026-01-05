@@ -1,9 +1,8 @@
-// src/components/TrifoldNav.jsx
-"use client";
+'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
 import { BookOpen, Sparkles, Microscope } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const PATHS = [
   {
@@ -11,7 +10,7 @@ const PATHS = [
     label: 'The Chronicle',
     href: '/study',
     icon: <BookOpen size={18} />,
-    desc: 'For Readers: Books, Bonds & Audio',
+    desc: 'For Readers: Books & Bonds',
     color: 'hover:text-amber-400',
     border: 'hover:border-amber-500/50'
   },
@@ -20,7 +19,7 @@ const PATHS = [
     label: 'The Veil',
     href: '/mystics',
     icon: <Sparkles size={18} />,
-    desc: 'For Mystics: Oracles, Staffs & Paths',
+    desc: 'For Mystics: Oracles & Staffs',
     color: 'hover:text-purple-400',
     border: 'hover:border-purple-500/50'
   },
@@ -29,13 +28,13 @@ const PATHS = [
     label: 'Field Station',
     href: '/science',
     icon: <Microscope size={18} />,
-    desc: 'For Researchers: Fossils, Data & Maps',
+    desc: 'For Researchers: Data & Fossils',
     color: 'hover:text-cyan-400',
     border: 'hover:border-cyan-500/50'
   }
 ];
 
-export default function WayFinderNav() {
+export default function TriFoldNav() {
   const pathname = usePathname();
 
   return (
@@ -43,17 +42,19 @@ export default function WayFinderNav() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {PATHS.map((path) => {
           const isActive = pathname === path.href;
+          const colorClass = path.color.split(':')[1]; // Extract 'text-amber-400' etc
+
           return (
             <Link key={path.id} href={path.href} className="group relative">
               <div className={`
-                h-full p-6 border rounded-lg transition-all duration-300 flex flex-col items-center text-center gap-3
+                h-full p-5 border rounded-lg transition-all duration-300 flex flex-col items-center text-center gap-3
                 bg-[#0f0b09] 
                 ${isActive 
-                  ? `border-${path.color.split('-')[1]}-500/50 bg-${path.color.split('-')[1]}-900/10` 
+                  ? `border-${colorClass.split('-')[1]}-500/50 bg-${colorClass.split('-')[1]}-900/10` 
                   : `border-stone-800 ${path.border}`
                 }
               `}>
-                <div className={`transition-colors duration-300 ${isActive ? path.color.replace('hover:', '') : 'text-stone-500'} group-hover:${path.color.replace('hover:', '')}`}>
+                <div className={`transition-colors duration-300 ${isActive ? colorClass : 'text-stone-500'} group-hover:${colorClass}`}>
                   {path.icon}
                 </div>
                 
@@ -66,11 +67,10 @@ export default function WayFinderNav() {
                   </p>
                 </div>
 
-                {/* Active Indicator Pulse */}
                 {isActive && (
                   <motion.div 
                     layoutId="activeGlow"
-                    className={`absolute inset-0 rounded-lg border-2 opacity-20 ${path.color.replace('hover:text', 'border')}`}
+                    className={`absolute inset-0 rounded-lg border-2 opacity-20 border-${colorClass.split('-')[1]}-500`}
                     transition={{ duration: 0.5 }}
                   />
                 )}

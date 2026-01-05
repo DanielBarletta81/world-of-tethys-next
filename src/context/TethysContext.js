@@ -1,4 +1,3 @@
-// src/context/TethysContext.js
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
@@ -22,15 +21,14 @@ export function TethysProvider({ children }) {
 
   // --- STATE ---
   const [currentLocation, setCurrentLocation] = useState('pteros');
-  const [unlockedNodes, setUnlockedNodes] = useState(['pteros', 'sky-city']);
+  const [unlockedNodes, setUnlockedNodes] = useState(['pteros', 'sky-city']); // <--- Ensure this exists
+  const [unlockedAssets, setUnlockedAssets] = useState([]); // <--- Ensure this exists
   const [inventory, setInventory] = useState([]);
   const [equippedStaff, setEquippedStaff] = useState(null);
   const [lastHarvestDate, setLastHarvestDate] = useState(null);
   const [stats, setStats] = useState(DEFAULT_STATS);
   const [canHarvest, setCanHarvest] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
-  // 1. ADD THIS NEW STATE
-  const [unlockedAssets, setUnlockedAssets] = useState([]);
 
   // --- 1. DATA SYNC (LOAD) ---
   useEffect(() => {
@@ -60,6 +58,7 @@ export function TethysProvider({ children }) {
               stats: DEFAULT_STATS,
               inventory: [],
               unlockedNodes: ['pteros', 'sky-city'],
+              unlockedAssets: [],
               currentLocation: 'pteros'
             };
             await setDoc(docRef, initialData);
@@ -84,24 +83,7 @@ export function TethysProvider({ children }) {
     if (data.unlockedAssets) setUnlockedAssets(data.unlockedAssets);
   };
 
-  // 2. ADD THE PURCHASE LOGIC
-  const purchaseAsset = (assetId, cost) => {
-    // Check if already owned
-    if (unlockedAssets.includes(assetId)) return { success: true, message: "Already Owned" };
-
-    // Check Balance
-    if (stats.resin < cost) {
-      return { success: false, message: "Insufficient Resin" };
-    }
-    // Deduct Cost & Unlock
-    setStats(prev => ({ ...prev, resin: prev.resin - cost }));
-    setUnlockedAssets(prev => [...prev, assetId]);
-    
-    return { success: true, message: "Asset Decrypted" };
-  };
-
   // --- 2. DATA SYNC (SAVE) ---
-  // We debounce save to avoid thrashing Firestore limits
   useEffect(() => {
     if (loadingData) return;
 
@@ -111,6 +93,7 @@ export function TethysProvider({ children }) {
       stats,
       lastHarvestDate,
       unlockedNodes,
+      unlockedAssets,
       currentLocation
     };
 
@@ -127,24 +110,14 @@ export function TethysProvider({ children }) {
       }
     };
 
-    const timeout = setTimeout(save, 1000); // Save 1s after last change
+    const timeout = setTimeout(save, 1000); 
     return () => clearTimeout(timeout);
 
-  }, [inventory, equippedStaff, stats, lastHarvestDate, unlockedNodes, currentLocation, userId, isGuest, loadingData]);
+  }, [inventory, equippedStaff, stats, lastHarvestDate, unlockedNodes, unlockedAssets, currentLocation, userId, isGuest, loadingData]);
 
 
-  // --- HARVEST LOGIC ---
-  useEffect(() => {
-    if (!lastHarvestDate) {
-      setCanHarvest(true);
-      return;
-    }
-    const now = new Date();
-    const last = new Date(lastHarvestDate);
-    const isToday = now.toDateString() === last.toDateString();
-    setCanHarvest(!isToday);
-  }, [lastHarvestDate]);
-
+  // --- ACTIONS ---
+  
   const performDailyHarvest = useCallback((newStaff, newItems, newStats) => {
     if (!canHarvest) return false;
 
@@ -152,7 +125,6 @@ export function TethysProvider({ children }) {
     setEquippedStaff(newStaff);
     setInventory(newItems);
     
-    // Add Resin Reward
     const resinReward = Math.floor(Math.random() * 40) + 10;
     setStats(prev => ({ 
       ...prev, 
@@ -164,6 +136,15 @@ export function TethysProvider({ children }) {
     setCanHarvest(false);
     return true;
   }, [canHarvest]);
+
+  const purchaseAsset = (assetId, cost) => {
+    if (unlockedAssets.includes(assetId)) return { success: true, message: "Already Owned" };
+    if (stats.resin < cost) return { success: false, message: "Insufficient Resin" };
+
+    setStats(prev => ({ ...prev, resin: prev.resin - cost }));
+    setUnlockedAssets(prev => [...prev, assetId]);
+    return { success: true, message: "Asset Decrypted" };
+  };
 
   const travelTo = (locationId) => {
     setCurrentLocation(locationId);
@@ -180,11 +161,12 @@ export function TethysProvider({ children }) {
     inventory,
     equippedStaff,
     stats,
+    unlockedNodes, // <--- THIS WAS MISSING
+    unlockedAssets, // <--- Added this for the crate system
     canHarvest,
     performDailyHarvest,
-    travelTo, 
-    unlockedAssets,
-    purchaseAsset
+    purchaseAsset,
+    travelTo
   };
 
   return (

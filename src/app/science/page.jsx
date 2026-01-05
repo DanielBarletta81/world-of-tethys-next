@@ -9,7 +9,7 @@ import MineralMap from '@/components/MineralMap';
 import AssetCrate from '@/components/AssetCrate';
 import CinematicTerminal from '@/components/CinematicTerminal';
 import { Activity, Map, Dna, Box, MonitorPlay } from 'lucide-react';
-import { ASSET_MANIFEST } from '@/lib/asset-manifest';
+import { ASSET_MANIFEST } from '@/lib/assets-manifest';
 
 export default function FieldStationPage() {
   const [activeTab, setActiveTab] = useState('telemetry');
