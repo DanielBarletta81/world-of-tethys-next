@@ -32,16 +32,18 @@ const BookBanner = () => {
       <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0c0a09] to-transparent pointer-events-none" />
       <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0c0a09] to-transparent pointer-events-none" />
 
-      <div className="flex items-center gap-4 marquee" aria-label="Book carousel with Amazon links">
+      <div className="flex items-center gap-6 marquee" aria-label="Book carousel with Amazon links">
         {looped.map((book, idx) => (
           <a
             key={`${book.id}-${idx}`}
             href={book.amazonLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 pr-6"
+            className="group flex items-center gap-3 pr-6 hover:translate-y-[-2px] transition-transform duration-200"
           >
-            <div className="relative w-16 h-24 flex-shrink-0 rounded-sm overflow-hidden border border-amber-900/40 bg-[#1c1917] shadow-lg group-hover:shadow-[0_0_20px_rgba(245,158,11,0.35)] group-hover:border-amber-500/60 transition-all duration-300">
+            <div className="relative w-18 h-28 flex-shrink-0 rounded-sm overflow-hidden border border-[#2a1b14] bg-[#1c1917] shadow-[0_10px_20px_rgba(0,0,0,0.35)] group-hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] group-hover:border-amber-500/70 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+              <div className="absolute inset-0 border border-amber-900/30 mix-blend-soft-light rounded-sm" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={book.coverUrl} alt={book.title} className="w-full h-full object-cover" />
             </div>
@@ -57,7 +59,7 @@ const BookBanner = () => {
 
       <style jsx>{`
         .marquee {
-          animation: scroll 32s linear infinite;
+          animation: scroll 40s linear infinite;
           width: max-content;
         }
         .marquee:hover {

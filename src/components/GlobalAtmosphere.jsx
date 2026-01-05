@@ -1,0 +1,52 @@
+// src/components/GlobalAtmosphere.jsx
+'use client';
+import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Map your routes to high-quality scenic backgrounds
+// Use Getty/Stock images here. 
+// TIP: Use images with "Fog", "Volcanic Ash", or "Underwater" themes.
+const SCENES = {
+  '/': '/img/bg/obsidian-coast-4k.jpg',       // Dark, volcanic shore
+  '/study': '/img/bg/library-ruins.jpg',      // Ancient stone shelves, dust motes
+  '/mystics': '/img/bg/biolum-forest.jpg',    // Dark jungle, glowing spores
+  '/science': '/img/bg/fossil-lab.jpg',       // Clean, cold light, bones
+  '/map': '/img/bg/parchment-map-table.jpg',  // Top-down wooden table feel
+};
+
+export default function GlobalAtmosphere() {
+  const pathname = usePathname();
+  
+  // Default to the main coast if route not found
+  const activeBg = SCENES[pathname] || SCENES['/'];
+
+  return (
+    <div className="fixed inset-0 z-[-1] overflow-hidden bg-black">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={pathname}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 0.4, scale: 1 }} // Low opacity to blend with your dark UI
+          exit={{ opacity: 0 }}
+          transition={{ duration: 2.5, ease: "easeInOut" }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${activeBg})` }}
+        />
+      </AnimatePresence>
+
+      {/* THE "111 MYA" FILTER STACK */}
+      
+      {/* 1. Vignette: Darkens corners to focus eyes on center content */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0c0a09_90%)]" />
+
+      {/* 2. Ash/Grain: Makes it feel like an old film or dusty air */}
+      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+
+      {/* 3. Color Grade: Unifies disparate images into your "Magma" palette */}
+      <div className="absolute inset-0 bg-gradient-to-b from-orange-900/10 via-transparent to-cyan-900/20 mix-blend-color" />
+      
+      {/* 4. The "Weep" Mist (Optional: Subtle moving fog at bottom) */}
+      <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80" />
+    </div>
+  );
+}

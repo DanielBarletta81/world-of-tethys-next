@@ -1,64 +1,139 @@
+// src/context/TethysContext.js
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 const TethysContext = createContext();
+
+const DEFAULT_STATS = { 
+  kith: 50,    
+  igzier: 50,  
+  sanity: 100,
+  resin: 0 
+};
 
 export function TethysProvider({ children }) {
   const { user } = useAuth();
   const userId = user?.uid || 'guest_node';
+  const isGuest = !user;
 
   // --- STATE ---
   const [currentLocation, setCurrentLocation] = useState('pteros');
   const [unlockedNodes, setUnlockedNodes] = useState(['pteros', 'sky-city']);
-  
-  // Inventory & Stats
   const [inventory, setInventory] = useState([]);
   const [equippedStaff, setEquippedStaff] = useState(null);
   const [lastHarvestDate, setLastHarvestDate] = useState(null);
-  
-  // Stats (Added 'resin' specifically)
-  const [stats, setStats] = useState({ 
-    kith: 50,    
-    igzier: 50,  
-    sanity: 100,
-    resin: 0 // The currency
-  });
-  
+  const [stats, setStats] = useState(DEFAULT_STATS);
   const [canHarvest, setCanHarvest] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  // 1. ADD THIS NEW STATE
+  const [unlockedAssets, setUnlockedAssets] = useState([]);
 
-  // --- STORAGE KEY ---
-  const STORAGE_KEY = `tethys_data_v1_${userId}`;
-
-  // --- LOAD DATA ---
+  // --- 1. DATA SYNC (LOAD) ---
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
-      const parsed = JSON.parse(savedData);
-      setInventory(parsed.inventory || []);
-      setEquippedStaff(parsed.equippedStaff || null);
-      setStats(prev => ({ ...prev, ...(parsed.stats || {}) })); // Merge to ensure new keys like 'resin' exist
-      setLastHarvestDate(parsed.lastHarvestDate || null);
+    async function loadData() {
+      setLoadingData(true);
+
+      if (isGuest) {
+        // --- LOAD FROM LOCAL STORAGE (Guest) ---
+        if (typeof window !== 'undefined') {
+          const saved = localStorage.getItem(`tethys_data_guest`);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            applyData(parsed);
+          }
+        }
+      } else {
+        // --- LOAD FROM FIRESTORE (User) ---
+        try {
+          const docRef = doc(db, "users", userId);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            applyData(docSnap.data());
+          } else {
+            // New user? Create default doc
+            const initialData = {
+              stats: DEFAULT_STATS,
+              inventory: [],
+              unlockedNodes: ['pteros', 'sky-city'],
+              currentLocation: 'pteros'
+            };
+            await setDoc(docRef, initialData);
+            applyData(initialData);
+          }
+        } catch (error) {
+          console.error("Tethys Cloud Sync Failed:", error);
+        }
+      }
+      setLoadingData(false);
     }
-  }, [userId, STORAGE_KEY]);
 
-  // --- SAVE DATA ---
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+    loadData();
+  }, [userId, isGuest]);
+
+  const applyData = (data) => {
+    if (data.inventory) setInventory(data.inventory);
+    if (data.equippedStaff) setEquippedStaff(data.equippedStaff);
+    if (data.stats) setStats(prev => ({ ...prev, ...data.stats }));
+    if (data.lastHarvestDate) setLastHarvestDate(data.lastHarvestDate);
+    if (data.unlockedNodes) setUnlockedNodes(data.unlockedNodes);
+    if (data.unlockedAssets) setUnlockedAssets(data.unlockedAssets);
+  };
+
+  // 2. ADD THE PURCHASE LOGIC
+  const purchaseAsset = (assetId, cost) => {
+    // Check if already owned
+    if (unlockedAssets.includes(assetId)) return { success: true, message: "Already Owned" };
+
+    // Check Balance
+    if (stats.resin < cost) {
+      return { success: false, message: "Insufficient Resin" };
+    }
+    // Deduct Cost & Unlock
+    setStats(prev => ({ ...prev, resin: prev.resin - cost }));
+    setUnlockedAssets(prev => [...prev, assetId]);
     
-    // Only save if we have data to prevent overwriting with defaults on initial hydration
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    return { success: true, message: "Asset Decrypted" };
+  };
+
+  // --- 2. DATA SYNC (SAVE) ---
+  // We debounce save to avoid thrashing Firestore limits
+  useEffect(() => {
+    if (loadingData) return;
+
+    const dataToSave = {
       inventory,
       equippedStaff,
       stats,
-      lastHarvestDate
-    }));
-  }, [inventory, equippedStaff, stats, lastHarvestDate, userId, STORAGE_KEY]);
+      lastHarvestDate,
+      unlockedNodes,
+      currentLocation
+    };
 
-  // --- HARVEST CHECKER ---
+    const save = async () => {
+      if (isGuest) {
+        localStorage.setItem(`tethys_data_guest`, JSON.stringify(dataToSave));
+      } else {
+        try {
+          const docRef = doc(db, "users", userId);
+          await updateDoc(docRef, dataToSave);
+        } catch (e) {
+          console.warn("Cloud save pending...");
+        }
+      }
+    };
+
+    const timeout = setTimeout(save, 1000); // Save 1s after last change
+    return () => clearTimeout(timeout);
+
+  }, [inventory, equippedStaff, stats, lastHarvestDate, unlockedNodes, currentLocation, userId, isGuest, loadingData]);
+
+
+  // --- HARVEST LOGIC ---
   useEffect(() => {
     if (!lastHarvestDate) {
       setCanHarvest(true);
@@ -66,40 +141,25 @@ export function TethysProvider({ children }) {
     }
     const now = new Date();
     const last = new Date(lastHarvestDate);
-    
-    // Check if it's a different calendar day
-    const isToday = now.getDate() === last.getDate() && 
-                    now.getMonth() === last.getMonth() && 
-                    now.getFullYear() === last.getFullYear();
-    
+    const isToday = now.toDateString() === last.toDateString();
     setCanHarvest(!isToday);
   }, [lastHarvestDate]);
 
-  // --- ACTIONS ---
-  
   const performDailyHarvest = useCallback((newStaff, newItems, newStats) => {
-    // 1. Hard Check: If UI is out of sync, stop here.
-    if (!canHarvest) {
-      console.warn("Harvest attempted but currently locked.");
-      return false;
-    }
+    if (!canHarvest) return false;
 
     const now = new Date().toISOString();
-
-    // 2. Update State
     setEquippedStaff(newStaff);
     setInventory(newItems);
     
-    // 3. Add Resin Reward (e.g., +10 to +50 random)
+    // Add Resin Reward
     const resinReward = Math.floor(Math.random() * 40) + 10;
-    
     setStats(prev => ({ 
       ...prev, 
       ...newStats,
       resin: (prev.resin || 0) + resinReward 
     }));
 
-    // 4. Lock immediately
     setLastHarvestDate(now);
     setCanHarvest(false);
     return true;
@@ -114,13 +174,17 @@ export function TethysProvider({ children }) {
 
   const value = {
     userId,
+    isGuest,
+    loadingData,
     currentLocation,
     inventory,
     equippedStaff,
     stats,
     canHarvest,
     performDailyHarvest,
-    travelTo
+    travelTo, 
+    unlockedAssets,
+    purchaseAsset
   };
 
   return (

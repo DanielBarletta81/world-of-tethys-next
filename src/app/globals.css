@@ -19,11 +19,15 @@
   --forge-orange: #ea580c; /* Orange-600 */
   --forge-red: #dc2626;    /* Red-600 */
 }
-
-html {
-  scroll-behavior: smooth;
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
 }
-
+/* Hide scrollbar for IE, Edge and Firefox */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 /* --- 2. GLOBAL RESET & BODY --- */
 body {
   margin: 0;

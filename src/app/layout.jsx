@@ -4,6 +4,7 @@ import { AuthProvider } from '../context/AuthContext';
 import { TethysProvider } from '../context/TethysContext';
 import { AudioProvider } from '../context/AudioContext';
 import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
+import GlobalAtmosphere from '../components/GlobalAtmosphere';
 import './globals.css';
 
 const inter = Inter({ 
@@ -45,8 +46,10 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <TethysProvider>
             <AudioProvider>
+              <GlobalAtmosphere >
               {children}
-              <GlobalAudioPlayer />
+              </GlobalAtmosphere>
+              <GlobalAudioPlayer/>
             </AudioProvider>
           </TethysProvider>
         </AuthProvider>

@@ -7,12 +7,12 @@ const cambrianNine = [
   { name: 'Melden', role: 'Legendary Geneticist', archetype: 'Archivist', color: 'text-amber-glow', image: '/img/characters/marros_hero2.PNG' },
   { name: 'Igzier', role: 'Apprentice • Exile', archetype: 'Survivor', color: 'text-emerald-glow', image: '/img/characters/Igzier_Stryker_hero2.png' },
   { name: 'Karys', role: 'Greenhouse Engineer', archetype: 'Cohort', color: 'text-rose-glow', image: '/img/characters/karys_hero.png' },
-  { name: 'Ravel', role: 'Root Whisperer • Mystic', archetype: 'Symbiote', color: 'text-emerald-glow', image: '/img/characters/marros_hero.PNG' },
+  { name: 'Ravel', role: 'Root Whisperer • Mystic', archetype: 'Symbiote', color: 'text-emerald-glow', image: '/img/characters/ravel_hero.PNG' },
   { name: 'The Weep', role: 'Exile Rite • Chance at Air', archetype: 'Faction', color: 'text-cyan-glow', image: '/img/locations/the_weep_hero.png' },
   { name: 'Stryker', role: 'Ash Raptor Bond', archetype: 'Guardian', color: 'text-amber-glow', image: '/img/characters/stryker_hero_alt1.PNG' },
   { name: 'Shadehound Handler', role: 'Caravan Peace-Sign', archetype: 'Witness', color: 'text-violet-glow', image: '/img/characters/jairo_hero.png' },
-  { name: 'Triumvirate Ledger', role: 'Ledger Sovereign', archetype: 'Regime', color: 'text-amber-glow', image: '/img/characters/jairo_hero2.PNG' },
-  { name: 'Ravel’s Map', role: 'Bad Ideas, Good Timing', archetype: 'Guide', color: 'text-cyan-glow', image: '/img/locations/archive_hero.PNG' }
+  { name: 'Triumvirate Ledger', role: 'Ledger Sovereign', archetype: 'Regime', color: 'text-amber-glow', image: '/img/characters/marros_hero2.PNG' },
+  { name: 'Ravel’s Map', role: 'Bad Ideas, Good Timing', archetype: 'Guide', color: 'text-cyan-glow', image: '/img/characters/ravel_hero.PNG' }
 ];
 
 export default function CharacterCarousel({ characters }) {

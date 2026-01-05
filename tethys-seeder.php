@@ -4,7 +4,7 @@ $entries = [
         [
             'title' => 'Igzier (The Exile)',
             'category' => 'Character',
-            'content' => 'Born in the Ironwoods but raised in the gilded cage of Sky City, Igzier is a bridge between two worlds. A brilliant engineer and assistant to Melden, he was framed for his mentor\'s murder by the Triumvirate to silence the truth about the city\'s defenses. Fleeing into the toxic Purgess Caves, he survives by his wits and a stolen Pteros-bone shiv. He is unaware that he is the lost heir to the Ironwood throne, a lineage that could unite the wild factions.',
+            'content' => 'Born 30 years ago in the Ironwoods but raised in the gilded cage of Sky City, Igzier is a bridge between two worlds. A brilliant engineer and assistant to Melden, he was framed for his mentor\'s murder by the Triumvirate to silence the truth about the city\'s defenses. Fleeing into the toxic Purgess Caves, he survives by his wits and a stolen Pteros-bone shiv. He is unaware that he is the lost heir to the Ironwood throne, a lineage that could unite the wild factions.',
             'acf' => [
                 'threat_level' => 'Caution', // Dangerous to the Triumvirate
                 'kith_requirement' => 0,   // Entry-level knowledge
@@ -20,11 +20,11 @@ $entries = [
         [
             'title' => 'Melden',
             'category' => 'Character',
-            'content' => 'The Architect of Sky City and the mind behind its survival. Small in stature but a giant in intellect, Melden invented the Photobioreactors that power the city and the chemical deterrent that repels Reapers. He was murdered by the Triumvirate because he sought to share his technology with the "savages" outside the walls. His lenses were his trademark.',
+            'content' => 'The Architect of Sky City and the mind behind its survival. Small in stature but a giant in intellect, Melden invented the Photobioreactor for biodiesel and the Reptile Deterrent that repels Reapers. He was murdered by the Triumvirate because he sought to share his technology with the "savages" outside the walls. His lenses were his trademark.',
             'acf' => [
                 'threat_level' => 'Safe',
                 'kith_requirement' => 10,
-                'real_world_analog' => 'Da Vinci / Galileo / Prometheus',
+                'real_world_analog' => 'Da Vinci / Galileo',
                 'biological_traits' => [
                     ['trait' => 'Intellect', 'value' => 'Genius Level'],
                     ['trait' => 'Invention', 'value' => 'Algae-Biodiesel / Reptile Deterrent'],
