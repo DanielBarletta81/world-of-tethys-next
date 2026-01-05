@@ -1,4 +1,5 @@
-// src/data/strangers.js
+
+  // src/data/strangers.js
 export const THE_ELEVEN = [
   {
     id: 's_01',
@@ -27,5 +28,14 @@ export const THE_ELEVEN = [
     quote: "The water is a map you can drink.",
     image: '/img/strangers/tide-walker.jpg'
   },
+  {
+    id: 's_04',
+    name: 'Ash-Drinker',
+    origin: 'The Cinder Cones',
+    biology: 'Filter-feeding throat sacs; exhales purity.',
+    role: 'Atmosphere Cleanser',
+    quote: "Breathe deep. I have taken the poison for you.",
+    image: '/img/strangers/ash-drinker.jpg'
+  }
   // ... expand to 11
 ];
