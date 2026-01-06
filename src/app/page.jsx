@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
-import TriFoldNav from "@/components/TriFoldNav";
+import TriFoldNav from "@/components/TriFoldNav"; // Kept your preferred naming
 import MarineShowcase from "@/components/MarineShowcase";
 import BookCarousel from "@/components/BookCarousel";
-import { Gem, User, Activity, Globe, Zap } from "lucide-react";
+import { Gem, User, Activity, Globe, Zap, LogIn, Power } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth(); // Added logout
   const { stats, isGuest, loadingData } = useTethys();
   const [introFinished, setIntroFinished] = useState(false);
 
@@ -34,41 +34,57 @@ export default function Home() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050403_90%)]" />
           </div>
 
-          {/* TOP BAR: BRAND & STATUS */}
-          {/* Use flex-wrap to handle smaller screens gracefully */}
+          {/* TOP BAR: SYSTEM STATUS */}
           <nav className="fixed top-0 inset-x-0 z-50 flex flex-wrap md:flex-nowrap items-center justify-between px-4 md:px-6 py-4 border-b border-white/5 bg-[#050403]/90 backdrop-blur-md shadow-2xl">
             
             {/* LEFT: THE BURNING BRAND */}
             <div className="flex items-center gap-4 shrink-0">
-              <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-magma-burn font-sans uppercase filter drop-shadow-[0_0_15px_rgba(234,88,12,0.5)]">
-                World of Tethys
+              <h1 className="text-4xl font-black tracking-tighter text-magma-burn font-sans italic transform -skew-x-6 drop-shadow-[0_0_20px_rgba(234,88,12,0.6)]">
+                W.O.T.
               </h1>
-              {/* Vertical Divider (Hidden on mobile) */}
               <div className="hidden md:block h-8 w-[1px] bg-white/10" />
             </div>
 
             {/* CENTER: BOOK CAROUSEL (Desktop Only) */}
-            {/* Hidden on mobile to prevent layout crushing */}
             <div className="hidden lg:block flex-1 mx-8 max-w-xl opacity-80 hover:opacity-100 transition-opacity">
-               {/* Scaled down slightly to fit nav height */}
                <div className="scale-75 origin-left">
                  <BookCarousel />
                </div>
             </div>
 
-            {/* RIGHT: RESIN & USER (Always Visible) */}
+            {/* RIGHT: RESIN & USER IDENTITY */}
             <div className="flex items-center gap-3 md:gap-6 ml-auto md:ml-0">
+              
               {/* Resin Badge */}
               <div className="flex items-center gap-2 px-3 py-1.5 border border-orange-900/30 bg-orange-950/40 rounded-full shadow-[inset_0_0_10px_rgba(234,88,12,0.2)]">
                 <Gem size={14} className="text-orange-500 animate-pulse" />
                 <span className="font-mono text-xs md:text-sm font-bold text-orange-100">{loadingData ? '...' : stats.resin}</span>
               </div>
               
-              {/* User ID */}
-              <div className="hidden sm:flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-stone-400">
-                <User size={14} className={isGuest ? "text-stone-600" : "text-emerald-500"} />
-                {authLoading ? '...' : (isGuest ? 'Guest' : user?.displayName || 'Warden')}
-              </div>
+              {/* IDENTITY MODULE */}
+              {authLoading ? (
+                <span className="text-xs text-stone-500 animate-pulse">Scanning...</span>
+              ) : isGuest ? (
+                // GUEST MODE: BIG GLOWING BUTTON
+                <Link href="/login">
+                  <button className="group relative flex items-center gap-2 px-5 py-2 bg-orange-600/10 border border-orange-500/50 rounded text-xs font-bold uppercase tracking-widest text-orange-100 hover:bg-orange-600 hover:text-white transition-all shadow-[0_0_15px_rgba(234,88,12,0.2)] hover:shadow-[0_0_25px_rgba(234,88,12,0.6)]">
+                    <LogIn size={14} />
+                    <span>Establish Link</span>
+                  </button>
+                </Link>
+              ) : (
+                // LOGGED IN MODE: Subtle Profile + Logout
+                <div className="flex items-center gap-3 bg-stone-900/50 px-3 py-1.5 rounded border border-stone-800">
+                  <div className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-emerald-400">
+                    <User size={14} />
+                    {user?.displayName || 'Warden'}
+                  </div>
+                  <div className="w-[1px] h-4 bg-stone-700"></div>
+                  <button onClick={logout} className="text-stone-500 hover:text-red-400 transition-colors" title="Terminate Session">
+                    <Power size={14} />
+                  </button>
+                </div>
+              )}
             </div>
           </nav>
 
@@ -92,7 +108,7 @@ export default function Home() {
             {/* GAMER PATH: IMMERSION DASHBOARD */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
-              {/* 1. MAP PREVIEW (The Lens) */}
+              {/* 1. MAP PREVIEW */}
               <div className="lg:col-span-8 group relative aspect-video rounded-xl border border-stone-800 overflow-hidden shadow-2xl bg-black">
                 <div className="absolute inset-0 bg-[url('/img/map/epic_map_hero.PNG')] bg-cover bg-center transition-transform duration-[3s] group-hover:scale-105 opacity-60 group-hover:opacity-100" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050403] via-transparent to-transparent" />
@@ -110,14 +126,14 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* 2. SYSTEM STATUS (Sidebars) */}
+              {/* 2. SYSTEM STATUS */}
               <div className="lg:col-span-4 flex flex-col gap-4">
                 <StatusCard 
                   label="Field Station" 
                   value="Active" 
                   icon={<Globe size={16} />} 
                   color="text-cyan-400" 
-                  href="/science" // Corrected to match your requested route
+                  href="/science"
                 />
                 <StatusCard 
                   label="The Veil" 
@@ -127,7 +143,7 @@ export default function Home() {
                   href="/mystics"
                 />
                 
-                {/* CORE TEMP VISUALIZER */}
+                {/* CORE TEMP */}
                 <div className="flex-1 min-h-[120px] bg-orange-950/10 border border-orange-900/20 rounded-xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
                   <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20" />
                   <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-600 to-red-900 blur-3xl animate-pulse opacity-20 group-hover:opacity-40 transition-opacity" />
@@ -149,7 +165,6 @@ export default function Home() {
   );
 }
 
-// Micro-Component for Status Cards
 function StatusCard({ label, value, icon, color, href }) {
   return (
     <Link href={href} className="group glass-obsidian p-4 md:p-5 rounded-xl flex items-center justify-between hover:border-white/20 transition-all cursor-pointer">

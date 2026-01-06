@@ -4,10 +4,12 @@ import React from 'react';
 import TriFoldNav from '@/components/TriFoldNav';
 import BookBanner from '@/components/BookBanner';
 import SideAuthPanel from '@/components/SideAuthPanel';
-import FirebaseLogin from '@/components/FirebaseLogin';
+import LoginCard from '@/components/LoginCard';
 import TheBlankSlate from '@/components/TheBlankSlate';
-import dynamic from 'next/dynamic';
 import Footer from '@/components/Footer';
+
+import dynamic from 'next/dynamic';
+
 
 const FungalProxyPanel = dynamic(() => import('@/components/FungalProxyPanel'), { ssr: false });
 const MythicCard = dynamic(() => import('@/components/MythicCard'), { ssr: false });
@@ -36,7 +38,7 @@ export default function CommunityPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <div className="bg-[#12100e] border border-[#2c241f] rounded-xl p-4 shadow-[0_15px_40px_rgba(0,0,0,0.45)]">
-              <FirebaseLogin />
+              <LoginCard />
             </div>
             <TheBlankSlate />
           </div>

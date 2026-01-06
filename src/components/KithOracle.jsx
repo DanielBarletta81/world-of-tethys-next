@@ -1,7 +1,8 @@
+// src/components/KithOracle.jsx
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Send } from 'lucide-react';
+import { Sparkles, Send, Eye } from 'lucide-react';
 
 export default function KithOracle() {
   const [query, setQuery] = useState('');
@@ -13,6 +14,10 @@ export default function KithOracle() {
     if (!query.trim()) return;
     setLoading(true);
     setError(null);
+    
+    // Simulate network delay for "immersion" if API is too fast
+    // await new Promise(r => setTimeout(r, 1000));
+
     try {
       const res = await fetch('/api/tethys/consult_oracle', {
         method: 'POST',
@@ -20,9 +25,7 @@ export default function KithOracle() {
         body: JSON.stringify({ query })
       });
       const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Spores fell silent.');
-      }
+      if (!res.ok) throw new Error(data.error || 'Spores fell silent.');
       setResponse(data.reply);
     } catch (err) {
       setError(err.message);
@@ -32,37 +35,47 @@ export default function KithOracle() {
   };
 
   return (
-    <div className="p-4 border-t-2 border-[#3d2b1f] bg-[#1a1510] text-[#e6ded0] space-y-3">
-      <div className="flex items-center gap-2 text-[#10b981]">
-        <Sparkles className="w-4 h-4 animate-pulse" />
-        <span className="text-[10px] font-mono uppercase tracking-widest">Kith Uplink Active</span>
+    <div className="relative group bg-[#0a0808] border border-purple-900/30 p-6 rounded-xl shadow-2xl overflow-hidden">
+      
+      {/* Background Pulse */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(88,28,135,0.15),transparent_50%)] pointer-events-none"></div>
+
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-4 text-purple-400">
+        <Eye size={16} className="animate-pulse" />
+        <span className="text-[10px] font-mono uppercase tracking-[0.2em]">Kith Uplink Active</span>
       </div>
 
-      {response ? (
-        <div className="text-sm font-serif italic leading-relaxed text-[#10b981]/90">
-          “{response}”
-        </div>
-      ) : (
-        <p className="text-xs opacity-60 font-mono">// Consult the network. Ask of lore, creatures, or history.</p>
-      )}
+      {/* Output Screen */}
+      <div className="min-h-[80px] mb-4 p-4 rounded bg-black/40 border border-purple-900/20 font-serif text-sm leading-relaxed text-purple-100/90 italic shadow-inner">
+        {loading ? (
+          <span className="animate-pulse text-purple-500/50">Translating mycelial network...</span>
+        ) : response ? (
+          `“${response}”`
+        ) : (
+          <span className="opacity-40">The spores are listening. Ask of the deep history.</span>
+        )}
+      </div>
 
-      {error && <p className="text-[11px] text-dissonant-red">{error}</p>}
-
-      <div className="relative">
+      {/* Input Field */}
+      <div className="relative flex items-center gap-2">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Transmit query..."
-          className="w-full bg-[#2b221b] border border-[#5c4f43] p-2 text-xs font-mono focus:border-[#10b981] outline-none text-[#e6ded0]"
+          className="w-full bg-[#1a1510] border border-[#3d2b1f] focus:border-purple-500 text-stone-200 text-xs font-mono p-3 rounded-sm outline-none transition-colors placeholder:text-stone-600"
           onKeyDown={(e) => e.key === 'Enter' && askTheSpores()}
         />
         <button
           onClick={askTheSpores}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-[#10b981] hover:text-white"
+          disabled={loading}
+          className="absolute right-2 text-purple-500 hover:text-purple-300 disabled:opacity-50 transition-colors"
         >
-          {loading ? <span className="animate-spin">✣</span> : <Send className="w-3 h-3" />}
+          {loading ? <Sparkles className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         </button>
       </div>
+
+      {error && <p className="mt-2 text-[10px] text-red-400 font-mono text-center">{error}</p>}
     </div>
   );
 }
