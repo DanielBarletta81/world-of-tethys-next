@@ -4,10 +4,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { FastForward } from 'lucide-react';
 import useSoundFX from '@/app/hooks/useSoundFX'; 
 
 // SEQUENCE CONFIGURATION
-// We add a 'flashType' to specific steps to trigger visual jolts
+// add a 'flashType' to specific steps to trigger visual jolts
 const SEQUENCE_STEPS = [
   { 
     text: 'Only if...', 
@@ -25,7 +26,7 @@ const SEQUENCE_STEPS = [
     text: 'Seal Opened', 
     sub: 'Welcome to Tethys. War Horns Detected', 
     duration: 5000,
-    flashType: 'seal' // Will flash your coin image
+    flashType: 'seal' // Will flash coin image
   }
 ];
 
@@ -37,6 +38,25 @@ export default function LandingSequence({ onComplete }) {
   const droneRef = useRef(null);
   
   const { playDrone, playHorns, playLogoHit, playTextGlitch } = useSoundFX();
+
+  const handleSkip = (e) => {
+    e.stopPropagation(); // Prevent clicking through
+    
+    // 1. Fade out audio immediately
+    if (droneRef.current) {
+      const fadeOut = setInterval(() => {
+        if (droneRef.current.volume > 0.1) {
+          droneRef.current.volume -= 0.1;
+        } else {
+          droneRef.current.pause();
+          clearInterval(fadeOut);
+        }
+      }, 50);
+    }
+    
+    //  End sequence
+    onComplete();
+  };
 
   // 1. START THE DRONE (With Ref Capture)
   useEffect(() => {
@@ -141,6 +161,15 @@ export default function LandingSequence({ onComplete }) {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* NEW: THE SKIP BUTTON */}
+          <button 
+            onClick={handleSkip}
+            className="absolute bottom-8 right-8 z-50 text-stone-600 hover:text-orange-500 transition-colors flex items-center gap-2 text-[10px] uppercase tracking-widest font-mono group"
+          >
+            <span>Skip Sequence</span>
+            <FastForward size={14} className="group-hover:translate-x-1 transition-transform" />
+          </button>
 
           {/* Text Layer */}
           <AnimatePresence mode="wait">

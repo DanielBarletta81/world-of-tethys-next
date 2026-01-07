@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Map, Dna, Box, MonitorPlay, FileJson } from 'lucide-react';
+import { Activity, Map, Dna, Box, MonitorPlay, FileJson, FileText } from 'lucide-react';
 import TriFoldNav from '@/components/TriFoldNav';
 import PterosDashboard from '@/components/PterosDashboard';
 import PaleoRealityCheck from '@/components/PaleoRealityCheck';
@@ -10,6 +10,7 @@ import PaleoGIS from '@/components/PaleoGIS'; // The new GIS
 import VRConsole from '@/components/VRConsole'; // The new Bridge
 import AssetCrate from '@/components/AssetCrate';
 import CinematicTerminal from '@/components/CinematicTerminal';
+import ScientificJournal from '@/components/ScientificJournal';
 import { ASSET_MANIFEST } from '@/lib/assets-manifest'; // Ensure this file exists
 
 export default function FieldStationPage() {
@@ -39,6 +40,7 @@ export default function FieldStationPage() {
           <TabButton id="paleo" label="Validator" icon={<Dna size={14} />} active={activeTab} onClick={setActiveTab} />
           <TabButton id="archives" label="Assets" icon={<Box size={14} />} active={activeTab} onClick={setActiveTab} />
           <TabButton id="vr" label="VR Link" icon={<FileJson size={14} />} active={activeTab} onClick={setActiveTab} />
+          <TabButton id="journal" label="Research Log" icon={<FileText size={14} />} active={activeTab} onClick={setActiveTab} />
         </div>
       </div>
 
@@ -94,6 +96,18 @@ export default function FieldStationPage() {
             </motion.div>
           )}
 
+            // 3. Add Tab Content (inside AnimatePresence)
+{activeTab === 'journal' && (
+  <motion.div 
+    key="journal" 
+    initial={{ opacity: 0 }} 
+    animate={{ opacity: 1 }} 
+    exit={{ opacity: 0 }}
+  >
+    <ScientificJournal />
+  </motion.div>
+)}
+
           {/* TAB 3: PALEO-VALIDATOR */}
           {activeTab === 'paleo' && (
             <motion.div 
@@ -144,8 +158,18 @@ export default function FieldStationPage() {
 
         </AnimatePresence>
       </div>
+      <div className="mt-12 text-center max-w-2xl mx-auto p-6 border-t border-b border-stone-800">
+  <h4 className="text-xs font-mono uppercase tracking-[0.3em] text-stone-500 mb-3">Evolutionary Directive</h4>
+  <p className="text-lg font-serif text-stone-300 italic leading-relaxed">
+    "Nothing gets 'better.' It simply gets to the next generation. 
+    Fitness is not strength or speed—it is the strategy of the survivor. 
+    In Tethys, the slow and dumb are fuel. Only the calculated remain."
+  </p>
+</div>
 
     </main>
+   
+
   );
 }
 
