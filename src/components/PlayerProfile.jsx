@@ -30,6 +30,15 @@ const withTotals = (next) => ({
   total: Math.round((next.geology + next.creature + next.lore + next.human) / 10)
 });
 
+const SIGILS = [
+  { id: 'ember', name: 'Ashwing', color: 'text-orange-500', border: 'border-orange-500', bg: 'bg-orange-900/20' },
+  { id: 'tide', name: 'Tide Rune', color: 'text-cyan-500', border: 'border-cyan-500', bg: 'bg-cyan-900/20' },
+  { id: 'root', name: 'Root Seal', color: 'text-emerald-500', border: 'border-emerald-500', bg: 'bg-emerald-900/20' },
+{ id: 'city', name: 'City Mark', color: 'text-silver-500', border: 'border-black-500', bg: 'bg-slate-900/20' },
+  { id: 'river', name: 'River Rune', color: 'text-sky-blue-500', border: 'border-gray-500', bg: 'bg-cyan-900/20' },
+
+];
+
 export default function PlayerProfile() {
   const { user } = useAuth();
   const { stats: tethysStats = {}, inventory = [] } = useTethys();
@@ -39,8 +48,8 @@ export default function PlayerProfile() {
   const [path, setPath] = useState(null);
   const [staffProfile, setStaffProfile] = useState(null);
   const [hydrated, setHydrated] = useState(false);
-
   const inventoryIds = useMemo(() => inventory.map((item) => item.id), [inventory]);
+  const [activeSigil, setActiveSigil] = useState(SIGILS[0]); // Default to first sigil
 
   // --- HYDRATION & PERSISTENCE ---
   useEffect(() => {
@@ -124,6 +133,33 @@ export default function PlayerProfile() {
                Tier {currentTier}: Active
              </div>
           </div>
+ 
+
+{/* 1. CURRENT SIGIL (Click to Cycle) */}
+          <div className="relative group/avatar cursor-pointer" onClick={() => {
+             // Cycle to next sigil
+             const idx = SIGILS.indexOf(activeSigil);
+             setActiveSigil(SIGILS[(idx + 1) % SIGILS.length]);
+          }}>
+             <div className={`absolute inset-0 ${activeSigil.bg} blur-xl rounded-full opacity-50 group-hover/avatar:opacity-100 transition-opacity duration-500`} />
+             
+             {/* The Sigil Container */}
+             <div className={`w-28 h-28 rounded-full border-2 ${activeSigil.border} bg-[#0c0a09] flex items-center justify-center relative z-10 transition-colors shadow-2xl`}>
+               {/* Replace this div with <Image /> when you have files */}
+               <div className={`text-4xl font-display font-bold ${activeSigil.color}`}>
+                 {activeSigil.name[0]} 
+               </div>
+               
+               {/* Orbital Ring */}
+               <div className={`absolute inset-0 border border-dashed ${activeSigil.border} opacity-30 rounded-full animate-[spin_10s_linear_infinite]`}></div>
+             </div>
+
+             <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-widest ${activeSigil.color} font-mono whitespace-nowrap`}>
+               {activeSigil.name}
+             </div>
+
+{/* ... (Connection Line & Next Tier Ghost from previous turn) ... */}
+        </div>
 
           {/* 2. THE LINE (Connecting Thread) */}
           <div className="flex-1 h-[2px] bg-stone-800 relative max-w-[120px] rounded-full overflow-hidden">

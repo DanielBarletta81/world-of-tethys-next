@@ -3,6 +3,48 @@
 @tailwind components;
 @tailwind utilities;
 
+/* THE RAVEL ATMOSPHERE */
+@layer utilities {
+  .animate-float {
+    animation: float 20s linear infinite;
+  }
+  
+  .delay-0 { animation-delay: 0s; }
+  .delay-1000 { animation-delay: 1s; }
+  .delay-2000 { animation-delay: 2s; }
+  .delay-5000 { animation-delay: 5s; }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5; /* Fade in */
+  }
+  90% {
+    opacity: 0.5; /* Stay visible */
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px) rotate(180deg); /* Drift up and right */
+    opacity: 0;
+  }
+}
+
+/* Magma Text Burn Effect */
+.text-magma-burn {
+  background: linear-gradient(to bottom, #fff 0%, #fcd34d 40%, #ea580c 70%, #7f1d1d 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: burn 4s ease-in-out infinite alternate;
+}
+
+@keyframes burn {
+  0% { filter: brightness(1) drop-shadow(0 0 2px rgba(234,88,12,0.5)); }
+  100% { filter: brightness(1.3) drop-shadow(0 0 10px rgba(234,88,12,0.8)); }
+}
+
 /* --- 1. CORE VARIABLES (The Volcanic Palette) --- */
 :root {
   /* Obsidian & Basalt Base */

@@ -1,36 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { Map, Crosshair, ExternalLink } from 'lucide-react';
+import { TETHYS_MAP_DATA } from '@/data/tethys-map';
 
-const REAL_WORLD_DATA = [
-  { 
-    id: 'pteros', 
-    gameName: 'Pteros Island', 
-    realName: 'Crato Formation', 
-    location: 'Araripe Basin, Brazil',
-    coords: '7.2° S, 39.4° W',
-    desc: 'Lagerstätte famous for exceptionally preserved pterosaurs and insects. The defining inspiration for the Estuary ecology.',
-    x: 32, y: 58 
-  },
-  { 
-    id: 'sky-city', 
-    gameName: 'Sky City', 
-    realName: 'Ahaggar Volcanic Field', 
-    location: 'Hoggar Swell, Algeria',
-    coords: '23.3° N, 5.5° E',
-    desc: 'Volcanic field active during the Cretaceous separation of Africa. Provides the verticality and geothermal vents for the city structure.',
-    x: 52, y: 35 
-  },
-  { 
-    id: 'iron-sands', 
-    gameName: 'Iron Sands', 
-    realName: 'Kem Kem Beds', 
-    location: 'Morocco / Algeria Border',
-    coords: '30.9° N, 4.1° W',
-    desc: 'The "River of Giants." High concentration of large carnivorous dinosaurs (Spinosaurus, Carcharodontosaurus). The source of the "Apex" threat level.',
-    x: 48, y: 32 
-  }
-];
+const REAL_WORLD_DATA = TETHYS_MAP_DATA.filter(point => point.realName && point.location);
 
 export default function PaleoGIS() {
   const [activePoint, setActivePoint] = useState(null);
@@ -52,6 +25,29 @@ export default function PaleoGIS() {
             <p className="text-[10px] text-slate-400">Layer: Early Cretaceous (Aptian) • 111 MYA</p>
           </div>
         </div>
+
+      {/* NEW: Book Context Section */}
+    <div className="mt-4 pt-4 border-t border-slate-700">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-[9px] bg-amber-900/40 text-amber-500 px-2 py-0.5 rounded border border-amber-900/60 uppercase tracking-widest">
+          Chronicle Ref: {activePoint.book_context.chapter}
+        </span>
+      </div>
+      
+      <div className="space-y-3">
+        <div>
+          <span className="text-[9px] text-slate-500 uppercase tracking-wider block">Sensory Log</span>
+          <p className="text-xs text-slate-300 italic">"{activePoint.book_context.sensory}"</p>
+        </div>
+        
+        <div>
+          <span className="text-[9px] text-slate-500 uppercase tracking-wider block">Key Event</span>
+          <p className="text-xs text-slate-300">{activePoint.book_context.event}</p>
+        </div>
+      </div>
+    </div>
+
+
         <div className="hidden md:flex gap-4 text-[10px] font-mono text-blue-400">
           <span className="flex items-center gap-1"><Crosshair size={10} /> SAT-LINK ACTIVE</span>
           <span>PROJECTION: MERCATOR-CRETACEOUS</span>
