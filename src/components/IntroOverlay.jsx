@@ -34,7 +34,7 @@ export default function IntroOverlay({ onStart }) {
           className={`relative w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden border-2 border-orange-900/50 shadow-2xl transition-transform duration-500 ${isEngaging ? 'scale-0 opacity-0' : 'scale-100 group-hover:scale-105'}`}
         >
           <Image 
-            src="/img/tethys_seal.jpg" 
+            src="/img/a symbols/tethys-seal.png" 
             alt="Enter Tethys" 
             fill
             className="object-cover sepia-[0.5] hover:sepia-0 transition-all duration-500"

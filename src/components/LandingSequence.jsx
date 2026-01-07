@@ -152,7 +152,7 @@ export default function LandingSequence({ onComplete }) {
               >
                 {SEQUENCE_STEPS[step]?.flashType === 'seal' && (
                   <div className="relative w-96 h-96 opacity-50 scale-150 blur-sm">
-                     <Image src="/img/tethys-seal.jpg" alt="Seal" fill className="object-contain" />
+                     <Image src="/img/a symbols/tethys-seal.png" alt="Seal" fill className="object-contain" />
                   </div>
                 )}
                 {SEQUENCE_STEPS[step]?.flashType === 'signal' && (
