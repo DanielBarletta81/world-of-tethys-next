@@ -1,89 +1,163 @@
 // src/components/LandingSequence.jsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import useSoundFX from '@/app/hooks/useSoundFX'; // Import the audio hook
+import Image from 'next/image';
+import useSoundFX from '@/app/hooks/useSoundFX'; 
 
+// SEQUENCE CONFIGURATION
+// We add a 'flashType' to specific steps to trigger visual jolts
 const SEQUENCE_STEPS = [
-  { text: 'Descent Confirmed', sub: 'Ash corridor stable. Brace.' },
-  { text: 'Root Signal Found', sub: 'Ravel hum detected at 43.7 Hz' },
-  { text: 'Seal Opened', sub: 'Welcome to Tethys. Watch your footing.' }
+  { 
+    text: 'Only if...', 
+    sub: 'The Roots Remember',
+    duration: 3000,
+    flashType: null 
+  },
+  { 
+    text: 'Root Signal Found', 
+    sub: 'Ravel hum detected at 43.7 Hz', 
+    duration: 3500,
+    flashType: 'signal' // Will flash a waveform/static color
+  },
+  { 
+    text: 'Seal Opened', 
+    sub: 'Welcome to Tethys. War Horns Detected', 
+    duration: 5000,
+    flashType: 'seal' // Will flash your coin image
+  }
 ];
 
 export default function LandingSequence({ onComplete }) {
   const [step, setStep] = useState(0);
-  //const { playDrone, playHorns, playLogoHit, playTextGlitch } = useSoundFX();
+  const [showFlash, setShowFlash] = useState(false);
+  
+  // We keep a ref to the drone audio so we can fade it out manually
+  const droneRef = useRef(null);
+  
+  const { playDrone, playHorns, playLogoHit, playTextGlitch } = useSoundFX();
 
-  // 1. Start the Ominous Drone immediately
- // useEffect(() => {
-   //// playDrone();
-//  }, []);
-
-  // 2. Step Sequencer
+  // 1. START THE DRONE (With Ref Capture)
   useEffect(() => {
-    // Play subtle text glitch on every new step
-   // if (step < SEQUENCE_STEPS.length) {
-
-
-    // SPECIAL FX TRIGGERS
-    if (step === 1) {
-      // Step 1 (Root Signal): Maybe a low pulse?
+    // We assume playDrone returns the Audio object (update useSoundFX if needed)
+    // If useSoundFX is fire-and-forget, this ref logic is a "Nice to Have"
+    const audioInstance = playDrone(); 
+    if (audioInstance) {
+      droneRef.current = audioInstance;
     }
     
-    if (step === 2) {
-      // Step 2 (Seal Opened): Queue the War Horns
-      // We play them slightly before the text fully settles for dramatic effect
-   //   setTimeout(() => playHorns(), 500); 
+    // Cleanup: Stop sound if component unmounts abruptly
+    return () => {
+      if (droneRef.current) {
+        droneRef.current.pause();
+        droneRef.current.currentTime = 0;
+      }
+    };
+  }, [playDrone]);
+
+  // 2. THE SEQUENCE ENGINE
+  useEffect(() => {
+    // -- END OF SEQUENCE --
+    if (step >= SEQUENCE_STEPS.length) {
+      playLogoHit(); // The Big Boom
+      
+      // FADE OUT DRONE (The "Safety Net")
+      if (droneRef.current) {
+        const fadeOut = setInterval(() => {
+          if (droneRef.current.volume > 0.05) {
+            droneRef.current.volume -= 0.05;
+          } else {
+            droneRef.current.pause();
+            clearInterval(fadeOut);
+          }
+        }, 100); // Lowers volume every 100ms
+      }
+
+      // Wait 1.5s for the Boom to hit, then tell Parent we are done
+      const finishTimer = setTimeout(() => onComplete?.(), 1500);
+      return () => clearTimeout(finishTimer);
     }
 
-    if (step < SEQUENCE_STEPS.length) {
-      const timer = setTimeout(() => setStep((prev) => prev + 1), 2500); // 2.5s pacing
-      return () => clearTimeout(timer);
+    // -- ACTIVE STEP --
+    const currentConfig = SEQUENCE_STEPS[step];
+
+    // Audio Cues
+    playTextGlitch(); 
+    if (step === 2) { 
+      // Play Horns slightly delayed (200ms) so they hit *after* text appears
+      setTimeout(() => playHorns(), 200); 
     }
-    
-    // SEQUENCE FINISHED -> TRIGGER HERO LANDING
-    const finishTimer = setTimeout(() => {
-    //  playLogoHit(); // <--- THE BIG BOOM (Audio Logo)
-      onComplete?.();
-    }, 1000);
-    
-    return () => clearTimeout(finishTimer);
-  }, [step, onComplete]);
+
+    // Visual Flashes
+    if (currentConfig.flashType) {
+      setShowFlash(true);
+      setTimeout(() => setShowFlash(false), 150); // Flash duration
+    }
+
+    // Timer to Next Step
+    const timer = setTimeout(() => {
+      setStep((prev) => prev + 1);
+    }, currentConfig.duration);
+
+    return () => clearTimeout(timer);
+  }, [step, onComplete, playHorns, playLogoHit, playTextGlitch]);
 
   return (
     <AnimatePresence>
-      {step <= SEQUENCE_STEPS.length && (
+      {step < SEQUENCE_STEPS.length + 1 && (
         <motion.div
-          key="landing"
-          className="fixed inset-0 z-[9999] bg-[#0a0806] flex flex-col items-center justify-center font-display overflow-hidden"
+          key="landing-container"
+          className="fixed inset-0 z-[9999] bg-[#050403] flex flex-col items-center justify-center font-serif overflow-hidden cursor-none"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 2.0, ease: 'easeInOut' } }} // Slower fade out to let the Boom resonate
+          exit={{ opacity: 0, transition: { duration: 2.0, ease: "easeInOut" } }}
         >
-          {/* Pulsing Background for the Drone */}
+          {/* Background Pulse */}
           <motion.div 
             className="absolute inset-0 bg-gradient-to-b from-black via-[#1a0f0a] to-black"
-            animate={{ opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 4, repeat: Infinity }}
+            animate={{ opacity: [0.6, 0.8, 0.6] }}
+            transition={{ duration: 6, repeat: Infinity }}
           />
-          
+          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
+
+          {/* Flash Overlay */}
+          <AnimatePresence>
+            {showFlash && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.1 }}
+                className="absolute inset-0 z-20 flex items-center justify-center bg-orange-900/30 mix-blend-color-dodge"
+              >
+                {SEQUENCE_STEPS[step]?.flashType === 'seal' && (
+                  <div className="relative w-96 h-96 opacity-50 scale-150 blur-sm">
+                     <Image src="/img/tethys-seal.jpg" alt="Seal" fill className="object-contain" />
+                  </div>
+                )}
+                {SEQUENCE_STEPS[step]?.flashType === 'signal' && (
+                  <div className="w-full h-2 bg-white/50 blur-md" />
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Text Layer */}
           <AnimatePresence mode="wait">
             {step < SEQUENCE_STEPS.length && (
               <motion.div
                 key={step}
-                initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+                initial={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
                 animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, scale: 1.1, filter: 'blur(20px)' }}
-                transition={{ duration: 1.2 }}
-                className="relative z-10 text-center space-y-6"
+                exit={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="relative z-10 text-center space-y-8 max-w-4xl px-6"
               >
-                <h1 className="text-4xl md:text-6xl tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-orange-100 to-red-900 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]">
+                <h1 className="text-4xl md:text-7xl font-light tracking-[0.25em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#e7e5e4] to-[#78716c] drop-shadow-2xl">
                   {SEQUENCE_STEPS[step].text}
                 </h1>
-                
-                <div className="h-[1px] w-24 bg-orange-700/50 mx-auto" />
-                
-                <p className="text-sm md:text-base text-stone-500 font-mono tracking-[0.4em] uppercase">
+                <div className="h-[1px] w-24 bg-orange-700/60 mx-auto shadow-[0_0_10px_#ea580c]" />
+                <p className="text-xs md:text-sm text-orange-900/80 font-mono tracking-[0.5em] uppercase">
                   {SEQUENCE_STEPS[step].sub}
                 </p>
               </motion.div>

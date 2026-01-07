@@ -24,7 +24,9 @@ export default function NutePulse() {
 
         <div className="text-center">
           <h3 className="text-nute-emerald font-mono text-[10px] tracking-[0.4em] uppercase">Nute Pulse</h3>
-          <p className="text-gray-500 text-xs mt-1 italic">{isNuteRoaring ? 'CAVITATION DETECTED' : 'HEART RATE STABLE'}</p>
+          <span className="text-3xl font-black text-nute-emerald">
+  {oilLevel > 66 ? 'HIGH' : oilLevel > 33 ? 'MID' : 'LOW'}
+</span>
         </div>
 
         <div className="w-full h-1 bg-gray-900 rounded-full overflow-hidden">

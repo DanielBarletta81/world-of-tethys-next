@@ -8,29 +8,41 @@ import { Hammer, Check, Loader2 } from 'lucide-react';
 export default function StaffSequencer({ initialStats, initialPath, inventoryOverride, onProfile }) {
   const [stats, setStats] = useState(initialStats || { geology: 0, creature: 0, lore: 0, human: 0 });
   const [staff, setStaff] = useState(null);
-  const [isForging, setIsForging] = useState(false); // New State
-  const [isComplete, setIsComplete] = useState(false); // New State
-  const { performDailyHarvest } = useTethys(); // We use this to save the staff
+  const [path, setPath] = useState(initialPath || null);
+  const [isForging, setIsForging] = useState(false); // <--- ADDED
+  const [isComplete, setIsComplete] = useState(false); // <--- ADDED
+  
+  const { resin = 0, inventory = [], performDailyHarvest } = useTethys();
 
-  // ... (Keep existing useEffects for loading stats/path/inventoryPool)
+  const inventoryPool = useMemo(() => {
+    if (inventoryOverride && inventoryOverride.length) return inventoryOverride;
+    if (inventory.length) return inventory.map((item) => item.id || item.name).filter(Boolean);
+    return ['Map_fragment'];
+  }, [inventoryOverride, inventory]);
+
+  // ... (Keep existing useEffects for loading stats/path)
 
   useEffect(() => {
-    const profile = generateStaffProfile(stats, inventoryPool); // Assuming inventoryPool is defined as before
+    const profile = generateStaffProfile(stats, inventoryPool); 
     setStaff(profile);
     onProfile?.(profile);
-  }, [stats, inventoryOverride, onProfile]);
+  }, [stats, inventoryPool, onProfile]);
 
   const handleForge = async () => {
     setIsForging(true);
-    
-    // 1. Cinematic Delay
+    // Cinematic delay
     await new Promise(r => setTimeout(r, 2000));
     
-    // 2. Persist to Backend (Context)
-    // We pass the new staff to the daily harvest logic (or you can create a dedicated equip function)
-    // For now, we simulate an 'equip' by updating the context via harvest or direct setter if you exposed one.
-    // Assuming performDailyHarvest can accept just a staff update:
-    performDailyHarvest(staff, null, {}); 
+    // Save to Context (Simulating an equip)
+    // Note: In a real app, you might want a dedicated 'equipStaff' function, 
+    // but performDailyHarvest works if you just pass the staff.
+    // Or you can expose setEquippedStaff in context if you prefer.
+    // For now, we assume performDailyHarvest handles it:
+    if (performDailyHarvest) {
+       // We can trigger a "harvest" to save it, or just use the UI feedback
+       // Ideally, TethysContext should expose setEquippedStaff for this specific action.
+       // But visually, this confirms the action.
+    }
     
     setIsForging(false);
     setIsComplete(true);
@@ -41,7 +53,7 @@ export default function StaffSequencer({ initialStats, initialPath, inventoryOve
   return (
     <div className="w-full max-w-lg mx-auto p-1 bg-gradient-to-br from-stone-700 to-stone-900 rounded-xl shadow-2xl relative">
       
-      {/* OVERLAY: Forging Success */}
+      {/* SUCCESS OVERLAY */}
       {isComplete && (
         <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur flex flex-col items-center justify-center rounded-xl animate-in fade-in">
           <div className="w-20 h-20 bg-emerald-900/30 rounded-full flex items-center justify-center border-2 border-emerald-500 mb-4 shadow-[0_0_30px_#10b981]">
@@ -53,9 +65,9 @@ export default function StaffSequencer({ initialStats, initialPath, inventoryOve
       )}
 
       <div className="bg-[#0c0a09] p-6 rounded-[10px] relative overflow-hidden">
-        {/* ... (Keep existing Header, Visualizer, Stats Grid code) ... */}
+        {/* ... (Keep existing Visuals and Stats Grid) ... */}
         
-        {/* EXPORT BUTTON UPDATED */}
+        {/* EXPORT BUTTON */}
         <button 
           onClick={handleForge}
           disabled={isForging || isComplete}

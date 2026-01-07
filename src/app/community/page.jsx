@@ -4,7 +4,7 @@ import React from 'react';
 import TriFoldNav from '@/components/TriFoldNav';
 import BookBanner from '@/components/BookBanner';
 import SideAuthPanel from '@/components/SideAuthPanel';
-import LoginCard from '@/components/LoginCard';
+import IdentityAirLock from '@/components/IdentityAirLock';
 import TheBlankSlate from '@/components/TheBlankSlate';
 import Footer from '@/components/Footer';
 
@@ -21,6 +21,7 @@ const COMMUNITY_MYTHICS = [
 
 export default function CommunityPage() {
   return (
+    <>
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif selection:bg-amber-900 selection:text-white relative overflow-x-hidden">
       <TriFoldNav />
       <SideAuthPanel />
@@ -38,7 +39,7 @@ export default function CommunityPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <div className="bg-[#12100e] border border-[#2c241f] rounded-xl p-4 shadow-[0_15px_40px_rgba(0,0,0,0.45)]">
-              <LoginCard />
+              <IdentityAirLock />
             </div>
             <TheBlankSlate />
           </div>
@@ -55,5 +56,6 @@ export default function CommunityPage() {
       </div>
       <Footer />
     </main>
+    </>
   );
 }

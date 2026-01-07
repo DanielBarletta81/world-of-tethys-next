@@ -1,5 +1,6 @@
 /// src/components/TriFoldNav.jsx
 'use client';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BookOpen, Sparkles, Microscope } from 'lucide-react';
@@ -12,7 +13,7 @@ const PATHS = [
     label: 'The Chronicle',
     href: '/study',
     icon: <BookOpen size={18} />,
-    desc: 'For Readers',
+   
     color: 'hover:text-amber-400',
     border: 'hover:border-amber-500/50'
   },
@@ -21,7 +22,7 @@ const PATHS = [
     label: 'The Veil',
     href: '/mystics',
     icon: <Sparkles size={18} />,
-    desc: 'For Mystics',
+   
     color: 'hover:text-purple-400',
     border: 'hover:border-purple-500/50'
   },
@@ -30,7 +31,7 @@ const PATHS = [
     label: 'Field Station',
     href: '/science',
     icon: <Microscope size={18} />,
-    desc: 'For Researchers',
+   
     color: 'hover:text-cyan-400',
     border: 'hover:border-cyan-500/50'
   }
@@ -73,9 +74,7 @@ export default function TriFoldNav() {
                   <h3 className={`font-serif text-lg tracking-widest uppercase transition-colors ${isActive ? 'text-stone-100' : 'text-stone-400 group-hover:text-stone-200'}`}>
                     {path.label}
                   </h3>
-                  <p className="text-[10px] uppercase tracking-wider text-stone-600 font-mono group-hover:text-stone-500">
-                    {path.desc}
-                  </p>
+                 
                 </div>
 
                 {isActive && (

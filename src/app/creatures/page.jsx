@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import BookBanner from '@/components/BookBanner';
 import TriFoldNav from '@/components/TriFoldNav';
 import Footer from '@/components/Footer';
@@ -54,7 +54,7 @@ const BESTIARY = [
       {
         name: 'Tapejara',
         tag: 'Messenger',
-        niche: 'Bioluminescent crest rigs for long-distance signaling and fruit relay.',
+        niche: 'Bioluminescent crest rigs for long-distance signaling and relay.',
         science: 'Huge colorful crests; agile flyers and fruit eaters that dominated Aptian skies.',
         image: '/img/creatures/tapejara.png'
       },
@@ -64,6 +64,13 @@ const BESTIARY = [
         niche: 'Carries payloads or symbiotic parasites; snaps fish mid-flight with keel-toothed jaws.',
         science: '27 ft wingspan marine hunter; prowled the Tethys sea lanes.',
         image: '/img/creatures/tropeognathus.png'
+      },
+      {
+        name: 'Pterodactylus',
+        tag: 'Aerial Bomber',
+        niche: 'Carries payloads or symbiotic parasites; snaps fish mid-flight with keel-toothed jaws.',
+        science: '27 ft wingspan marine hunter; prowled the Tethys sea lanes.',
+        image: '/img/creatures/pterodactylus.png'
       }
     ]
   },
@@ -125,7 +132,7 @@ const BESTIARY = [
 
 function CreatureCard({ entry }) {
   return (
-    <div className="border border-[#2c241f] bg-[#100d0b] rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.45)]">
+    <div className="border border-[#2c241f] bg-[#100d0b] rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.45)] h-full">
       <div className="relative h-48 w-full bg-gradient-to-br from-[#1f130e] to-[#0c0a09] overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {entry.image ? (
@@ -145,11 +152,36 @@ function CreatureCard({ entry }) {
   );
 }
 
+function SurvivorCarousel() {
+  const survivors = BESTIARY.find(s => s.era === 'Tethys Survivors')?.entries || [];
+
+  return (
+    <section className="w-full py-8 bg-[#0f0c0a] border-b border-amber-900/20">
+      <div className="max-w-6xl mx-auto px-6 mb-4">
+        <h3 className="text-xl font-bold text-amber-500 uppercase tracking-widest font-mono">Survivor Spotlight</h3>
+      </div>
+      
+      {/* Scroll Container */}
+      <div className="flex overflow-x-auto gap-6 px-6 pb-6 snap-x snap-mandatory no-scrollbar">
+        {survivors.map((entry) => (
+          <div key={entry.name} className="min-w-[85vw] md:min-w-[400px] snap-center">
+            <CreatureCard entry={entry} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function CreaturesPage() {
   return (
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif selection:bg-amber-900 selection:text-white relative overflow-x-hidden">
       <TriFoldNav />
       <div className="pt-20">
+        
+        {/* Carousel Front & Center */}
+        <SurvivorCarousel />
+
         <BookBanner />
         <section className="max-w-6xl mx-auto px-6 py-12">
           <div className="text-center mb-10">

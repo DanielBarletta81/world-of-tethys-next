@@ -23,7 +23,7 @@ export function TethysProvider({ children }) {
   // --- STATE ---
   const [currentLocation, setCurrentLocation] = useState('pteros');
   const [unlockedNodes, setUnlockedNodes] = useState(['pteros', 'sky-city']);
-  const [unlockedAssets, setUnlockedAssets] = useState([]); 
+  const [unlockedAssets, setUnlockedAssets] = useState([]); // <--- ADDED
   const [inventory, setInventory] = useState([]);
   const [equippedStaff, setEquippedStaff] = useState(null);
   const [lastHarvestDate, setLastHarvestDate] = useState(null);
@@ -31,7 +31,7 @@ export function TethysProvider({ children }) {
   const [canHarvest, setCanHarvest] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
-  // --- 1. DATA SYNC (LOAD) ---
+  // --- 1. LOAD DATA ---
   useEffect(() => {
     async function loadData() {
       setLoadingData(true);
@@ -47,7 +47,7 @@ export function TethysProvider({ children }) {
           if (docSnap.exists()) {
             applyData(docSnap.data());
           } else {
-            // Init new user in Cloud
+            // New user init
             const initialData = {
               stats: DEFAULT_STATS,
               inventory: [],
@@ -77,7 +77,7 @@ export function TethysProvider({ children }) {
     if (data.unlockedAssets) setUnlockedAssets(data.unlockedAssets);
   };
 
-  // --- 2. DATA SYNC (SAVE) ---
+  // --- 2. SAVE DATA ---
   useEffect(() => {
     if (loadingData) return;
 
@@ -104,44 +104,27 @@ export function TethysProvider({ children }) {
       }
     };
 
-    const timeout = setTimeout(save, 2000); // Debounce saves
+    const timeout = setTimeout(save, 2000);
     return () => clearTimeout(timeout);
   }, [inventory, equippedStaff, stats, lastHarvestDate, unlockedNodes, unlockedAssets, currentLocation, userId, isGuest, loadingData]);
 
-  // --- 3. HARVEST & REWARDS LOGIC ---
-  useEffect(() => {
-    if (!lastHarvestDate) {
-      setCanHarvest(true);
-      return;
-    }
-    const now = new Date();
-    const last = new Date(lastHarvestDate);
-    const isToday = now.toDateString() === last.toDateString();
-    setCanHarvest(!isToday);
-  }, [lastHarvestDate]);
+  // --- 3. ACTIONS ---
 
   const performDailyHarvest = useCallback((newStaff, newItems, bonusStats) => {
     if (!canHarvest) return false;
 
     const now = new Date();
-    
     // Streak Logic
     let newStreak = (stats.loginStreak || 0) + 1;
     const last = lastHarvestDate ? new Date(lastHarvestDate) : new Date(0);
     const hoursSince = (now - last) / (1000 * 60 * 60);
-    
-    if (hoursSince > 48) newStreak = 1; // Reset if missed a day
+    if (hoursSince > 48) newStreak = 1;
 
-    // Map Unlocks based on Streak
+    // Map Unlock Logic
     const newNodes = [...unlockedNodes];
     if (newStreak >= 3 && !newNodes.includes('iron-sands')) newNodes.push('iron-sands');
-    if (newStreak >= 7 && !newNodes.includes('strait-of-dier')) newNodes.push('strait-of-dier');
 
-    // Rewards
-    setEquippedStaff(newStaff || equippedStaff); // Optional update
-    if (newItems) setInventory(newItems);
-    
-    const resinReward = 50 + (newStreak * 10); // Escalating reward
+    const resinReward = 50 + (newStreak * 10);
 
     setStats(prev => ({ 
       ...prev, 
@@ -149,17 +132,20 @@ export function TethysProvider({ children }) {
       resin: (prev.resin || 0) + resinReward,
       loginStreak: newStreak
     }));
-
+    
+    if (newStaff) setEquippedStaff(newStaff);
+    if (newItems) setInventory(newItems);
     setUnlockedNodes(newNodes);
     setLastHarvestDate(now.toISOString());
     setCanHarvest(false);
-    return { success: true, resin: resinReward, streak: newStreak };
-  }, [canHarvest, stats.loginStreak, unlockedNodes, lastHarvestDate, equippedStaff]);
+    return { success: true, resin: resinReward };
+  }, [canHarvest, stats.loginStreak, unlockedNodes, lastHarvestDate]);
 
-  // ... (purchaseAsset and travelTo remain the same)
+  // The function your AssetCrate is trying to call
   const purchaseAsset = (assetId, cost) => {
     if (unlockedAssets.includes(assetId)) return { success: true, message: "Already Owned" };
     if (stats.resin < cost) return { success: false, message: "Insufficient Resin" };
+
     setStats(prev => ({ ...prev, resin: prev.resin - cost }));
     setUnlockedAssets(prev => [...prev, assetId]);
     return { success: true, message: "Asset Decrypted" };
@@ -167,7 +153,9 @@ export function TethysProvider({ children }) {
 
   const travelTo = (locationId) => {
     setCurrentLocation(locationId);
-    if (!unlockedNodes.includes(locationId)) setUnlockedNodes(prev => [...prev, locationId]);
+    if (!unlockedNodes.includes(locationId)) {
+      setUnlockedNodes(prev => [...prev, locationId]);
+    }
   };
 
   const value = {

@@ -1,17 +1,17 @@
 export const AUDIO_TRACKS = [
   {
-    id: 'ambience_estuary',
-    title: 'Estuary Low-Tide',
-    artist: 'Pteros Field Recording',
+    id: 'intro_drone',
+    title: 'Magma Forge Drone',
+    artist: 'Pteros Field Bade',
     // Use a real URL or a placeholder mp3
-    src: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_07076a5fae.mp3?filename=river-stream-moderate-flow-19672.mp3', 
+    src: './public/audio/', 
     type: 'Ambience'
   },
   {
     id: 'ambience_volcanic',
     title: 'Magma Chamber Rumble',
     artist: 'Watcher Mountain Sensor',
-    src: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_651d457636.mp3?filename=fire-crackling-13962.mp3',
+    src: './public/audio/volcanic-rumble.mp3',
     type: 'Ambience'
   },
   {
