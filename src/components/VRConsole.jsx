@@ -12,7 +12,13 @@ export default function VRConsole() {
   const [copied, setCopied] = useState(false);
 
   // Generate live data
-  const metadata = generateVRMetadata(user, stats, equippedStaff, inventory);
+  const metadata = generateVRMetadata(
+  user,
+  stats ?? {},
+  equippedStaff ?? null,
+  inventory ?? []
+);
+
   const jsonString = JSON.stringify(metadata, null, 2);
 
   const handleCopy = () => {

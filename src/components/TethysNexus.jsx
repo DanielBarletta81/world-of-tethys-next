@@ -24,7 +24,18 @@ export default function TethysNexus({
 }) {
   const { unlockedNodes, currentLocation, travelTo } = useTethys();
   const shellRef = useRef(null);
+  const confirmedNodeRef = useRef(null);
+  const svgRef = useRef(null);
 
+
+useEffect(() => {
+  if (offerTravel && focusNode) {
+    confirmedNodeRef.current = focusNode;
+  }
+  if (!offerTravel) {
+    confirmedNodeRef.current = null;
+  }
+}, [offerTravel, focusNode]);
   // Viewport transform
   const [tx, setTx] = useState(0);
   const [ty, setTy] = useState(0);
@@ -76,10 +87,19 @@ export default function TethysNexus({
   const [draftGates, setDraftGates] = useState([]); // {id,x,y,r}
   const [draftRadius, setDraftRadius] = useState(0.10);
   const [draftId, setDraftId] = useState('sky-city');
+  const [lockedFocus, setLockedFocus] = useState(false);
+  const [draggingFrag, setDraggingFrag] = useState(null);
+
+  const [fragments, setFragments] = useState(
+  MAP_FRAGMENTS.map(f => ({
+    ...f,
+    pos: { x: Math.random(), y: Math.random() },
+    snapped: false
+  }))
+);
 
 
-
-  // --- Doctrine constants (same values we agreed earlier) ---
+  // --- Doctrine constants  ---
   const CFG = useMemo(() => ({
     // Half-Eye (stillness → clarity)
     STILL_DELAY: 1800,
@@ -123,6 +143,85 @@ export default function TethysNexus({
     TRAVEL_STILLNESS_MIN: 0.85,
     TRAVEL_HOLD_MS: 1800,
   }), []);
+
+
+// CFG.MAP_FRAGMENTS
+ const MAP_FRAGMENTS = [
+  {
+    id: "sky_city_frag",
+    region: "sky-city",
+    anchor: { x: 0.62, y: 0.21 }, // normalized world coords
+    radius: 0.06,
+    svgPath: "/fragments/sky_city.svg",
+    locked: false
+  },
+  {
+    id: "ironwoods_frag",
+    region: "ironwoods",
+    anchor: { x: 0.41, y: 0.58 },
+    radius: 0.07,
+    svgPath: "/fragments/ironwoods.svg",
+    locked: false
+  }
+];
+// helpers
+
+const SNAP_DISTANCE = 0.035; // normalized units
+
+
+function dist(a, b) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+useEffect(() => {
+  if (!offerTravel) return;
+
+  setFragments(frags =>
+    frags.map(f => {
+      if (f.snapped) return f;
+
+      const d = dist(f.pos, f.anchor);
+
+      if (d < SNAP_DISTANCE) {
+        return {
+          ...f,
+          pos: { ...f.anchor },
+          snapped: true,
+          locked: true
+        };
+      }
+
+      return f;
+    })
+  );
+}, [offerTravel]);
+
+function onFragDown(id) {
+  setDraggingFrag(id);
+}
+
+function onFragUp() {
+  setDraggingFrag(null);
+}
+
+function onFragMove(e) {
+  if (!draggingFrag) return;
+
+  const rect = svgRef.current.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width;
+  const y = (e.clientY - rect.top) / rect.height;
+
+  setFragments(frags =>
+    frags.map(f =>
+      f.id === draggingFrag && !f.locked
+        ? { ...f, pos: { x, y } }
+        : f
+    )
+  );
+}
+
 
   const registerInput = () => {
     if (typeof window !== 'undefined') {
@@ -168,6 +267,43 @@ export default function TethysNexus({
     focusHeldMs.current = 0;
     lastFocusTick.current = performance.now();
   }, [worldCenter01, CFG.REGION_GATES]);
+
+
+
+useEffect(() => {
+  if (!focusNode) {
+    setLockedFocus(false);
+    return;
+  }
+
+  const unlocked = unlockedNodes?.includes(focusNode);
+  setLockedFocus(!unlocked);
+}, [focusNode, unlockedNodes]);
+
+
+useEffect(() => {
+  if (lockedFocus) {
+    setFriction((f) => Math.max(f, 1.25));
+    setPanSpeed((s) => Math.min(s, 0.9));
+  }
+}, [lockedFocus]);
+
+
+useEffect(() => {
+  if (!currentLocation) return;
+
+  const gate = CFG.REGION_GATES.find(g => g.id === currentLocation);
+  if (!gate) return;
+
+  const targetX = size.w * (0.5 - gate.x * scale);
+  const targetY = size.h * (0.5 - gate.y * scale);
+
+  setTx(targetX);
+  setTy(targetY);
+}, [currentLocation, CFG.REGION_GATES, size.w, size.h, scale]);
+
+
+
 
 useEffect(() => {
   // only enable with ?calibrate=1
@@ -479,25 +615,61 @@ useEffect(() => {
           />
         </div>
 
-        {/* VIEWPORT: the clean unlabeled atlas image */}
-        <div
-          className="absolute inset-0 will-change-transform"
-          style={{
-            transform: `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`,
-            transformOrigin: 'center',
-            transition: dragging.current
-              ? 'none'
-              : 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1)',
-          }}
-        >
-          <Image
-            src={atlasUrl}
-            alt=""
-            draggable={false}
-            className="w-full h-full object-cover opacity-[0.96]"
-          />
-        </div>
+      {/* VIEWPORT: atlas + fragments move together */}
+<div
+  className="absolute inset-0 will-change-transform"
+  style={{
+    transform: `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`,
+    transformOrigin: 'center',
+    transition: dragging.current
+      ? 'none'
+      : 'transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+  }}
+>
+  {/* ATLAS */}
+  <Image
+    src={atlasUrl}
+    alt=""
+    draggable={false}
+    className="w-full h-full object-cover opacity-[0.96]"
+  />
 
+  {/* SVG OVERLAY  */}
+  <svg
+    ref={svgRef}
+    className="absolute inset-0"
+    viewBox="0 0 100 100"
+    onMouseMove={onFragMove}
+    onMouseUp={onFragUp}
+    onMouseLeave={onFragUp}
+  >
+    {fragments.map(f => (
+      <g
+        key={f.id}
+        transform={`translate(${f.pos.x * 100} ${f.pos.y * 100})`}
+        onMouseDown={() => onFragDown(f.id)}
+        style={{
+          cursor: f.locked ? 'default' : 'grab',
+          opacity: f.snapped ? 1 : 0.85
+        }}
+      >
+        {/* TEMP PLACEHOLDER */}
+        <rect
+          x="-6"
+          y="-6"
+          width="12"
+          height="12"
+          rx="2"
+          fill={f.snapped ? '#d97706' : '#64748b'}
+          opacity="0.8"
+        />
+      </g>
+    ))}
+  </svg>
+</div>
+
+   
+ 
         {/* Minimal HUD (Doctrine-safe): no instructions, no labels, no markers.
             This is optional; keep it extremely quiet. */}
         <div className="absolute left-4 bottom-4 text-[10px] uppercase tracking-[0.22em] text-stone-500 pointer-events-none">
@@ -548,18 +720,11 @@ useEffect(() => {
     Atlas
   </div>
 
-  <button
-    type="button"
-    onClick={() => focusNode && travelTo(focusNode)}
-    disabled={!offerTravel}
-    className={[
-      'px-3 py-1.5 rounded-md border text-xs tracking-wide transition',
-      offerTravel
-        ? 'border-stone-600 text-stone-200 hover:border-stone-500'
-        : 'border-stone-800 text-stone-700 cursor-default',
-    ].join(' ')}
-    aria-label="Proceed"
-  >
+ <button
+  type="button"
+  onClick={() => confirmedNodeRef.current && travelTo(confirmedNodeRef.current)}
+  disabled={!offerTravel}
+>
     Proceed
   </button>
 </div>
