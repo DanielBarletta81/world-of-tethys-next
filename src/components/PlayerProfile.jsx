@@ -296,3 +296,4 @@ export default function PlayerProfile() {
     </section>
   );
 }
+// World of Tethys || D.C. Barletta

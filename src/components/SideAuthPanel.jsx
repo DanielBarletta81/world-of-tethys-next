@@ -79,3 +79,4 @@ export default function SideAuthPanel() {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

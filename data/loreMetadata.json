@@ -1,0 +1,103 @@
+{
+  "mynzPredators": {
+    "taxonomyBasis": "movement",
+    "entries": [
+      {
+        "id": "kethraks",
+        "alias": "cutters",
+        "silhouette": "low_angular_tail_balance_head_low",
+        "notes": "paired flank interceptors; vanish mid-motion; first-contact loss"
+      },
+      {
+        "id": "vireth",
+        "alias": "threaders",
+        "silhouette": "burrow_ripples_partial_emerge",
+        "notes": "pressure strike from below; abort if exposed"
+      },
+      {
+        "id": "seln",
+        "alias": "listeners",
+        "silhouette": "upright_broad_skull_motionless",
+        "notes": "rare; track repeated sound; almost never kill first encounter"
+      },
+      {
+        "id": "orrix",
+        "alias": "watchers",
+        "silhouette": "tall_narrow_downward_gaze",
+        "notes": "signalers; end encounters before they begin"
+      },
+      {
+        "id": "unnamed",
+        "alias": "solitary",
+        "silhouette": "never_recorded",
+        "notes": "predators hunting alone or returning after long intervals remain unnamed"
+      }
+    ],
+    "rules": [
+      "Names describe consequence not appearance",
+      "Name exists only if someone survives twice"
+    ]
+  },
+  "sonarLineages": {
+    "silurians": {
+      "capability": "low_res_echolocation",
+      "detects": ["mass", "voids", "motion"],
+      "bestIn": ["caves", "kelp", "murky_shallows", "slightly_above_water"],
+      "limits": "no spatial imaging; discomfort in open air",
+      "narrative": "sense absence; navigation exceptional; intention unclear"
+    },
+    "humans_wild_adaptors": {
+      "capability": "clicking_bone_conduction",
+      "origin": ["caves", "estuaries", "intertidal"],
+      "cost": ["migraines", "crowd_disorientation", "city_acoustics_failure"],
+      "wildName": "listening_sideways",
+      "cityMedical": "degenerative_label"
+    },
+    "future_hint": {
+      "possible": "deep_river_or_salt_marsh_near_dier_lake",
+      "trait": "sonar_with_sulfur_metabolism",
+      "status": "rumor_only"
+    }
+  },
+  "thal": {
+    "roleName": "Kharuun",
+    "definition": "stone-hearers / quake-readers; feel when stone is deciding",
+    "perception": ["micro_vibration", "subaudible_rumble", "stress_patterns", "pressure_shifts"],
+    "speechPattern": "inevitability_not_prophecy",
+    "quote": "The stone is done waiting.",
+    "confederation": {
+      "type": "migration_network",
+      "values": ["animals_are_partners", "power_is_borrowed", "respect_over_dominance"]
+    },
+    "bondedAnimals": [
+      {
+        "id": "sabre_cats",
+        "role": ["scouts", "shock_units"],
+        "notes": "cats choose riders"
+      },
+      {
+        "id": "woolly_mammoths",
+        "role": ["fortifications", "memory", "migration_anchor"],
+        "notes": "refuse unstable ground; sense eruptions"
+      }
+    ],
+    "figures": [
+      {
+        "id": "arvek_stone_binder",
+        "trait": "senior_kharuun_hearing_loss_one_ear",
+        "reads": "asymmetric_quakes_as_warning"
+      },
+      {
+        "id": "yssa_long_step",
+        "trait": "mammoth_handler_soft_voice",
+        "reads": "when_migrations_break_tradition"
+      },
+      {
+        "id": "keln_root_wary",
+        "trait": "distrusts_mystics_respects_ravel",
+        "role": "cultural_friction"
+      }
+    ],
+    "viewOfCity": "place_built_where_stone_has_not_yet_spoken"
+  }
+}

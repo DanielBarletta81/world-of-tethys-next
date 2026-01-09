@@ -15,3 +15,4 @@ export function saveKnowledge(data) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(KEY, JSON.stringify(data));
 }
+// World of Tethys || D.C. Barletta

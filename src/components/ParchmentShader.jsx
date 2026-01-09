@@ -27,3 +27,4 @@ export default function ParchmentShader({ children, className = '' }) {
     </motion.div>
   );
 }
+// World of Tethys || D.C. Barletta

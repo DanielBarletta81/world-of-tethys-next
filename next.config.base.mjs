@@ -28,3 +28,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+// World of Tethys || D.C. Barletta

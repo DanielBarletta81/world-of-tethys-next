@@ -180,3 +180,4 @@ export function GlyphSkyCity({ stroke = "#e2e8f0", ember = "#fde68a" }) {
     </g>
   );
 }
+// World of Tethys || D.C. Barletta

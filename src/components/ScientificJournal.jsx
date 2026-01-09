@@ -235,3 +235,4 @@ export default function ScientificJournal() {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

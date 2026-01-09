@@ -121,3 +121,4 @@ export default function PaleoGraph() {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

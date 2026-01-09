@@ -79,3 +79,4 @@ export default function DetailPage({ params }) {
     </main>
   );
 }
+// World of Tethys || D.C. Barletta

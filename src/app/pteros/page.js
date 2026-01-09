@@ -182,3 +182,4 @@ const PterosPage = () => {
 };
 
 export default PterosPage;
+// World of Tethys || D.C. Barletta

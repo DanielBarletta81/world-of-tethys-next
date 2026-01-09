@@ -35,3 +35,4 @@ export default function DiscoveryToast() {
   return <div className="discovery-toast">{message}</div>;
 }
 
+// World of Tethys || D.C. Barletta

@@ -22,3 +22,4 @@ export default function LoreCard({ title, type, excerpt, seedId }) {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

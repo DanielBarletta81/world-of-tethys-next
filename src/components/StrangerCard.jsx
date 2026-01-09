@@ -69,3 +69,4 @@ export default function StrangerCard({ stranger }) {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

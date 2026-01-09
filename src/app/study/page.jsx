@@ -64,3 +64,4 @@ export default function StudyPage() {
     </main>
   );
 }
+// World of Tethys || D.C. Barletta

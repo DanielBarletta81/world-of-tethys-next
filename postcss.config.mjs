@@ -6,3 +6,4 @@ const config = {
 };
 
 export default config;
+// World of Tethys || D.C. Barletta

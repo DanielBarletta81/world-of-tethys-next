@@ -10,7 +10,7 @@ const TORCH_SVG = `data:image/svg+xml,${encodeURIComponent(`
 </svg>
 `)}`;
 
-export function useTorchCursor(enabled=true){
+export function useTorchCursor(enabled=true, envPressure=0){
   const lightRef = useRef(null);
   const glyphRef = useRef(null);
 
@@ -36,9 +36,19 @@ export function useTorchCursor(enabled=true){
   const TorchLayer = enabled ? (
     <div className="torch-layer">
       <div ref={lightRef} className="torch-light" />
-      <img ref={glyphRef} className="torch-glyph" src={TORCH_SVG} alt="" />
+      <img
+        ref={glyphRef}
+        className="torch-glyph"
+        src={TORCH_SVG}
+        alt=""
+        style={{
+          transform: `rotate(${envPressure * 6}deg)`,
+          transition: `transform ${120 + envPressure * 20}ms linear`
+        }}
+      />
     </div>
   ) : null;
 
   return { TorchLayer };
 }
+// World of Tethys || D.C. Barletta

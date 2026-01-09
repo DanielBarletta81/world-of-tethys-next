@@ -45,3 +45,4 @@ export default function TorchCursor({ enabled = true }) {
     </motion.div>
   );
 }
+// World of Tethys || D.C. Barletta

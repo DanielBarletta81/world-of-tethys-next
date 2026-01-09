@@ -18,3 +18,4 @@ export async function middleware(request) {
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 };
+// World of Tethys || D.C. Barletta

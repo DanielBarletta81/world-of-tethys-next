@@ -34,3 +34,4 @@ export default function MythicCard({ entity }) {
     </motion.div>
   );
 }
+// World of Tethys || D.C. Barletta

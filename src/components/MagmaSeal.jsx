@@ -30,3 +30,4 @@ export default function MagmaSeal({ className = "" }) {
     </Link>
   );
 }
+// World of Tethys || D.C. Barletta

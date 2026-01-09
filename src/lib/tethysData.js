@@ -48,3 +48,4 @@ export async function getCleanCharacters() {
     sigil: item.acf?.sigil_image || '/img/icons/tethys-seal.svg'
   }));
 }
+// World of Tethys || D.C. Barletta

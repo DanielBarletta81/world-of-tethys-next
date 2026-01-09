@@ -1,0 +1,11 @@
+<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-label="Correspondent seal mark">
+  <g stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round">
+    <!-- Outer imperfect ring -->
+    <path d="M48 10 A38 38 0 1 1 47.9 10" stroke-dasharray="180 18" />
+    <!-- Central vertical mark (craft / spine) -->
+    <path d="M48 22v52" />
+    <!-- Inner curved mark (record / observation) -->
+    <path d="M60 30 C52 34, 52 62, 60 66" />
+  </g>
+</svg>
+<!-- World of Tethys || D.C. Barletta -->

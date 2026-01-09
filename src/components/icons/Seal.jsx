@@ -79,3 +79,4 @@ export function Seal({
     </svg>
   );
 }
+// World of Tethys || D.C. Barletta

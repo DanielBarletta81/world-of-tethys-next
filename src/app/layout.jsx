@@ -57,3 +57,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+// World of Tethys || D.C. Barletta

@@ -87,3 +87,4 @@ Ensure these images and SVGs are present to avoid "broken image" icons.
 
 ### Ready for Launch?
 Run `npm run build` locally first. If it passes without linting errors, push to Vercel and watch the deployments tab.
+World of Tethys || D.C. Barletta

@@ -63,3 +63,4 @@ export default function HomeContent({ creatures, characters }) {
     
   );
 }
+// World of Tethys || D.C. Barletta

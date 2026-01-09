@@ -29,6 +29,7 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
 
   const [fogPoints, setFogPoints] = useState([]);
   const [knowledge, setKnowledge] = useState(() => loadKnowledge());
+  const [envPressure, setEnvPressure] = useState(0); // 0 -> calm, 1 -> imminent
 
 
   
@@ -66,7 +67,7 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
     });
   };
 
-  const physics = useMapPhysics({ cfg, mode: pathMode, watcherIntensity });
+  const physics = useMapPhysics({ cfg, mode: pathMode, watcherIntensity, envPressure });
 
   useEffect(() => {
     saveKnowledge(knowledge);
@@ -76,7 +77,12 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
     onStillnessChange?.(physics.stillnessLevel);
   }, [physics.stillnessLevel, onStillnessChange]);
 
-  const { TorchLayer } = useTorchCursor(true);
+  useEffect(() => {
+    const hazard = watcherIntensity === "near" ? 0.55 : watcherIntensity === "mid" ? 0.35 : 0.15;
+    setEnvPressure(Math.min(1, physics.stillnessLevel * hazard * 1.8));
+  }, [physics.stillnessLevel, watcherIntensity]);
+
+  const { TorchLayer } = useTorchCursor(true, envPressure);
 
   return (
     <div
@@ -101,6 +107,7 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
         mode={pathMode}
         watcherIntensity={watcherIntensity}
         truthProfile={truthProfile}
+        envPressure={envPressure}
       >
         <MapFragments
           fragmentsConfig={MAP_FRAGMENTS}
@@ -154,3 +161,4 @@ const MAP_FRAGMENTS = [
     icon: '/img/icons/iron_sands.svg'
   }
 ];
+// World of Tethys || D.C. Barletta

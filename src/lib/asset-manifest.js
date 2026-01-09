@@ -32,3 +32,4 @@ export const ASSET_MANIFEST = [
     previewImage: '/img/assets/model-thumb.jpg'
   }
 ];
+// World of Tethys || D.C. Barletta

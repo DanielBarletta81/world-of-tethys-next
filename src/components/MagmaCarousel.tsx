@@ -139,3 +139,4 @@ export default function MagmaCarousel() {
     </>
   );
 }
+// World of Tethys || D.C. Barletta

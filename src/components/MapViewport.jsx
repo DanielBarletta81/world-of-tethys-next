@@ -13,6 +13,7 @@ export default function MapViewport({
   mode = "wild",
   truthProfile,
   watcherIntensity,                         // NEW: optional ash texture (or reuse mist)
+  envPressure = 0,
 }) {
 
   const { tx, ty, scale } = transform;
@@ -51,8 +52,9 @@ return (
       backgroundImage: `url(${reliefUrl})`,
       opacity:
         (truthProfile?.relief ?? 0.08) *
-        (mode === "mystic" ? 1.25 : mode === "city" ? 0.5 : 1.0),
-      filter: mode === "mystic" ? "blur(1px)" : "blur(0.5px)"
+        (mode === "mystic" ? 1.25 : mode === "city" ? 0.5 : 1.0) +
+        envPressure * 0.08,
+      filter: `blur(${envPressure * 1.2 + (mode === "mystic" ? 1 : 0.5)}px)`
     }}
   />
 
@@ -65,7 +67,8 @@ return (
       backgroundPosition: "center",
       opacity:
         (truthProfile?.mist ?? 0.22) *
-        (mode === "mystic" ? 1.15 : mode === "city" ? 0.6 : 1.0),
+        (mode === "mystic" ? 1.15 : mode === "city" ? 0.6 : 1.0) -
+        envPressure * 0.25,
       WebkitMaskImage: buildFogMask(fogPoints),
       maskImage: buildFogMask(fogPoints),
       maskComposite: "intersect",
@@ -133,7 +136,8 @@ return (
       opacity:
         (truthProfile?.ember ?? 0.06) *
         (watcherIntensity === "near" ? 1.0 : watcherIntensity === "mid" ? 0.6 : 0.35) *
-        (mode === "city" ? 0.7 : 1.0),
+        (mode === "city" ? 0.7 : 1.0) +
+        envPressure * 0.04,
         mixBlendMode: "lighten"
       }}
     />
@@ -141,3 +145,4 @@ return (
   </>
 );
 }
+// World of Tethys || D.C. Barletta

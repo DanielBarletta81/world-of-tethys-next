@@ -29,3 +29,4 @@ export default function OracleModal({ open, onClose, entry }) {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

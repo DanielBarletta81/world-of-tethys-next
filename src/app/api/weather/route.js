@@ -28,3 +28,4 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }
+// World of Tethys || D.C. Barletta

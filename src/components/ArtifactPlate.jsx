@@ -27,3 +27,4 @@ export default function ArtifactPlate({ artifact }) {
     </ParchmentShader>
   );
 }
+// World of Tethys || D.C. Barletta

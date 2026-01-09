@@ -64,3 +64,4 @@ export default function PteroIntro({ onComplete }) {
     </AnimatePresence>
   );
 }
+// World of Tethys || D.C. Barletta

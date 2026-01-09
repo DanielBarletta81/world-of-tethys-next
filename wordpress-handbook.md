@@ -149,3 +149,4 @@ To verify the frontend works, create these initial posts manually:
 - **Post Type:** Guest Signature
 - **Title:** "Admin Test"
 - **Content:** "The slate is clean."
+World of Tethys || D.C. Barletta

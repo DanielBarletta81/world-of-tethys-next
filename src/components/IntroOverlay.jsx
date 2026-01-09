@@ -64,3 +64,4 @@ export default function IntroOverlay({ onStart }) {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

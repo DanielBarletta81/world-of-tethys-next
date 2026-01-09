@@ -32,6 +32,126 @@
   }
 }
 
+/* --- ORACLE POOL STATE ANIMATIONS --- */
+.oracle-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.oracle-surface {
+  transition: filter 600ms ease, box-shadow 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* STATE: SILENCE */
+.oracle--silence .oracle-surface {
+  filter: brightness(0.96) saturate(0.92);
+}
+.oracle--silence .oracle-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 60%, rgba(69, 94, 104, 0.08), transparent 50%);
+  pointer-events: none;
+  animation: oracle-silence-ripple 3.6s ease-out 1;
+}
+@keyframes oracle-silence-ripple {
+  0% { opacity: 0; transform: scale(0.94); }
+  30% { opacity: 0.4; }
+  100% { opacity: 0; transform: scale(1.08); }
+}
+
+/* STATE: ECHO ONLY */
+.oracle--echo .oracle-surface {
+  box-shadow: 0 0 18px rgba(120, 220, 170, 0.12), inset 0 0 32px rgba(60, 140, 120, 0.12);
+}
+.oracle--echo .oracle-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background: radial-gradient(circle at 48% 52%, rgba(120, 220, 170, 0.2), transparent 60%);
+  animation: oracle-echo-pulse 1.6s cubic-bezier(0.25, 0.8, 0.4, 1) 1;
+  pointer-events: none;
+}
+@keyframes oracle-echo-pulse {
+  0% { opacity: 0.02; transform: scale(0.95); }
+  40% { opacity: 0.16; }
+  100% { opacity: 0; transform: scale(1.12); }
+}
+
+/* Echo-specific reactions */
+[data-echo="spores"] .oracle-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 60%, rgba(160, 220, 180, 0.2), transparent 55%);
+  mix-blend-mode: screen;
+  animation: oracle-spore-drift 2.8s ease-out 1;
+  pointer-events: none;
+}
+@keyframes oracle-spore-drift {
+  0% { opacity: 0.25; transform: translateY(6px) scale(0.96); }
+  40% { opacity: 0.4; }
+  100% { opacity: 0; transform: translateY(-14px) scale(1.05); }
+}
+
+[data-echo="rumble"] .oracle-surface,
+[data-echo="deep_rumble"] .oracle-surface {
+  animation: oracle-rumble 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+[data-echo="deep_rumble"] .oracle-surface {
+  animation-duration: 1.2s;
+  filter: brightness(0.92);
+}
+@keyframes oracle-rumble {
+  0% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-1px, 1px, 0); }
+  40% { transform: translate3d(1px, -1px, 0); }
+  60% { transform: translate3d(-1px, 0, 0); }
+  80% { transform: translate3d(1px, 1px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* STATE: WITHHELD */
+.oracle--withheld .oracle-dialogue {
+  border-color: rgba(180, 180, 180, 0.25);
+  opacity: 0.35;
+  transition: opacity 400ms ease, border-color 400ms ease;
+}
+.oracle--withheld .oracle-dialogue::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  width: 8px;
+  height: 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+  animation: oracle-cursor-blink 1.8s steps(2) 2;
+}
+@keyframes oracle-cursor-blink {
+  0%, 60% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* STATE: SILENCE + ECHO shared tiny spore drift */
+.oracle--silence .oracle-spores,
+.oracle--echo .oracle-spores {
+  opacity: 0.35;
+  animation: oracle-spore-loop 12s ease-in-out infinite;
+}
+@keyframes oracle-spore-loop {
+  0% { transform: translateY(0); opacity: 0.15; }
+  40% { opacity: 0.4; }
+  100% { transform: translateY(-12px); opacity: 0.1; }
+}
+
+/* Mushrooms recede briefly after echo */
+.oracle-mushroom[data-state="echoed"] {
+  transform: scale(0.88);
+  opacity: 0.6;
+  transition: transform 320ms ease, opacity 320ms ease;
+}
+
 /* Magma Text Burn Effect */
 .text-magma-burn {
   background: linear-gradient(to bottom, #fff 0%, #fcd34d 40%, #ea580c 70%, #7f1d1d 100%);
@@ -364,3 +484,79 @@ img[src$='.svg'] {
     }
   }
 }
+
+/* Journal visuals */
+.journal-stamp {
+  opacity: 0.6;
+  transform: rotate(-4deg);
+  margin-bottom: 0.5rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.journal-entry--withheld {
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+}
+
+/* Journal wear variables (set per render via inline style) */
+.journal-wear {
+  background-color: hsl(
+    38,
+    calc(25% - var(--wear-exposure, 0) * 10%),
+    calc(92% - var(--wear-trauma, 0) * 12%)
+  );
+}
+
+.journal-entry {
+  filter: blur(calc(var(--wear-handling, 0) * 0.4px));
+}
+
+.journal-entry--withheld {
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(50% - var(--wear-trauma, 0) * 20%),
+    transparent 100%
+  );
+}
+
+/* Optional static wear overlays (apply conditionally in JSX) */
+.journal-wear--ash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(120,120,120,0.15) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mix-blend-mode: multiply;
+}
+
+.journal-wear--bent-corner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.25) 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.journal-wear--tear::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 14px,
+    rgba(0,0,0,0.2) 15px,
+    transparent 16px
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  opacity: 0.4;
+}
+/* World of Tethys || D.C. Barletta */

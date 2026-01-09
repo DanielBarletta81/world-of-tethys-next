@@ -23,3 +23,4 @@ export async function fetchBookDescription(isbn) {
   
   return null; // Fallback to local data if API fails
 }
+// World of Tethys || D.C. Barletta

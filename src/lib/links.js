@@ -11,3 +11,4 @@ export function getMediaUrl(path = '') {
   if (!base) return '';
   return `${base.replace(/\/$/, '')}/${trimSlash(path)}`;
 }
+// World of Tethys || D.C. Barletta

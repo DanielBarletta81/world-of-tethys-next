@@ -31,6 +31,7 @@ export default function useMapPhysics({
   cfg,
   mode = "wild", // "wild" | "mystic" | "city"
   watcherIntensity = "far",
+  envPressure = 0,
 } = {}) {
   const MIN_SCALE = cfg?.MIN_SCALE ?? 0.9;
   const MAX_SCALE = cfg?.MAX_SCALE ?? 2.4;
@@ -79,9 +80,11 @@ export default function useMapPhysics({
     lastMoveAt.current = Date.now();
     markInput();
 
-    // pan
-    setTx((v) => v + dx);
-    setTy((v) => v + dy);
+    const resistance = 1 - envPressure * 0.25;
+
+    // pan with slight resistance under pressure
+    setTx((v) => v + dx * resistance);
+    setTy((v) => v + dy * resistance);
 
     // city drift accumulates while moving (unreliable map)
     if (mode === "city") {
@@ -104,7 +107,10 @@ export default function useMapPhysics({
     const delta = -e.deltaY; // wheel down -> negative
     const zoom = delta > 0 ? 1.06 : 0.94;
 
-    setScale((s) => clamp(s * zoom, MIN_SCALE, MAX_SCALE));
+    const zoomDelay = envPressure > 0.6 ? 120 : 0;
+    setTimeout(() => {
+      setScale((s) => clamp(s * zoom, MIN_SCALE, MAX_SCALE));
+    }, zoomDelay);
   };
 
   // --- rAF loop: stillness + tremor + drift decay ---
@@ -191,3 +197,4 @@ export default function useMapPhysics({
     },
   };
 }
+// World of Tethys || D.C. Barletta

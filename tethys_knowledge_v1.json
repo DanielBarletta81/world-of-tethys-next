@@ -11,10 +11,33 @@
       "firstUnlockedAt": 1700001000000
     }
 },
-   "myths": {
+  "myths": {
     "watcher-origin": {
       "distortion": 0.42,
       "sources": ["cambria", "ironwoods"]
+    }
+  },
+  "incidents": {
+    "weep-fall-igzier": {
+      "location": "Weep cascade harbor (lower tiers)",
+      "summary": "Igzier survives a fall into the lower harbor when the Watcher suppresses apex predators, forcing them into deeper water just as the city experiences a silent volcanic pressure wave.",
+      "signals": [
+        "Baitfish swimming with fins breaching, circling with no exit in the cove",
+        "Filter feeders clamped shut, refusing to strain the water",
+        "Harbor unusually quiet beneath the waterfall roar; no hunting clicks or wakes",
+        "Short sub-bass tremor from the arc before the shift"
+      ],
+      "mechanism": "Watcher pressure disorients or repels midwater predators that hunt by prey density, pushing them off the shelf. Concurrent volcanic microseism and sulfur hint reinforces the push. Igzier hits water into a transient predator void.",
+      "aftermath": [
+        "Some fall victims are still taken by opportunists, but the main hunters stay deep",
+        "Baitfish remain stressed and pinned by the cove walls; surface breach schools persist for hours",
+        "Filter feeders hold until the chem pulse passes, then reopen as currents clear",
+        "Residents log the event as an omen; timing aligns with arc quieting and Watcher stirring"
+      ],
+      "threatLevel": "amber",
+      "watcherInvolvement": "direct-pressure",
+      "volcanicCoincidence": true,
+      "timestampHint": 1700002000000
+    }
   }
-}
 }

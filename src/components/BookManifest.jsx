@@ -51,3 +51,4 @@ export default function BookManifest() {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

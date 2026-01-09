@@ -255,3 +255,4 @@ Expose these in the React simulator so students can mix parent genotypes and wat
 ---
 
 Everything in this Bible is canon until superseded by a higher version. Increment version numbers (`v1.0`, `v1.1`, etc.) when revising. Lock tone, lock taxonomy, and keep the archive authoritative.***
+World of Tethys || D.C. Barletta

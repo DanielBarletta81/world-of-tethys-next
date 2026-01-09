@@ -1,12 +1,34 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Flame, MapPin, Link2, Package, Wand2 } from "lucide-react";
 import useIdleTime from "@/app/hooks/useIdleTime";
+import useDeviceTier from "@/app/hooks/useDeviceTier";
 import { useTethys } from "@/context/TethysContext";
 
 const cx = (...p) => p.filter(Boolean).join(" ");
+
+const DEVICE_TUNING = {
+  mobile: {
+    idleDivisor: 40,
+    stillnessWeight: 0.45,
+    maxOpacity: 0.55,
+    rampSeconds: 120,
+  },
+  tablet: {
+    idleDivisor: 30,
+    stillnessWeight: 0.55,
+    maxOpacity: 0.65,
+    rampSeconds: 90,
+  },
+  desktop: {
+    idleDivisor: 20,
+    stillnessWeight: 0.65,
+    maxOpacity: 0.8,
+    rampSeconds: 60,
+  },
+};
 
 function fmtAgo(ts) {
   if (!ts) return "unknown";
@@ -55,6 +77,7 @@ export default function SurvivorIdentityPanel({ className = "" }) {
   const title = identity?.title || "";
   const pathName = path?.primary || playerProfile?.path || "unpathed";
   const { idleMinutes } = useIdleTime({ throttleMs: 1200 });
+  const device = useDeviceTier();
 
   const primaryStaff = useMemo(
     () => pickPrimaryStaff(equippedStaff, inventory),
@@ -107,9 +130,26 @@ export default function SurvivorIdentityPanel({ className = "" }) {
 
   const stillness = typeof perception?.stillness === "number" ? perception.stillness : null;
   const isMystic = path?.primary === "mystic";
-  const fungalOpacity = isMystic
-    ? Math.min(0.8, (stillness ?? 0) * 0.6 + idleMinutes / 20)
-    : 0;
+  const tuning = DEVICE_TUNING[device] || DEVICE_TUNING.desktop;
+  const idleFactor = Math.min(1, (idleMinutes || 0) / tuning.idleDivisor);
+  const stillnessFactor = Math.min(1, (stillness || 0) * tuning.stillnessWeight);
+  const rawCreep = isMystic ? stillnessFactor + idleFactor * 0.5 : idleFactor * 0.7;
+  const fungalTarget = Math.min(tuning.maxOpacity, rawCreep);
+  const [fungalOpacity, setFungalOpacity] = useState(0);
+
+  useEffect(() => {
+    const delta = fungalTarget - fungalOpacity;
+    if (Math.abs(delta) < 0.01) return;
+    const id = setTimeout(() => {
+      setFungalOpacity((prev) => {
+        const nextDelta = fungalTarget - prev;
+        const step = nextDelta * 0.02;
+        if (Math.abs(nextDelta) < 0.01) return fungalTarget;
+        return prev + step;
+      });
+    }, 100);
+    return () => clearTimeout(id);
+  }, [fungalTarget, fungalOpacity]);
 
 
   return (
@@ -320,3 +360,4 @@ function Panel({ title, right, children }) {
 function Empty({ children }) {
   return <div className="text-xs text-stone-600 italic">{children}</div>;
 };
+// World of Tethys || D.C. Barletta

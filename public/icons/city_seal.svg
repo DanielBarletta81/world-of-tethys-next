@@ -1,0 +1,19 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="City authority seal">
+  <g fill="none" stroke="currentColor" stroke-linecap="butt">
+    <!-- Outer unbroken authority ring -->
+    <circle cx="60" cy="60" r="54" stroke-width="6" />
+    <!-- Decorative inner ring -->
+    <circle cx="60" cy="60" r="44" stroke-width="2" />
+    <!-- Radial dominance spokes -->
+    <path d="M60 14v92M14 60h92" />
+    <path d="M28 28l64 64M92 28L28 92" />
+    <!-- Central containment emblem -->
+    <rect x="38" y="38" width="44" height="44" stroke-width="3" rx="6" />
+    <!-- Decorative but meaningless marks -->
+    <circle cx="60" cy="24" r="3" />
+    <circle cx="60" cy="96" r="3" />
+    <circle cx="24" cy="60" r="3" />
+    <circle cx="96" cy="60" r="3" />
+  </g>
+</svg>
+<!-- World of Tethys || D.C. Barletta -->

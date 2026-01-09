@@ -43,3 +43,4 @@ export default function Footer({ theme = 'volcanic' }) {
     </footer>
   );
 }
+// World of Tethys || D.C. Barletta

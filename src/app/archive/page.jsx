@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Skull, Shield, Database, Microscope } from 'lucide-react';
 import Link from 'next/link'; 
+import StrataNav from '../../components/StrataNav';
 
 const SECTORS = [
   {
@@ -35,7 +36,9 @@ const SECTORS = [
 
 export default function ArchiveIndex() {
   return (
-    <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif bg-stone-grain p-8">
+    <main className="relative min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif bg-stone-grain p-6 md:p-8 pb-36 md:pb-20">
+      <StrataNav />
+
       {/* NAV */}
       <div className="max-w-6xl mx-auto mb-16">
         <Link href="/" className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#78716c] hover:text-orange-500 transition-colors">
@@ -44,12 +47,12 @@ export default function ArchiveIndex() {
       </div>
 
       {/* HEADER */}
-      <header className="max-w-6xl mx-auto text-center mb-24">
-        <h1 className="text-6xl md:text-8xl font-black text-forge uppercase tracking-tighter mb-6">
+      <header className="max-w-6xl mx-auto text-center mb-24 px-2">
+        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-forge uppercase tracking-tighter mb-6">
           The Deep Archives
         </h1>
         <div className="w-24 h-1 bg-gradient-to-r from-transparent via-orange-900 to-transparent mx-auto"></div>
-        <p className="mt-6 text-[#a8a29e] italic max-w-xl mx-auto text-lg">
+        <p className="mt-6 text-[#a8a29e] italic max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
           "Knowledge is heavy. Carry only what you can defend."
         </p>
       </header>
@@ -57,7 +60,7 @@ export default function ArchiveIndex() {
       {/* SECTOR GRID */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {SECTORS.map((sector) => (
-          <a 
+          <Link 
             key={sector.id} 
             href={sector.link}
             className="group bg-[#1c1917] border border-[#292524] p-8 hover:border-orange-900/50 transition-all duration-500 relative overflow-hidden flex items-center gap-8"
@@ -80,10 +83,11 @@ export default function ArchiveIndex() {
 
             {/* Corner Bracket */}
             <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#292524] group-hover:border-orange-900/30 transition-colors"></div>
-          </a>
+          </Link>
         ))}
       </div>
 
     </main>
   );
 }
+// World of Tethys || D.C. Barletta

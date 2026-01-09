@@ -197,3 +197,4 @@ export default function LandingSequence({ onComplete }) {
     </AnimatePresence>
   );
 }
+// World of Tethys || D.C. Barletta

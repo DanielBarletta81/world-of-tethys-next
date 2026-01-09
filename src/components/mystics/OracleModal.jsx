@@ -83,3 +83,4 @@ export default function OracleModal({ open, onClose, entry }) {
     </AnimatePresence>
   );
 }
+// World of Tethys || D.C. Barletta

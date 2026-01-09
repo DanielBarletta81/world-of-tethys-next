@@ -50,3 +50,4 @@ export default function GlobalAtmosphere() {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

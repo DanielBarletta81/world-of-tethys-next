@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "World of Tethys — WorldPlot",
+  "type": "object",
+  "required": ["meta", "regions"],
+  "properties": {
+    "meta": { "$ref": "#/definitions/meta" },
+    "regions": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/region" }
+    },
+    "sites": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/site" }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/path" }
+    },
+    "volumes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/volume" }
+    },
+    "tradeCorridors": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/tradeCorridor" }
+    },
+    "survivalZones": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/survivalZone" }
+    },
+    "cityEmergencyOrders": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/cityEmergencyOrder" }
+    }
+  },
+  "definitions": {
+    "meta": {
+      "type": "object",
+      "required": ["version", "projection", "bounds"],
+      "properties": {
+        "version": { "type": "number" },
+        "projection": { "type": "string", "enum": ["tethys-wcs"] },
+        "bounds": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 4,
+          "maxItems": 4,
+          "description": "[minX, minY, maxX, maxY] — always [0,0,1,1]"
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "region": {
+      "type": "object",
+      "required": ["center", "radius", "type"],
+      "properties": {
+        "center": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "radius": { "type": "number", "minimum": 0.001, "maximum": 0.5 },
+        "elevation": { "type": "number", "minimum": 0, "maximum": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["city", "volcanic", "mystic", "wild", "forest", "coastal", "ruins"]
+        },
+        "danger": { "type": "string", "enum": ["low", "moderate", "high", "extreme"] },
+        "fogProfile": { "type": "string", "enum": ["stable", "fractured", "leaking", "opaque"] },
+        "journalStamp": { "type": "string", "description": "SVG stamp id" },
+        "vr": { "$ref": "#/definitions/vrHints" }
+      }
+    },
+    "site": {
+      "type": "object",
+      "required": ["position"],
+      "properties": {
+        "position": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "elevation": { "type": "number", "minimum": 0, "maximum": 1 },
+        "visibility": { "type": "string", "enum": ["hidden", "partial", "exposed"] },
+        "oracleWeight": { "type": "number", "minimum": 0, "maximum": 2 },
+        "journalBias": { "type": "string", "enum": ["dream", "field", "withheld"] },
+        "vr": { "$ref": "#/definitions/vrHints" }
+      }
+    },
+    "path": {
+      "type": "object",
+      "required": ["points"],
+      "properties": {
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "number", "minimum": 0, "maximum": 1 },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "minItems": 2
+        },
+        "risk": { "type": "string", "enum": ["low", "moderate", "high"] },
+        "visibility": { "type": "string", "enum": ["mapped", "inferred", "unknown"] },
+        "bindsJournal": { "type": "boolean", "description": "Travel here accelerates journal wear" },
+        "vr": { "$ref": "#/definitions/vrHints" }
+      }
+    },
+    "volume": {
+      "type": "object",
+      "required": ["shape"],
+      "properties": {
+        "shape": { "type": "string", "enum": ["sphere", "box", "polygon"] },
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "effect": { "type": "string", "enum": ["fog_dense", "ashfall", "oracle_whisper", "watcher_rumble", "silence"] },
+        "intensity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "vr": { "$ref": "#/definitions/vrHints" }
+      }
+    },
+    "vrHints": {
+      "type": "object",
+      "properties": {
+        "lodHint": { "type": "string", "enum": ["landmark", "background", "critical"] },
+        "audioZone": { "type": "string" },
+        "occlusion": { "type": "string", "enum": ["none", "light", "heavy"] },
+        "heightSource": { "type": "string", "enum": ["flat", "heightmap", "procedural"] }
+      }
+    },
+    "tradeCorridor": {
+      "type": "object",
+      "required": ["path", "cargo"],
+      "properties": {
+        "path": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "number", "minimum": 0, "maximum": 1 },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "minItems": 2
+        },
+        "cargo": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "riskExternalizedTo": { "type": "string" },
+        "cityNarrative": { "type": "string" },
+        "actualCost": { "type": "string" }
+      }
+    },
+    "survivalZone": {
+      "type": "object",
+      "required": ["center", "subsistence"],
+      "properties": {
+        "center": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "subsistence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "tradeRestricted": { "type": "boolean" },
+        "creatureTolerance": { "type": "string" }
+      }
+    },
+    "cityEmergencyOrder": {
+      "type": "object",
+      "properties": {
+        "justification": { "type": "string" },
+        "effect": { "type": "string" },
+        "beneficiary": { "type": "string" },
+        "externalizedCost": { "type": "string" }
+      }
+    }
+  }
+}

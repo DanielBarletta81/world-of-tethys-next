@@ -37,3 +37,4 @@ export function getFirebaseAdmin() {
 
   return { app, db, bucket };
 }
+// World of Tethys || D.C. Barletta

@@ -87,3 +87,4 @@ export default function MineralMap() {
     </section>
   );
 }
+// World of Tethys || D.C. Barletta

@@ -68,3 +68,4 @@ export default function BookCarousel() {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

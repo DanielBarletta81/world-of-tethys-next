@@ -74,3 +74,4 @@ export default function CharacterCarousel({ characters }) {
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

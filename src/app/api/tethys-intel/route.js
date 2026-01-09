@@ -91,3 +91,4 @@ export async function GET(request) {
     return NextResponse.json({ reports, aiSummary: null, aiEnabled: false, error: 'Gemini relay failed' }, { status: 200 });
   }
 }
+// World of Tethys || D.C. Barletta

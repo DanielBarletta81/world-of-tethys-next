@@ -96,3 +96,4 @@ export default function TriFoldNav({ onSelect }) {
     </nav>
   );
 }
+// World of Tethys || D.C. Barletta

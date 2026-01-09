@@ -100,3 +100,4 @@ export const catalogItems = [
     boost: '+6% explorer multiplier (5 days)'
   }
 ];
+// World of Tethys || D.C. Barletta

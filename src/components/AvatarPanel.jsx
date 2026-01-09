@@ -59,3 +59,4 @@ export default function AvatarPanel({ name = 'Mysterious Reader', title = 'Silen
     </div>
   );
 }
+// World of Tethys || D.C. Barletta

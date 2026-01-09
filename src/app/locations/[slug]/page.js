@@ -20,3 +20,4 @@ export default function LocationPlaceholder() {
     </main>
   );
 }
+// World of Tethys || D.C. Barletta

@@ -44,3 +44,4 @@ export const InputField = ({ type, placeholder, value, onChange }) => (
     className="w-full p-3 mb-4 bg-slate-900 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all placeholder-slate-500"
   />
 );
+// World of Tethys || D.C. Barletta

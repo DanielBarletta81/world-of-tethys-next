@@ -18,3 +18,4 @@ const db = getFirestore(app); // <--- Add this
 const googleProvider = new GoogleAuthProvider();
 
 export { auth, googleProvider, db };
+// World of Tethys || D.C. Barletta

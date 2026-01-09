@@ -83,3 +83,4 @@ export default function CinematicTerminal({ videoId, title, thumbnail }) {
     </>
   );
 }
+// World of Tethys || D.C. Barletta

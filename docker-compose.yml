@@ -10,3 +10,4 @@ services:
       - .env
     command: ["npm", "start"]
     restart: unless-stopped
+# World of Tethys || D.C. Barletta
