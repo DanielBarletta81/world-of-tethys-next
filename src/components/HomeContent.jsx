@@ -60,5 +60,6 @@ export default function HomeContent({ creatures, characters }) {
         </motion.div>
       )}
     </div>
+    
   );
 }

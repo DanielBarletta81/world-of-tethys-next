@@ -15,7 +15,7 @@ export default function MagmaSeal({ className = "" }) {
         
         {/* 3. The Image (Filtered to look like hot iron) */}
         <Image 
-          src="/img/tethys-seal.jpg" 
+          src="/img/a symbols/tethys-seal.png" 
           alt="Seal of Tethys" 
           fill
           className="object-cover sepia-[0.8] brightness-75 contrast-125 group-hover:brightness-110 group-hover:sepia-[0.4] transition-all duration-500"

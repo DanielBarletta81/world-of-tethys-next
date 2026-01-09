@@ -1,4 +1,3 @@
-// src/app/layout.js
 import { Inter, Cormorant_Garamond } from 'next/font/google';
 import { AuthProvider } from '../context/AuthContext';
 import { TethysProvider } from '../context/TethysContext';
@@ -31,7 +30,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200&auto=format&fit=crop',
+        url: './img/a symbols/tethys-seal.png',
         width: 1200,
         height: 630,
         alt: 'World of Tethys Map',
@@ -49,7 +48,6 @@ export default function RootLayout({ children }) {
             <AudioProvider>
               <GlobalAtmosphere />
               {children}
-             
               <GlobalAudioPlayer/>
             </AudioProvider>
           </TethysProvider>

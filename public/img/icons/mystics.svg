@@ -1,0 +1,54 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+  <defs>
+    <style>
+      .ring { stroke: var(--icon-stroke); stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .root { stroke: rgba(180, 150, 105, 0.95); stroke-width: 2.4; fill: none; stroke-linecap: round; }
+      .spir { stroke: rgba(180, 150, 105, 0.95); stroke-width: 2.6; fill: none; stroke-linecap: round; }
+      .halo { fill: rgba(120, 180, 170, 0.18); }
+      .bird { fill: rgba(255,255,255,0.78); }
+    </style>
+  </defs>
+
+  <circle class="ring" cx="50" cy="50" r="42"/>
+  <circle class="ring" cx="50" cy="50" r="36" opacity="0.85"/>
+
+  <!-- Inner green “pool” -->
+  <circle class="halo" cx="50" cy="54" r="28"/>
+
+  <!-- Spiral core (simple, readable spiral) -->
+  <path class="spir" d="
+    M50 50
+    m 0 -16
+    a 16 16 0 1 1 -0.1 0
+    m 0.1 0
+    a 12 12 0 1 0 0.1 0
+    m -0.1 0
+    a 8 8 0 1 1 -0.1 0
+    m 0.1 0
+    a 4 4 0 1 0 0.1 0
+  "/>
+
+  <!-- Root crown (stylized rays) -->
+  <path class="root" d="M50 20 C48 28, 47 35, 45 40"/>
+  <path class="root" d="M38 23 C40 30, 42 35, 44 41"/>
+  <path class="root" d="M62 23 C60 30, 58 35, 56 41"/>
+  <path class="root" d="M30 30 C36 34, 40 37, 44 42"/>
+  <path class="root" d="M70 30 C64 34, 60 37, 56 42"/>
+  <path class="root" d="M26 42 C33 44, 39 46, 44 46"/>
+  <path class="root" d="M74 42 C67 44, 61 46, 56 46"/>
+
+  <!-- Small bird mark (your tiny bottom emblem) -->
+  <path class="bird" d="
+    M50 74
+    C52 74, 54 75, 55 77
+    C56 79, 54 80, 52 80
+    C51 80, 50 79, 50 79
+    C50 79, 49 80, 48 80
+    C46 80, 44 79, 45 77
+    C46 75, 48 74, 50 74Z
+    M43 78 C39 77, 36 75, 34 73
+    C37 73, 40 74, 43 76Z
+    M57 78 C61 77, 64 75, 66 73
+    C63 73, 60 74, 57 76Z
+  "/>
+</svg>

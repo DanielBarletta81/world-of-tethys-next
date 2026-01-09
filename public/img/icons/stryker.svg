@@ -1,0 +1,41 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+  <defs>
+    <style>
+      .ring { stroke: var(--icon-stroke); stroke-width: 3.5; fill: none; }
+      .bird { fill: rgba(255,255,255,0.78); }
+      .cut  { fill: rgba(0,0,0,0.0); }
+    </style>
+  </defs>
+
+  <circle class="ring" cx="50" cy="50" r="42"/>
+  <circle class="ring" cx="50" cy="50" r="36" opacity="0.85"/>
+
+  <!-- Stylized Stryker silhouette -->
+  <path class="bird" d="
+    M50 24
+    C56 24, 60 28, 61 32
+    C62 35, 60 37, 57 37
+    C55 37, 53 36, 51 35
+    C50 37, 49 40, 49 43
+    C49 45, 50 48, 52 50
+    C63 49, 74 44, 80 38
+    C79 44, 74 52, 66 57
+    C61 60, 56 62, 52 63
+    C54 67, 57 71, 62 74
+    C57 75, 52 73, 49 70
+    C46 73, 41 75, 36 74
+    C41 71, 44 67, 46 63
+    C42 62, 37 60, 32 57
+    C24 52, 19 44, 18 38
+    C24 44, 35 49, 46 50
+    C48 48, 49 45, 49 43
+    C49 40, 47 37, 45 35
+    C43 36, 41 37, 39 37
+    C36 37, 34 35, 35 32
+    C36 28, 41 24, 50 24
+    Z
+  "/>
+
+  <!-- Small “tail notch” to make it feel more like seal silhouette -->
+  <path class="cut" d="M50 70 C51 73, 52 75, 54 77 C51 77, 49 76, 48 74 C49 73, 50 71, 50 70Z"/>
+</svg>

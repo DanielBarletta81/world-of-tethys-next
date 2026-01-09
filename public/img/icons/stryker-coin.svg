@@ -1,0 +1,122 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+  <defs>
+    <radialGradient id="edgeGrad" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="var(--coin-edge-1)"/>
+      <stop offset="55%" stop-color="#3b3b3b"/>
+      <stop offset="100%" stop-color="var(--coin-edge-2)"/>
+    </radialGradient>
+    <radialGradient id="faceGrad" cx="35%" cy="30%" r="90%">
+      <stop offset="0%" stop-color="var(--coin-face-1)"/>
+      <stop offset="60%" stop-color="#2b2b2b"/>
+      <stop offset="100%" stop-color="var(--coin-face-2)"/>
+    </radialGradient>
+    <radialGradient id="spec" cx="30%" cy="25%" r="55%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.20)"/>
+      <stop offset="60%" stop-color="rgba(255,255,255,0.05)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.0)"/>
+    </radialGradient>
+
+    <filter id="emboss" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="blur"/>
+      <feOffset dx="-1" dy="-1" result="hl"/>
+      <feOffset dx="1" dy="1" result="sh"/>
+      <feMerge>
+        <feMergeNode in="hl"/>
+        <feMergeNode in="sh"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <style>
+      .edge{ fill:url(#edgeGrad); }
+      .face{ fill:url(#faceGrad); }
+      .spec{ fill:url(#spec); mix-blend-mode:screen; opacity:.9; }
+      .fill{ fill: var(--stamp-fill); }
+      .hi{ stroke: var(--stamp-1); stroke-width: 2.8; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+      .sh{ stroke: var(--stamp-2); stroke-width: 2.8; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    </style>
+  </defs>
+
+  <circle cx="50" cy="50" r="44" class="edge"/>
+  <circle cx="50" cy="50" r="38" class="face"/>
+  <circle cx="50" cy="50" r="38" class="spec"/>
+
+  <g filter="url(#emboss)">
+    <!-- stamped silhouette fill -->
+    <path class="fill" d="
+      M50 24
+      C58 24, 62 29, 63 33
+      C64 38, 60 40, 56 39
+      C54 39, 52 38, 50 37
+      C49 39, 48 42, 48 45
+      C48 48, 50 50, 52 52
+      C66 51, 78 45, 84 37
+      C83 47, 74 56, 62 61
+      C59 62, 56 63, 53 64
+      C55 68, 58 71, 63 74
+      C56 75, 51 73, 49 70
+      C47 73, 42 75, 35 74
+      C40 71, 43 68, 45 64
+      C42 63, 39 62, 36 61
+      C24 56, 16 47, 15 37
+      C21 45, 33 51, 47 52
+      C49 50, 50 48, 50 45
+      C50 42, 49 39, 48 37
+      C46 38, 44 39, 42 39
+      C38 40, 35 38, 36 33
+      C37 29, 42 24, 50 24Z
+    "/>
+
+    <!-- shadow stroke -->
+    <g transform="translate(0.8,0.8)">
+      <path class="sh" d="
+        M50 24
+        C58 24, 62 29, 63 33
+        C64 38, 60 40, 56 39
+        C54 39, 52 38, 50 37
+        C49 39, 48 42, 48 45
+        C48 48, 50 50, 52 52
+        C66 51, 78 45, 84 37
+        C83 47, 74 56, 62 61
+        C59 62, 56 63, 53 64
+        C55 68, 58 71, 63 74
+        C56 75, 51 73, 49 70
+        C47 73, 42 75, 35 74
+        C40 71, 43 68, 45 64
+        C42 63, 39 62, 36 61
+        C24 56, 16 47, 15 37
+        C21 45, 33 51, 47 52
+        C49 50, 50 48, 50 45
+        C50 42, 49 39, 48 37
+        C46 38, 44 39, 42 39
+        C38 40, 35 38, 36 33
+        C37 29, 42 24, 50 24Z
+      "/>
+    </g>
+
+    <!-- highlight stroke -->
+    <path class="hi" d="
+      M50 24
+      C58 24, 62 29, 63 33
+      C64 38, 60 40, 56 39
+      C54 39, 52 38, 50 37
+      C49 39, 48 42, 48 45
+      C48 48, 50 50, 52 52
+      C66 51, 78 45, 84 37
+      C83 47, 74 56, 62 61
+      C59 62, 56 63, 53 64
+      C55 68, 58 71, 63 74
+      C56 75, 51 73, 49 70
+      C47 73, 42 75, 35 74
+      C40 71, 43 68, 45 64
+      C42 63, 39 62, 36 61
+      C24 56, 16 47, 15 37
+      C21 45, 33 51, 47 52
+      C49 50, 50 48, 50 45
+      C50 42, 49 39, 48 37
+      C46 38, 44 39, 42 39
+      C38 40, 35 38, 36 33
+      C37 29, 42 24, 50 24Z
+    "/>
+  </g>
+</svg>

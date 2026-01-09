@@ -1,70 +1,69 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Hammer, RefreshCw, Lock, Shield, Brain, Clock, Gem } from 'lucide-react';
+import { Hammer, RefreshCw, Lock, Clock, Gem } from 'lucide-react';
 import { useTethys } from '@/context/TethysContext';
 
-// --- DATA POOLS ---
-const STAFF_PARTS = {
-  conditions: ['Salt-Cured', 'Barnacle-Encrusted', 'Sun-Bleached', 'Storm-Splintered', 'Algae-Slicked'],
-  materials: ['Pteros Driftwood', 'Iron-Mangrove Root', 'Petrified Fern-Stem', 'Hollowed Coral-Branch'],
-  accents: ['embedded with Raw Amber', 'wrapped in Copper Wire', 'tipped with a Raptor Tooth', 'glowing with Blue Moss', 'bound in Shark Leather']
-};
-
-const RAVEL_KIT_POOL = [
-  { id: 'h_01', name: 'Vigor-Root', type: 'Healing', effect: 'Regen', icon: '🌱', rarity: 'Common' },
-  { id: 'h_02', name: 'Luminous Mycelium', type: 'Wisdom', effect: 'Night Vision', icon: '🍄', rarity: 'Uncommon' },
-  { id: 'h_03', name: 'Mud-Balm', type: 'Survival', effect: 'Cure Toxin', icon: '🏺', rarity: 'Common' },
-  { id: 'h_04', name: 'Crystal Nectar', type: 'Energy', effect: 'Stamina', icon: '💎', rarity: 'Rare' },
-  { id: 'h_05', name: 'Void-Fungi', type: 'Stealth', effect: 'Masking', icon: '🌑', rarity: 'Epic' },
-  { id: 'h_06', name: 'Brine-Salt', type: 'Survival', effect: 'Stanch', icon: '🧂', rarity: 'Common' },
-  { id: 'h_07', name: 'Amber Lozenge', type: 'Wisdom', effect: 'Stabilize', icon: '💊', rarity: 'Uncommon' },
-  { id: 'h_08', name: 'Ghost Spores', type: 'Utility', effect: 'Camo', icon: '🌿', rarity: 'Rare' }
-];
-
 const StarterLoadout = () => {
-  const { canHarvest, performDailyHarvest, inventory, equippedStaff, stats } = useTethys();
-  const [mounted, setMounted] = useState(false);
+  const {
+    canHarvest,
+    inventory,
+    equippedStaff,
+    stats,
+    playerProfile,
+    hatchFromTemplate,
+    loadStarterTemplate,
+    claimDailyReward,
+    loadingData
+  } = useTethys();
 
-  // Local state for display ONLY
+  const [mounted, setMounted] = useState(false);
   const [displayStaff, setDisplayStaff] = useState(null);
   const [displayInventory, setDisplayInventory] = useState([]);
+  const [template, setTemplate] = useState(null);
+  const [isHatching, setIsHatching] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const t = await loadStarterTemplate(playerProfile?.onboarding?.starterLoadoutId || 'starter_v1');
+      if (active) setTemplate(t);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loadStarterTemplate, playerProfile?.onboarding?.starterLoadoutId]);
+
+  useEffect(() => {
     if (equippedStaff) setDisplayStaff(equippedStaff);
     if (inventory.length > 0) setDisplayInventory(inventory);
   }, [equippedStaff, inventory]);
 
-  const handleHarvest = () => {
-    if (!canHarvest) return;
-    
-    const cond = STAFF_PARTS.conditions[Math.floor(Math.random() * STAFF_PARTS.conditions.length)];
-    const mat = STAFF_PARTS.materials[Math.floor(Math.random() * STAFF_PARTS.materials.length)];
-    const acc = STAFF_PARTS.accents[Math.floor(Math.random() * STAFF_PARTS.accents.length)];
-    
-    const newStaff = {
-      uid: `staff_${Math.floor(Math.random() * 9999)}`,
-      name: `${cond} ${mat}`,
-      desc: `A weathered stave found on the shores of Pteros, ${acc}.`,
-      power: Math.floor(Math.random() * 20) + 10
-    };
-
-    const shuffled = [...RAVEL_KIT_POOL].sort(() => 0.5 - Math.random());
-    const newItems = shuffled.slice(0, 5);
-
-    const wisdomBoost = newItems.filter(i => i.rarity === 'Rare' || i.rarity === 'Epic').length * 10;
-    const survivalBoost = newItems.filter(i => i.type === 'Survival' || i.type === 'Healing').length * 12;
-    
-    const newStats = {
-      kith: 40 + wisdomBoost + Math.floor(Math.random() * 10),
-      igzier: 40 + survivalBoost + Math.floor(Math.random() * 10)
-    };
-
-    performDailyHarvest(newStaff, newItems, newStats);
+  const handleHatch = async () => {
+    if (isHatching || playerProfile?.onboarding?.status === 'complete') return;
+    setIsHatching(true);
+    const result = await hatchFromTemplate(template?.templateId || 'starter_v1');
+    setDisplayStaff(result?.staff || null);
+    setDisplayInventory(result?.items || []);
+    setIsHatching(false);
   };
 
-  if (!mounted) return <div className="p-8 text-orange-900/50 font-mono text-center uppercase tracking-widest text-xs">Syncing Supply...</div>;
+  const handleDailyClaim = async () => {
+    if (!canHarvest || isClaiming) return;
+    setIsClaiming(true);
+    await claimDailyReward({ itemsGranted: displayInventory.map((i) => i.id) });
+    setIsClaiming(false);
+  };
+
+  if (!mounted || loadingData) return <div className="p-8 text-orange-900/50 font-mono text-center uppercase tracking-widest text-xs">Syncing Supply...</div>;
+ if (playerProfile.onboarding?.status === 'complete') {
+  return { success: false, reason: 'already_hatched' };
+}
 
   return (
     <div className="w-full bg-[#1c1917] border border-[#292524] shadow-2xl font-serif text-[#e7e5e4] relative overflow-hidden rounded-sm">
@@ -82,32 +81,58 @@ const StarterLoadout = () => {
         </div>
         
         {/* Mobile: Full Width Button */}
-        <button 
-          onClick={handleHarvest}
-          disabled={!canHarvest}
-          className={`w-full md:w-auto group flex items-center justify-center gap-2 px-6 py-3 md:py-2 border transition-all uppercase text-[10px] tracking-[0.2em] font-sans ${
-            canHarvest 
-              ? 'bg-[#292524] border-orange-900/50 hover:border-orange-500 hover:text-orange-500 cursor-pointer active:scale-95' 
-              : 'bg-black/50 border-[#292524] text-[#44403c] cursor-not-allowed'
-          }`}
-        >
-          {canHarvest ? (
-            <>
-              <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
-              Forage Drift
-            </>
-          ) : (
-            <>
-              <Lock size={12} />
-              Depleted
-            </>
-          )}
-        </button>
+        {playerProfile?.onboarding?.status !== 'complete' ? (
+          <button
+            onClick={handleHatch}
+            disabled={isHatching}
+            className={`w-full md:w-auto group flex items-center justify-center gap-2 px-6 py-3 md:py-2 border transition-all uppercase text-[10px] tracking-[0.2em] font-sans ${
+              !isHatching
+                ? 'bg-[#292524] border-orange-900/50 hover:border-orange-500 hover:text-orange-500 cursor-pointer active:scale-95'
+                : 'bg-black/50 border-[#292524] text-[#44403c] cursor-not-allowed'
+            }`}
+          >
+            {isHatching ? (
+              <>
+                <Clock size={12} className="animate-pulse" />
+                Issuing Loadout...
+              </>
+            ) : (
+              <>
+                <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                Hatch Starter
+              </>
+            )}
+          </button>
+        ) : (
+          <button
+            onClick={handleDailyClaim}
+            disabled={!canHarvest || isClaiming}
+            className={`w-full md:w-auto group flex items-center justify-center gap-2 px-6 py-3 md:py-2 border transition-all uppercase text-[10px] tracking-[0.2em] font-sans ${
+              canHarvest && !isClaiming
+                ? 'bg-[#292524] border-orange-900/50 hover:border-orange-500 hover:text-orange-500 cursor-pointer active:scale-95'
+                : 'bg-black/50 border-[#292524] text-[#44403c] cursor-not-allowed'
+            }`}
+          >
+            {canHarvest && !isClaiming ? (
+              <>
+                <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                Daily Claim
+              </>
+            ) : (
+              <>
+                <Lock size={12} />
+                Cooldown
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {!displayStaff ? (
         <div className="p-12 text-center">
-          <p className="text-[#44403c] uppercase tracking-widest text-xs font-sans">The table is empty.</p>
+          <p className="text-[#44403c] uppercase tracking-widest text-xs font-sans">
+            {template ? `Awaiting ${template.name}` : 'The table is empty.'}
+          </p>
         </div>
       ) : (
         <div className="flex flex-col lg:flex-row">
@@ -119,10 +144,10 @@ const StarterLoadout = () => {
             <div>
               <h3 className="text-[10px] font-sans uppercase tracking-widest text-orange-900 mb-2 font-bold">Weaponry</h3>
               <div className="bg-[#0c0a09]/80 border border-[#292524] p-4 shadow-lg rounded-sm">
-                <div className="text-lg font-bold text-orange-100 mb-1 font-serif leading-tight">{displayStaff.name}</div>
-                <p className="text-xs text-[#78716c] italic leading-relaxed">"{displayStaff.desc}"</p>
+                <div className="text-lg font-bold text-orange-100 mb-1 font-serif leading-tight">{displayStaff.name || 'Starter Staff'}</div>
+                <p className="text-xs text-[#78716c] italic leading-relaxed">"{displayStaff.desc || 'Issued from Pteros hatchery.'}"</p>
                 <div className="mt-3 text-[9px] uppercase tracking-widest text-orange-800 border-t border-[#292524] pt-2">
-                   Power Rating: {displayStaff.power}
+                   Power Rating: {displayStaff.power || 10}
                 </div>
               </div>
             </div>
@@ -133,10 +158,10 @@ const StarterLoadout = () => {
               <div className="grid grid-cols-1 gap-2">
                 {displayInventory.map((item, idx) => (
                   <div key={`${item.id}-${idx}`} className="flex items-center gap-4 border-b border-[#292524] pb-2 last:border-0 last:pb-0">
-                    <div className="text-xl opacity-80">{item.icon}</div>
+                    <div className="text-xl opacity-80">{item.icon || '🧭'}</div>
                     <div className="flex-1">
-                      <div className="text-sm text-[#d6d3d1] font-serif font-bold">{item.name}</div>
-                      <div className="text-[9px] text-[#57534e] uppercase tracking-wide">{item.effect}</div>
+                      <div className="text-sm text-[#d6d3d1] font-serif font-bold">{item.name || item.id}</div>
+                      <div className="text-[9px] text-[#57534e] uppercase tracking-wide">{item.effect || 'Provision'}</div>
                     </div>
                   </div>
                 ))}

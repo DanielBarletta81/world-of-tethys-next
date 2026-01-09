@@ -10,6 +10,8 @@ import PlayerAvatar from './PlayerAvatar';
 import StaffVisualizer from './StaffVisualizer';
 import SeedVisualizer from './SeedVisualizer';
 import StaffSequencer from './StaffSequencer';
+import SurvivorIdentityPanel from "./SurvivorIdentityPanel";
+
 
 const DEFAULT_STATS = { geology: 35, creature: 25, lore: 20, human: 10 };
 const PATH_CHOICES = [
@@ -124,6 +126,14 @@ export default function PlayerProfile() {
 
         {/* --- PROGRESSION RAIL (The New Feature) --- */}
         <div className="flex justify-center items-center gap-4 md:gap-12 py-4">
+        <SurvivorIdentityPanel
+            user={user}
+            path={path}
+            activeSigil={activeSigil}
+            inventory={inventory}
+            staffProfile={staffProfile}
+        />
+
           
           {/* 1. CURRENT STATE (Active Avatar) */}
           <div className="relative group/avatar cursor-pointer">

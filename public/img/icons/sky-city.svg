@@ -1,0 +1,62 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="edgeGrad" cx="35%" cy="30%" r="80%"><stop offset="0%" stop-color="var(--coin-edge-1)"/><stop offset="55%" stop-color="#3b3b3b"/><stop offset="100%" stop-color="var(--coin-edge-2)"/></radialGradient>
+    <radialGradient id="faceGrad" cx="35%" cy="30%" r="90%"><stop offset="0%" stop-color="var(--coin-face-1)"/><stop offset="60%" stop-color="#262626"/><stop offset="100%" stop-color="var(--coin-face-2)"/></radialGradient>
+    <radialGradient id="spec" cx="30%" cy="25%" r="55%"><stop offset="0%" stop-color="rgba(255,255,255,0.18)"/><stop offset="60%" stop-color="rgba(255,255,255,0.05)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient>
+
+    <filter id="emboss" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.05" result="b"/>
+      <feOffset dx="-1" dy="-1" result="hl"/>
+      <feOffset dx="1" dy="1" result="sh"/>
+      <feMerge><feMergeNode in="hl"/><feMergeNode in="sh"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <style>
+      .edge{fill:url(#edgeGrad)} .face{fill:url(#faceGrad)} .spec{fill:url(#spec);mix-blend-mode:screen;opacity:.9}
+      .fill{fill:var(--stamp-fill)}
+      .hi{stroke:var(--stamp-hi);stroke-width:2.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .sh{stroke:var(--stamp-sh);stroke-width:2.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .teal{fill:var(--teal)}
+      .ember{fill:var(--ember)}
+    </style>
+  </defs>
+
+  <circle cx="50" cy="50" r="44" class="edge"/>
+  <circle cx="50" cy="50" r="38" class="face"/>
+  <circle cx="50" cy="50" r="38" class="spec"/>
+
+  <g filter="url(#emboss)">
+    <!-- subtle teal mist behind aqueduct -->
+    <circle cx="50" cy="50" r="22" class="teal"/>
+
+    <!-- Aqueduct arc -->
+    <path class="fill" d="M26 58 C34 44, 66 44, 74 58 L68 58 C62 50,38 50,32 58 Z"/>
+
+    <!-- City tiers (3 quiet bars) -->
+    <path class="fill" d="M32 64 H68 V70 H32 Z"/>
+    <path class="fill" d="M36 58 H64 V62 H36 Z"/>
+    <path class="fill" d="M40 52 H60 V56 H40 Z"/>
+
+    <!-- Lantern core -->
+    <path class="ember" d="M50 32 C54 36,56 40,54 46 C52 50,50 52,50 56 C50 52,48 50,46 46 C44 40,46 36,50 32 Z"/>
+    <path class="fill" d="M48 56 H52 V70 H48 Z"/>
+
+    <!-- shadow stroke pass -->
+    <g transform="translate(0.8,0.8)">
+      <path class="sh" d="M26 58 C34 44, 66 44, 74 58 L68 58 C62 50,38 50,32 58 Z"/>
+      <path class="sh" d="M32 64 H68 V70 H32 Z"/>
+      <path class="sh" d="M36 58 H64 V62 H36 Z"/>
+      <path class="sh" d="M40 52 H60 V56 H40 Z"/>
+      <path class="sh" d="M50 32 C54 36,56 40,54 46 C52 50,50 52,50 56 C50 52,48 50,46 46 C44 40,46 36,50 32 Z"/>
+      <path class="sh" d="M48 56 H52 V70 H48 Z"/>
+    </g>
+
+    <!-- highlight stroke pass -->
+    <path class="hi" d="M26 58 C34 44, 66 44, 74 58 L68 58 C62 50,38 50,32 58 Z"/>
+    <path class="hi" d="M32 64 H68 V70 H32 Z"/>
+    <path class="hi" d="M36 58 H64 V62 H36 Z"/>
+    <path class="hi" d="M40 52 H60 V56 H40 Z"/>
+    <path class="hi" d="M50 32 C54 36,56 40,54 46 C52 50,50 52,50 56 C50 52,48 50,46 46 C44 40,46 36,50 32 Z"/>
+    <path class="hi" d="M48 56 H52 V70 H48 Z"/>
+  </g>
+</svg>

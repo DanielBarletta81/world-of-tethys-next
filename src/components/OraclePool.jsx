@@ -1,26 +1,32 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Eye, Waves, MessageCircle } from 'lucide-react';
+import { Sparkles, Eye } from 'lucide-react';
 // Use global styles; whisper text now just uses inline classes
+import OracleModal from "@/components/OracleModal";
+import TorchCursor from "@/components/ui/torchCursor";
 
 const WHISPERS_POOL = [
-  { gibberish: "0101...kzzt...root...break", translation: "The Magma rises from the south. The roots are burning." },
-  { gibberish: "shhh...click...mycelium...net", translation: "Kith is watching you. Do not trust the guide blindly." },
-  { gibberish: "drip...drop...time...rot", translation: "Cambria did not fall. It sank on purpose." },
-  { gibberish: "spore...wind...flesh...change", translation: "Eat the blue cap. It grants sight beyond the veil." },
+  {
+    gibberish: "drip...drop...time...rot",
+    translation: "Cambria did not fall. It sank on purpose.",
+    locationKey: "cambria",
+  },
+  {
+    gibberish: "0101...kzzt...root...break",
+    translation: "The Magma rises from the south. The roots are burning.",
+    locationKey: "watcher",
+  },
 ];
 
-const MUSHROOMS = [
-  { id: 'm1', x: 20, y: 40, type: 'Azure Cap', desc: 'Glowing faintly with starlight.' },
-  { id: 'm2', x: 75, y: 60, type: 'Blood-Rust Fungus', desc: 'Smells of iron and old blood.' },
-  { id: 'm3', x: 45, y: 80, type: 'Ghost Puff', desc: 'One touch and it dissolves into mist.' },
-];
+
 
 const OraclePool = () => {
   const [ripples, setRipples] = useState([]);
   const [activeWhisper, setActiveWhisper] = useState(null);
   const [harvested, setHarvested] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalEntry, setModalEntry] = useState(null);
   const containerRef = useRef(null);
 
   // Handle Water Ripples
@@ -42,26 +48,52 @@ const OraclePool = () => {
     }
   };
 
-  const triggerWhisper = () => {
-    const randomMsg = WHISPERS_POOL[Math.floor(Math.random() * WHISPERS_POOL.length)];
-    setActiveWhisper({ ...randomMsg, reveal: false });
-    
-    setTimeout(() => {
-      setActiveWhisper(prev => prev ? { ...prev, reveal: true } : null);
-    }, 1500);
-  };
 
-  const harvestMushroom = (e, m) => {
-    e.stopPropagation();
-    if (harvested.includes(m.id)) return;
-    setHarvested([...harvested, m.id]);
-    // Note: Inventory update logic would connect to context here
-    alert(`Ravel: "Ah, a ${m.type}. Careful with that one."`);
-  };
+const triggerWhisper = () => {
+  const randomMsg = WHISPERS_POOL[Math.floor(Math.random() * WHISPERS_POOL.length)];
+  setActiveWhisper({ ...randomMsg, reveal: false });
+
+  setTimeout(() => {
+    setActiveWhisper(prev => prev ? { ...prev, reveal: true } : null);
+
+    // open a modal for location-based whispers
+    if (randomMsg.locationKey && LOCATION_ENTRIES[randomMsg.locationKey]) {
+      setModalEntry({
+        title: LOCATION_ENTRIES[randomMsg.locationKey].title,
+        locationLabel: LOCATION_ENTRIES[randomMsg.locationKey].locationLabel,
+        body: LOCATION_ENTRIES[randomMsg.locationKey].body,
+        hint: LOCATION_ENTRIES[randomMsg.locationKey].hint,
+        gibberish: randomMsg.gibberish,
+      });
+      setModalOpen(true);
+    }
+  }, 1500);
+};
+
+const harvestMushroom = (e, m) => {
+  e.stopPropagation();
+  if (harvested.includes(m.id)) return;
+  setHarvested([...harvested, m.id]);
+
+  setModalEntry({
+    title: `Harvested — ${m.type}`,
+    locationLabel: "Oracle Pool Rim",
+    gibberish: "spore...wind...flesh...change",
+    body: m.desc,
+    hint: "Keep it. Use it when the map goes quiet.",
+  });
+  setModalOpen(true);
+};
+
+
+
+ 
 
   return (
-    <div className="relative w-full h-[600px] rounded-2xl overflow-hidden border border-emerald-900/50 shadow-[0_0_100px_rgba(45,212,191,0.1)] bg-[#0f172a] group cursor-crosshair">
-      
+    <div className="relative w-full h-[600px] rounded-2xl overflow-hidden border border-emerald-900/50 shadow-[0_0_100px_rgba(45,212,191,0.1)] bg-[#0f172a] group cursor-none">
+    <TorchCursor enabled={true} />
+      <OracleModal open={modalOpen} onClose={() => setModalOpen(false)} entry={modalEntry} />
+
       {/* 1. THE POOL SURFACE */}
       <div 
         ref={containerRef}

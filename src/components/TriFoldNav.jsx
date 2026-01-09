@@ -1,91 +1,79 @@
-/// src/components/TriFoldNav.jsx
 'use client';
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { BookOpen, Sparkles, Microscope } from 'lucide-react';
-import { motion } from 'framer-motion';
-import MagmaSeal from './MagmaSeal';
+
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 const PATHS = [
   {
-    id: 'narrative',
-    label: 'The Chronicle',
-    href: '/study',
-    icon: <BookOpen size={18} />,
-   
-    color: 'hover:text-amber-400',
-    border: 'hover:border-amber-500/50'
+    id: 'world',
+    label: 'World',
+    color: 'emerald',
+    items: [
+      { id: 'map', label: 'Atlas' },
+      { id: 'weather', label: 'Atmosphere' },
+      { id: 'cycle', label: 'Cycle' }
+    ]
   },
   {
-    id: 'mystic',
-    label: 'The Veil',
-    href: '/mystics',
-    icon: <Sparkles size={18} />,
-   
-    color: 'hover:text-purple-400',
-    border: 'hover:border-purple-500/50'
+    id: 'bond',
+    label: 'Bond',
+    color: 'rose',
+    items: [
+      { id: 'characters', label: 'Figures' },
+      { id: 'forge', label: 'Bond Forge' }
+    ]
   },
   {
-    id: 'science',
-    label: 'Field Station',
-    href: '/science',
-    icon: <Microscope size={18} />,
-   
-    color: 'hover:text-cyan-400',
-    border: 'hover:border-cyan-500/50'
+    id: 'lore',
+    label: 'Lore',
+    color: 'amber',
+    items: [
+      { id: 'cambria', label: 'Cambria Archive' },
+      { id: 'books', label: 'Chronicle' }
+    ]
   }
 ];
 
-export default function TriFoldNav() {
-  const pathname = usePathname();
+export default function TriFoldNav({ onSelect }) {
+  const [open, setOpen] = useState(null);
 
   return (
-    <nav className="w-full max-w-5xl mx-auto mb-12 relative z-20">
-      
-      {/* HEADER ROW with SEAL */}
-      <div className="flex justify-center items-center gap-6 mb-8">
-        <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-stone-800"></div>
-        <MagmaSeal />
-        <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-stone-800"></div>
-      </div>
-
-      {/* NAVIGATION GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {PATHS.map((path) => {
-          const isActive = pathname === path.href;
-          const colorClass = path.color.split(':')[1];
-
+    <nav className="absolute left-0 top-0 bottom-0 w-16 hover:w-56 transition-all duration-300 bg-[#0c0a09]/90 border-r border-stone-800 z-40">
+      <div className="flex flex-col pt-20 gap-2">
+        {PATHS.map(path => {
+          const isOpen = open === path.id;
           return (
-            <Link key={path.id} href={path.href} className="group relative">
-              <div className={`
-                h-full p-4 border rounded-lg transition-all duration-300 flex flex-col items-center text-center gap-2
-                bg-[#0f0b09] 
-                ${isActive 
-                  ? `border-${colorClass.split('-')[1]}-500/50 bg-${colorClass.split('-')[1]}-900/10` 
-                  : `border-stone-800 ${path.border}`
-                }
-              `}>
-                <div className={`transition-colors duration-300 ${isActive ? colorClass : 'text-stone-500'} group-hover:${colorClass}`}>
-                  {path.icon}
-                </div>
-                
-                <div>
-                  <h3 className={`font-serif text-lg tracking-widest uppercase transition-colors ${isActive ? 'text-stone-100' : 'text-stone-400 group-hover:text-stone-200'}`}>
-                    {path.label}
-                  </h3>
-                 
-                </div>
+            <div key={path.id}>
+              {/* PATH HEADER */}
+              <button
+                onClick={() => setOpen(isOpen ? null : path.id)}
+                className={`flex items-center justify-between w-full px-4 py-3 text-${path.color}-400 hover:bg-${path.color}-900/10 transition`}
+              >
+                <span className="uppercase tracking-[0.3em] text-[10px] font-mono">
+                  {path.label}
+                </span>
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform ${
+                    isOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
 
-                {isActive && (
-                  <motion.div 
-                    layoutId="activeGlow"
-                    className={`absolute inset-0 rounded-lg border-2 opacity-20 border-${colorClass.split('-')[1]}-500`}
-                    transition={{ duration: 0.5 }}
-                  />
-                )}
-              </div>
-            </Link>
+              {/* PATH ITEMS */}
+              {isOpen && (
+                <div className="pl-6 pb-2 flex flex-col gap-1">
+                  {path.items.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => onSelect(item.id)}
+                      className="text-left text-xs text-stone-300 hover:text-white py-1"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           );
         })}
       </div>

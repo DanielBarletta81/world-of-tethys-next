@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.14.0",
+    "@google/genai": "^1.35.0",
     "@types/node": "^25.0.3",
     "ai": "^6.0.3",
     "chart.js": "^4.5.1",

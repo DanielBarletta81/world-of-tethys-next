@@ -45,6 +45,6 @@ export async function getCleanCharacters() {
     role: item.acf?.role || 'Wanderer',
     archetype: item.acf?.archetype || 'Unknown',
     faction: item.acf?.faction_allegiance || 'Unaligned',
-    sigil: item.acf?.sigil_image || '/img/default-sigil.svg'
+    sigil: item.acf?.sigil_image || '/img/icons/tethys-seal.svg'
   }));
 }

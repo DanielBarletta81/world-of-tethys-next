@@ -1,0 +1,20 @@
+{
+  "regions": {
+    "sky-city": {
+      "clean": true,
+      "fractured": false,
+      "firstUnlockedAt": 1700000000000
+    },
+    "cambria": {
+      "clean": false,
+      "fractured": true,
+      "firstUnlockedAt": 1700001000000
+    }
+},
+   "myths": {
+    "watcher-origin": {
+      "distortion": 0.42,
+      "sources": ["cambria", "ironwoods"]
+  }
+}
+}

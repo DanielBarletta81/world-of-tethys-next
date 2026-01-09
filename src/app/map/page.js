@@ -10,6 +10,7 @@ import TethysNexus from '@/components/TethysNexus';
 import StaffSequencer from '@/components/StaffSequencer';
 import Incubator from '@/components/Incubator';
 import TriFoldNav from '@/components/TriFoldNav';
+import RelayLog from '@/components/RelayLog';
 
 export default function MapPage() {
   const { equippedStaff, unlockedNodes, travelTo } = useTethys();
@@ -113,6 +114,7 @@ export default function MapPage() {
               </div>
               
               <div className="space-y-6">
+                <RelayLog withAi focus="all" />
                 {/* Your Staff (Inventory Display) */}
                 <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
                   <h3 className="text-amber-500 text-xs uppercase tracking-widest mb-4">Equipped Artifact</h3>
