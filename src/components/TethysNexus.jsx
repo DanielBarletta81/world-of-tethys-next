@@ -116,10 +116,41 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
   );
 }
 
-// Minimal placeholder fragments; replace with your real anchors/ids
+// Icon overlay anchors (update coordinates to match your atlas)
 const MAP_FRAGMENTS = [
-  { id: 'frag_pteros', region: 'pteros_island', anchor: { x: 0.32, y: 0.62 } },
-  { id: 'frag_cambria', region: 'cambria_ruins', anchor: { x: 0.55, y: 0.48 } },
-  { id: 'frag_shastea', region: 'mount_shastea', anchor: { x: 0.71, y: 0.35 } },
+  {
+    id: 'pteros_island',
+    label: 'Pteros Isle',
+    region: 'pteros_island',
+    anchor: { x: 0.32, y: 0.62 },
+    icon: '/img/icons/pteros_island.svg'
+  },
+  {
+    id: 'cambria_ruins',
+    label: 'Cambria Ruins',
+    region: 'cambria_ruins',
+    anchor: { x: 0.55, y: 0.48 },
+    icon: '/img/icons/cambria_ruins.svg'
+  },
+  {
+    id: 'mystic_listen',
+    label: 'Mystic Veil',
+    region: 'mystic_woods',
+    anchor: { x: 0.43, y: 0.35 },
+    icon: '/img/icons/mystic_listen.svg'
+  },
+  {
+    id: 'mount_shastea',
+    label: 'Shastea Peak',
+    region: 'mount_shastea',
+    anchor: { x: 0.71, y: 0.35 },
+    icon: '/img/icons/shastea_peak.svg'
+  },
+  {
+    id: 'iron_sands',
+    label: 'Iron Sands',
+    region: 'iron-sands',
+    anchor: { x: 0.62, y: 0.7 },
+    icon: '/img/icons/iron_sands.svg'
+  }
 ];
-

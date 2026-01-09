@@ -20,5 +20,27 @@ export const AUDIO_TRACKS = [
     artist: 'Narrator: Kith',
     src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Placeholder
     type: 'Narration'
+  },
+  // Voiceover cues (drop matching files in /public/audio)
+  {
+    id: 'vo_hatch_intro',
+    title: 'Hatch: Whisper',
+    artist: 'Narrator: Ravel',
+    src: '/audio/vo-hatch-intro.mp3',
+    type: 'Voiceover'
+  },
+  {
+    id: 'vo_forge_primer',
+    title: 'Forge: Primer',
+    artist: 'Narrator: Ravel',
+    src: '/audio/vo-forge-primer.mp3',
+    type: 'Voiceover'
+  },
+  {
+    id: 'vo_atlas_open',
+    title: 'Atlas: Unlock',
+    artist: 'Narrator: Ravel',
+    src: '/audio/vo-atlas-open.mp3',
+    type: 'Voiceover'
   }
 ];

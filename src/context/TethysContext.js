@@ -46,6 +46,7 @@ export function TethysProvider({ children }) {
   const [creatures, setCreatures] = useState([]);
   const [events, setEvents] = useState([]);
  
+  const hasOnboarded = Boolean(equippedStaff || playerProfile?.onboarding?.status === 'complete');
 
   // --- 1. LOAD DATA ---
   useEffect(() => {
@@ -129,8 +130,19 @@ export function TethysProvider({ children }) {
 
 
   const applyData = (data) => {
-    if (data.inventory) setInventory(prev => ({...prev, ...data.inventory}));
-    if (data.equippedStaff) setEquippedStaff(data.equippedStaff);
+    if (data.inventory) {
+      const inv = Array.isArray(data.inventory) ? data.inventory : Object.values(data.inventory);
+      setInventory(inv);
+    }
+    if (data.equippedStaff) {
+      setEquippedStaff(data.equippedStaff);
+    } else if (data.staff?.activeStaffId) {
+      setEquippedStaff({
+        ...data.staff,
+        name: data.staff.name || 'Issued Staff',
+        id: data.staff.activeStaffId
+      });
+    }
     if (data.stats) setStats(prev => ({ ...prev, ...data.stats }));
     if (data.lastHarvestDate) setLastHarvestDate(data.lastHarvestDate);
     if (data.unlockedNodes) setUnlockedNodes(data.unlockedNodes);
@@ -457,7 +469,7 @@ try {
     inventory, equippedStaff, stats, unlockedNodes, unlockedAssets, canHarvest,
     performDailyHarvest, purchaseAsset, travelTo, playerProfile, setPlayerProfile,
     addInventoryItem, creatures, upsertCreatureBond, removeCreatureBond, events, logEvent, logDailyClaim,
-    loadStarterTemplate, hatchFromTemplate, claimDailyReward
+    loadStarterTemplate, hatchFromTemplate, claimDailyReward, hasOnboarded
   };
 
   return <TethysContext.Provider value={value}>{children}</TethysContext.Provider>;

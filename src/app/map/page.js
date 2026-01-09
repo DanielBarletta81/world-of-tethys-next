@@ -1,11 +1,12 @@
 // src/app/map/page.js
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useTethys } from '@/context/TethysContext';
+import { useAudio } from '@/context/AudioContext';
 import TethysNexus from '@/components/TethysNexus';
 import StaffSequencer from '@/components/StaffSequencer';
 import Incubator from '@/components/Incubator';
@@ -13,19 +14,41 @@ import TriFoldNav from '@/components/TriFoldNav';
 import RelayLog from '@/components/RelayLog';
 
 export default function MapPage() {
-  const { equippedStaff, unlockedNodes, travelTo } = useTethys();
+  const { equippedStaff, unlockedNodes, travelTo, hasOnboarded, loadingData, playerProfile } = useTethys();
+  const { playTrack } = useAudio();
   const [viewState, setViewState] = useState('loading'); // loading, egg, forge, map
-
-
+  const lastVoRef = useRef(null);
 
   // 1. Determine Initial State based on User Progress
   useEffect(() => {
-    if (equippedStaff) {
+    if (loadingData) {
+      setViewState('loading');
+      return;
+    }
+    if (hasOnboarded || equippedStaff) {
+      setViewState('map');
+    } else if (playerProfile?.staff?.activeStaffId) {
       setViewState('map');
     } else {
       setViewState('egg');
     }
-  }, [equippedStaff]);
+  }, [equippedStaff, hasOnboarded, loadingData, playerProfile?.staff?.activeStaffId]);
+
+  // 1a. Voiceover cues per phase (skips if muted)
+  useEffect(() => {
+    if (loadingData) return;
+    if (playerProfile?.voice?.muteVoiceovers) return;
+    const cueByState = {
+      egg: 'vo_hatch_intro',
+      forge: 'vo_forge_primer',
+      map: 'vo_atlas_open'
+    };
+    const nextCue = cueByState[viewState];
+    if (!nextCue) return;
+    if (lastVoRef.current === nextCue) return;
+    lastVoRef.current = nextCue;
+    playTrack(nextCue);
+  }, [viewState, loadingData, playerProfile?.voice?.muteVoiceovers, playTrack]);
 
   // 2. Progression Handlers
   const onEggHatch = () => {
@@ -67,6 +90,19 @@ export default function MapPage() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <AnimatePresence mode="wait">
+          {/* PHASE 0: LOADING */}
+          {viewState === 'loading' && (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center py-12 text-stone-500"
+            >
+              <div className="w-10 h-10 border-2 border-stone-800 border-t-amber-500 rounded-full animate-spin mb-4" />
+              <p className="text-sm uppercase tracking-[0.2em]">Syncing your gear...</p>
+            </motion.div>
+          )}
           
           {/* PHASE 1: THE EGG */}
           {viewState === 'egg' && (

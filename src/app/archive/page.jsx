@@ -7,14 +7,14 @@ const SECTORS = [
     id: 'creature',
     title: 'Xeno-Biology',
     icon: <Skull size={32} className="text-orange-600" />,
-    desc: 'Predators, prey, and the titans that survived the meteor.',
+    desc: 'Predators, prey, and the titans that once ruled.',
     link: '/archive/creature'
   },
   {
     id: 'faction',
     title: 'Factions',
     icon: <Shield size={32} className="text-orange-600" />,
-    desc: 'The Iron-Binders, The Root-Walkers, and the politics of survival.',
+    desc: 'The Iron-Borers, The Root-Walkers, and the politics of survival.',
     link: '/archive/faction'
   },
   {
@@ -28,7 +28,7 @@ const SECTORS = [
     id: 'record',
     title: 'Recovered Audio',
     icon: <Database size={32} className="text-orange-600" />,
-    desc: 'Fragmented recordings from the first expedition.',
+    desc: 'Fragmented plates from Cambria.',
     link: '/archive/record'
   }
 ];
@@ -36,12 +36,11 @@ const SECTORS = [
 export default function ArchiveIndex() {
   return (
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif bg-stone-grain p-8">
-      
       {/* NAV */}
       <div className="max-w-6xl mx-auto mb-16">
         <Link href="/" className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#78716c] hover:text-orange-500 transition-colors">
-          <ArrowLeft size={14} /> Return to Surface
-        </Link>
+          <ArrowLeft size={14}/>Return to the Surface
+          </Link>
       </div>
 
       {/* HEADER */}
@@ -58,7 +57,7 @@ export default function ArchiveIndex() {
       {/* SECTOR GRID */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {SECTORS.map((sector) => (
-          <Link
+          <a 
             key={sector.id} 
             href={sector.link}
             className="group bg-[#1c1917] border border-[#292524] p-8 hover:border-orange-900/50 transition-all duration-500 relative overflow-hidden flex items-center gap-8"
@@ -81,7 +80,7 @@ export default function ArchiveIndex() {
 
             {/* Corner Bracket */}
             <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#292524] group-hover:border-orange-900/30 transition-colors"></div>
-          </Link>
+          </a>
         ))}
       </div>
 

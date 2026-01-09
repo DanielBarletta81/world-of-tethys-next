@@ -116,6 +116,11 @@ export default function Home() {
                 </p>
               </section>
 
+              {/* Book Carousel (Post-landing, all viewports) */}
+              <div className="mt-6 lg:mt-10">
+                <BookCarousel />
+              </div>
+
               {/* NAVIGATION GATEWAY */}
               <TriFoldNav />
 
