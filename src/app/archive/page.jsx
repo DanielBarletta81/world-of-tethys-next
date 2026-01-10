@@ -1,7 +1,9 @@
+"use client";
+
 import React from 'react';
 import { ArrowLeft, Skull, Shield, Database, Microscope } from 'lucide-react';
-import Link from 'next/link'; 
-import StrataNav from '../../components/StrataNav';
+import Link from 'next/link';
+import StrataNav from '@/components/StrataNav';
 
 const SECTORS = [
   {
@@ -37,16 +39,20 @@ const SECTORS = [
 export default function ArchiveIndex() {
   return (
     <main className="relative min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif bg-stone-grain p-6 md:p-8 pb-36 md:pb-20">
-      <StrataNav />
 
       {/* NAV */}
-      <div className="max-w-6xl mx-auto mb-16">
-        <Link href="/" className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#78716c] hover:text-orange-500 transition-colors">
-          <ArrowLeft size={14}/>Return to the Surface
+        <div className="max-w-6xl mx-auto mb-16 flex items-center justify-between gap-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#78716c] hover:text-orange-500 transition-colors"
+          >
+            <ArrowLeft size={14} />
+            Return
           </Link>
-      </div>
+          <StrataNav />
+        </div>
 
-      {/* HEADER */}
+        {/* HEADER */}
       <header className="max-w-6xl mx-auto text-center mb-24 px-2">
         <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-forge uppercase tracking-tighter mb-6">
           The Deep Archives

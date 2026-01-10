@@ -5,7 +5,7 @@ import { generateStaffProfile } from '@/lib/staff-utils';
 import { useTethys } from '@/context/TethysContext';
 import { Hammer, Check, Loader2 } from 'lucide-react';
 
-export default function StaffSequencer({ initialStats, initialPath, inventoryOverride, onProfile }) {
+export default function StaffSequencer({ initialStats, initialPath, inventoryOverride, onProfile, onFinalize }) {
   const [stats, setStats] = useState(initialStats || { geology: 0, creature: 0, lore: 0, human: 0 });
   const [staff, setStaff] = useState(null);
   const [path, setPath] = useState(initialPath || null);
@@ -46,6 +46,7 @@ export default function StaffSequencer({ initialStats, initialPath, inventoryOve
     
     setIsForging(false);
     setIsComplete(true);
+    onFinalize?.(staff);
   };
 
   if (!staff) return <div className="text-xs font-mono text-cyan-500 animate-pulse">Initializing...</div>;

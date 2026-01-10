@@ -30,26 +30,62 @@ ChartJS.register(
 );
 
 const PterosDashboard = () => {
-  // 2. CRITICAL FIX: Hydration Mismatch Prevention
-  // We use a 'mounted' state to ensure we only render the complex interactive parts 
-  // (like random numbers and Charts) after the client has fully loaded.
-  const [mounted, setMounted] = useState(false);
+  const [telemetry, setTelemetry] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [adminKey, setAdminKey] = useState('');
+  const [oracleStatus, setOracleStatus] = useState(null);
+  const [oracleLoading, setOracleLoading] = useState(false);
+  const [oracleError, setOracleError] = useState(null);
 
-  const [salinity, setSalinity] = useState(15); 
-  const [flowRate, setFlowRate] = useState(8500); 
-  const [threatLevel, setThreatLevel] = useState('ELEVATED');
-  
   useEffect(() => {
-    setMounted(true); // Signal that we are on the client
-    
-    const interval = setInterval(() => {
-      // Logic remains the same, but now safe from SSR mismatch
-      setSalinity(prev => Math.min(35, Math.max(0, prev + (Math.random() - 0.5))));
-      setFlowRate(prev => Math.max(8000, prev + (Math.random() * 200 - 100)));
-    }, 2000);
-    
-    return () => clearInterval(interval);
+    const controller = new AbortController();
+
+    async function initSystem() {
+      try {
+        const res = await fetch('/api/tethys-intel?focus=pteros&ai=true', { signal: controller.signal });
+        const data = await res.json();
+        const pterosReport = data.reports?.find((report) => report.id === 'pteros_crato');
+
+        setTelemetry({
+          weather: pterosReport?.weather,
+          aiBrief: data.aiSummary,
+          integrity: pterosReport?.signalIntegrity
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Signal Lost:', err);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    initSystem();
+
+    return () => controller.abort();
   }, []);
+
+  async function checkOracleStatus() {
+    setOracleLoading(true);
+    setOracleError(null);
+    try {
+      const res = await fetch('/api/admin/seed-oracle', {
+        headers: {
+          'x-admin-key': adminKey
+        }
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error || 'Status check failed');
+      }
+      setOracleStatus(data);
+    } catch (err) {
+      setOracleError(err.message);
+      setOracleStatus(null);
+    } finally {
+      setOracleLoading(false);
+    }
+  }
 
   const activityData = {
     labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '23:59'],
@@ -91,9 +127,7 @@ const PterosDashboard = () => {
     }
   };
 
-  // If not mounted yet (Server Side), render a simplified static version 
-  // or a loading skeleton to prevent the HTML mismatch.
-  if (!mounted) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-[#0c0a09] p-8 flex items-center justify-center">
         <div className="text-amber-600 animate-pulse uppercase tracking-widest text-xs">
@@ -103,8 +137,25 @@ const PterosDashboard = () => {
     );
   }
 
+  const weatherMain = telemetry?.weather?.weather?.[0]?.main?.toLowerCase() || '';
+  const isStorming = weatherMain.includes('rain') || weatherMain.includes('storm') || weatherMain.includes('thunder');
+  const temp = telemetry?.weather?.main?.temp ?? 30;
+  const calculatedFlow = isStorming ? 12000 : 8500;
+  const calculatedSalinity = temp > 32 ? 38 : 34;
+  const now = telemetry?.weather?.dt;
+  const sunrise = telemetry?.weather?.sys?.sunrise;
+  const sunset = telemetry?.weather?.sys?.sunset;
+  const isNight = typeof now === 'number' && typeof sunrise === 'number' && typeof sunset === 'number'
+    ? now < sunrise || now > sunset
+    : false;
+  const threatLevel = isStorming ? 'CRITICAL' : 'ELEVATED';
+
   return (
-    <div className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-mono p-4 md:p-8">
+    <div
+      className={`min-h-screen text-[#e7e5e4] font-mono p-4 md:p-8 transition-colors duration-1000 ${
+        isNight ? 'bg-[#050b14]' : 'bg-[#0c0a09]'
+      }`}
+    >
       
       {/* Top Bar: Station Info */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#292524] pb-6 mb-8 gap-4">
@@ -114,6 +165,9 @@ const PterosDashboard = () => {
           </h1>
           <p className="text-xs text-[#78716c] uppercase tracking-[0.2em] mt-1">
             Twin Straits Monitoring Station • Estuary Sector Alpha
+          </p>
+          <p className="mt-2 text-[10px] font-mono text-amber-500/80 leading-relaxed uppercase">
+            {">"} {telemetry?.aiBrief || 'Awaiting Gemini Packet...'}
           </p>
         </div>
         <div className="flex items-center gap-4 bg-[#1c1917] p-3 rounded border border-[#292524]">
@@ -126,6 +180,12 @@ const PterosDashboard = () => {
             <div className="text-[10px] text-[#78716c] uppercase">Threat Status</div>
             <div className={`font-bold ${threatLevel === 'CRITICAL' ? 'text-rose-500 animate-pulse' : 'text-amber-500'}`}>
               {threatLevel}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-[10px] text-[#78716c] uppercase">Signal Integrity</div>
+            <div className="font-bold text-amber-500">
+              {telemetry?.integrity ? `${Math.round(telemetry.integrity * 100)}%` : '--'}
             </div>
           </div>
         </div>
@@ -144,14 +204,16 @@ const PterosDashboard = () => {
             </h3>
             <div className="flex items-end gap-2 mb-2">
               {/* Data is safe to render now because of 'mounted' check */}
-              <span className="text-4xl font-bold text-white">{Math.floor(flowRate)}</span>
+              <span className="text-4xl font-bold text-white">{Math.floor(calculatedFlow)}</span>
               <span className="text-sm text-[#78716c] mb-1">m³/s</span>
             </div>
             <div className="w-full bg-[#0c0a09] h-1.5 rounded-full overflow-hidden">
               <div className="h-full bg-cyan-600 w-[75%] animate-pulse"></div>
             </div>
             <p className="text-[10px] text-[#78716c] mt-3">
-              Freshwater pulse detected from Ironwoods watershed. Nutrient load increasing.
+              {isStorming
+                ? 'Storm surge detected from offshore systems. Tidal backflow expected.'
+                : 'Freshwater pulse detected from Ironwoods watershed. Nutrient load increasing.'}
             </p>
           </div>
 
@@ -161,7 +223,7 @@ const PterosDashboard = () => {
               <Activity className="w-4 h-4" /> Estuary Salinity
             </h3>
             <div className="flex items-end gap-2 mb-2">
-              <span className="text-4xl font-bold text-white">{salinity.toFixed(1)}</span>
+              <span className="text-4xl font-bold text-white">{calculatedSalinity.toFixed(1)}</span>
               <span className="text-sm text-[#78716c] mb-1">PPT</span>
             </div>
             <div className="flex text-[10px] uppercase tracking-wider justify-between text-[#57534e] mt-2">
@@ -172,7 +234,7 @@ const PterosDashboard = () => {
             <div className="w-full h-2 rounded-full mt-1 bg-gradient-to-r from-cyan-300 via-emerald-500 to-blue-900 relative">
               <div 
                 className="absolute top-1/2 -translate-y-1/2 w-2 h-4 bg-white border border-black shadow"
-                style={{ left: `${(salinity / 35) * 100}%`, transition: 'left 1s ease' }}
+                style={{ left: `${(calculatedSalinity / 35) * 100}%`, transition: 'left 1s ease' }}
               ></div>
             </div>
           </div>
@@ -238,6 +300,37 @@ const PterosDashboard = () => {
           </div>
         </div>
 
+      </div>
+
+      <div className="mt-6 bg-[#0f0d0c] border border-[#292524] p-4 rounded">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <div className="text-[10px] uppercase tracking-widest text-[#78716c]">Oracle Seeder Status</div>
+            <div className="text-xs text-amber-500/80 mt-1">
+              {oracleStatus
+                ? `Last seeded: ${oracleStatus.lastSeededAt || 'Unknown'} • Count: ${oracleStatus.count ?? '--'}`
+                : 'No status fetched yet.'}
+            </div>
+            {oracleError && <div className="text-[10px] text-rose-400 mt-1">Error: {oracleError}</div>}
+          </div>
+          <div className="flex flex-col md:flex-row gap-2 md:items-center">
+            <input
+              type="password"
+              value={adminKey}
+              onChange={(event) => setAdminKey(event.target.value)}
+              placeholder="Admin key"
+              className="bg-[#1c1917] border border-[#292524] rounded px-3 py-2 text-xs text-[#e7e5e4] placeholder:text-[#57534e]"
+            />
+            <button
+              type="button"
+              onClick={checkOracleStatus}
+              className="px-3 py-2 text-xs uppercase tracking-widest bg-amber-600/20 text-amber-400 border border-amber-900/40 rounded hover:bg-amber-600/30 transition-colors"
+              disabled={oracleLoading || !adminKey}
+            >
+              {oracleLoading ? 'Checking...' : 'Check Status'}
+            </button>
+          </div>
+        </div>
       </div>
       
     </div>

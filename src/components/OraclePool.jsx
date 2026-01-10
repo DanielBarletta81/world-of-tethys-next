@@ -41,6 +41,15 @@ const regionToBand = (regionId) => {
   return "far";
 };
 
+// Static mushroom nodes for the oracle surface
+const MUSHROOMS = [
+  { id: "m1", x: 22, y: 30, type: "amber" },
+  { id: "m2", x: 48, y: 42, type: "violet" },
+  { id: "m3", x: 68, y: 28, type: "ghost" },
+  { id: "m4", x: 32, y: 62, type: "spore" },
+  { id: "m5", x: 58, y: 70, type: "root" },
+];
+
 const loadJournal = () => {
   try {
     return JSON.parse(localStorage.getItem("tethys_journal_v1")) ?? [];
@@ -168,7 +177,7 @@ const OraclePool = () => {
     observeOracle({ state: "text", token: activeWhisper.token });
     const entry = journalFromOracle(activeWhisper.translation, "text");
     if (entry) saveJournalEntry(entry);
-  }, [activeWhisper]);
+  }, [activeWhisper, observeOracle]);
 
   // Handle Water Ripples
   const createRipple = (e) => {

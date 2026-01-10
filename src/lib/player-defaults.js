@@ -9,7 +9,13 @@ export const DEFAULT_PLAYER_PROFILE = {
     voice: { preferredNarrator: 'ravel', muteVoiceovers: false }
   },
   onboarding: { status: 'new', hatchedAt: null, starterLoadoutId: 'starter_v1', tutorialStep: 0 },
-  path: { primary: 'mystic', declaredAt: null, doctrineFlags: { mysticModeEnabled: true, cityModeEnabled: false } },
+  path: {
+    primary: 'mystic',
+    declaredAt: null,
+    mapAccess: true,
+    doctrineFlags: { mysticModeEnabled: true, cityModeEnabled: false },
+    history: []
+  },
   perception: {
     mysticLevel: 0,
     cityBias: 0,

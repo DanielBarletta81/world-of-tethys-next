@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
@@ -8,17 +8,57 @@ import MarineShowcase from "@/components/MarineShowcase";
 import BookCarousel from "@/components/BookCarousel";
 import IdentityAirLock from "@/components/IdentityAirLock"; // Corrected spelling
 import IntroOverlay from "@/components/IntroOverlay";
+import CinematicTerminal from "@/components/CinematicTerminal";
 import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn } from "lucide-react";
 import Link from "next/link";
+import { cdn } from "@/lib/cdn";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
-  const { stats, isGuest, loadingData } = useTethys();
+  const { stats, isGuest, loadingData, hasOnboarded, playerProfile, awardWatchBonus } = useTethys();
   
   // State Management
   const [hasInteracted, setHasInteracted] = useState(false); // Gatekeeper state
   const [introFinished, setIntroFinished] = useState(false); // Sequence state
   const [showLogin, setShowLogin] = useState(false);         // Airlock state
+  const [slateText, setSlateText] = useState("");
+  const [slates, setSlates] = useState([]);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("tethys_slates_v1")) || [];
+      setSlates(saved.slice(0, 5));
+    } catch {
+      setSlates([]);
+    }
+  }, []);
+
+  const submitSlate = () => {
+    const banned = ['http', 'www', 'sex', 'hate', 'kill']; // simple guard
+    const cleaned = slateText.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
+    if (!cleaned) return;
+    if (banned.some((w) => cleaned.toLowerCase().includes(w))) {
+      setSlateText("");
+      return;
+    }
+    if (slates.some((s) => s.text === cleaned)) {
+      setSlateText("");
+      return;
+    }
+    const entry = {
+      id: crypto.randomUUID?.() ?? `s-${Date.now()}`,
+      text: cleaned.slice(0, 140),
+      at: Date.now()
+    };
+    const next = [entry, ...slates].slice(0, 5);
+    setSlates(next);
+    setSlateText("");
+    try {
+      localStorage.setItem("tethys_slates_v1", JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#050403] text-slate-100 font-serif overflow-x-hidden relative selection:bg-emerald-900 selection:text-white">
@@ -116,6 +156,34 @@ export default function Home() {
                 </p>
               </section>
 
+              {/* ONBOARDING QUICK START */}
+              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <QuickAction
+                  title={!user ? "Weave your signal" : hasOnboarded ? "Open the Atlas" : "Hatch your guide"}
+                  desc={!user ? "Connect to unlock map and journals." : hasOnboarded ? "Jump straight to the live map." : "Break the seal in the hatchery to begin."}
+                  href={!user ? "#login" : hasOnboarded ? "/map" : "/map"}
+                  icon={<Activity size={16} />}
+                  accent="from-emerald-500/20 via-emerald-500/10 to-transparent"
+                  onClickOverride={() => {
+                    if (!user) setShowLogin(true);
+                  }}
+                />
+                <QuickAction
+                  title="Research Station"
+                  desc="Telemetry, paleo-GIS, VR link, recovered assets."
+                  href="/science"
+                  icon={<Globe size={16} />}
+                  accent="from-cyan-500/20 via-cyan-500/10 to-transparent"
+                />
+                <QuickAction
+                  title="Mystic Channel"
+                  desc="Oracle pool, whispers, and the listening paths."
+                  href="/mystics"
+                  icon={<Zap size={16} />}
+                  accent="from-purple-500/20 via-purple-500/10 to-transparent"
+                />
+              </div>
+
               {/* Book Carousel (Post-landing, all viewports) */}
               <div className="mt-6 lg:mt-10">
                 <BookCarousel />
@@ -177,8 +245,70 @@ export default function Home() {
               {/* Creature Showcase */}
               <MarineShowcase />
 
+              {/* Cinematic Feature + Audio */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-8">
+                  <CinematicTerminal
+                    videoUrl="/video/Spore_Cloud_Animation_Generated.mp4"
+                    thumbnail="/img/bg/obsidian-coast-4k.jpg"
+                    title="Signal from the Rift"
+                    onWatchProgress={(ms, th) => {
+                      awardWatchBonus?.(th);
+                    }}
+                  />
+                </div>
+                <div className="lg:col-span-4 space-y-3 bg-black/40 border border-stone-800 rounded-xl p-4">
+                  <div className="text-xs uppercase tracking-[0.3em] text-stone-500 font-mono">Archive Audio</div>
+                  <h3 className="text-xl text-stone-100 font-serif">Ashwind Sample</h3>
+                  <audio controls className="w-full">
+                    <source src={cdn("/audio/bush-rustle.mp3")} type="audio/mpeg" />
+                  </audio>
+                  <p className="text-xs text-stone-500">Short field clip; watching or listening quietly may yield small artifact bonuses.</p>
+                </div>
+              </div>
+
+              {/* Slate Microfooter */}
+              <div id="slate" className="relative mt-10">
+                <div className="flex items-start gap-3 bg-black/40 border border-stone-800 rounded-xl p-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full border border-stone-700 bg-stone-900 flex items-center justify-center text-stone-500">
+                    T
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <div className="text-xs uppercase tracking-[0.3em] text-stone-500 font-mono">Leave a slate</div>
+                    <div className="flex gap-2">
+                      <textarea
+                        value={slateText}
+                        onChange={(e) => setSlateText(e.target.value)}
+                        placeholder="Chisel a short message..."
+                        className="flex-1 bg-black/30 border border-stone-800 rounded p-2 text-sm text-stone-200 resize-none focus:outline-none focus:border-amber-500"
+                        rows={2}
+                        maxLength={140}
+                      />
+                      <button
+                        onClick={submitSlate}
+                        className="px-3 py-2 bg-amber-900/40 border border-amber-700/50 text-amber-100 text-xs uppercase tracking-widest rounded hover:bg-amber-800/60 transition-colors"
+                      >
+                        Chisel
+                      </button>
+                    </div>
+                    {slates.length ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-stone-400">
+                        {slates.map((s) => (
+                          <div key={s.id} className="bg-black/30 border border-stone-800 rounded p-2 line-clamp-2">
+                            {s.text}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-stone-600">Ledger is clean.</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
+          <StickyObsidianNav />
         </>
       )}
     </main>
@@ -199,6 +329,53 @@ function StatusCard({ label, value, icon, color, href }) {
         <span className="text-xs font-mono text-stone-500 group-hover:text-stone-300">{value}</span>
       </div>
     </Link>
+  );
+}
+
+function QuickAction({ title, desc, href, icon, accent, onClickOverride }) {
+  const body = (
+    <div className="relative overflow-hidden rounded-xl border border-white/5 bg-white/5 p-4 hover:border-white/15 transition-colors h-full">
+      <div className={`absolute inset-0 bg-gradient-to-br ${accent} opacity-70`} />
+      <div className="relative z-10 flex items-start gap-3">
+        <div className="p-2 rounded-full bg-black/30 text-white/80">
+          {icon}
+        </div>
+        <div className="space-y-1 text-left">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-stone-100">{title}</h3>
+          <p className="text-xs text-stone-400 leading-snug">{desc}</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (onClickOverride) {
+    return (
+      <button onClick={onClickOverride} className="text-left">
+        {body}
+      </button>
+    );
+  }
+
+  return (
+    <Link href={href} className="block">
+      {body}
+    </Link>
+  );
+}
+
+function StickyObsidianNav() {
+  return (
+    <div className="fixed bottom-4 right-4 z-40">
+      <div className="bg-black/40 border border-stone-800 rounded-full px-3 py-2 flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity shadow-[0_0_25px_rgba(255,125,42,0.15)]">
+        <Link href="/map" className="text-xs uppercase tracking-[0.2em] text-stone-200 hover:text-white">Map</Link>
+        <div className="w-[1px] h-4 bg-stone-700" />
+        <Link href="/science" className="text-xs uppercase tracking-[0.2em] text-cyan-200 hover:text-white">Science</Link>
+        <div className="w-[1px] h-4 bg-stone-700" />
+        <Link href="/mystics" className="text-xs uppercase tracking-[0.2em] text-purple-200 hover:text-white">Mystics</Link>
+        <div className="w-[1px] h-4 bg-stone-700" />
+        <a href="#slate" className="text-xs uppercase tracking-[0.2em] text-amber-200 hover:text-white">Slate</a>
+      </div>
+    </div>
   );
 }
 // World of Tethys || D.C. Barletta

@@ -27,6 +27,7 @@ const DEFAULT_STARTER_TEMPLATE = {
   }
 };
 
+
 export function TethysProvider({ children }) {
   const { user } = useAuth();
   const userId = user?.uid || 'guest_node';
@@ -78,7 +79,7 @@ export function TethysProvider({ children }) {
             const initialData = {
               stats: DEFAULT_STATS,
               inventory: [],
-              unlockedNodes: ['pteros', 'sky-city'],
+              unlockedNodes: ['pteros'],
               unlockedAssets: [],
               currentLocation: 'pteros',
               lastHarvestDate: null,
@@ -150,6 +151,24 @@ export function TethysProvider({ children }) {
     if (data.currentLocation) setCurrentLocation(data.currentLocation);
   };
 
+  const buildLoadoutItems = useCallback((itemIds = [], source = {}) => {
+    const nowIso = new Date().toISOString();
+    return itemIds.map((id) => ({
+      id,
+      name: id
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase()),
+      type: 'starter',
+      rarity: 'common',
+      qty: 1,
+      source: { kind: 'path', refId: source.pathId, at: nowIso },
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      icon: '🧭',
+      effect: 'Provision'
+    }));
+  }, []);
+
   // --- 2. SAVE DATA ---
   useEffect(() => {
     if (loadingData) return;
@@ -161,7 +180,9 @@ export function TethysProvider({ children }) {
       lastHarvestDate,
       unlockedNodes,
       unlockedAssets,
-      currentLocation
+      currentLocation,
+      path: playerProfile?.path,
+      onboarding: playerProfile?.onboarding
     };
 
     const save = async () => {
@@ -181,6 +202,8 @@ try {
       unlockedAssets,
       currentLocation,
       staff: playerProfile.staff,
+      path: playerProfile?.path,
+      onboarding: playerProfile?.onboarding,
       daily: playerProfile.daily,
       lastLoginAt: serverTimestamp(),
     },
@@ -194,7 +217,22 @@ try {
 
     const timeout = setTimeout(save, 2000);
     return () => clearTimeout(timeout);
-  }, [inventory, equippedStaff, stats, lastHarvestDate, unlockedNodes, unlockedAssets, currentLocation, userId, isGuest, loadingData, playerProfile.daily, playerProfile.staff]);
+  }, [
+    inventory,
+    equippedStaff,
+    stats,
+    lastHarvestDate,
+    unlockedNodes,
+    unlockedAssets,
+    currentLocation,
+    userId,
+    isGuest,
+    loadingData,
+    playerProfile.daily,
+    playerProfile.staff,
+    playerProfile.path,
+    playerProfile.onboarding
+  ]);
 
   // --- 3. ACTIONS ---
 
@@ -331,18 +369,8 @@ try {
         template.rules?.staffSeed ||
         `KITH-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 
-      const starterItems = (template.rules?.giveItems || []).map((id, idx) => ({
-        id,
-        name: id.replace(/_/g, ' '),
-        type: 'starter',
-        rarity: 'common',
-        qty: 1,
-        source: { kind: 'starter', refId: template.templateId, at: nowIso },
-        createdAt: nowIso,
-        updatedAt: nowIso,
-        icon: '🧭',
-        effect: 'Provision'
-      }));
+      const rawItemIds = overrides.items || template.rules?.giveItems || [];
+      const starterItems = buildLoadoutItems(rawItemIds, { pathId: pathPrimary });
 
       const staffDoc = {
         ...playerProfile.staff,
@@ -358,8 +386,19 @@ try {
 
       const updatedProfile = {
         ...playerProfile,
-        onboarding: { ...playerProfile.onboarding, status: 'complete', hatchedAt: nowIso, starterLoadoutId: template.templateId },
-        path: { ...playerProfile.path, primary: pathPrimary, declaredAt: playerProfile.path.declaredAt || nowIso },
+        onboarding: {
+          ...playerProfile.onboarding,
+          status: 'complete',
+          hatchedAt: nowIso,
+          starterLoadoutId: template.templateId
+        },
+        path: {
+          ...playerProfile.path,
+          primary: pathPrimary,
+          declaredAt: playerProfile.path.declaredAt || nowIso,
+          mapAccess: overrides.mapAccess ?? playerProfile.path.mapAccess,
+          history: [...(playerProfile.path.history || []), { id: pathPrimary, at: nowIso }]
+        },
         staff: staffDoc,
         survivorship: {
           ...playerProfile.survivorship,
@@ -404,7 +443,7 @@ try {
 
       return { template, staff: staffDoc, items: starterItems, profile: updatedProfile };
     },
-    [isGuest, loadStarterTemplate, logEvent, playerProfile, upsertCreatureBond, userId]
+    [buildLoadoutItems, isGuest, loadStarterTemplate, logEvent, playerProfile, upsertCreatureBond, userId]
   );
 
   const claimDailyReward = useCallback(
@@ -464,12 +503,27 @@ try {
     }
   };
 
+  const awardWatchBonus = useCallback(
+    (thresholdSeconds) => {
+      const reward = thresholdSeconds >= 60 ? 20 : thresholdSeconds >= 30 ? 12 : 5;
+      setStats((prev) => ({ ...prev, resin: (prev.resin || 0) + reward }));
+      logEvent({
+        type: 'WATCH_BONUS',
+        threshold: thresholdSeconds,
+        reward,
+        at: new Date().toISOString(),
+      });
+      return reward;
+    },
+    [logEvent]
+  );
+
   const value = {
     userId, isGuest, loadingData, currentLocation,
     inventory, equippedStaff, stats, unlockedNodes, unlockedAssets, canHarvest,
-    performDailyHarvest, purchaseAsset, travelTo, playerProfile, setPlayerProfile,
+    performDailyHarvest, purchaseAsset, travelTo, playerProfile, setPlayerProfile, setEquippedStaff,
     addInventoryItem, creatures, upsertCreatureBond, removeCreatureBond, events, logEvent, logDailyClaim,
-    loadStarterTemplate, hatchFromTemplate, claimDailyReward, hasOnboarded
+    loadStarterTemplate, hatchFromTemplate, claimDailyReward, hasOnboarded, awardWatchBonus
   };
 
   return <TethysContext.Provider value={value}>{children}</TethysContext.Provider>;
