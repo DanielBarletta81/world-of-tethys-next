@@ -1,4 +1,6 @@
 // src/lib/firebase.js
+'use client';
+
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";

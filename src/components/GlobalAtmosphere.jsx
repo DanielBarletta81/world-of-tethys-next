@@ -12,7 +12,7 @@ const SCENES = {
   '/study': cdn('/img/bg/library-ruins.jpg'),      // Ancient stone shelves, dust motes
   '/mystics': cdn('/img/bg/biolum-forest.jpg'),    // Dark jungle, glowing spores
   '/science': cdn('/img/bg/fossil-lab.jpg'),       // Clean, cold light, bones
-  '/map': cdn('/img/bg/parchment-map-table.jpg'),  // Top-down wooden table feel
+  '/map': cdn('/img/bg/parchment-map-table.png'),  // Top-down wooden table feel
 };
 
 export default function GlobalAtmosphere() {

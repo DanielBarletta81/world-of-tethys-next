@@ -40,6 +40,7 @@ if (cdnPattern) {
 
 const nextConfig = {
   reactStrictMode: true,
+  productionBrowserSourceMaps: true,
   images: {
     remotePatterns,
   },

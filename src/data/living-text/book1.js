@@ -222,6 +222,99 @@ export const BOOK1_BLOCKS = [
       institutions: ['archive'],
       epistemics: { certainty: 0.38, witness: 'indirect' }
     }
+  },
+  {
+    id: 'jairo_verification_order',
+    base: 'They called it verification.',
+    variants: {
+      low: 'They called it verification.',
+      mid: 'The order was framed as verification.',
+      high: 'Some later said it was never about verification at all.'
+    },
+    myths: ['city-omission'],
+    regions: ['lower-tiers', 'weep-outflow'],
+    signals: {
+      beliefs: ['procedural_obedience'],
+      institutions: ['sky-city'],
+      epistemics: { certainty: 0.45, witness: 'indirect' }
+    }
+  },
+  {
+    id: 'two_sets_of_tracks',
+    base: 'He found two sets of tracks, one booted, one bare.',
+    variants: {
+      low: 'He found two sets of tracks, one booted, one bare.',
+      mid: 'Tracks suggested more than one person, one of them unshod.',
+      high: 'Some said there were tracks that did not belong to any soldier.'
+    },
+    myths: ['hidden-survivors'],
+    regions: ['weep-outflow', 'marsh-edge'],
+    signals: {
+      beliefs: ['presence_of_others'],
+      epistemics: { certainty: 0.4, witness: 'direct' }
+    }
+  },
+  {
+    id: 'no_body_found',
+    base: 'There was no body.',
+    variants: {
+      low: 'There was no body.',
+      mid: 'No remains were recovered.',
+      high: 'It was said the river kept what it wanted.'
+    },
+    myths: ['weep-omens'],
+    regions: ['weep-outflow'],
+    signals: {
+      beliefs: ['river_claims'],
+      institutions: ['sky-city'],
+      epistemics: { certainty: 0.35, witness: 'direct' }
+    }
+  },
+  {
+    id: 'ground_raptor_ambush',
+    base: 'A small ground raptor struck low and fast.',
+    variants: {
+      low: 'A small ground raptor struck low and fast.',
+      mid: 'Something low-winged cut in from the rock line.',
+      high: 'Some later claimed it was a warning, not a hunt.'
+    },
+    myths: ['wild-omens'],
+    regions: ['marsh-edge', 'lower-reefs'],
+    signals: {
+      beliefs: ['wild-hostility'],
+      epistemics: { certainty: 0.5, witness: 'direct' }
+    }
+  },
+  {
+    id: 'kel_finds_jairo',
+    base: 'A Silurian boy found him and dressed the wound.',
+    variants: {
+      low: 'A Silurian boy found him and dressed the wound.',
+      mid: 'A quiet boy in ash-stained cloth helped him hide.',
+      high: 'Some said he was found by someone who should not have been there.'
+    },
+    myths: ['silurian-threads'],
+    regions: ['marsh-edge', 'silurian-fringe'],
+    signals: {
+      beliefs: ['hidden-allies'],
+      epistemics: { certainty: 0.45, witness: 'direct' }
+    }
+  },
+  {
+    id: 'silence_decision',
+    base: 'He decided what to report by saying less.',
+    variants: {
+      low: 'He decided what to report by saying less.',
+      mid: 'What he omitted would shape what came next.',
+      high: 'Some believed the report became the first lie.'
+    },
+    myths: ['archive-omission'],
+    regions: ['sky-city', 'lower-tiers'],
+    signals: {
+      beliefs: ['silence_as_choice'],
+      institutions: ['sky-city'],
+      epistemics: { certainty: 0.3, witness: 'indirect' }
+    }
   }
 ];
 
@@ -246,7 +339,13 @@ export const BOOK1_CHAPTERS = {
   ],
   ch5: [
     'b1_ch5_aftermath_01',
-    'b1_ch5_aftermath_02'
+    'b1_ch5_aftermath_02',
+    'jairo_verification_order',
+    'two_sets_of_tracks',
+    'no_body_found',
+    'ground_raptor_ambush',
+    'kel_finds_jairo',
+    'silence_decision'
   ],
   ch6: [
     'b1_ch6_exile_separation_01',

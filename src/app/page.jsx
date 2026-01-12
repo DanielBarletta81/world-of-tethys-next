@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
-import TriFoldNav from "@/components/TriFoldNav";
+import StoneSideNav from "@/components/StoneSideNav";
 import MarineShowcase from "@/components/MarineShowcase";
 import BookCarousel from "@/components/BookCarousel";
 import IdentityAirLock from "@/components/IdentityAirLock"; // Corrected spelling
@@ -149,6 +149,8 @@ export default function Home() {
               </div>
             </nav>
 
+            <StoneSideNav />
+
             {/* MAIN CONTENT AREA */}
             <div className="relative z-10 pt-32 pb-24 max-w-7xl mx-auto px-4 md:px-6 space-y-20">
               
@@ -191,13 +193,7 @@ export default function Home() {
                 />
               </div>
 
-              {/* Book Carousel (Post-landing, all viewports) */}
-              <div className="mt-6 lg:mt-10">
-                <BookCarousel />
-              </div>
-
               {/* NAVIGATION GATEWAY */}
-              <TriFoldNav />
 
               {/* DASHBOARD GRID */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -209,6 +205,20 @@ export default function Home() {
                     style={{ backgroundImage: `url(${cdn('/img/map/epic_map_hero.PNG')})` }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050403] via-transparent to-transparent" />
+                  {!hasOnboarded && (
+                    <>
+                      <div
+                        className="absolute inset-0 opacity-85 mix-blend-screen"
+                        style={{ backgroundImage: `url(${cdn('/img/noise.svg')})` }}
+                      />
+                      <div className="absolute inset-0 bg-[#050403]/70 backdrop-blur-[2px]" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="px-4 py-2 border border-amber-700/40 rounded-full bg-black/60 text-[10px] uppercase tracking-[0.3em] text-amber-300">
+                          Atlas sealed until hatch
+                        </div>
+                      </div>
+                    </>
+                  )}
                   
                   <div className="absolute bottom-6 left-6 space-y-1">
                     <div className="flex items-center gap-2 text-emerald-400 text-xs font-mono uppercase tracking-widest">
