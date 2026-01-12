@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import React from 'react';
+import { cdn } from '@/lib/cdn';
 
 
 const CARDS = [
@@ -12,28 +13,28 @@ const CARDS = [
     name: 'Lantern Swift',
     blurb: 'Flash-charge couriers that skim the fog banks.',
     trait: 'Crests pulse amber in stormlight',
-    image: '/img/creatures/Lantern_Swift_hero.png'
+    image: cdn('/img/creatures/Lantern_Swift_hero.png')
   },
   {
     id: 2,
     name: 'Glass Ray',
     blurb: 'Translucent reef rider that bends light like water.',
     trait: 'Camouflages against glow-tide sheets',
-    image: '/img/creatures/GlassRay_hero.png'
+    image: cdn('/img/creatures/GlassRay_hero.png')
   },
   {
     id: 3,
     name: 'Shore Turtle',
     blurb: 'Armored ferry that hauls salvage across brine flats.',
     trait: 'Shell etched with route glyphs',
-    image: '/img/creatures/Shore_Turtle_hero.png'
+    image: cdn('/img/creatures/Shore_Turtle_hero.png')
   },
   {
     id: 4,
     name: 'Volcanic Bird',
     blurb: 'Ash-colored sentinel nesting on lava vents.',
     trait: 'Heat shimmer cloaks wings on ascent',
-    image: '/img/creatures/volcanic_bird_hero.png'
+    image: cdn('/img/creatures/volcanic_bird_hero.png')
   }
 ];
 

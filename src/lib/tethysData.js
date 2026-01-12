@@ -1,5 +1,7 @@
 'use server';
 
+import { cdn } from '@/lib/cdn';
+
 const API_URL = process.env.WORDPRESS_API_URL ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
 
 export async function getTethysData(endpoint = 'posts', params = {}) {
@@ -31,7 +33,10 @@ export async function getCleanCreatures() {
     id: item.id,
     name: item.title.rendered,
     blurb: item.acf?.blurb || 'Data pending...',
-    image: item.acf?.creature_image || item._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/img/placeholder.jpg',
+    image:
+      item.acf?.creature_image ||
+      item._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+      cdn('/img/placeholder.jpg'),
     status: item.acf?.danger_level || 'Unknown'
   }));
 }
@@ -45,7 +50,7 @@ export async function getCleanCharacters() {
     role: item.acf?.role || 'Wanderer',
     archetype: item.acf?.archetype || 'Unknown',
     faction: item.acf?.faction_allegiance || 'Unaligned',
-    sigil: item.acf?.sigil_image || '/img/icons/tethys-seal.svg'
+    sigil: item.acf?.sigil_image || cdn('/img/icons/tethys-seal.svg')
   }));
 }
 // World of Tethys || D.C. Barletta

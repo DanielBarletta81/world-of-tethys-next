@@ -1,6 +1,11 @@
 'use client';
 
+import { useMemo } from 'react';
 import MineralMap from '@/components/MineralMap';
+import NPCDialogue from '@/components/npc/NPCDialogue';
+import { useNpcDialogue } from '@/hooks/useNpcDialogue';
+import { loadKnowledge } from '@/app/hooks/useKnowledgeStore';
+import { LISTENER_FALL_03_PARAPHRASE } from '@/data/paraphrases/listener_fall_paraphrase';
 
 const legends = [
   { color: 'bg-[#06b6d4]', label: 'Quartz / Amethyst (energy stores)' },
@@ -18,7 +23,23 @@ const hierarchy = [
   { title: 'The Vat-Born', desc: 'Servitor Hybrids & Labor Beasts', color: 'border-stone-700 text-stone-300 bg-stone-900/40' }
 ];
 
+const CAMBRIA_DOCKHAND = {
+  id: 'cambria_dockhand_01',
+  name: 'Dockhand',
+  faction: 'lower-tier',
+  wasPresent: false,
+  proximity: 0.3
+};
+
 export default function CambriaArchive() {
+  const knowledge = useMemo(() => loadKnowledge(), []);
+  const { line, speak } = useNpcDialogue({
+    npc: CAMBRIA_DOCKHAND,
+    textId: 'listener_fall_03',
+    paraphraseBlock: LISTENER_FALL_03_PARAPHRASE,
+    knowledge
+  });
+
   return (
     <div className="space-y-12">
       <header className="text-center space-y-4">
@@ -29,6 +50,22 @@ export default function CambriaArchive() {
           became living infrastructure. These mineral anchors mark caches of that era.
         </p>
       </header>
+
+      <section className="bg-[#0b0a09] border border-amber-900/40 rounded-xl p-5 shadow-[0_10px_40px_rgba(0,0,0,0.4)] space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="text-[10px] uppercase tracking-[0.3em] text-amber-500 font-mono">
+            Dockside Memory
+          </div>
+          <button
+            type="button"
+            onClick={speak}
+            className="text-[10px] uppercase tracking-[0.2em] text-amber-300 border border-amber-700/50 px-3 py-1 rounded-full hover:border-amber-400 hover:text-amber-200 transition-colors"
+          >
+            Ask Again
+          </button>
+        </div>
+        <NPCDialogue speaker={CAMBRIA_DOCKHAND} line={line} />
+      </section>
 
       <MineralMap />
 

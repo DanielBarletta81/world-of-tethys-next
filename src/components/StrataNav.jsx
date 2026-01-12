@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Feather, FlaskConical, Anchor } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { cdn } from "@/lib/cdn";
 
 const STRATA = [
   {
@@ -91,7 +92,10 @@ export default function StrataNav() {
                 </div>
               </div>
 
-              <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay" />
+              <div
+                className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
+                style={{ backgroundImage: `url(${cdn("/noise.svg")})` }}
+              />
             </motion.div>
           );
         })}

@@ -1,5 +1,7 @@
 
-  // src/data/strangers.js
+import { cdn } from '@/lib/cdn';
+
+// src/data/strangers.js
 export const THE_ELEVEN = [
   {
     id: 's_01',
@@ -8,7 +10,7 @@ export const THE_ELEVEN = [
     biology: 'Silicon-weaved skin; conducts static.',
     role: 'Structure Builder',
     quote: "Stone remembers the heat. We just remind it.",
-    image: '/img/strangers/architect.jpg'
+    image: cdn('/img/strangers/architect.jpg')
   },
   {
     id: 's_02',
@@ -17,7 +19,7 @@ export const THE_ELEVEN = [
     biology: 'Symbiotic fungal colony in humanoid shape.',
     role: 'Network Hub',
     quote: "The spores do not lie. They only connect.",
-    image: '/img/strangers/kith-mother.jpg'
+    image: cdn('/img/strangers/kith-mother.jpg')
   },
   {
     id: 's_03',
@@ -26,7 +28,7 @@ export const THE_ELEVEN = [
     biology: 'Translucent, hydro-pressurized limbs.',
     role: 'Navigator',
     quote: "The water is a map you can drink.",
-    image: '/img/strangers/tide-walker.jpg'
+    image: cdn('/img/strangers/tide-walker.jpg')
   },
   {
     id: 's_04',
@@ -35,7 +37,7 @@ export const THE_ELEVEN = [
     biology: 'Filter-feeding throat sacs; exhales purity.',
     role: 'Atmosphere Cleanser',
     quote: "Breathe deep. I have taken the poison for you.",
-    image: '/img/strangers/ash-drinker.jpg'
+    image: cdn('/img/strangers/ash-drinker.jpg')
   }
   // ... expand to 11
 ];

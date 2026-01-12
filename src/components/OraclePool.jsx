@@ -87,7 +87,7 @@ const journalWithheld = () => ({
 
 
 const OraclePool = () => {
-  const { playerProfile, currentLocation } = useTethys();
+  const { playerProfile, currentLocation, setPlayerProfile } = useTethys();
   const [ripples, setRipples] = useState([]);
   const [activeWhisper, setActiveWhisper] = useState(null);
   const [harvested, setHarvested] = useState([]);
@@ -180,7 +180,7 @@ const OraclePool = () => {
   }, [activeWhisper, observeOracle]);
 
   // Handle Water Ripples
-  const createRipple = (e) => {
+const createRipple = (e) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -192,6 +192,24 @@ const OraclePool = () => {
     setTimeout(() => {
       setRipples((prev) => prev.filter(r => r.id !== newRipple.id));
     }, 1000);
+
+    if (!playerProfile?.progression?.weatherUnlocked) {
+      setPlayerProfile((prev) => ({
+        ...prev,
+        progression: {
+          ...prev.progression,
+          weatherUnlocked: true,
+          oracleConsultedAt: prev.progression?.oracleConsultedAt || new Date().toISOString()
+        }
+      }));
+      const token = `w-${Date.now()}-attune`;
+      setActiveWhisper({
+        gibberish: "still...listening...open",
+        translation: "The air remembers your name.",
+        reveal: true,
+        token
+      });
+    }
 
     if (Math.random() > 0.7) {
       triggerWhisper();

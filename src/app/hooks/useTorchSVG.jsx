@@ -3,10 +3,10 @@ import { useEffect, useRef } from "react";
 
 const TORCH_SVG = `data:image/svg+xml,${encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <path fill="#f6f0e6" d="M30 30h4v22h-4z"/>
-  <path fill="#f6f0e6" d="M26 52h12v6H26z"/>
-  <path fill="#ffb35a" d="M32 6c6 6 8 10 6 16-2 6-6 8-6 12 0-4-4-6-6-12-2-6 0-10 6-16z"/>
-  <path fill="#8cd2c6" opacity=".35" d="M32 10c3 4 4 7 3 10-1 3-3 4-3 6 0-2-2-3-3-6-1-3 0-6 3-10z"/>
+  <path fill="#c9c0b1" d="M30 30h4v22h-4z"/>
+  <path fill="#c9c0b1" d="M26 52h12v6H26z"/>
+  <path fill="#d18a4a" d="M32 6c6 6 8 10 6 16-2 6-6 8-6 12 0-4-4-6-6-12-2-6 0-10 6-16z"/>
+  <path fill="#7aaea4" opacity=".25" d="M32 10c3 4 4 7 3 10-1 3-3 4-3 6 0-2-2-3-3-6-1-3 0-6 3-10z"/>
 </svg>
 `)}`;
 

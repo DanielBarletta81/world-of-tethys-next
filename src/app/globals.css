@@ -234,6 +234,12 @@
   --icon-fill: rgba(240, 240, 240, 0.16);
   --icon-accent: rgba(120, 180, 170, 0.85); /* teal */
   --icon-ember: rgba(255, 135, 60, 0.85);   /* ember */
+  --icon-halo: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 60%);
+
+  /* World tones */
+  --lava-glow: rgba(234, 88, 12, 0.18);
+  --estuary-mist: rgba(56, 189, 248, 0.14);
+  --cretaceous-silt: rgba(132, 204, 22, 0.12);
 }
 
 /* Container class for any icon button */
@@ -244,9 +250,11 @@
   padding: 10px;
   border-radius: 14px;
   background: rgba(0,0,0,0.0);
-  transition: transform 120ms ease, filter 120ms ease;
+  border: 1px solid rgba(63, 63, 70, 0.35);
+  transition: transform 120ms ease, filter 120ms ease, border-color 160ms ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
 }
 
 .tethys-icon svg {
@@ -255,20 +263,36 @@
   display: block;
 }
 
+.tethys-icon::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 16px;
+  background: var(--icon-halo);
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
 /* Hover = slightly brighter + subtle glow */
 .tethys-icon:hover {
   filter: drop-shadow(0 0 10px rgba(120, 180, 170, 0.15));
+  border-color: rgba(120, 180, 170, 0.4);
 }
 .tethys-icon:hover svg {
   --icon-stroke: rgba(255, 255, 255, 0.9);
   --icon-fill: rgba(255, 255, 255, 0.22);
   --icon-accent: rgba(140, 210, 198, 0.95);
 }
+.tethys-icon:hover::before {
+  opacity: 0.5;
+}
 
 /* Active = pressed + hotter accent */
 .tethys-icon:active {
   transform: scale(0.97);
   filter: drop-shadow(0 0 12px rgba(255, 135, 60, 0.12));
+  border-color: rgba(255, 135, 60, 0.45);
 }
 .tethys-icon:active svg {
   --icon-stroke: rgba(255, 255, 255, 0.78);
@@ -293,6 +317,65 @@
 .tethys-icon:hover .pith-ring { opacity: 0.9; }
 .tethys-icon:active .pith-ring { opacity: 1; }
 
+/* --- Faction palettes --- */
+.tethys-icon[data-faction="sky-city"] {
+  --icon-stroke: rgba(226, 232, 240, 0.95);
+  --icon-fill: rgba(125, 211, 252, 0.12);
+  --icon-accent: rgba(148, 163, 184, 0.9);
+  --icon-ember: rgba(251, 191, 36, 0.8);
+  --icon-halo: radial-gradient(circle at 50% 40%, rgba(148, 163, 184, 0.22), transparent 60%);
+}
+
+.tethys-icon[data-faction="mystic"] {
+  --icon-stroke: rgba(190, 242, 100, 0.9);
+  --icon-fill: rgba(74, 222, 128, 0.12);
+  --icon-accent: rgba(163, 230, 53, 0.85);
+  --icon-halo: radial-gradient(circle at 45% 45%, rgba(132, 204, 22, 0.2), transparent 60%);
+}
+
+.tethys-icon[data-faction="lower-tier"] {
+  --icon-stroke: rgba(250, 204, 21, 0.9);
+  --icon-fill: rgba(234, 88, 12, 0.12);
+  --icon-accent: rgba(251, 146, 60, 0.85);
+  --icon-halo: radial-gradient(circle at 50% 50%, rgba(234, 88, 12, 0.18), transparent 60%);
+}
+
+.tethys-icon[data-faction="ironwood"] {
+  --icon-stroke: rgba(34, 197, 94, 0.9);
+  --icon-fill: rgba(22, 163, 74, 0.12);
+  --icon-accent: rgba(74, 222, 128, 0.85);
+  --icon-halo: radial-gradient(circle at 45% 55%, rgba(34, 197, 94, 0.18), transparent 60%);
+}
+
+.tethys-icon[data-faction="wild"] {
+  --icon-stroke: rgba(248, 113, 113, 0.9);
+  --icon-fill: rgba(239, 68, 68, 0.12);
+  --icon-accent: rgba(252, 165, 165, 0.85);
+  --icon-halo: radial-gradient(circle at 50% 55%, rgba(239, 68, 68, 0.18), transparent 60%);
+}
+
+.tethys-icon[data-faction="cambria"] {
+  --icon-stroke: rgba(254, 215, 170, 0.9);
+  --icon-fill: rgba(251, 146, 60, 0.08);
+  --icon-accent: rgba(251, 191, 36, 0.85);
+  --icon-halo: radial-gradient(circle at 50% 45%, rgba(245, 158, 11, 0.18), transparent 60%);
+}
+
+/* --- Location accents --- */
+.tethys-icon[data-region="pteros_island"] {
+  --icon-accent: rgba(244, 114, 182, 0.85);
+}
+.tethys-icon[data-region="watcher_volcano"],
+.tethys-icon[data-region="watcher_flats"] {
+  --icon-ember: rgba(239, 68, 68, 0.95);
+  --icon-halo: radial-gradient(circle at 50% 60%, rgba(239, 68, 68, 0.22), transparent 60%);
+}
+.tethys-icon[data-region="mystic_woods"] {
+  --icon-accent: rgba(34, 197, 94, 0.9);
+}
+.tethys-icon[data-region="cambria_ruins"] {
+  --icon-accent: rgba(251, 191, 36, 0.85);
+}
 
 .torch-layer{
   position: fixed;
@@ -315,11 +398,12 @@
 }
 .torch-glyph{
   position:absolute;
-  width: 42px;
-  height: 42px;
-  transform: translate(-30%,-70%); /* offsets so tip leads */
-  opacity: 0.92;
-  filter: drop-shadow(0 0 10px rgba(255,150,75,0.10));
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%,-50%);
+  opacity: 0.88;
+  filter: drop-shadow(0 0 6px rgba(120, 90, 60, 0.18)) sepia(0.3) saturate(0.75);
+  pointer-events: none;
 }
 .torchMode-real{
   cursor: none;
@@ -368,7 +452,7 @@
 html {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-   cursor: url("/img/icons/torch_cursor.svg") 16 4, auto;
+  cursor: auto;
 }
 
 .torch-flicker {
@@ -399,6 +483,39 @@ body {
   
   /* Custom Cursor (From your snippet - adds RPG feel) */
   cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='9' stroke='%23ea580c' stroke-width='1.5' fill='none'/%3E%3Cline x1='12' y1='3' x2='12' y2='0' stroke='%23ea580c' stroke-width='1.5'/%3E%3Cline x1='12' y1='24' x2='12' y2='21' stroke='%23ea580c' stroke-width='1.5'/%3E%3Cline x1='3' y1='12' x2='0' y2='12' stroke='%23ea580c' stroke-width='1.5'/%3E%3Cline x1='24' y1='12' x2='21' y2='12' stroke='%23ea580c' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, crosshair;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--lava-glow), transparent 55%),
+    radial-gradient(circle at 78% 22%, var(--estuary-mist), transparent 60%),
+    radial-gradient(circle at 36% 78%, var(--cretaceous-silt), transparent 65%);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+body::after {
+  background-image:
+    url("/noise.svg"),
+    url("/img/watcher-ashfall.svg");
+  background-size: 320px 320px, cover;
+  background-position: center, center;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+}
+
+main, header, section, article, nav {
+  position: relative;
+  z-index: 1;
 }
 
 /* --- 3. UTILITIES & EFFECTS --- */

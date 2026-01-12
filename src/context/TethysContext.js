@@ -3,8 +3,20 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, addDoc, deleteDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  runTransaction,
+  increment
+} from 'firebase/firestore';
 import { DEFAULT_PLAYER_PROFILE } from '@/lib/player-defaults';
+import { BESTIARY } from '@/data/bestiary';
 
 const TethysContext = createContext();
 
@@ -27,6 +39,50 @@ const DEFAULT_STARTER_TEMPLATE = {
   }
 };
 
+const IMPRINT_DECAY_STEPS = 4;
+const ACCESS_LOCK_STEPS = 2;
+const STAFF_RELIABILITY_MIN = 0.2;
+const STAFF_RELIABILITY_MAX = 1;
+const HAZARD_LOCATIONS = [
+  'the_ledge',
+  'watcher_volcano',
+  'watcher_flats',
+  'purgess',
+  'cambria_ruins',
+  'iron-sands'
+];
+const ASH_LOCATIONS = ['watcher_volcano', 'watcher_flats', 'purgess', 'cambria_ruins'];
+const BOND_CHECK_MS = 1000 * 60 * 60 * 24;
+const BOND_BASE_CHANCE = 0.12;
+const BOND_MIN_MOVES = 2;
+const BOND_COOLDOWN_MIN_DAYS = 3;
+const BOND_COOLDOWN_MAX_DAYS = 7;
+const BOND_FORBIDDEN_LOCATIONS = new Set([
+  'sky-city',
+  'sky_city',
+  'cambria',
+  'cambria_ruins',
+  'pteros',
+  'pteros_island'
+]);
+const FLAT_BESTIARY = BESTIARY.flatMap((era) =>
+  (era.entries || []).map((entry) => ({
+    ...entry,
+    era: era.era || 'wild'
+  }))
+);
+
+function toSlug(value = '') {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '');
+}
+
+function pickBondCreature() {
+  if (!FLAT_BESTIARY.length) return null;
+  return FLAT_BESTIARY[Math.floor(Math.random() * FLAT_BESTIARY.length)];
+}
 
 export function TethysProvider({ children }) {
   const { user } = useAuth();
@@ -35,6 +91,7 @@ export function TethysProvider({ children }) {
 
   // --- STATE ---
   const [currentLocation, setCurrentLocation] = useState('pteros');
+  const [locationHistory, setLocationHistory] = useState([]);
   const [unlockedNodes, setUnlockedNodes] = useState(['pteros', 'sky-city']);
   const [unlockedAssets, setUnlockedAssets] = useState([]); // <--- ADDED
   const [inventory, setInventory] = useState([]);
@@ -46,6 +103,8 @@ export function TethysProvider({ children }) {
   const [playerProfile, setPlayerProfile] = useState(DEFAULT_PLAYER_PROFILE);
   const [creatures, setCreatures] = useState([]);
   const [events, setEvents] = useState([]);
+  const [eventCount, setEventCount] = useState(0);
+  const [rumorCount, setRumorCount] = useState(0);
  
   const hasOnboarded = Boolean(equippedStaff || playerProfile?.onboarding?.status === 'complete');
 
@@ -74,6 +133,9 @@ export function TethysProvider({ children }) {
             const eList = [];
             eventSnap.forEach((ev) => eList.push({ id: ev.id, ...ev.data() }));
             setEvents(eList);
+            if (docSnap.data()?.eventCount == null) {
+              setEventCount(eventSnap.size);
+            }
           } else {
             // New user init
             const initialData = {
@@ -83,6 +145,8 @@ export function TethysProvider({ children }) {
               unlockedAssets: [],
               currentLocation: 'pteros',
               lastHarvestDate: null,
+              eventCount: 0,
+              rumorCount: 0,
               ...DEFAULT_PLAYER_PROFILE,
               identity: {
                 ...DEFAULT_PLAYER_PROFILE.identity,
@@ -149,7 +213,310 @@ export function TethysProvider({ children }) {
     if (data.unlockedNodes) setUnlockedNodes(data.unlockedNodes);
     if (data.unlockedAssets) setUnlockedAssets(data.unlockedAssets);
     if (data.currentLocation) setCurrentLocation(data.currentLocation);
+    if (data.locationHistory) {
+      setLocationHistory(data.locationHistory);
+    } else if (data.currentLocation) {
+      setLocationHistory([data.currentLocation]);
+    }
+    if (data.eventCount != null) setEventCount(data.eventCount);
+    if (data.rumorCount != null) setRumorCount(data.rumorCount);
   };
+
+  const updateImprintList = (list, value) => {
+    const next = Array.isArray(list) ? [...list] : [];
+    const filtered = next.filter((item) => item !== value);
+    filtered.push(value);
+    return filtered.slice(-5);
+  };
+
+  const recordImprint = useCallback((type, value) => {
+    if (!type || !value) return;
+    setPlayerProfile((prev) => {
+      const current = prev?.survivorship?.imprints || { bruises: [], tracks: [] };
+      if (type === 'track') {
+        return {
+          ...prev,
+          survivorship: {
+            ...prev.survivorship,
+            imprints: {
+              ...current,
+              tracks: updateImprintList(current.tracks, value)
+            }
+          }
+        };
+      }
+      if (type === 'bruise') {
+        return {
+          ...prev,
+          survivorship: {
+            ...prev.survivorship,
+            imprints: {
+              ...current,
+              bruises: updateImprintList(current.bruises, value)
+            }
+          }
+        };
+      }
+      return prev;
+    });
+  }, []);
+
+  const adjustStaffReliability = useCallback((delta) => {
+    setPlayerProfile((prev) => {
+      const staff = prev?.staff || {};
+      const stats = staff.stats || {};
+      const current = stats.reliability ?? STAFF_RELIABILITY_MAX;
+      const next = Math.max(
+        STAFF_RELIABILITY_MIN,
+        Math.min(STAFF_RELIABILITY_MAX, current + delta)
+      );
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          stats: {
+            ...stats,
+            reliability: next
+          }
+        }
+      };
+    });
+    setEquippedStaff((prev) => {
+      if (!prev) return prev;
+      const stats = prev.stats || {};
+      const current = stats.reliability ?? STAFF_RELIABILITY_MAX;
+      const next = Math.max(
+        STAFF_RELIABILITY_MIN,
+        Math.min(STAFF_RELIABILITY_MAX, current + delta)
+      );
+      return {
+        ...prev,
+        stats: {
+          ...stats,
+          reliability: next
+        }
+      };
+    });
+  }, []);
+
+  const tickAccessLocks = useCallback(() => {
+    setPlayerProfile((prev) => {
+      const path = prev?.path || {};
+      const accessLocks = path.accessLocks || {};
+      const nextLocks = {};
+      Object.entries(accessLocks).forEach(([key, value]) => {
+        const remaining = Math.max(0, (value?.remaining || 0) - 1);
+        if (remaining > 0) {
+          nextLocks[key] = { ...value, remaining };
+        }
+      });
+      return {
+        ...prev,
+        path: {
+          ...path,
+          accessLocks: nextLocks
+        }
+      };
+    });
+  }, []);
+
+  const lockAccess = useCallback((locationId, steps = ACCESS_LOCK_STEPS) => {
+    if (!locationId) return;
+    setPlayerProfile((prev) => {
+      const path = prev?.path || {};
+      const accessLocks = path.accessLocks || {};
+      return {
+        ...prev,
+        path: {
+          ...path,
+          accessLocks: {
+            ...accessLocks,
+            [locationId]: {
+              remaining: steps,
+              lockedAt: new Date().toISOString()
+            }
+          }
+        }
+      };
+    });
+  }, []);
+
+  const isAccessLocked = useCallback(
+    (locationId) => {
+      const locks = playerProfile?.path?.accessLocks || {};
+      return (locks[locationId]?.remaining || 0) > 0;
+    },
+    [playerProfile?.path?.accessLocks]
+  );
+
+  const maybeGrantStaffOrnament = useCallback(
+    (nextMoveCount) => {
+      setPlayerProfile((prev) => {
+        const staff = prev?.staff || {};
+        const ornaments = Array.isArray(staff.ornaments) ? [...staff.ornaments] : [];
+        const has = new Set(ornaments.map((o) => o.id));
+        const nowIso = new Date().toISOString();
+        const additions = [];
+
+        if (nextMoveCount >= 5 && !has.has('ornament_wayfinder_thread')) {
+          additions.push({ id: 'ornament_wayfinder_thread', label: 'Wayfinder Thread', at: nowIso });
+        }
+        if (eventCount >= 10 && !has.has('ornament_archive_ring')) {
+          additions.push({ id: 'ornament_archive_ring', label: 'Archive Ring', at: nowIso });
+        }
+        if (nextMoveCount >= 12 && !has.has('ornament_embershard')) {
+          additions.push({ id: 'ornament_embershard', label: 'Embershard', at: nowIso });
+        }
+
+        if (!additions.length) return prev;
+
+        const nextOrnaments = [...ornaments, ...additions];
+        return {
+          ...prev,
+          staff: {
+            ...staff,
+            ornaments: nextOrnaments
+          }
+        };
+      });
+      setEquippedStaff((prev) => {
+        if (!prev) return prev;
+        const ornaments = Array.isArray(prev.ornaments) ? [...prev.ornaments] : [];
+        const has = new Set(ornaments.map((o) => o.id));
+        const nowIso = new Date().toISOString();
+        const additions = [];
+        if (nextMoveCount >= 5 && !has.has('ornament_wayfinder_thread')) {
+          additions.push({ id: 'ornament_wayfinder_thread', label: 'Wayfinder Thread', at: nowIso });
+        }
+        if (eventCount >= 10 && !has.has('ornament_archive_ring')) {
+          additions.push({ id: 'ornament_archive_ring', label: 'Archive Ring', at: nowIso });
+        }
+        if (nextMoveCount >= 12 && !has.has('ornament_embershard')) {
+          additions.push({ id: 'ornament_embershard', label: 'Embershard', at: nowIso });
+        }
+        if (!additions.length) return prev;
+        return {
+          ...prev,
+          ornaments: [...ornaments, ...additions]
+        };
+      });
+    },
+    [eventCount]
+  );
+
+  const maybeGrantStaffVariant = useCallback((locationId, nextMoveCount) => {
+    if (!locationId || nextMoveCount < 3) return;
+    setPlayerProfile((prev) => {
+      const staff = prev?.staff || {};
+      const variants = Array.isArray(staff.variants) ? [...staff.variants] : [];
+      if (variants.find((v) => v.regionId === locationId)) return prev;
+      const nowIso = new Date().toISOString();
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          variants: [...variants, { id: `variant_${locationId}`, regionId: locationId, at: nowIso }]
+        }
+      };
+    });
+    setEquippedStaff((prev) => {
+      if (!prev) return prev;
+      const variants = Array.isArray(prev.variants) ? [...prev.variants] : [];
+      if (variants.find((v) => v.regionId === locationId)) return prev;
+      const nowIso = new Date().toISOString();
+      return {
+        ...prev,
+        variants: [...variants, { id: `variant_${locationId}`, regionId: locationId, at: nowIso }]
+      };
+    });
+  }, []);
+
+  const maybeSpawnBondEncounter = useCallback(
+    (locationId) => {
+      if (!hasOnboarded || !locationId) return;
+      setPlayerProfile((prev) => {
+        const encounter = prev.survivorship?.bondEncounter || {};
+        const now = Date.now();
+        if (encounter.state === 'active') return prev;
+        if (encounter.cooldownUntil && now < encounter.cooldownUntil) return prev;
+        if (encounter.lastCheckAt && now - encounter.lastCheckAt < BOND_CHECK_MS) return prev;
+        if (BOND_FORBIDDEN_LOCATIONS.has(locationId)) {
+          return {
+            ...prev,
+            survivorship: {
+              ...prev.survivorship,
+              bondEncounter: { ...encounter, lastCheckAt: now }
+            }
+          };
+        }
+        const moveCount = prev.survivorship?.moveCount || 0;
+        if (moveCount < BOND_MIN_MOVES || (unlockedNodes?.length || 0) < 2) {
+          return {
+            ...prev,
+            survivorship: {
+              ...prev.survivorship,
+              bondEncounter: { ...encounter, lastCheckAt: now }
+            }
+          };
+        }
+        let chance = BOND_BASE_CHANCE;
+        const stillness = prev.perception?.stillness || 0;
+        if (stillness >= 0.7) chance += 0.03;
+        if (HAZARD_LOCATIONS.includes(locationId)) chance += 0.05;
+        if ((eventCount || 0) >= 5) chance += 0.02;
+        if (Math.random() > chance) {
+          return {
+            ...prev,
+            survivorship: {
+              ...prev.survivorship,
+              bondEncounter: { ...encounter, lastCheckAt: now }
+            }
+          };
+        }
+        return {
+          ...prev,
+          survivorship: {
+            ...prev.survivorship,
+            bondEncounter: {
+              ...encounter,
+              state: 'active',
+              regionId: locationId,
+              seed: toSlug(`${locationId}_${now}`),
+              spawnedAt: now,
+              lastCheckAt: now
+            }
+          }
+        };
+      });
+    },
+    [eventCount, hasOnboarded, unlockedNodes]
+  );
+
+  const decayImprintsOnTravel = useCallback(() => {
+    setPlayerProfile((prev) => {
+      const survivorship = prev?.survivorship || {};
+      const imprints = survivorship.imprints || { bruises: [], tracks: [] };
+      const moveCount = (survivorship.moveCount || 0) + 1;
+      let nextBruises = imprints.bruises || [];
+      let nextTracks = imprints.tracks || [];
+      if (moveCount % IMPRINT_DECAY_STEPS === 0) {
+        nextBruises = nextBruises.slice(1);
+        nextTracks = nextTracks.slice(1);
+      }
+      return {
+        ...prev,
+        survivorship: {
+          ...survivorship,
+          moveCount,
+          imprints: {
+            ...imprints,
+            bruises: nextBruises,
+            tracks: nextTracks
+          }
+        }
+      };
+    });
+  }, []);
 
   const buildLoadoutItems = useCallback((itemIds = [], source = {}) => {
     const nowIso = new Date().toISOString();
@@ -181,8 +548,14 @@ export function TethysProvider({ children }) {
       unlockedNodes,
       unlockedAssets,
       currentLocation,
+      locationHistory,
+      eventCount,
+      rumorCount,
+      history: playerProfile?.history,
+      progression: playerProfile?.progression,
       path: playerProfile?.path,
-      onboarding: playerProfile?.onboarding
+      onboarding: playerProfile?.onboarding,
+      survivorship: playerProfile?.survivorship
     };
 
     const save = async () => {
@@ -191,20 +564,26 @@ export function TethysProvider({ children }) {
       } else {
 try {
   const docRef = doc(db, "players", userId);
-  await setDoc(
-    docRef,
-    {
-      inventory,
-      equippedStaff,
-      stats,
-      lastHarvestDate,
-      unlockedNodes,
-      unlockedAssets,
-      currentLocation,
-      staff: playerProfile.staff,
-      path: playerProfile?.path,
-      onboarding: playerProfile?.onboarding,
-      daily: playerProfile.daily,
+      await setDoc(
+        docRef,
+        {
+          inventory,
+          equippedStaff,
+          stats,
+          lastHarvestDate,
+          unlockedNodes,
+          unlockedAssets,
+          currentLocation,
+          locationHistory,
+          staff: playerProfile.staff,
+          history: playerProfile?.history,
+          progression: playerProfile?.progression,
+          path: playerProfile?.path,
+          onboarding: playerProfile?.onboarding,
+          survivorship: playerProfile?.survivorship,
+          daily: playerProfile.daily,
+          eventCount,
+      rumorCount,
       lastLoginAt: serverTimestamp(),
     },
     { merge: true }
@@ -225,13 +604,19 @@ try {
     unlockedNodes,
     unlockedAssets,
     currentLocation,
+    locationHistory,
     userId,
     isGuest,
     loadingData,
     playerProfile.daily,
     playerProfile.staff,
+    playerProfile.history,
+    playerProfile.progression,
     playerProfile.path,
-    playerProfile.onboarding
+    playerProfile.onboarding,
+    playerProfile.survivorship,
+    eventCount,
+    rumorCount
   ]);
 
   // --- 3. ACTIONS ---
@@ -245,6 +630,86 @@ try {
     setInventory((prev) => [...prev, stamped]);
     return stamped;
   }, []);
+
+  const logEvent = useCallback(async (event) => {
+    const stamped = {
+      ...event,
+      at: event.at || new Date().toISOString(),
+      createdAt: event.createdAt || serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    setEvents((prev) => [...prev.slice(-99), stamped]); // keep recent 100
+    if (!isGuest && userId) {
+      try {
+        await runTransaction(db, async (tx) => {
+          const eventRef = doc(collection(db, 'players', userId, 'events'));
+          const playerRef = doc(db, 'players', userId);
+          tx.set(eventRef, stamped);
+          tx.set(playerRef, { eventCount: increment(1) }, { merge: true });
+        });
+        setEventCount((prev) => prev + 1);
+      } catch (e) {
+        console.warn('Event log failed', e);
+      }
+    } else {
+      setEventCount((prev) => prev + 1);
+    }
+    return stamped;
+  }, [isGuest, userId]);
+
+  const consumeMedia = useCallback(
+    async (mediaId, type = 'video', rewardStats = {}) => {
+      if (!mediaId) return { success: false, message: 'Missing media id.' };
+      const history = playerProfile?.history?.mediaConsumed || [];
+      if (history.includes(mediaId)) {
+        return { success: false, message: 'Memory already integrated.' };
+      }
+      const staff = playerProfile?.staff || {};
+      const stats = staff.stats || {};
+      const nextStats = { ...stats };
+      Object.entries(rewardStats || {}).forEach(([key, value]) => {
+        const numeric = Number(value) || 0;
+        nextStats[key] = (nextStats[key] || 0) + numeric;
+      });
+
+      const updatedProfile = {
+        ...playerProfile,
+        staff: {
+          ...staff,
+          stats: nextStats,
+          updatedAt: new Date().toISOString()
+        },
+        history: {
+          ...playerProfile?.history,
+          mediaConsumed: [...history, mediaId]
+        }
+      };
+
+      setPlayerProfile(updatedProfile);
+      if (equippedStaff?.id) {
+        setEquippedStaff((prev) =>
+          prev
+            ? {
+                ...prev,
+                stats: nextStats,
+                updatedAt: new Date().toISOString()
+              }
+            : prev
+        );
+      }
+
+      await logEvent({
+        type: 'MEDIA_CONSUMED',
+        mediaId,
+        mediaType: type,
+        delta: { stats: rewardStats },
+        at: new Date().toISOString()
+      });
+
+      return { success: true, message: 'Knowledge integrated.', stats: nextStats };
+    },
+    [equippedStaff?.id, logEvent, playerProfile]
+  );
 
   const upsertCreatureBond = useCallback(async (creature) => {
     const stamped = {
@@ -276,20 +741,126 @@ try {
     }
   }, [isGuest, userId]);
 
-  const logEvent = useCallback(async (event) => {
+  const resolveBondCooldownUntil = useCallback(() => {
+    const days =
+      BOND_COOLDOWN_MIN_DAYS +
+      Math.floor(Math.random() * (BOND_COOLDOWN_MAX_DAYS - BOND_COOLDOWN_MIN_DAYS + 1));
+    return Date.now() + days * 24 * 60 * 60 * 1000;
+  }, []);
+
+  const attemptBondEncounter = useCallback(async () => {
+    const encounter = playerProfile?.survivorship?.bondEncounter;
+    if (!encounter || encounter.state !== 'active') {
+      return { ok: false, reason: 'inactive' };
+    }
+    const reliability = playerProfile?.staff?.stats?.reliability ?? 0.6;
+    const chance = Math.min(0.8, 0.25 + reliability * 0.35);
+    const success = Math.random() <= chance;
+    const nowIso = new Date().toISOString();
+    const cooldownUntil = resolveBondCooldownUntil();
+
+    let creature = null;
+    if (success) {
+      const pick = pickBondCreature();
+      if (pick) {
+        const creatureId = `bond_${toSlug(pick.name)}`;
+        creature = await upsertCreatureBond({
+          creatureId,
+          archetype: pick.tag || pick.era || 'wild',
+          givenName: pick.name,
+          temperament: { brave: 2, wary: 2, loyal: 2 },
+          bondLevel: 1,
+          bondXp: 0,
+          growth: { stage: 'wild', lastFedAt: null, lastTrainedAt: null },
+          adornments: [],
+          notes: pick.niche || '',
+          createdAt: nowIso
+        });
+      }
+    }
+
+    setPlayerProfile((prev) => ({
+      ...prev,
+      survivorship: {
+        ...prev.survivorship,
+        bond: success
+          ? {
+              focusType: 'creature',
+              strength: 1,
+              lastBondAt: nowIso,
+              notes: creature?.givenName || 'Bond stirred'
+            }
+          : prev.survivorship?.bond,
+        bondEncounter: {
+          ...prev.survivorship?.bondEncounter,
+          state: 'cooldown',
+          regionId: null,
+          lastOutcome: success ? 'bonded' : 'withdrew',
+          lastResolvedAt: nowIso,
+          cooldownUntil
+        }
+      }
+    }));
+
+    await logEvent({
+      type: success ? 'BOND_FORMED' : 'BOND_WITHDREW',
+      regionId: encounter.regionId || currentLocation,
+      at: nowIso
+    });
+
+    return { ok: true, success, creature };
+  }, [currentLocation, logEvent, playerProfile, resolveBondCooldownUntil, upsertCreatureBond]);
+
+  const withdrawBondEncounter = useCallback(async () => {
+    const encounter = playerProfile?.survivorship?.bondEncounter;
+    if (!encounter || encounter.state !== 'active') {
+      return { ok: false, reason: 'inactive' };
+    }
+    const nowIso = new Date().toISOString();
+    const cooldownUntil = resolveBondCooldownUntil();
+    setPlayerProfile((prev) => ({
+      ...prev,
+      survivorship: {
+        ...prev.survivorship,
+        bondEncounter: {
+          ...prev.survivorship?.bondEncounter,
+          state: 'cooldown',
+          regionId: null,
+          lastOutcome: 'withdrawn',
+          lastResolvedAt: nowIso,
+          cooldownUntil
+        }
+      }
+    }));
+    await logEvent({
+      type: 'BOND_WITHDRAWN',
+      regionId: encounter.regionId || currentLocation,
+      at: nowIso
+    });
+    return { ok: true, success: false };
+  }, [currentLocation, logEvent, playerProfile, resolveBondCooldownUntil]);
+
+  const logRumorEntry = useCallback(async (entry) => {
     const stamped = {
-      ...event,
-      at: event.at || new Date().toISOString(),
-      createdAt: event.createdAt || serverTimestamp(),
+      ...entry,
+      at: entry.at || new Date().toISOString(),
+      createdAt: entry.createdAt || serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
-    setEvents((prev) => [...prev.slice(-99), stamped]); // keep recent 100
     if (!isGuest && userId) {
       try {
-        await addDoc(collection(db, 'players', userId, 'events'), stamped);
+        await runTransaction(db, async (tx) => {
+          const rumorRef = doc(collection(db, 'players', userId, 'rumorLog'));
+          const playerRef = doc(db, 'players', userId);
+          tx.set(rumorRef, stamped);
+          tx.set(playerRef, { rumorCount: increment(1) }, { merge: true });
+        });
+        setRumorCount((prev) => prev + 1);
       } catch (e) {
-        console.warn('Event log failed', e);
+        console.warn('Rumor log failed', e);
       }
+    } else {
+      setRumorCount((prev) => prev + 1);
     }
     return stamped;
   }, [isGuest, userId]);
@@ -378,7 +949,11 @@ try {
         name: overrides.staffName || `${template.name || 'Starter'} Staff`,
         desc: overrides.staffDesc || 'An issued staff aligned to your path.',
         power: overrides.power || 10,
-        stats: { ...playerProfile.staff.stats, ...baseStats },
+        stats: {
+          ...playerProfile.staff.stats,
+          ...baseStats,
+          reliability: playerProfile.staff.stats?.reliability ?? STAFF_RELIABILITY_MAX
+        },
         path: overrides.staffPath || playerProfile.staff.path || 'pteros',
         seed: staffSeed,
         updatedAt: nowIso
@@ -497,10 +1072,40 @@ try {
   };
 
   const travelTo = (locationId) => {
+    if (!locationId) return { blocked: true, reason: 'invalid' };
+    if (isAccessLocked(locationId)) {
+      return { blocked: true, reason: 'locked' };
+    }
     setCurrentLocation(locationId);
+    setLocationHistory((prev) => {
+      const next = prev.filter((loc) => loc !== locationId);
+      next.push(locationId);
+      return next.slice(-5);
+    });
+    decayImprintsOnTravel();
+    recordImprint('track', locationId);
+    if (HAZARD_LOCATIONS.includes(locationId)) {
+      recordImprint('bruise', locationId);
+      adjustStaffReliability(-0.08);
+    }
+    if (ASH_LOCATIONS.includes(locationId)) {
+      recordImprint('bruise', 'ash');
+    }
+    if (!HAZARD_LOCATIONS.includes(locationId)) {
+      adjustStaffReliability(0.02);
+    }
+    tickAccessLocks();
+    const nextMoveCount = (playerProfile?.survivorship?.moveCount || 0) + 1;
+    maybeGrantStaffOrnament(nextMoveCount);
+    maybeGrantStaffVariant(locationId, nextMoveCount);
+    if (HAZARD_LOCATIONS.includes(locationId) && !unlockedNodes.includes(locationId)) {
+      lockAccess(locationId, ACCESS_LOCK_STEPS);
+    }
+    maybeSpawnBondEncounter(locationId);
     if (!unlockedNodes.includes(locationId)) {
       setUnlockedNodes(prev => [...prev, locationId]);
     }
+    return { blocked: false };
   };
 
   const awardWatchBonus = useCallback(
@@ -519,11 +1124,42 @@ try {
   );
 
   const value = {
-    userId, isGuest, loadingData, currentLocation,
-    inventory, equippedStaff, stats, unlockedNodes, unlockedAssets, canHarvest,
-    performDailyHarvest, purchaseAsset, travelTo, playerProfile, setPlayerProfile, setEquippedStaff,
-    addInventoryItem, creatures, upsertCreatureBond, removeCreatureBond, events, logEvent, logDailyClaim,
-    loadStarterTemplate, hatchFromTemplate, claimDailyReward, hasOnboarded, awardWatchBonus
+    userId,
+    isGuest,
+    loadingData,
+    currentLocation,
+    locationHistory,
+    inventory,
+    equippedStaff,
+    stats,
+    unlockedNodes,
+    unlockedAssets,
+    canHarvest,
+    performDailyHarvest,
+    purchaseAsset,
+    travelTo,
+    isAccessLocked,
+    lockAccess,
+    playerProfile,
+    bondEncounter: playerProfile?.survivorship?.bondEncounter,
+    attemptBondEncounter,
+    withdrawBondEncounter,
+    consumeMedia,
+    setPlayerProfile,
+    setEquippedStaff,
+    addInventoryItem,
+    creatures,
+    upsertCreatureBond,
+    removeCreatureBond,
+    events,
+    logEvent,
+    logRumorEntry,
+    logDailyClaim,
+    loadStarterTemplate,
+    hatchFromTemplate,
+    claimDailyReward,
+    hasOnboarded,
+    awardWatchBonus
   };
 
   return <TethysContext.Provider value={value}>{children}</TethysContext.Provider>;

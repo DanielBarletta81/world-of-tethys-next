@@ -5,7 +5,8 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { FastForward } from 'lucide-react';
-import useSoundFX from '@/app/hooks/useSoundFX'; 
+import useSoundFX from '@/app/hooks/useSoundFX';
+import { cdn } from '@/lib/cdn';
 
 // SEQUENCE CONFIGURATION
 // add a 'flashType' to specific steps to trigger visual jolts
@@ -138,7 +139,10 @@ export default function LandingSequence({ onComplete }) {
             animate={{ opacity: [0.6, 0.8, 0.6] }}
             transition={{ duration: 6, repeat: Infinity }}
           />
-          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
+          <div
+            className="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none"
+            style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+          />
 
           {/* Flash Overlay */}
           <AnimatePresence>
@@ -152,7 +156,7 @@ export default function LandingSequence({ onComplete }) {
               >
                 {SEQUENCE_STEPS[step]?.flashType === 'seal' && (
                   <div className="relative w-96 h-96 opacity-50 scale-150 blur-sm">
-                     <Image src="/img/a symbols/tethys-seal.png" alt="Seal" fill className="object-contain" />
+                     <Image src={cdn('/symbols/tethys-seal.png')} alt="Seal" fill className="object-contain" />
                   </div>
                 )}
                 {SEQUENCE_STEPS[step]?.flashType === 'signal' && (

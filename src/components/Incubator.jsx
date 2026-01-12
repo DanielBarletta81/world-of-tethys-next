@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Egg, Fingerprint, Sparkles } from 'lucide-react';
 import  useSoundFX  from '@/app/hooks/useSoundFX';
+import { cdn } from '@/lib/cdn';
 
 export default function Incubator({ onHatch }) {
   const [hatching, setHatching] = useState(false);
@@ -44,7 +45,10 @@ export default function Incubator({ onHatch }) {
           className="w-48 h-64 bg-[#1c1917] border-2 border-stone-600 rounded-[50%_50%_40%_40%] relative overflow-hidden shadow-2xl flex items-center justify-center"
         >
           {/* Egg Texture */}
-          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-30" />
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+          />
           <div className="absolute inset-0 bg-gradient-to-tr from-black via-transparent to-stone-500/20" />
           
           {/* Cracks (Only appear on hover/hatch) */}

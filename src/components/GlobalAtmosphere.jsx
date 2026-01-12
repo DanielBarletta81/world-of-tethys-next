@@ -2,16 +2,17 @@
 'use client';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cdn } from '@/lib/cdn';
 
 // Map your routes to high-quality scenic backgrounds
 // Use Getty/Stock images here. 
 // TIP: Use images with "Fog", "Volcanic Ash", or "Underwater" themes.
 const SCENES = {
-  '/': '/img/bg/obsidian-coast-4k.jpg',       // Dark, volcanic shore
-  '/study': '/img/bg/library-ruins.jpg',      // Ancient stone shelves, dust motes
-  '/mystics': '/img/bg/biolum-forest.jpg',    // Dark jungle, glowing spores
-  '/science': '/img/bg/fossil-lab.jpg',       // Clean, cold light, bones
-  '/map': '/img/bg/parchment-map-table.jpg',  // Top-down wooden table feel
+  '/': cdn('/img/bg/obsidian-coast-4k.jpg'),       // Dark, volcanic shore
+  '/study': cdn('/img/bg/library-ruins.jpg'),      // Ancient stone shelves, dust motes
+  '/mystics': cdn('/img/bg/biolum-forest.jpg'),    // Dark jungle, glowing spores
+  '/science': cdn('/img/bg/fossil-lab.jpg'),       // Clean, cold light, bones
+  '/map': cdn('/img/bg/parchment-map-table.jpg'),  // Top-down wooden table feel
 };
 
 export default function GlobalAtmosphere() {
@@ -40,7 +41,10 @@ export default function GlobalAtmosphere() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0c0a09_90%)]" />
 
       {/* 2. Ash/Grain: Makes it feel like an old film or dusty air */}
-      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+      <div
+        className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none"
+        style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+      />
 
       {/* 3. Color Grade: Unifies disparate images into your "Magma" palette */}
       <div className="absolute inset-0 bg-gradient-to-b from-orange-900/10 via-transparent to-cyan-900/20 mix-blend-color" />

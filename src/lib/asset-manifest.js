@@ -1,4 +1,6 @@
 // src/lib/assets-manifest.js
+import { cdn } from '@/lib/cdn';
+
 export const ASSET_MANIFEST = [
   {
     id: 'lore_pack_01',
@@ -9,7 +11,7 @@ export const ASSET_MANIFEST = [
     cost: 50, // Resin Cost
     // In a real app, this would be a private S3 path. For now, put your public CloudFront URL.
     cdnUrl: 'https://d12345.cloudfront.net/lore-packs/pteros-survey-v1.zip',
-    previewImage: '/img/assets/dossier-cover.jpg'
+    previewImage: cdn('/img/assets/dossier-cover.jpg')
   },
   {
     id: 'wallpaper_4k_weep',
@@ -19,7 +21,7 @@ export const ASSET_MANIFEST = [
     format: 'PNG',
     cost: 25,
     cdnUrl: 'https://d12345.cloudfront.net/wallpapers/the-weep-4k.png',
-    previewImage: '/img/assets/wallpaper-thumb.jpg'
+    previewImage: cdn('/img/assets/wallpaper-thumb.jpg')
   },
   {
     id: '3d_model_staff',
@@ -29,7 +31,7 @@ export const ASSET_MANIFEST = [
     format: 'STL',
     cost: 100,
     cdnUrl: 'https://d12345.cloudfront.net/models/staff-v2.stl',
-    previewImage: '/img/assets/model-thumb.jpg'
+    previewImage: cdn('/img/assets/model-thumb.jpg')
   }
 ];
 // World of Tethys || D.C. Barletta

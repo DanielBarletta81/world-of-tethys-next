@@ -8,14 +8,14 @@ import MarineShowcase from "@/components/MarineShowcase";
 import BookCarousel from "@/components/BookCarousel";
 import IdentityAirLock from "@/components/IdentityAirLock"; // Corrected spelling
 import IntroOverlay from "@/components/IntroOverlay";
-import CinematicTerminal from "@/components/CinematicTerminal";
+import CaveWallTerminal from "@/components/CaveWallTerminal";
 import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn } from "lucide-react";
 import Link from "next/link";
 import { cdn } from "@/lib/cdn";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
-  const { stats, isGuest, loadingData, hasOnboarded, playerProfile, awardWatchBonus } = useTethys();
+  const { stats, isGuest, loadingData, hasOnboarded, playerProfile } = useTethys();
   
   // State Management
   const [hasInteracted, setHasInteracted] = useState(false); // Gatekeeper state
@@ -84,9 +84,16 @@ export default function Home() {
             
             {/* CINEMATIC BACKGROUND */}
             <div className="fixed inset-0 z-0">
-              <div className="absolute inset-0 bg-[url('/img/bg/magma-forge-hero.jpg')] bg-cover bg-center opacity-40 mix-blend-screen" />
+              <div
+                className="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-screen"
+                style={{ backgroundImage: `url(${cdn('/img/locations/pteros_island_hero.png')})` }}
+              />
               <div className="absolute inset-0 bg-gradient-to-b from-[#050403] via-transparent to-[#050403]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050403_90%)]" />
+              <div
+                className="absolute inset-0 opacity-35 mix-blend-screen"
+                style={{ backgroundImage: `url(${cdn('/img/watcher-ashfall.svg')})` }}
+              />
             </div>
 
             {/* TOP BAR */}
@@ -197,7 +204,10 @@ export default function Home() {
                 
                 {/* Map Lens */}
                 <div className="lg:col-span-8 group relative aspect-video rounded-xl border border-stone-800 overflow-hidden shadow-2xl bg-black">
-                  <div className="absolute inset-0 bg-[url('/img/map/epic_map_hero.PNG')] bg-cover bg-center transition-transform duration-[3s] group-hover:scale-105 opacity-60 group-hover:opacity-100" />
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-[3s] group-hover:scale-105 opacity-60 group-hover:opacity-100"
+                    style={{ backgroundImage: `url(${cdn('/img/map/epic_map_hero.PNG')})` }}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050403] via-transparent to-transparent" />
                   
                   <div className="absolute bottom-6 left-6 space-y-1">
@@ -232,7 +242,10 @@ export default function Home() {
                   
                   {/* Core Temp */}
                   <div className="flex-1 min-h-[120px] bg-orange-950/10 border border-orange-900/20 rounded-xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-[url('/img/locations/pteros-island-sun.png')] opacity-20" />
+                    <div
+                      className="absolute inset-0 opacity-20"
+                      style={{ backgroundImage: `url(${cdn('/img/locations/pteros-island-sun.png')})` }}
+                    />
                     <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-600 to-red-900 blur-3xl animate-pulse opacity-20 group-hover:opacity-40 transition-opacity" />
                     <div className="relative z-10 space-y-1">
                       <span className="text-[10px] uppercase tracking-[0.3em] text-orange-500 font-mono">Albian Age</span>
@@ -248,13 +261,13 @@ export default function Home() {
               {/* Cinematic Feature + Audio */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <div className="lg:col-span-8">
-                  <CinematicTerminal
-                    videoUrl="/video/Spore_Cloud_Animation_Generated.mp4"
-                    thumbnail="/img/bg/obsidian-coast-4k.jpg"
+                  <CaveWallTerminal
+                    mediaId="signal_from_rift_v1"
                     title="Signal from the Rift"
-                    onWatchProgress={(ms, th) => {
-                      awardWatchBonus?.(th);
-                    }}
+                    type="video"
+                    src={cdn('/video/Spore_Cloud_Animation_Generated.mp4')}
+                    thumbnail={cdn('/img/bg/obsidian-coast-4k.jpg')}
+                    rewards={{ lore: 5 }}
                   />
                 </div>
                 <div className="lg:col-span-4 space-y-3 bg-black/40 border border-stone-800 rounded-xl p-4">

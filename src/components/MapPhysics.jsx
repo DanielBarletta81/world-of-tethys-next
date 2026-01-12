@@ -2,168 +2,194 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+const PHYSICS = {
+  FRICTION: 0.92,
+  SPRING: 0.15,
+  MASS: 1.0,
+  TOLERANCE: 0.1,
+  MAX_VELOCITY: 45
+};
+
+const BOUNDS = {
+  minX: -500,
+  maxX: 500,
+  minY: -400,
+  maxY: 400
+};
 
 function intensityScalar(watcherIntensity) {
   if (watcherIntensity === "near") return 1.0;
   if (watcherIntensity === "mid") return 0.55;
-  return 0.25; // far
+  return 0.25;
 }
 
-/**
- * useMapPhysics
- * - Pan/zoom transform: tx, ty, scale
- * - Stillness detection (based on input inactivity):
- *   - STILL_DELAY: ms until stillness begins
- *   - STILL_FULL: ms until stillness hits 1.0
- * - Watcher tremor (Wild/Mystic) + City drift (unreliable map)
- *
- * Returns:
- * {
- *   tx, ty, scale,
- *   stillnessLevel,
- *   drift: { x, y },           // city-mode slight lie
- *   tremor: { x, y },          // watcher micro-jitter
- *   handlers: { onPointerDown, onPointerMove, onPointerUp, onWheel }
- * }
- */
 export default function useMapPhysics({
   cfg,
-  mode = "wild", // "wild" | "mystic" | "city"
+  mode = "wild",
   watcherIntensity = "far",
-  envPressure = 0,
+  envPressure = 0
 } = {}) {
   const MIN_SCALE = cfg?.MIN_SCALE ?? 0.9;
   const MAX_SCALE = cfg?.MAX_SCALE ?? 2.4;
   const STILL_DELAY = cfg?.STILL_DELAY ?? 1800;
   const STILL_FULL = cfg?.STILL_FULL ?? 2600;
 
-  // base transform
-  const [tx, setTx] = useState(0);
-  const [ty, setTy] = useState(0);
-  const [scale, setScale] = useState(1);
-
-  // “secondary motion”
+  const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
   const [tremor, setTremor] = useState({ x: 0, y: 0 });
   const [drift, setDrift] = useState({ x: 0, y: 0 });
-
-  // stillness
   const [stillnessLevel, setStillnessLevel] = useState(0);
 
-  const pointerDown = useRef(false);
-  const lastPointer = useRef({ x: 0, y: 0 });
-  const lastInputAt = useRef(Date.now());
+  const state = useRef({
+    x: 0,
+    y: 0,
+    scale: 1,
+    vx: 0,
+    vy: 0,
+    isDragging: false,
+    lastX: 0,
+    lastY: 0,
+    lastTime: 0,
+    lastInputTime: Date.now()
+  });
+
   const lastMoveAt = useRef(Date.now());
-
   const driftVel = useRef({ x: 0, y: 0 });
-
   const k = useMemo(() => intensityScalar(watcherIntensity), [watcherIntensity]);
+  const stillnessRef = useRef(0);
 
-  const markInput = () => {
-    lastInputAt.current = Date.now();
-  };
-
-  // --- handlers ---
   const onPointerDown = (e) => {
-    pointerDown.current = true;
-    lastPointer.current = { x: e.clientX, y: e.clientY };
-    lastMoveAt.current = Date.now();
-    markInput();
+    state.current.isDragging = true;
+    state.current.lastX = e.clientX;
+    state.current.lastY = e.clientY;
+    state.current.lastTime = Date.now();
+    state.current.lastInputTime = Date.now();
+    state.current.vx = 0;
+    state.current.vy = 0;
   };
 
   const onPointerMove = (e) => {
-    if (!pointerDown.current) return;
-    const dx = e.clientX - lastPointer.current.x;
-    const dy = e.clientY - lastPointer.current.y;
-
-    lastPointer.current = { x: e.clientX, y: e.clientY };
-    lastMoveAt.current = Date.now();
-    markInput();
+    if (!state.current.isDragging) return;
+    const now = Date.now();
+    const dt = now - state.current.lastTime;
+    state.current.lastInputTime = now;
 
     const resistance = 1 - envPressure * 0.25;
+    const dx = (e.clientX - state.current.lastX) * resistance;
+    const dy = (e.clientY - state.current.lastY) * resistance;
 
-    // pan with slight resistance under pressure
-    setTx((v) => v + dx * resistance);
-    setTy((v) => v + dy * resistance);
+    state.current.x += dx;
+    state.current.y += dy;
 
-    // city drift accumulates while moving (unreliable map)
+    if (dt > 0) {
+      const vX = (dx / dt) * 16;
+      const vY = (dy / dt) * 16;
+      state.current.vx = state.current.vx * 0.5 + vX * 0.5;
+      state.current.vy = state.current.vy * 0.5 + vY * 0.5;
+    }
+
     if (mode === "city") {
-      // drift is small; tied to movement but not perfectly
       driftVel.current.x += dx * 0.02;
       driftVel.current.y += dy * 0.02;
     }
+
+    lastMoveAt.current = now;
+    state.current.lastX = e.clientX;
+    state.current.lastY = e.clientY;
+    state.current.lastTime = now;
+
+    setTransform((prev) => ({
+      ...prev,
+      x: state.current.x,
+      y: state.current.y
+    }));
   };
 
   const onPointerUp = () => {
-    pointerDown.current = false;
-    markInput();
+    state.current.isDragging = false;
+    state.current.lastInputTime = Date.now();
   };
 
   const onWheel = (e) => {
-    // zoom around center (simple)
     e.preventDefault?.();
-    markInput();
-
-    const delta = -e.deltaY; // wheel down -> negative
+    state.current.lastInputTime = Date.now();
+    const delta = -e.deltaY;
     const zoom = delta > 0 ? 1.06 : 0.94;
-
-    const zoomDelay = envPressure > 0.6 ? 120 : 0;
-    setTimeout(() => {
-      setScale((s) => clamp(s * zoom, MIN_SCALE, MAX_SCALE));
-    }, zoomDelay);
+    const nextScale = clamp(state.current.scale * zoom, MIN_SCALE, MAX_SCALE);
+    state.current.scale = nextScale;
+    setTransform((prev) => ({ ...prev, scale: nextScale }));
   };
 
-  // --- rAF loop: stillness + tremor + drift decay ---
   useEffect(() => {
     let raf = 0;
 
     const tick = () => {
+      const s = state.current;
       const now = Date.now();
-      const idleMs = now - lastInputAt.current;
 
-      // Stillness ramps AFTER STILL_DELAY up to STILL_FULL
-      if (idleMs <= STILL_DELAY) {
-        if (stillnessLevel !== 0) setStillnessLevel(0);
-      } else {
-        const t = clamp((idleMs - STILL_DELAY) / STILL_FULL, 0, 1);
-        // ease in slightly
-        const eased = t * t * (3 - 2 * t);
-        if (Math.abs(eased - stillnessLevel) > 0.002) setStillnessLevel(eased);
+      if (!s.isDragging) {
+        s.x += s.vx;
+        s.y += s.vy;
+
+        s.vx *= PHYSICS.FRICTION;
+        s.vy *= PHYSICS.FRICTION;
+
+        if (s.x < BOUNDS.minX) s.vx += (BOUNDS.minX - s.x) * PHYSICS.SPRING;
+        else if (s.x > BOUNDS.maxX) s.vx += (BOUNDS.maxX - s.x) * PHYSICS.SPRING;
+
+        if (s.y < BOUNDS.minY) s.vy += (BOUNDS.minY - s.y) * PHYSICS.SPRING;
+        else if (s.y > BOUNDS.maxY) s.vy += (BOUNDS.maxY - s.y) * PHYSICS.SPRING;
+
+        s.vx = clamp(s.vx, -PHYSICS.MAX_VELOCITY, PHYSICS.MAX_VELOCITY);
+        s.vy = clamp(s.vy, -PHYSICS.MAX_VELOCITY, PHYSICS.MAX_VELOCITY);
+
+        if (Math.abs(s.vx) < PHYSICS.TOLERANCE) s.vx = 0;
+        if (Math.abs(s.vy) < PHYSICS.TOLERANCE) s.vy = 0;
+
+        if (s.vx !== 0 || s.vy !== 0) {
+          setTransform({ x: s.x, y: s.y, scale: s.scale });
+        }
       }
 
-      // Watcher tremor:
-      // - Wild: clearer physical shake
-      // - Mystic: subtle, “alive” oscillation (stronger during stillness)
-      // - City: no tremor (denial)
-      if (mode !== "city") {
-        const base = 0.35 * k; // amplitude baseline
-        const mysticBoost = mode === "mystic" ? (0.25 + stillnessLevel * 0.55) : 0.15;
-        const amp = base * (0.35 + mysticBoost);
+      const idleMs = now - s.lastInputTime;
+      const isPhysicallyStill =
+        Math.abs(s.vx) < 0.5 && Math.abs(s.vy) < 0.5 && !s.isDragging;
+      let targetStillness = 0;
+      if (isPhysicallyStill && idleMs > STILL_DELAY) {
+        targetStillness = clamp(
+          (idleMs - STILL_DELAY) / (STILL_FULL - STILL_DELAY),
+          0,
+          1
+        );
+      }
+      setStillnessLevel((prev) => {
+        const next = prev + (targetStillness - prev) * 0.05;
+        stillnessRef.current = next;
+        return next;
+      });
 
-        // low frequency wobble + tiny noise
+      if (mode !== "city") {
+        const base = 0.35 * k;
+        const mysticBoost = mode === "mystic" ? 0.25 + stillnessRef.current * 0.55 : 0.15;
+        const amp = base * (0.35 + mysticBoost);
         const t = now * 0.001;
         const x = Math.sin(t * 0.9 + 10.2) * amp + Math.sin(t * 2.1) * (amp * 0.35);
         const y = Math.cos(t * 0.8 + 2.7) * amp + Math.sin(t * 1.7) * (amp * 0.25);
-
         setTremor({ x, y });
       } else {
         if (tremor.x !== 0 || tremor.y !== 0) setTremor({ x: 0, y: 0 });
       }
 
-      // City drift:
-      // - driftVel accumulates during movement
-      // - slowly decays back toward 0 when idle
       if (mode === "city") {
         const sinceMove = now - lastMoveAt.current;
-        const decay = sinceMove > 350 ? 0.92 : 0.98; // decays faster when you stop
+        const decay = sinceMove > 350 ? 0.92 : 0.98;
         driftVel.current.x *= decay;
         driftVel.current.y *= decay;
 
-        // cap total drift so it stays “subliminal”
         const dx = clamp(drift.x + driftVel.current.x * 0.02, -18, 18);
         const dy = clamp(drift.y + driftVel.current.y * 0.02, -18, 18);
 
-        // ease drift back toward 0 over longer idle
         const idlePull = clamp((idleMs - 800) / 5000, 0, 1) * 0.02;
         const pulledX = dx + (0 - dx) * idlePull;
         const pulledY = dy + (0 - dy) * idlePull;
@@ -179,13 +205,13 @@ export default function useMapPhysics({
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, watcherIntensity, STILL_DELAY, STILL_FULL]);
 
   return {
-    tx,
-    ty,
-    scale,
+    tx: transform.x + tremor.x + drift.x,
+    ty: transform.y + tremor.y + drift.y,
+    scale: transform.scale,
     stillnessLevel,
     tremor,
     drift,
@@ -193,8 +219,9 @@ export default function useMapPhysics({
       onPointerDown,
       onPointerMove,
       onPointerUp,
-      onWheel,
-    },
+      onPointerLeave: onPointerUp,
+      onWheel
+    }
   };
 }
 // World of Tethys || D.C. Barletta

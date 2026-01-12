@@ -14,6 +14,7 @@ export default function MapViewport({
   truthProfile,
   watcherIntensity,                         // NEW: optional ash texture (or reuse mist)
   envPressure = 0,
+  fogBoost = 0,
 }) {
 
   const { tx, ty, scale } = transform;
@@ -68,7 +69,8 @@ return (
       opacity:
         (truthProfile?.mist ?? 0.22) *
         (mode === "mystic" ? 1.15 : mode === "city" ? 0.6 : 1.0) -
-        envPressure * 0.25,
+        envPressure * 0.25 +
+        fogBoost,
       WebkitMaskImage: buildFogMask(fogPoints),
       maskImage: buildFogMask(fogPoints),
       maskComposite: "intersect",

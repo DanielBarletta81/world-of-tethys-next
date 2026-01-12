@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cdn } from '@/lib/cdn';
 
 export default function PteroIntro({ onComplete }) {
   const [isVisible, setIsVisible] = useState(true);
@@ -23,12 +24,15 @@ export default function PteroIntro({ onComplete }) {
           exit={{ opacity: 0, transition: { duration: 1.5 } }} // Slow fade out
         >
           {/* 1. Background Atmosphere (Fog) */}
-          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 animate-pulse"></div>
+          <div
+            className="absolute inset-0 opacity-20 animate-pulse"
+            style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+          ></div>
 
           {/* 2. THE PTERO FLOCK (Silhouettes flying past) */}
           {/* Ptero 1: Large, close, fast */}
           <motion.img
-            src="/img/ptero-silhouette.svg"
+            src={cdn('/img/ptero-silhouette.svg')}
             alt="Ptero"
             className="absolute w-96 opacity-10 blur-sm top-1/3"
             initial={{ x: '-20vw', y: 50, scale: 1.5 }}
@@ -38,7 +42,7 @@ export default function PteroIntro({ onComplete }) {
 
           {/* Ptero 2: Small, distant, flock */}
           <motion.img
-            src="/img/ptero-silhouette.svg"
+            src={cdn('/img/ptero-silhouette.svg')}
             className="absolute w-32 opacity-30 top-1/4"
             initial={{ x: '-10vw', rotate: 10 }}
             animate={{ x: '110vw' }}

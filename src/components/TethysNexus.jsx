@@ -6,6 +6,7 @@ import MapFragments from '@/components/MapFragments';
 import useMapPhysics from '@/components/MapPhysics';
 import { loadKnowledge, saveKnowledge } from '@/app/hooks/useKnowledgeStore';
 import { useTorchCursor } from '@/app/hooks/useTorchSVG';
+import { cdn } from '@/lib/cdn';
 
 
 function getWatcherIntensity(currentLocation) {
@@ -18,7 +19,16 @@ function getWatcherIntensity(currentLocation) {
   return "far";
 }
 
-export default function TethysNexus({ onStillnessChange, activeView, currentLocation, pathMode = "wild" }) {
+export default function TethysNexus({
+  onStillnessChange,
+  activeView,
+  currentLocation,
+  pathMode = "wild",
+  lockedRegions = [],
+  bondAmbientLevel = 0,
+  weatherUnlocked = false,
+  onTravel
+}) {
   const cfg = {
     STILL_DELAY: 1800,
     STILL_FULL: 2600,
@@ -40,15 +50,16 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
 
   // truth profile = how visible each layer is (one place to tune)
   const truthProfile = useMemo(() => {
+    const lockedBoost = weatherUnlocked ? 0 : 0.18;
     if (pathMode === "mystic") {
-      return { relief: 0.55, mist: 0.35, ember: 0.55, ash: 0.45 };
+      return { relief: 0.55, mist: 0.35 + lockedBoost, ember: 0.55, ash: 0.45 };
     }
     if (pathMode === "city") {
-      return { relief: 0.18, mist: 0.12, ember: 0.25, ash: 0.15 };
+      return { relief: 0.18, mist: 0.12 + lockedBoost, ember: 0.25, ash: 0.15 };
     }
     // wild
-    return { relief: 0.28, mist: 0.22, ember: 0.45, ash: 0.25 };
-  }, [pathMode]);
+    return { relief: 0.28, mist: 0.22 + lockedBoost, ember: 0.45, ash: 0.25 };
+  }, [pathMode, weatherUnlocked]);
 
   const unlockRegion = (region, fractured = false) => {
     setKnowledge(k => {
@@ -82,7 +93,9 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
     setEnvPressure(Math.min(1, physics.stillnessLevel * hazard * 1.8));
   }, [physics.stillnessLevel, watcherIntensity]);
 
-  const { TorchLayer } = useTorchCursor(true, envPressure);
+  const [torchActive, setTorchActive] = useState(false);
+  const { TorchLayer } = useTorchCursor(torchActive, envPressure);
+  const fogBoost = (pathMode === "city" ? 0.04 : 0.08) + (weatherUnlocked ? 0 : 0.12);
 
   return (
     <div
@@ -91,23 +104,45 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
       onPointerMove={physics.handlers.onPointerMove}
       onPointerUp={physics.handlers.onPointerUp}
       onWheel={physics.handlers.onWheel}
+      onMouseEnter={() => setTorchActive(true)}
+      onMouseLeave={() => setTorchActive(false)}
+      style={{
+        filter: bondAmbientLevel > 0 ? `saturate(${1 - bondAmbientLevel * 0.14}) brightness(${1 - bondAmbientLevel * 0.08})` : 'none',
+        transition: 'filter 2.6s ease'
+      }}
     >
-      <div className="torchMode-real">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          opacity: Math.min(0.35, bondAmbientLevel * 0.35),
+          background: 'radial-gradient(circle at 30% 20%, rgba(120, 180, 140, 0.25), transparent 55%)',
+          transition: 'opacity 2.6s ease'
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="torchMode-real"
+        style={{
+          opacity: torchActive ? 1 : 0,
+          transition: 'opacity 420ms ease'
+        }}
+      >
         {TorchLayer}
       </div>
 
       <MapViewport
-        atlasUrl="/maps/tethys-atlas-clean.webp"
-        reliefUrl="/maps/tethys-relief-ghost.webp"
-        mistUrl="/maps/tethys-mist-noise.webp"
-        emberUrl="/maps/tethys-ember-scar.webp"
-        ashUrl="/maps/tethys-mist-noise.webp"
+        atlasUrl={cdn('/maps/tethys-atlas-clean.webp')}
+        reliefUrl={cdn('/maps/tethys-relief-ghost.webp')}
+        mistUrl={cdn('/maps/tethys-mist-noise.webp')}
+        emberUrl={cdn('/maps/tethys-ember-scar.webp')}
+        ashUrl={cdn('/maps/tethys-mist-noise.webp')}
         transform={physics}
         fogPoints={fogPoints}
         mode={pathMode}
         watcherIntensity={watcherIntensity}
         truthProfile={truthProfile}
         envPressure={envPressure}
+        fogBoost={fogBoost}
       >
         <MapFragments
           fragmentsConfig={MAP_FRAGMENTS}
@@ -115,6 +150,8 @@ export default function TethysNexus({ onStillnessChange, activeView, currentLoca
           cambriaActive={activeView === 'cambria'}
           mode={pathMode}
           watcherIntensity={watcherIntensity}
+          lockedRegions={lockedRegions}
+          onTravel={onTravel}
           onUnlock={(region) => unlockRegion(region, false)}
           onFracture={(region) => unlockRegion(region, true)}
         />
@@ -130,35 +167,35 @@ const MAP_FRAGMENTS = [
     label: 'Pteros Isle',
     region: 'pteros_island',
     anchor: { x: 0.32, y: 0.62 },
-    icon: '/img/icons/pteros_island.svg'
+    icon: cdn('/img/icons/pteros_island.svg')
   },
   {
     id: 'cambria_ruins',
     label: 'Cambria Ruins',
     region: 'cambria_ruins',
     anchor: { x: 0.55, y: 0.48 },
-    icon: '/img/icons/cambria_ruins.svg'
+    icon: cdn('/img/icons/cambria_ruins.svg')
   },
   {
     id: 'mystic_listen',
     label: 'Mystic Veil',
     region: 'mystic_woods',
     anchor: { x: 0.43, y: 0.35 },
-    icon: '/img/icons/mystic_listen.svg'
+    icon: cdn('/img/icons/mystic_listen.svg')
   },
   {
     id: 'mount_shastea',
     label: 'Shastea Peak',
     region: 'mount_shastea',
     anchor: { x: 0.71, y: 0.35 },
-    icon: '/img/icons/shastea_peak.svg'
+    icon: cdn('/img/icons/shastea_peak.svg')
   },
   {
     id: 'iron_sands',
     label: 'Iron Sands',
     region: 'iron-sands',
     anchor: { x: 0.62, y: 0.7 },
-    icon: '/img/icons/iron_sands.svg'
+    icon: cdn('/img/icons/iron_sands.svg')
   }
 ];
 // World of Tethys || D.C. Barletta

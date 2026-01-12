@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useTethys } from '@/context/TethysContext';
 import { generateStaffProfile } from '@/lib/staff-utils';
+import { cdn } from '@/lib/cdn';
 import PlayerAvatar from './PlayerAvatar';
 import StaffVisualizer from './StaffVisualizer';
 import SeedVisualizer from './SeedVisualizer';
@@ -100,7 +101,10 @@ export default function PlayerProfile() {
     <section className="relative bg-[#0c0a09] border border-stone-800 rounded-2xl p-6 shadow-2xl overflow-hidden group/main">
       
       {/* Dynamic Background Glow */}
-      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none" />
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+      />
       <div className="absolute -left-24 top-0 w-72 h-72 bg-amber-900/10 blur-[120px] rounded-full transition-opacity duration-700 group-hover/main:opacity-80" />
       <div className="absolute right-0 -bottom-16 w-72 h-72 bg-cyan-900/10 blur-[120px] rounded-full transition-opacity duration-700 group-hover/main:opacity-80" />
 

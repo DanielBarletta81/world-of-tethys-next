@@ -1,67 +1,56 @@
 'use client';
-import Link from 'next/link';
+
 import TriFoldNav from '@/components/TriFoldNav';
-import BookManifest from '@/components/BookManifest';
-import BondForge from '@/components/BondForge';
-import CharacterCarousel from '@/components/CharacterCarousel';
-import BookCarousel from '@/components/BookCarousel';
-//import { getCleanCharacters } from '@/lib/tethysData'; // Assuming you have data fetching
-import { useState, useEffect } from 'react';
+import ContrabandItem from '@/components/ContrabandItem';
+import { ARCHIVE_CRATE } from '@/lib/library';
+import { cdn } from '@/lib/cdn';
+import { PackageOpen } from 'lucide-react';
 
 export default function StudyPage() {
-  // Optional: Fetch real characters if connected to WP, else use defaults inside carousel
-  const [chars, setChars] = useState([]);
-
   return (
-    <main className="min-h-screen bg-[#1c1917] text-amber-50 font-serif pt-20 pb-12 px-6 bg-stone-grain">
-      
-      <header className="text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-black text-amber-600 uppercase tracking-tighter mb-4">
-          The Chronicle
-        </h1>
-        <p className="text-stone-400 text-sm max-w-xl mx-auto font-sans">
-          For the readers. Dive into the narrative, forge emotional bonds, and access the library.
-        </p>
-        <BookCarousel />
-      </header>
+    <main className="min-h-screen bg-[#0c0a09] text-stone-200 font-serif relative overflow-x-hidden">
+      <div className="fixed inset-0 z-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-40"
+          style={{ backgroundImage: "url('https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/sector-4-hero.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0c0a09] via-[#120d09]/90 to-[#0c0a09]" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
+      </div>
 
       <TriFoldNav />
 
-      <div className="max-w-7xl mx-auto space-y-24">
-        
-        {/* 1. The Bookshelf */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <h2 className="text-3xl text-amber-100 font-header">World of Tethys Book 1</h2>
-            <p className="text-lg text-stone-400 leading-relaxed">
-              When Igzier refuses to play along with a poisoned verdict, the city gives him a choice: execution or exile. He chooses the fall.
+      <div className="relative z-10 pt-28 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
+        <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-stone-800/80 pb-6">
+          <div>
+            <div className="flex items-center gap-3 text-amber-500/80 mb-3">
+              <PackageOpen size={20} />
+              <span className="text-[10px] uppercase tracking-[0.4em] font-mono">
+                Cambria Dead Drop
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black text-stone-100 uppercase tracking-tight">
+              The Smuggler&apos;s Drop
+            </h1>
+            <p className="mt-4 text-sm text-stone-400 max-w-xl italic">
+              Buried under ash and cedar. These volumes move hand to hand, never openly.
             </p>
-         </div>
-          <div className="flex justify-center">
-            <BookManifest /> 
           </div>
+          <div className="text-right text-xs uppercase tracking-[0.35em] text-stone-500 font-mono">
+            Manifest: CRB-09
+          </div>
+        </header>
+
+        <section className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {ARCHIVE_CRATE.map((item) => (
+            <ContrabandItem key={item.id} item={item} />
+          ))}
         </section>
 
-        {/* 2. Character Bonds (Narrative Gameplay) */}
-        <section>
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-px bg-stone-700 flex-1"></div>
-            <h2 className="text-2xl text-amber-500 uppercase tracking-widest font-bold">The Cast & Bonds</h2>
-            <div className="h-px bg-stone-700 flex-1"></div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-               <CharacterCarousel characters={chars} />
-            </div>
-            <div className="lg:col-span-1 pt-12">
-               <BondForge />
-            </div>
-          </div>
-        </section>
-
+        <div className="mt-16 border-t border-stone-800/70 pt-6 text-center text-[10px] uppercase tracking-[0.3em] text-stone-500 font-mono">
+          Unsealed texts are logged as salvage, not confession.
+        </div>
       </div>
     </main>
   );
 }
-// World of Tethys || D.C. Barletta

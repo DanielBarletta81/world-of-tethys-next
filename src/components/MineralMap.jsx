@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cdn } from '@/lib/cdn';
 
 const minerals = [
   { name: 'Amethyst / Quartz Geodes', location: 'Ural Mountains, Russia', lat: 60.0, lon: 60.0, color: '#06b6d4' },
@@ -40,7 +41,10 @@ export default function MineralMap() {
           {/* Map */}
           <div className="lg:col-span-2 relative aspect-[16/9] bg-gradient-to-br from-[#0b1224] via-[#111827] to-[#0a0f1f] border border-[#1f2937] rounded-lg overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_60%)] pointer-events-none" />
-            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
+            <div
+              className="absolute inset-0 opacity-10 mix-blend-soft-light pointer-events-none"
+              style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+            />
             <div className="absolute inset-0">
               {minerals.map((m) => {
                 const pos = project(m.lat, m.lon);

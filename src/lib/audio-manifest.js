@@ -1,3 +1,5 @@
+import { cdn } from '@/lib/cdn';
+
 export const AUDIO_TRACKS = [
   {
     id: 'intro_drone',
@@ -26,21 +28,21 @@ export const AUDIO_TRACKS = [
     id: 'vo_hatch_intro',
     title: 'Hatch: Whisper',
     artist: 'Narrator: Ravel',
-    src: '/audio/vo-hatch-intro.mp3',
+    src: cdn('/audio/vo-hatch-intro.mp3'),
     type: 'Voiceover'
   },
   {
     id: 'vo_forge_primer',
     title: 'Forge: Primer',
     artist: 'Narrator: Ravel',
-    src: '/audio/vo-forge-primer.mp3',
+    src: cdn('/audio/vo-forge-primer.mp3'),
     type: 'Voiceover'
   },
   {
     id: 'vo_atlas_open',
     title: 'Atlas: Unlock',
     artist: 'Narrator: Ravel',
-    src: '/audio/vo-atlas-open.mp3',
+    src: cdn('/audio/vo-atlas-open.mp3'),
     type: 'Voiceover'
   }
 ];

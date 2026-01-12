@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation'; // <--- ADDED
 import { Fingerprint, Ghost, X, Sprout, Wind, Eye } from 'lucide-react';
+import { cdn } from '@/lib/cdn';
 
 const WHISPERS = [
   "The soil remembers your footfall...",
@@ -96,7 +97,10 @@ export default function IdentityAirlock({ isOpen, onClose }) {
             {/* ... (Keep existing Header/Body UI from previous turn) ... */}
             
             <div className="relative h-48 flex flex-col items-center justify-center border-b border-emerald-900/20 overflow-hidden bg-gradient-to-b from-emerald-950/20 to-transparent">
-              <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
+              <div
+                className="absolute inset-0 opacity-20 mix-blend-overlay"
+                style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+              />
               
               <div className="relative z-10 mb-4">
                 <div className={`absolute inset-0 bg-emerald-500/30 blur-2xl rounded-full transition-all duration-1000 ${status === 'sensing' ? 'scale-150 opacity-100' : 'scale-100 opacity-40'}`} />

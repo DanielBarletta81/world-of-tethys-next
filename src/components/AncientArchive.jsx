@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Lock, Unlock, Scroll, Play, Flame } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cdn } from '@/lib/cdn';
 
 export default function AncientArchive({ 
   id, 
@@ -47,7 +48,10 @@ export default function AncientArchive({
       <div className="p-8 relative min-h-[160px] flex flex-col justify-center items-center text-center">
         
         {/* Background Texture (Old Paper) */}
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-soft-light"></div>
+        <div
+          className="absolute inset-0 opacity-20 mix-blend-soft-light"
+          style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+        ></div>
 
         {isUnlocked ? (
           // === UNLOCKED STATE (The Scroll) ===

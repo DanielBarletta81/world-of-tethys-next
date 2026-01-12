@@ -3,7 +3,15 @@
 import React from 'react';
 import { ArrowLeft, Skull, Shield, Database, Microscope } from 'lucide-react';
 import Link from 'next/link';
+import nextDynamic from 'next/dynamic';
 import StrataNav from '@/components/StrataNav';
+
+const SkyCityArchiveNpc = nextDynamic(
+  () => import('@/components/npc/SkyCityArchiveNpc'),
+  { ssr: false }
+);
+
+export const dynamic = 'force-dynamic';
 
 const SECTORS = [
   {
@@ -62,6 +70,10 @@ export default function ArchiveIndex() {
           "Knowledge is heavy. Carry only what you can defend."
         </p>
       </header>
+
+      <div className="max-w-6xl mx-auto mb-16">
+        <SkyCityArchiveNpc />
+      </div>
 
       {/* SECTOR GRID */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">

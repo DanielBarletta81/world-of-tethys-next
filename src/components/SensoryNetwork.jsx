@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import AtmosphericTotem from './AtmosphericTotem';
+import { cdn } from '@/lib/cdn';
 
 // --- THE DATA: SENSORY CHANNELS ---
 const CHANNELS = [
@@ -129,7 +130,10 @@ export default function SensoryNetwork() {
             </p>
             
             {/* Visual Texture Overlay */}
-            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay"></div>
+            <div
+              className="absolute inset-0 opacity-10 mix-blend-overlay"
+              style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+            ></div>
           </div>
 
         </motion.div>

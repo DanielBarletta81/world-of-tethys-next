@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Sprout, Anchor, Dna, FlaskConical, FileText, MapPin, Quote } from 'lucide-react';
+import { cdn } from '@/lib/cdn';
 
 const JOURNAL_ENTRIES = [
     {
@@ -146,7 +147,10 @@ export default function ScientificJournal() {
       {/* RIGHT: THE SPLIT BRAIN DISPLAY */}
       <div className="lg:col-span-8 bg-[#080a0c] border border-stone-800 rounded-xl overflow-hidden relative min-h-[600px] flex flex-col shadow-2xl">
         {/* Background Grid */}
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none" />
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+        />
         
         <AnimatePresence mode="wait">
           <motion.div

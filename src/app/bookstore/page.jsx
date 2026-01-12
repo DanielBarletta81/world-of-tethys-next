@@ -4,6 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { catalogItems } from "../../data/catalog";
 
+export const dynamic = "force-dynamic";
+
 export default function BookstorePage() {
   const books = catalogItems.filter((item) => item.type === "book");
   const extras = catalogItems.filter((item) => item.type !== "book");

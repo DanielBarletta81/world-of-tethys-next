@@ -1,24 +1,25 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { cdn } from '@/lib/cdn';
 
 const BOOKS = [
   {
     id: 1,
     title: 'Sky City of Tethys',
-    coverUrl: '/img/book1-cover.png',
+    coverUrl: cdn('/img/book1-cover.png'),
     amazonLink: 'https://www.amazon.com/dp/B0G572X42L'
   },
   {
     id: 2,
     title: 'Unraveling Ravel',
-    coverUrl: '/img/ravel-kindle.png',
+    coverUrl: cdn('/img/ravel-kindle.png'),
     amazonLink: 'https://www.amazon.com/dp/B0GB5CR6HX'
   },
   {
     id: 3,
     title: 'What the Roots Remember',
-    coverUrl: '/img/roots-remember.png',
+    coverUrl: cdn('/img/roots-remember.png'),
     amazonLink: 'https://www.amazon.com/dp/B0G672S7YC'
   }
 ];

@@ -1,9 +1,10 @@
 // src/app/map/page.js
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useTethys } from '@/context/TethysContext';
@@ -13,15 +14,18 @@ import IdentityAirlock from '@/components/IdentityAirLock';
 import TethysNexus from '@/components/TethysNexus';
 import StaffSequencer from '@/components/StaffSequencer';
 import Incubator from '@/components/Incubator';
+import StatusBar from '@/components/StatusBar';
 
 import TriFoldNav from '@/components/TriFoldNav';
 import RelayLog from '@/components/RelayLog';
+import { cdn } from '@/lib/cdn';
 
 const PATH_CONFIG = [
   {
     id: 'sky-city',
     label: 'The Triumvirate',
-    src: '/img/icons/sky-city.svg',
+    src: cdn('/img/icons/sky-city.svg'),
+    blurb: 'Order, record, and controlled ascent through the City lattice.',
     items: ['compass', 'surveyor_lens', 'ledger_page'],
     unlocks: ['sky-city'],
     mapAccess: true
@@ -29,7 +33,8 @@ const PATH_CONFIG = [
   {
     id: 'stryker',
     label: 'Stryker',
-    src: '/img/icons/stryker.svg',
+    src: cdn('/img/icons/stryker.svg'),
+    blurb: 'Heat, wind, and survival across unstable margins.',
     items: ['climbing_hooks', 'ember_talisman', 'ash_wrap'],
     unlocks: ['the-weep', 'pteros'],
     mapAccess: true
@@ -37,7 +42,8 @@ const PATH_CONFIG = [
   {
     id: 'mystics',
     label: 'Mystics',
-    src: '/img/a symbols/mystics_seal.png',
+    src: cdn('/symbols/mystics_seal.png'),
+    blurb: 'Ritual listening, hidden paths, and myth pressure.',
     items: ['kith_spore', 'fungal_lantern'],
     unlocks: ['mystic-woods'],
     mapAccess: true
@@ -45,7 +51,8 @@ const PATH_CONFIG = [
   {
     id: 'cambria',
     label: 'Cambria',
-    src: '/img/locations/A_Cambria_Symb1.png',
+    src: cdn('/img/locations/A_Cambria_Symb1.png'),
+    blurb: 'Archive ingress and scholastic access through the Field Station.',
     items: ['archive_key', 'cambria_tablet'],
     unlocks: ['cambria'],
     mapAccess: false,
@@ -66,9 +73,12 @@ export default function MapPage() {
   const {
     equippedStaff,
     travelTo,
+    currentLocation,
     hasOnboarded,
     loadingData,
     playerProfile,
+    bondEncounter,
+    attemptBondEncounter,
     setPlayerProfile,
     setEquippedStaff,
     hatchFromTemplate
@@ -78,8 +88,14 @@ export default function MapPage() {
   const [viewState, setViewState] = useState('loading'); // loading, egg, sigil, forge, map, scholar
   const [hoveredSigil, setHoveredSigil] = useState(null);
   const [selectedSigil, setSelectedSigil] = useState(null);
+  const [pendingSigil, setPendingSigil] = useState(null);
   const [airlockOpen, setAirlockOpen] = useState(false);
+  const [lockNotice, setLockNotice] = useState(null);
+  const [stillnessLevel, setStillnessLevel] = useState(0);
   const lastVoRef = useRef(null);
+  const lastStillnessRef = useRef(0);
+  const lastStillnessAtRef = useRef(0);
+  const bondAttemptRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -94,6 +110,9 @@ export default function MapPage() {
       setViewState('loading');
       return;
     }
+    if (!equippedStaff && playerProfile?.staff?.activeStaffId) {
+      syncEquippedStaff();
+    }
     if (playerProfile?.path?.primary === 'cambria' && !playerProfile?.path?.mapAccess) {
       setViewState('scholar');
       return;
@@ -105,7 +124,15 @@ export default function MapPage() {
     } else {
       setViewState('egg');
     }
-  }, [equippedStaff, hasOnboarded, loadingData, playerProfile?.staff?.activeStaffId]);
+  }, [
+    equippedStaff,
+    hasOnboarded,
+    loadingData,
+    playerProfile?.staff?.activeStaffId,
+    playerProfile?.path?.primary,
+    playerProfile?.path?.mapAccess,
+    syncEquippedStaff
+  ]);
 
   // 1a. Voiceover cues per phase (skips if muted)
   useEffect(() => {
@@ -165,6 +192,90 @@ export default function MapPage() {
     setViewState('map');
   };
 
+  const syncEquippedStaff = useCallback(() => {
+    const activeStaffId = playerProfile?.staff?.activeStaffId;
+    if (!activeStaffId) return;
+    setEquippedStaff({
+      ...playerProfile.staff,
+      name: playerProfile.staff?.name || 'Issued Staff',
+      id: activeStaffId
+    });
+  }, [playerProfile?.staff, setEquippedStaff]);
+
+  const handleMapSelect = useCallback(
+    (regionId) => {
+      if (!regionId) return;
+      const outcome = travelTo(regionId);
+      if (outcome?.blocked) {
+        const message =
+          outcome.reason === 'locked'
+            ? 'The air thickens. Your staff pulls you back.'
+            : 'Your footing slips. The path refuses you.';
+        setLockNotice({ regionId, message, at: Date.now() });
+        return;
+      }
+      if (regionId === 'pteros_island') {
+        router.push('/pteros');
+      }
+    },
+    [router, travelTo]
+  );
+
+  useEffect(() => {
+    if (!lockNotice) return;
+    const timer = setTimeout(() => {
+      setLockNotice(null);
+    }, 2200);
+    return () => clearTimeout(timer);
+  }, [lockNotice]);
+
+  const handleStillnessChange = useCallback(
+    (level) => {
+      const now = Date.now();
+      if (now - lastStillnessAtRef.current < 2200) return;
+      if (Math.abs(level - lastStillnessRef.current) < 0.08) return;
+      lastStillnessRef.current = level;
+      lastStillnessAtRef.current = now;
+      setStillnessLevel(level);
+      setPlayerProfile((prev) => ({
+        ...prev,
+        perception: {
+          ...prev.perception,
+          stillness: level,
+          lastStillnessAt: new Date().toISOString()
+        }
+      }));
+    },
+    [setPlayerProfile]
+  );
+
+  useEffect(() => {
+    if (!bondEncounter || bondEncounter.state !== 'active') return;
+    if (bondEncounter.regionId !== currentLocation) return;
+    if (stillnessLevel < 0.88) {
+      if (bondAttemptRef.current) {
+        clearTimeout(bondAttemptRef.current);
+        bondAttemptRef.current = null;
+      }
+      return;
+    }
+    if (bondAttemptRef.current) return;
+    bondAttemptRef.current = setTimeout(async () => {
+      await attemptBondEncounter();
+      bondAttemptRef.current = null;
+    }, 2400);
+    return () => {
+      if (bondAttemptRef.current) {
+        clearTimeout(bondAttemptRef.current);
+        bondAttemptRef.current = null;
+      }
+    };
+  }, [attemptBondEncounter, bondEncounter, currentLocation, stillnessLevel]);
+
+  const pendingConfig = pendingSigil
+    ? PATH_CONFIG.find((entry) => entry.id === pendingSigil)
+    : null;
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-[#0c0a09] p-8 flex items-center justify-center">
@@ -184,9 +295,14 @@ export default function MapPage() {
   }
 
   const pathMode = resolvePathMode(playerProfile?.path?.primary);
+  const accessLocks = playerProfile?.path?.accessLocks || {};
+  const lockedRegions = Object.entries(accessLocks)
+    .filter(([, value]) => (value?.remaining || 0) > 0)
+    .map(([key]) => key);
 
   return (
     <div className="min-h-screen bg-[#0c0a09] text-stone-200 p-6 pt-32 relative overflow-hidden font-mono">
+      {viewState === 'map' && <StatusBar />}
       {/* HEADER */}
       <div className="max-w-7xl mx-auto mb-8 flex flex-wrap items-end justify-between gap-4 relative z-10">
         <div className="flex items-start gap-4">
@@ -254,7 +370,7 @@ export default function MapPage() {
             >
               <div
                 className="absolute inset-0 bg-cover bg-center opacity-70"
-                style={{ backgroundImage: "url('/img/locations/pteros_island_hero.png')" }}
+                style={{ backgroundImage: `url(${cdn('/img/locations/pteros_island_hero.png')})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-[#0c0a09]/70 to-[#0c0a09]" />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -263,7 +379,14 @@ export default function MapPage() {
                   <div className="absolute inset-0 rounded-full border border-stone-700/40 scale-125" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-12 h-12 rounded-full border border-amber-500/40 bg-[#0c0a09] flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)]">
-                      <img src="/img/icons/pteros_island.svg" alt="Pteros Island" className="w-6 h-6" />
+                      <Image
+                        src={cdn('/img/icons/pteros_island.svg')}
+                        alt="Pteros Island"
+                        width={24}
+                        height={24}
+                        className="w-6 h-6"
+                        unoptimized
+                      />
                     </div>
                   </div>
                   <div className="sigil-orbit grid grid-cols-2 gap-6">
@@ -271,7 +394,7 @@ export default function MapPage() {
                       <button
                         key={sigil.id}
                         type="button"
-                        onClick={() => onSigilSelect(sigil.id)}
+                        onClick={() => setPendingSigil(sigil.id)}
                         onMouseEnter={() => setHoveredSigil(sigil.id)}
                         onMouseLeave={() => setHoveredSigil(null)}
                         onFocus={() => setHoveredSigil(sigil.id)}
@@ -283,29 +406,84 @@ export default function MapPage() {
                             : 'border-stone-700/60 hover:border-amber-500/60'
                         }`}
                       >
-                        <img
+                        <Image
                           src={
                             sigil.id === 'mystics' && (hoveredSigil === 'mystics' || selectedSigil === 'mystics')
-                              ? '/img/icons/mystics-coin.svg'
+                              ? cdn('/img/icons/mystics-coin.svg')
                               : sigil.src
                           }
                           alt={sigil.label}
+                          width={64}
+                          height={64}
                           className={`sigil-icon w-16 h-16 object-contain ${
                             selectedSigil === sigil.id ? 'sigil-animate' : ''
                           }`}
+                          unoptimized
                         />
                       </button>
                     ))}
                   </div>
                   <div className="absolute -top-10 left-1/2 -translate-x-1/2">
-                    <img
-                      src="/icons/hybrid_seal.svg"
+                    <Image
+                      src={cdn('/icons/hybrid_seal.svg')}
                       alt="Maker's mark"
+                      width={40}
+                      height={40}
                       className="w-10 h-10 opacity-70"
+                      unoptimized
                     />
                   </div>
                 </div>
               </div>
+
+              {pendingConfig && (
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
+                  <div className="max-w-md w-full mx-4 bg-[#0c0a09] border border-amber-700/40 rounded-xl p-6 space-y-4">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-amber-500">
+                      Seal Selection
+                    </p>
+                    <h3 className="text-2xl font-serif text-white">
+                      {pendingConfig.label}
+                    </h3>
+                    {pendingConfig.blurb && (
+                      <p className="text-sm text-stone-300 italic">
+                        {pendingConfig.blurb}
+                      </p>
+                    )}
+                    <p className="text-sm text-stone-400">
+                      This path forges your first access pattern. You can return
+                      later, but the first seal defines your initial route.
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.2em] text-stone-500">
+                      <span>Unlocks:</span>
+                      {pendingConfig.unlocks.map((node) => (
+                        <span key={node} className="px-2 py-1 bg-stone-900 rounded">
+                          {node}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex justify-end gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setPendingSigil(null)}
+                        className="px-4 py-2 border border-stone-700 text-stone-400 text-[10px] uppercase tracking-[0.2em] rounded hover:text-stone-200 hover:border-stone-500 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onSigilSelect(pendingConfig.id);
+                          setPendingSigil(null);
+                        }}
+                        className="px-4 py-2 border border-amber-600 text-amber-300 text-[10px] uppercase tracking-[0.2em] rounded hover:text-amber-200 hover:border-amber-400 transition-colors"
+                      >
+                        Confirm Seal
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -317,7 +495,14 @@ export default function MapPage() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center py-16 text-center"
             >
-              <img src="/img/locations/A_Cambria_Symb1.png" alt="Cambria" className="w-24 h-24 mb-6 opacity-90" />
+              <Image
+                src={cdn('/img/locations/A_Cambria_Symb1.png')}
+                alt="Cambria"
+                width={96}
+                height={96}
+                className="w-24 h-24 mb-6 opacity-90"
+                unoptimized
+              />
               <p className="text-xs uppercase tracking-[0.3em] text-stone-500 mb-3">Archive Path</p>
               <p className="text-sm text-stone-400 max-w-md mb-6">
                 The atlas is withheld. Continue through the Science path to rejoin the map.
@@ -360,9 +545,38 @@ export default function MapPage() {
               animate={{ opacity: 1 }}
               className="grid grid-cols-1 lg:grid-cols-3 gap-8"
             >
-              <div className="lg:col-span-2">
-                  <TethysNexus pathMode={pathMode} />
-                </div>
+              <div className="lg:col-span-2 relative">
+                <TethysNexus
+                  pathMode={pathMode}
+                  lockedRegions={lockedRegions}
+                  currentLocation={currentLocation}
+                  bondAmbientLevel={
+                    bondEncounter?.state === 'active' &&
+                    bondEncounter.regionId === currentLocation
+                      ? Math.min(1, stillnessLevel)
+                      : 0
+                  }
+                  weatherUnlocked={Boolean(playerProfile?.progression?.weatherUnlocked)}
+                  onStillnessChange={handleStillnessChange}
+                  onTravel={handleMapSelect}
+                />
+                <AnimatePresence>
+                  {lockNotice && (
+                    <motion.div
+                      key={lockNotice.at}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      className="pointer-events-none absolute left-6 bottom-6 max-w-sm bg-black/70 border border-stone-700/60 rounded-lg px-4 py-3 text-xs text-stone-200"
+                    >
+                      <div className="text-[10px] uppercase tracking-[0.2em] text-stone-400 mb-1">
+                        Fatigue
+                      </div>
+                      <p className="text-sm text-stone-200">{lockNotice.message}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               
               <div className="space-y-6">
                 <RelayLog withAi focus="all" />
@@ -391,6 +605,9 @@ export default function MapPage() {
                 <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
                   <h3 className="text-cyan-500 text-xs uppercase tracking-widest mb-4">System Access</h3>
                   <div className="space-y-2">
+                    <Link href="/pteros" className="block px-4 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 rounded text-xs text-stone-300 transition-colors">
+                      Pteros Terminal &rarr;
+                    </Link>
                     <Link href="/science" className="block px-4 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 rounded text-xs text-stone-300 transition-colors">
                       Open Field Station &rarr;
                     </Link>

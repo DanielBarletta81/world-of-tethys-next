@@ -2,6 +2,7 @@
 import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { cdn } from '@/lib/cdn';
 
 // Titles based on specific stat thresholds
 function pickTitle(scores) {
@@ -41,7 +42,10 @@ export default function SeedVisualizer({ initialSeed = 'H-0000', scores = { lore
       layout
       className={`relative p-6 rounded-xl bg-gradient-to-b from-[#0f0b09] via-[#14100e] to-[#0c0a09] border ${border} shadow-[0_20px_60px_rgba(0,0,0,0.45)] w-full max-w-xs overflow-hidden`}
     >
-      <div className="absolute inset-0 pointer-events-none opacity-30" style={{ backgroundImage: "url('/noise.svg')" }} />
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+      />
       <div className="absolute inset-x-6 top-0 h-12 bg-gradient-to-b from-amber-900/20 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-cyan-900/10 to-transparent" />
       {/* 1. Header: The Seed ID */}

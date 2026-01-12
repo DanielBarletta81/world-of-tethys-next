@@ -2,6 +2,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 
 export default function MagmaSeal({ className = "" }) {
   return (
@@ -15,7 +16,7 @@ export default function MagmaSeal({ className = "" }) {
         
         {/* 3. The Image (Filtered to look like hot iron) */}
         <Image 
-          src="/img/a symbols/tethys-seal.png" 
+          src={cdn('/symbols/tethys-seal.png')} 
           alt="Seal of Tethys" 
           fill
           className="object-cover sepia-[0.8] brightness-75 contrast-125 group-hover:brightness-110 group-hover:sepia-[0.4] transition-all duration-500"

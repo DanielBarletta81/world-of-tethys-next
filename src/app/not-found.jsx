@@ -2,12 +2,16 @@
 
 import Link from 'next/link';
 import { Bone, Mountain, Waves } from 'lucide-react';
+import { cdn } from '@/lib/cdn';
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#0c0a09] text-stone-200 flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
       {/* Background fossil haze */}
-      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none" />
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+      />
       <div className="absolute -top-24 left-10 w-72 h-72 bg-amber-900/10 blur-[120px] rounded-full" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-cyan-900/10 blur-[140px] rounded-full" />
 

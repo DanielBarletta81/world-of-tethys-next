@@ -1,4 +1,4 @@
-import { Inter, Cormorant_Garamond } from 'next/font/google';
+import { Inter, Cormorant_Garamond, Nanum_Pen_Script } from 'next/font/google';
 import { AuthProvider } from '../context/AuthContext';
 import { TethysProvider } from '../context/TethysContext';
 import { AudioProvider } from '../context/AudioContext';
@@ -6,6 +6,7 @@ import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 import GlobalAtmosphere from '../components/GlobalAtmosphere';
 import './globals.css';
 import Footer from '@/components/Footer';
+import { cdn } from '@/lib/cdn';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -20,7 +21,17 @@ const cormorant = Cormorant_Garamond({
   display: 'swap',
 });
 
+const handwriting = Nanum_Pen_Script({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-hand',
+  display: 'swap',
+});
+
+const metadataBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const metadata = {
+  metadataBase: new URL(metadataBaseUrl),
   title: 'World of Tethys | The 111-MYA Archive',
   description: 'A volcanic high-fantasy reconstruction of the Aptian Age. Explore the obsidian coast, decode ancient glyphs, and survive the tides.',
   keywords: ['Fantasy', 'Worldbuilding', 'Paleontology', 'Interactive Fiction', 'RPG'],
@@ -30,7 +41,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: './img/a symbols/tethys-seal.png',
+        url: cdn('/symbols/tethys-seal.png'),
         width: 1200,
         height: 630,
         alt: 'World of Tethys Map',
@@ -41,7 +52,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
+    <html lang="en" className={`${inter.variable} ${cormorant.variable} ${handwriting.variable}`}>
       <body className="bg-[#0c0a09] text-[#e7e5e4] antialiased">
         <AuthProvider>
           <TethysProvider>

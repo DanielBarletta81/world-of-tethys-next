@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Droplets, Anchor, Navigation, Waves, Fish, AlertTriangle } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
+import { useTethys } from '@/context/TethysContext';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -30,14 +31,22 @@ ChartJS.register(
 );
 
 const PterosDashboard = () => {
+  const { playerProfile } = useTethys();
   const [telemetry, setTelemetry] = useState(null);
   const [loading, setLoading] = useState(true);
   const [adminKey, setAdminKey] = useState('');
   const [oracleStatus, setOracleStatus] = useState(null);
   const [oracleLoading, setOracleLoading] = useState(false);
   const [oracleError, setOracleError] = useState(null);
+  const [showUnlockHint, setShowUnlockHint] = useState(false);
+  const weatherUnlocked = Boolean(playerProfile?.progression?.weatherUnlocked);
+  const oracleConsultedAt = playerProfile?.progression?.oracleConsultedAt;
 
   useEffect(() => {
+    if (!weatherUnlocked) {
+      setLoading(false);
+      return;
+    }
     const controller = new AbortController();
 
     async function initSystem() {
@@ -63,7 +72,18 @@ const PterosDashboard = () => {
     initSystem();
 
     return () => controller.abort();
-  }, []);
+  }, [weatherUnlocked]);
+
+  useEffect(() => {
+    if (!weatherUnlocked || !oracleConsultedAt) return;
+    const consultedAt = new Date(oracleConsultedAt).getTime();
+    if (!Number.isFinite(consultedAt)) return;
+    const windowMs = 2 * 60 * 1000;
+    if (Date.now() - consultedAt > windowMs) return;
+    setShowUnlockHint(true);
+    const timer = setTimeout(() => setShowUnlockHint(false), 5000);
+    return () => clearTimeout(timer);
+  }, [oracleConsultedAt, weatherUnlocked]);
 
   async function checkOracleStatus() {
     setOracleLoading(true);
@@ -127,6 +147,18 @@ const PterosDashboard = () => {
     }
   };
 
+  if (!weatherUnlocked) {
+    return (
+      <div className="bg-[#1c1917] border border-amber-900/40 p-8 rounded-lg flex flex-col items-center justify-center text-center space-y-3">
+        <div className="text-xs uppercase tracking-[0.3em] text-amber-500/80">Signal Muted</div>
+        <p className="text-sm text-stone-400 max-w-md">
+          The station cannot read the sky without a spore link.
+          Consult the Oracle Pool to attune the carrier.
+        </p>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0c0a09] p-8 flex items-center justify-center">
@@ -156,6 +188,11 @@ const PterosDashboard = () => {
         isNight ? 'bg-[#050b14]' : 'bg-[#0c0a09]'
       }`}
     >
+      {showUnlockHint && (
+        <div className="mb-6 border border-emerald-900/40 bg-emerald-950/30 text-emerald-300 text-[10px] uppercase tracking-[0.3em] px-4 py-3 rounded">
+          Spore Link Established
+        </div>
+      )}
       
       {/* Top Bar: Station Info */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#292524] pb-6 mb-8 gap-4">
