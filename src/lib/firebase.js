@@ -1,7 +1,6 @@
 // src/lib/firebase.js
-'use client';
 
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
@@ -15,6 +14,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
+
+const hasFirebaseConfig = Object.values(firebaseConfig).every(Boolean);
 
 if (typeof window !== "undefined") {
   const required = [
@@ -34,11 +35,17 @@ if (typeof window !== "undefined") {
   }
 }
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(app);
-const db = getFirestore(app); // <--- Add this
-const googleProvider = new GoogleAuthProvider();
-const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
+const app = hasFirebaseConfig
+  ? (getApps().length ? getApp() : initializeApp(firebaseConfig))
+  : null;
 
-export { auth, googleProvider, db, analytics };
+const auth = app ? getAuth(app) : null;
+const db = app ? getFirestore(app) : null;
+const googleProvider = new GoogleAuthProvider();
+const analytics =
+  app && typeof window !== "undefined" && firebaseConfig.measurementId
+    ? getAnalytics(app)
+    : null;
+
+export { app, auth, googleProvider, db, analytics, hasFirebaseConfig };
 // World of Tethys || D.C. Barletta

@@ -205,6 +205,15 @@ export default function MapPage() {
   const handleMapSelect = useCallback(
     (regionId) => {
       if (!regionId) return;
+      const canAccessMap = hasOnboarded || equippedStaff || playerProfile?.staff?.activeStaffId;
+      if (!canAccessMap) {
+        setLockNotice({
+          regionId,
+          message: 'The atlas remains sealed until your staff is forged.',
+          at: Date.now()
+        });
+        return;
+      }
       const outcome = travelTo(regionId);
       if (outcome?.blocked) {
         const message =
@@ -218,7 +227,7 @@ export default function MapPage() {
         router.push('/pteros');
       }
     },
-    [router, travelTo]
+    [router, travelTo, hasOnboarded, equippedStaff, playerProfile?.staff?.activeStaffId]
   );
 
   useEffect(() => {
