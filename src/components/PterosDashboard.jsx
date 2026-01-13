@@ -1,0 +1,378 @@
+'use client'; // 1. CRITICAL FIX: Tells Next.js this is a Client Component
+
+import React, { useState, useEffect } from 'react';
+import { Activity, Droplets, Anchor, Navigation, Waves, Fish, AlertTriangle } from 'lucide-react';
+import { Line } from 'react-chartjs-2';
+import { useTethys } from '@/context/TethysContext';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  Filler
+} from 'chart.js';
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  Filler
+);
+
+const PterosDashboard = () => {
+  const { playerProfile } = useTethys();
+  const [telemetry, setTelemetry] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [adminKey, setAdminKey] = useState('');
+  const [oracleStatus, setOracleStatus] = useState(null);
+  const [oracleLoading, setOracleLoading] = useState(false);
+  const [oracleError, setOracleError] = useState(null);
+  const [showUnlockHint, setShowUnlockHint] = useState(false);
+  const weatherUnlocked = Boolean(playerProfile?.progression?.weatherUnlocked);
+  const oracleConsultedAt = playerProfile?.progression?.oracleConsultedAt;
+
+  useEffect(() => {
+    if (!weatherUnlocked) {
+      setLoading(false);
+      return;
+    }
+    const controller = new AbortController();
+
+    async function initSystem() {
+      try {
+        const res = await fetch('/api/tethys-intel?focus=pteros&ai=true', { signal: controller.signal });
+        const data = await res.json();
+        const pterosReport = data.reports?.find((report) => report.id === 'pteros_crato');
+
+        setTelemetry({
+          weather: pterosReport?.weather,
+          aiBrief: data.aiSummary,
+          integrity: pterosReport?.signalIntegrity
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Signal Lost:', err);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    initSystem();
+
+    return () => controller.abort();
+  }, [weatherUnlocked]);
+
+  useEffect(() => {
+    if (!weatherUnlocked || !oracleConsultedAt) return;
+    const consultedAt = new Date(oracleConsultedAt).getTime();
+    if (!Number.isFinite(consultedAt)) return;
+    const windowMs = 2 * 60 * 1000;
+    if (Date.now() - consultedAt > windowMs) return;
+    setShowUnlockHint(true);
+    const timer = setTimeout(() => setShowUnlockHint(false), 5000);
+    return () => clearTimeout(timer);
+  }, [oracleConsultedAt, weatherUnlocked]);
+
+  async function checkOracleStatus() {
+    setOracleLoading(true);
+    setOracleError(null);
+    try {
+      const res = await fetch('/api/admin/seed-oracle', {
+        headers: {
+          'x-admin-key': adminKey
+        }
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error || 'Status check failed');
+      }
+      setOracleStatus(data);
+    } catch (err) {
+      setOracleError(err.message);
+      setOracleStatus(null);
+    } finally {
+      setOracleLoading(false);
+    }
+  }
+
+  const activityData = {
+    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '23:59'],
+    datasets: [
+      {
+        label: 'Bait Biomass (Tons)',
+        data: [120, 115, 200, 350, 340, 180, 130],
+        borderColor: '#06b6d4', 
+        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+        fill: true,
+        tension: 0.4,
+      },
+      {
+        label: 'Apex Activity',
+        data: [10, 5, 15, 85, 90, 40, 20],
+        borderColor: '#f43f5e', 
+        backgroundColor: 'rgba(244, 63, 94, 0.1)',
+        fill: true,
+        tension: 0.4,
+      }
+    ]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        grid: { color: '#292524' },
+        ticks: { color: '#78716c' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: '#78716c' }
+      }
+    },
+    plugins: {
+      legend: { labels: { color: '#a8a29e' } }
+    }
+  };
+
+  if (!weatherUnlocked) {
+    return (
+      <div className="bg-[#1c1917] border border-amber-900/40 p-8 rounded-lg flex flex-col items-center justify-center text-center space-y-3">
+        <div className="text-xs uppercase tracking-[0.3em] text-amber-500/80">Signal Muted</div>
+        <p className="text-sm text-stone-400 max-w-md">
+          The station cannot read the sky without a spore link.
+          Consult the Oracle Pool to attune the carrier.
+        </p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0c0a09] p-8 flex items-center justify-center">
+        <div className="text-amber-600 animate-pulse uppercase tracking-widest text-xs">
+          Initializing Pteros Sensor Array...
+        </div>
+      </div>
+    );
+  }
+
+  const weatherMain = telemetry?.weather?.weather?.[0]?.main?.toLowerCase() || '';
+  const isStorming = weatherMain.includes('rain') || weatherMain.includes('storm') || weatherMain.includes('thunder');
+  const temp = telemetry?.weather?.main?.temp ?? 30;
+  const calculatedFlow = isStorming ? 12000 : 8500;
+  const calculatedSalinity = temp > 32 ? 38 : 34;
+  const now = telemetry?.weather?.dt;
+  const sunrise = telemetry?.weather?.sys?.sunrise;
+  const sunset = telemetry?.weather?.sys?.sunset;
+  const isNight = typeof now === 'number' && typeof sunrise === 'number' && typeof sunset === 'number'
+    ? now < sunrise || now > sunset
+    : false;
+  const threatLevel = isStorming ? 'CRITICAL' : 'ELEVATED';
+
+  return (
+    <div
+      className={`min-h-screen text-[#e7e5e4] font-mono p-4 md:p-8 transition-colors duration-1000 ${
+        isNight ? 'bg-[#050b14]' : 'bg-[#0c0a09]'
+      }`}
+    >
+      {showUnlockHint && (
+        <div className="mb-6 border border-emerald-900/40 bg-emerald-950/30 text-emerald-300 text-[10px] uppercase tracking-[0.3em] px-4 py-3 rounded">
+          Spore Link Established
+        </div>
+      )}
+      
+      {/* Top Bar: Station Info */}
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#292524] pb-6 mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tighter text-amber-500 uppercase flex items-center gap-3">
+            <Anchor className="w-8 h-8" /> Outpost: Pteros Central
+          </h1>
+          <p className="text-xs text-[#78716c] uppercase tracking-[0.2em] mt-1">
+            Twin Straits Monitoring Station • Estuary Sector Alpha
+          </p>
+          <p className="mt-2 text-[10px] font-mono text-amber-500/80 leading-relaxed uppercase">
+            {">"} {telemetry?.aiBrief || 'Awaiting Gemini Packet...'}
+          </p>
+        </div>
+        <div className="flex items-center gap-4 bg-[#1c1917] p-3 rounded border border-[#292524]">
+          <div className="text-right">
+            <div className="text-[10px] text-[#78716c] uppercase">Current Era</div>
+            <div className="font-bold text-amber-500">111.4 M.Y.A.</div>
+          </div>
+          <div className="h-8 w-[1px] bg-[#44403c]"></div>
+          <div className="text-right">
+            <div className="text-[10px] text-[#78716c] uppercase">Threat Status</div>
+            <div className={`font-bold ${threatLevel === 'CRITICAL' ? 'text-rose-500 animate-pulse' : 'text-amber-500'}`}>
+              {threatLevel}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-[10px] text-[#78716c] uppercase">Signal Integrity</div>
+            <div className="font-bold text-amber-500">
+              {telemetry?.integrity ? `${Math.round(telemetry.integrity * 100)}%` : '--'}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* Column 1: Hydro-Dynamics */}
+        <div className="space-y-6">
+          
+          <div className="bg-[#1c1917] border border-[#292524] p-6 rounded-lg relative overflow-hidden group hover:border-cyan-800 transition-colors">
+            <div className="absolute top-0 right-0 p-3 opacity-10"><Waves size={64} /></div>
+            <h3 className="text-cyan-500 text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+              <Navigation className="w-4 h-4" /> Danian River Inflow
+            </h3>
+            <div className="flex items-end gap-2 mb-2">
+              {/* Data is safe to render now because of 'mounted' check */}
+              <span className="text-4xl font-bold text-white">{Math.floor(calculatedFlow)}</span>
+              <span className="text-sm text-[#78716c] mb-1">m³/s</span>
+            </div>
+            <div className="w-full bg-[#0c0a09] h-1.5 rounded-full overflow-hidden">
+              <div className="h-full bg-cyan-600 w-[75%] animate-pulse"></div>
+            </div>
+            <p className="text-[10px] text-[#78716c] mt-3">
+              {isStorming
+                ? 'Storm surge detected from offshore systems. Tidal backflow expected.'
+                : 'Freshwater pulse detected from Ironwoods watershed. Nutrient load increasing.'}
+            </p>
+          </div>
+
+          <div className="bg-[#1c1917] border border-[#292524] p-6 rounded-lg relative overflow-hidden group hover:border-emerald-800 transition-colors">
+            <div className="absolute top-0 right-0 p-3 opacity-10"><Droplets size={64} /></div>
+            <h3 className="text-emerald-500 text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+              <Activity className="w-4 h-4" /> Estuary Salinity
+            </h3>
+            <div className="flex items-end gap-2 mb-2">
+              <span className="text-4xl font-bold text-white">{calculatedSalinity.toFixed(1)}</span>
+              <span className="text-sm text-[#78716c] mb-1">PPT</span>
+            </div>
+            <div className="flex text-[10px] uppercase tracking-wider justify-between text-[#57534e] mt-2">
+              <span>Fresh (0)</span>
+              <span>Brackish (15)</span>
+              <span>Marine (35)</span>
+            </div>
+            <div className="w-full h-2 rounded-full mt-1 bg-gradient-to-r from-cyan-300 via-emerald-500 to-blue-900 relative">
+              <div 
+                className="absolute top-1/2 -translate-y-1/2 w-2 h-4 bg-white border border-black shadow"
+                style={{ left: `${(calculatedSalinity / 35) * 100}%`, transition: 'left 1s ease' }}
+              ></div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Column 2: The Feeding Frenzy (Central Chart) */}
+        <div className="lg:col-span-2 bg-[#1c1917] border border-[#292524] p-6 rounded-lg shadow-xl">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-[#a8a29e] text-xs uppercase tracking-widest font-bold flex items-center gap-2">
+              <Fish className="w-4 h-4" /> Biomass Interaction Log
+            </h3>
+            <span className="px-2 py-1 bg-[#292524] text-[10px] uppercase text-rose-400 border border-rose-900/30 rounded animate-pulse">
+              Frenzy Imminent
+            </span>
+          </div>
+          
+          <div className="h-[300px] w-full">
+            <Line data={activityData} options={chartOptions} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-[#292524]">
+             <div>
+               <div className="text-[10px] text-[#78716c] uppercase">Dominant Bait</div>
+               <div className="text-cyan-400 font-bold">Silver-Scale Schools</div>
+             </div>
+             <div>
+               <div className="text-[10px] text-[#78716c] uppercase">Dominant Predator</div>
+               <div className="text-rose-400 font-bold">Spinosaurus Aegyptiacus</div>
+             </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Bottom Section: The Twin Straits Status */}
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div className="bg-[#1c1917] border border-[#292524] p-4 rounded flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded bg-[#0c0a09] flex items-center justify-center border border-[#292524] text-[#57534e]">W</div>
+            <div>
+              <h4 className="font-bold text-sm text-[#e7e5e4]">West Strait</h4>
+              <p className="text-[10px] text-[#78716c] uppercase">Turbidity: High (River Plume)</p>
+            </div>
+          </div>
+          <div className="text-emerald-500 text-xs font-bold bg-emerald-950/30 px-3 py-1 rounded border border-emerald-900">
+            SAFE PASSAGE
+          </div>
+        </div>
+
+        <div className="bg-[#1c1917] border-l-4 border-rose-600 p-4 rounded flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded bg-[#0c0a09] flex items-center justify-center border border-[#292524] text-rose-800">E</div>
+            <div>
+              <h4 className="font-bold text-sm text-[#e7e5e4]">East Strait</h4>
+              <p className="text-[10px] text-[#78716c] uppercase">Marine Influx Detected</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-rose-500 text-xs font-bold bg-rose-950/30 px-3 py-1 rounded border border-rose-900">
+            <AlertTriangle size={12} />
+            APEX BREACH
+          </div>
+        </div>
+
+      </div>
+
+      <div className="mt-6 bg-[#0f0d0c] border border-[#292524] p-4 rounded">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <div className="text-[10px] uppercase tracking-widest text-[#78716c]">Oracle Seeder Status</div>
+            <div className="text-xs text-amber-500/80 mt-1">
+              {oracleStatus
+                ? `Last seeded: ${oracleStatus.lastSeededAt || 'Unknown'} • Count: ${oracleStatus.count ?? '--'}`
+                : 'No status fetched yet.'}
+            </div>
+            {oracleError && <div className="text-[10px] text-rose-400 mt-1">Error: {oracleError}</div>}
+          </div>
+          <div className="flex flex-col md:flex-row gap-2 md:items-center">
+            <input
+              type="password"
+              value={adminKey}
+              onChange={(event) => setAdminKey(event.target.value)}
+              placeholder="Admin key"
+              className="bg-[#1c1917] border border-[#292524] rounded px-3 py-2 text-xs text-[#e7e5e4] placeholder:text-[#57534e]"
+            />
+            <button
+              type="button"
+              onClick={checkOracleStatus}
+              className="px-3 py-2 text-xs uppercase tracking-widest bg-amber-600/20 text-amber-400 border border-amber-900/40 rounded hover:bg-amber-600/30 transition-colors"
+              disabled={oracleLoading || !adminKey}
+            >
+              {oracleLoading ? 'Checking...' : 'Check Status'}
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  );
+};
+
+export default PterosDashboard;
+// World of Tethys || D.C. Barletta

@@ -42,27 +42,30 @@ Install Dependencies:
 
 npm install
 
-Environment Setup:Create a .env.local file in the root directory and add your
+Environment Setup:
 
- Firebase credentials:# Firebase Auth
+1. Create a `.env.local` file in the root directory and add your Firebase credentials:
 
-
-
+```
 NEXT_PUBLIC_FIREBASE_API_KEY=your_key
-
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_bucket
-
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
 
-# Optional: External APIs
+2. Point `cdn()` at your CloudFront distribution so every asset resolves from that edge URL:
 
-NEXT_PUBLIC_WORDPRESS_API_URL=[https://your-wordpress.com/graphql](https://your-wordpress.com/graphql)
+```
+NEXT_PUBLIC_CDN_DIST=https://your-distribution.cloudfront.net
+```
+
+3. Add any optional external APIs (WordPress, etc.) as needed:
+
+```
+NEXT_PUBLIC_WORDPRESS_API_URL=https://your-wordpress.com/graphql
+```
 
 
 Run Development Server:        npm run dev

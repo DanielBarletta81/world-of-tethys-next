@@ -48,7 +48,7 @@ export default function FieldStationPage() {
       <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-60 scale-105"
-          style={{ backgroundImage: `url(https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/fossil-lab.jpg)` }}
+          style={{ backgroundImage: `url(${cdn('/img/bg/fossil-lab.jpg')})` }}
         />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] opacity-30 mix-blend-overlay pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050607] via-[#050607]/80 to-transparent" />
@@ -134,7 +134,7 @@ export default function FieldStationPage() {
                             title="Expedition Log: The Weep"
                             type="video"
                             src="https://www.youtube.com/embed/aAbtMoKsNw4?modestbranding=1&rel=0&controls=0"
-                            thumbnail={'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/obsidian-coast-4k.jpg'}
+                            thumbnail={cdn('/img/bg/obsidian-coast-4k.jpg')}
                             rewards={{ lore: 25, kith: 10 }}
                           />
                         </div>

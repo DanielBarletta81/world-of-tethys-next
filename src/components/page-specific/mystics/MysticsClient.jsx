@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
+const KithOracle = dynamic(() => import('@/components/weather/KithOracle'), { ssr: false });
 const OraclePool = dynamic(() => import('@/components/page-specific/mystics/OraclePool'), { ssr: false });
 const FungalProxyPanel = dynamic(() => import('@/components/page-specific/mystics/FungalProxyPanel'), { ssr: false });
 const MythicCard = dynamic(() => import('@/components/content/MythicCard'), { ssr: false });
@@ -17,6 +18,9 @@ export default function MysticsClient() {
     <>
       <div style={{ marginTop: '2rem' }}>
         <OraclePool />
+      </div>
+      <div style={{ marginTop: '2rem' }}>
+        <KithOracle />
       </div>
       <div style={{ marginTop: '2rem' }}>
         <FungalProxyPanel />

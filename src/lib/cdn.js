@@ -1,6 +1,6 @@
 
 
-var base = process.env.NEXT_PUBLIC_CDN_BASE || "";
+var base = process.env.NEXT_PUBLIC_CDN_DIST || process.env.NEXT_PUBLIC_CDN_BASE || "";
 
 export default function cdn(path) {
   path = path || "";

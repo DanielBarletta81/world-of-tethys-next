@@ -1,7 +1,7 @@
 // src/components/weather/RavelWeatherOracle.jsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Cloud, Wind, AlertTriangle, RefreshCw, Eye } from 'lucide-react';
 import { calculateSurvivability, getSurvivabilityColors, getWeatherIcon } from './weatherUtils';
 
@@ -16,7 +16,7 @@ export default function RavelWeatherOracle({ focus = 'pteros_crato', className =
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
 
-  const fetchWeatherReport = async () => {
+  const fetchWeatherReport = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -35,14 +35,14 @@ export default function RavelWeatherOracle({ focus = 'pteros_crato', className =
     } finally {
       setLoading(false);
     }
-  };
+  }, [focus]);
 
   useEffect(() => {
     fetchWeatherReport();
     // Refresh every 10 minutes
     const interval = setInterval(fetchWeatherReport, 10 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [focus]);
+  }, [fetchWeatherReport]);
 
   // Find the focused region's weather
   const focusedReport = data?.reports?.find(r => r.id === focus);

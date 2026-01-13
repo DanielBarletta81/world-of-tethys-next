@@ -32,7 +32,7 @@ export default function RelayLog({ focus = 'all' }) {
     return () => {
       mounted = false;
     };
-  }, [focus, withAi]);
+  }, [focus]);
 
   return (
     <div className="bg-[#11100f] border border-stone-800 rounded-lg p-5 shadow-lg">

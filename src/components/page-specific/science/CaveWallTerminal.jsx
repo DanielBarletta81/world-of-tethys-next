@@ -30,7 +30,7 @@ export default function CaveWallTerminal({
   const [previewInView, setPreviewInView] = useState(false);
 
   const wallTexture = useMemo(
-    () => 'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/obsidian-coast-4k.jpg',
+    () => cdn('/img/bg/obsidian-coast-4k.jpg'),
     []
   );
   const poster = useMemo(

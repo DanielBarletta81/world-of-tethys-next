@@ -2,16 +2,17 @@
 'use client';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import cdn from '@/lib/cdn';
 
 // Map your routes to high-quality scenic backgrounds
 // Use Getty/Stock images here. 
 // TIP: Use images with "Fog", "Volcanic Ash", or "Underwater" themes.
 const SCENES = {
-  '/': 'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/obsidian-coast-4k.jpg',       // Dark, volcanic shore
-  '/study': 'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/library-ruins.jpg',      // Ancient stone shelves, dust motes
-  '/mystics': 'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/biolum-forest.jpg',    // Dark jungle, glowing spores
-  '/science': 'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/fossil-lab.jpg',       // Clean, cold light, bones
-  '/map': 'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/parchment-map-table.png',  // Top-down wooden table feel
+  '/': cdn('/img/bg/obsidian-coast-4k.jpg'),       // Dark, volcanic shore
+  '/study': cdn('/img/bg/library-ruins.jpg'),      // Ancient stone shelves, dust motes
+  '/mystics': cdn('/img/bg/biolum-forest.jpg'),    // Dark jungle, glowing spores
+  '/science': cdn('/img/bg/fossil-lab.jpg'),       // Clean, cold light, bones
+  '/map': cdn('/img/bg/parchment-map-table.png'),  // Top-down wooden table feel
 };
 
 export default function GlobalAtmosphere() {
