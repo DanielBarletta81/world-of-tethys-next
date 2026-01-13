@@ -18,6 +18,11 @@ export default function MapViewport({
 }) {
 
   const { tx, ty, scale } = transform;
+  const hasAtlas = Boolean(atlasUrl);
+  const hasRelief = Boolean(reliefUrl);
+  const hasMist = Boolean(mistUrl);
+  const hasEmber = Boolean(emberUrl);
+  const hasAsh = Boolean(ashUrl || mistUrl);
 
   function buildFogMask(points = []) {
   if (!points.length) {
@@ -46,37 +51,54 @@ return (
     {/* STATIC BACKGROUND */}
   <div className="absolute inset-0 bg-gradient-to-b from-[#0d0f12] to-[#161a1f]" />
 
+  {/* Base atlas */}
+  {hasAtlas && (
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `url(${atlasUrl})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        opacity: 0.95
+      }}
+    />
+  )}
+
   {/* Relief ghost (Mystic sees more, City sees less) */}
-  <div
-    className="absolute inset-0"
-    style={{
-      backgroundImage: `url(${reliefUrl})`,
-      opacity:
-        (truthProfile?.relief ?? 0.08) *
-        (mode === "mystic" ? 1.25 : mode === "city" ? 0.5 : 1.0) +
-        envPressure * 0.08,
-      filter: `blur(${envPressure * 1.2 + (mode === "mystic" ? 1 : 0.5)}px)`
-    }}
-  />
+  {hasRelief && (
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `url(${reliefUrl})`,
+        opacity:
+          (truthProfile?.relief ?? 0.08) *
+          (mode === "mystic" ? 1.25 : mode === "city" ? 0.5 : 1.0) +
+          envPressure * 0.08,
+        filter: `blur(${envPressure * 1.2 + (mode === "mystic" ? 1 : 0.5)}px)`
+      }}
+    />
+  )}
 
   {/* Mist (weather veil) */}
-  <div
-    className="absolute inset-0"
-    style={{
-      backgroundImage: `url(${mistUrl})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      opacity:
-        (truthProfile?.mist ?? 0.22) *
-        (mode === "mystic" ? 1.15 : mode === "city" ? 0.6 : 1.0) -
-        envPressure * 0.25 +
-        fogBoost,
-      WebkitMaskImage: buildFogMask(fogPoints),
-      maskImage: buildFogMask(fogPoints),
-      maskComposite: "intersect",
-      WebkitMaskComposite: "destination-in"
-    }}
-  />
+  {hasMist && (
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `url(${mistUrl})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        opacity:
+          (truthProfile?.mist ?? 0.22) *
+          (mode === "mystic" ? 1.15 : mode === "city" ? 0.6 : 1.0) -
+          envPressure * 0.25 +
+          fogBoost,
+        WebkitMaskImage: buildFogMask(fogPoints),
+        maskImage: buildFogMask(fogPoints),
+        maskComposite: "intersect",
+        WebkitMaskComposite: "destination-in"
+      }}
+    />
+  )}
 
 
 
@@ -113,36 +135,40 @@ return (
 
 
   {/* ✅ NEW: Ashfall layer (Watcher-driven) */}
-  <div
-    className="absolute inset-0"
-    style={{
-      backgroundImage: `url(${ashUrl || mistUrl})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      opacity:
-        (truthProfile?.ash ?? 0.18) *
-        (watcherIntensity === "near" ? 1.0 : watcherIntensity === "mid" ? 0.55 : 0.25) *
-        (mode === "mystic" ? 1.15 : mode === "city" ? 0.55 : 1.0),
-      filter: mode === "mystic" ? "blur(0.5px)" : "blur(0.8px)",
-      mixBlendMode: mode === "city" ? "soft-light" : "screen",
-      // tiny shift so it doesn't perfectly match mist
-      transform: "translate3d(0, 0, 0) scale(1.02)"
-    }}
-  />
+  {hasAsh && (
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `url(${ashUrl || mistUrl})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        opacity:
+          (truthProfile?.ash ?? 0.18) *
+          (watcherIntensity === "near" ? 1.0 : watcherIntensity === "mid" ? 0.55 : 0.25) *
+          (mode === "mystic" ? 1.15 : mode === "city" ? 0.55 : 1.0),
+        filter: mode === "mystic" ? "blur(0.5px)" : "blur(0.8px)",
+        mixBlendMode: mode === "city" ? "soft-light" : "screen",
+        // tiny shift so it doesn't perfectly match mist
+        transform: "translate3d(0, 0, 0) scale(1.02)"
+      }}
+    />
+  )}
 
   {/* Ember scar (Watcher proximity) */}
-  <div
-    className="absolute inset-0"
-    style={{
-      backgroundImage: `url(${emberUrl})`,
-      opacity:
-        (truthProfile?.ember ?? 0.06) *
-        (watcherIntensity === "near" ? 1.0 : watcherIntensity === "mid" ? 0.6 : 0.35) *
-        (mode === "city" ? 0.7 : 1.0) +
-        envPressure * 0.04,
+  {hasEmber && (
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `url(${emberUrl})`,
+        opacity:
+          (truthProfile?.ember ?? 0.06) *
+          (watcherIntensity === "near" ? 1.0 : watcherIntensity === "mid" ? 0.6 : 0.35) *
+          (mode === "city" ? 0.7 : 1.0) +
+          envPressure * 0.04,
         mixBlendMode: "lighten"
       }}
     />
+  )}
   </div>
   </>
 );

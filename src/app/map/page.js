@@ -98,6 +98,16 @@ export default function MapPage() {
   const bondAttemptRef = useRef(null);
   const router = useRouter();
 
+  const syncEquippedStaff = useCallback(() => {
+    const activeStaffId = playerProfile?.staff?.activeStaffId;
+    if (!activeStaffId) return;
+    setEquippedStaff({
+      ...playerProfile.staff,
+      name: playerProfile.staff?.name || 'Issued Staff',
+      id: activeStaffId
+    });
+  }, [playerProfile?.staff, setEquippedStaff]);
+
   useEffect(() => {
     if (!authLoading && !user) {
       setAirlockOpen(true);
@@ -191,16 +201,6 @@ export default function MapPage() {
 
     setViewState('map');
   };
-
-  const syncEquippedStaff = useCallback(() => {
-    const activeStaffId = playerProfile?.staff?.activeStaffId;
-    if (!activeStaffId) return;
-    setEquippedStaff({
-      ...playerProfile.staff,
-      name: playerProfile.staff?.name || 'Issued Staff',
-      id: activeStaffId
-    });
-  }, [playerProfile?.staff, setEquippedStaff]);
 
   const handleMapSelect = useCallback(
     (regionId) => {

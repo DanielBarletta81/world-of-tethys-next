@@ -96,6 +96,56 @@ export default function TethysNexus({
   const [torchActive, setTorchActive] = useState(false);
   const { TorchLayer } = useTorchCursor(torchActive, envPressure);
   const fogBoost = (pathMode === "city" ? 0.04 : 0.08) + (weatherUnlocked ? 0 : 0.12);
+  const mapCdnBase = process.env.NEXT_PUBLIC_MAP_CDN_BASE || '';
+  const preferCdn = Boolean(mapCdnBase);
+  const fallbackAssets = useMemo(
+    () => ({
+      atlas: '/img/map/tethys-atlas-clean.png',
+      relief: '/img/map/tethys-relief-ghost.png',
+      mist: '/img/map/tethys-mist-noise.png',
+      ember: '/img/map/tethys-ember-scar.png',
+      ash: '/img/map/tethys-mist-noise.png'
+    }),
+    []
+  );
+  const cdnAssets = useMemo(
+    () => ({
+      atlas: mapCdnBase ? `${mapCdnBase.replace(/\/$/, '')}/img/map/tethys-atlas-clean.png` : '',
+      relief: mapCdnBase ? `${mapCdnBase.replace(/\/$/, '')}/img/map/tethys-relief-ghost.png` : '',
+      mist: mapCdnBase ? `${mapCdnBase.replace(/\/$/, '')}/img/map/tethys-mist-noise.png` : '',
+      ember: mapCdnBase ? `${mapCdnBase.replace(/\/$/, '')}/img/map/tethys-ember-scar.png` : '',
+      ash: mapCdnBase ? `${mapCdnBase.replace(/\/$/, '')}/img/map/tethys-mist-noise.png` : ''
+    }),
+    [mapCdnBase]
+  );
+  const [mapAssets, setMapAssets] = useState(() => (preferCdn ? cdnAssets : fallbackAssets));
+
+  useEffect(() => {
+    if (!preferCdn) {
+      setMapAssets(fallbackAssets);
+      return;
+    }
+
+    setMapAssets(cdnAssets);
+    let cancelled = false;
+    const preloadTargets = Object.entries(cdnAssets).filter(([, url]) => url);
+
+    preloadTargets.forEach(([key, url]) => {
+      const img = new Image();
+      img.onerror = () => {
+        if (cancelled) return;
+        setMapAssets((prev) => {
+          if (!prev || prev[key] === fallbackAssets[key]) return prev;
+          return { ...prev, [key]: fallbackAssets[key] };
+        });
+      };
+      img.src = url;
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cdnAssets, fallbackAssets, preferCdn]);
 
   return (
     <div
@@ -131,11 +181,11 @@ export default function TethysNexus({
       </div>
 
       <MapViewport
-        atlasUrl={cdn('/maps/tethys-atlas-clean.webp')}
-        reliefUrl={cdn('/maps/tethys-relief-ghost.webp')}
-        mistUrl={cdn('/maps/tethys-mist-noise.webp')}
-        emberUrl={cdn('/maps/tethys-ember-scar.webp')}
-        ashUrl={cdn('/maps/tethys-mist-noise.webp')}
+        atlasUrl={mapAssets.atlas}
+        reliefUrl={mapAssets.relief}
+        mistUrl={mapAssets.mist}
+        emberUrl={mapAssets.ember}
+        ashUrl={mapAssets.ash}
         transform={physics}
         fogPoints={fogPoints}
         mode={pathMode}

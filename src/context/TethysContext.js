@@ -1,8 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
-import { db } from '@/lib/firebase';
+import { db, hasFirebaseConfig } from '@/lib/firebase';
 import {
   doc,
   getDoc,
@@ -105,6 +105,7 @@ export function TethysProvider({ children }) {
   const [events, setEvents] = useState([]);
   const [eventCount, setEventCount] = useState(0);
   const [rumorCount, setRumorCount] = useState(0);
+  const guestSnapshotTimerRef = useRef(null);
  
   const hasOnboarded = Boolean(equippedStaff || playerProfile?.onboarding?.status === 'complete');
 
@@ -112,32 +113,73 @@ export function TethysProvider({ children }) {
   useEffect(() => {
     async function loadData() {
       setLoadingData(true);
-      if (isGuest) {
-        if (typeof window !== 'undefined') {
-          const saved = localStorage.getItem(`tethys_data_guest`);
-          if (saved) applyData(JSON.parse(saved));
+      const loadGuestFallback = () => {
+        if (typeof window === 'undefined') return;
+        const saved = localStorage.getItem(`tethys_data_guest`);
+        if (saved) {
+          try {
+            applyData(JSON.parse(saved));
+          } catch (error) {
+            console.warn('Guest cache parse failed:', error);
+          }
         }
+      };
+      const persistGuestSnapshot = (data) => {
+        if (typeof window === 'undefined' || !data) return;
+        try {
+          localStorage.setItem(`tethys_data_guest`, JSON.stringify(data));
+        } catch (error) {
+          console.warn('Guest cache write failed:', error);
+        }
+      };
+
+      if (!hasFirebaseConfig || !db) {
+        loadGuestFallback();
+        setLoadingData(false);
+        return;
+      }
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        loadGuestFallback();
+        setLoadingData(false);
+        return;
+      }
+      if (!isGuest && !userId) {
+        loadGuestFallback();
+        setLoadingData(false);
+        return;
+      }
+
+      if (isGuest) {
+        loadGuestFallback();
       } else {
         try {
           const docRef = doc(db, "players", userId);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            applyData(docSnap.data());
-            setPlayerProfile(prev => ({ ...DEFAULT_PLAYER_PROFILE, ...docSnap.data() }));
-            // Load creature bonds (subcollection)
-            const creatureSnap = await getDocs(collection(db, "players", userId, "creatures"));
-            const cList = [];
-            creatureSnap.forEach((c) => cList.push({ id: c.id, ...c.data() }));
-            setCreatures(cList);
-            const eventSnap = await getDocs(collection(db, "players", userId, "events"));
-            const eList = [];
-            eventSnap.forEach((ev) => eList.push({ id: ev.id, ...ev.data() }));
-            setEvents(eList);
-            if (docSnap.data()?.eventCount == null) {
-              setEventCount(eventSnap.size);
+            const data = docSnap.data();
+            applyData(data);
+            persistGuestSnapshot(data);
+            setPlayerProfile(prev => ({ ...DEFAULT_PLAYER_PROFILE, ...data }));
+            try {
+              const creatureSnap = await getDocs(collection(db, "players", userId, "creatures"));
+              const cList = [];
+              creatureSnap.forEach((c) => cList.push({ id: c.id, ...c.data() }));
+              setCreatures(cList);
+            } catch (error) {
+              console.warn('Creature sync failed:', error);
+            }
+            try {
+              const eventSnap = await getDocs(collection(db, "players", userId, "events"));
+              const eList = [];
+              eventSnap.forEach((ev) => eList.push({ id: ev.id, ...ev.data() }));
+              setEvents(eList);
+              if (data?.eventCount == null) {
+                setEventCount(eventSnap.size);
+              }
+            } catch (error) {
+              console.warn('Event sync failed:', error);
             }
           } else {
-            // New user init
             const initialData = {
               stats: DEFAULT_STATS,
               inventory: [],
@@ -158,18 +200,75 @@ export function TethysProvider({ children }) {
             };
             await setDoc(docRef, initialData);
             applyData(initialData);
+            persistGuestSnapshot(initialData);
             setPlayerProfile(initialData);
             setCreatures([]);
             setEvents([]);
           }
         } catch (error) {
-          console.error("Cloud Sync Error:", error);
+          console.warn("Cloud Sync Error:", error);
+          loadGuestFallback();
         }
       }
       setLoadingData(false);
     }
     loadData();
   }, [userId, isGuest, user?.displayName]);
+
+  const buildGuestSnapshot = useCallback(
+    () => ({
+      stats,
+      inventory,
+      unlockedNodes,
+      unlockedAssets,
+      currentLocation,
+      lastHarvestDate,
+      eventCount,
+      rumorCount,
+      equippedStaff,
+      staff: playerProfile?.staff,
+      locationHistory,
+      creatures,
+      events,
+      playerProfile
+    }),
+    [
+      stats,
+      inventory,
+      unlockedNodes,
+      unlockedAssets,
+      currentLocation,
+      lastHarvestDate,
+      eventCount,
+      rumorCount,
+      equippedStaff,
+      locationHistory,
+      creatures,
+      events,
+      playerProfile
+    ]
+  );
+
+  useEffect(() => {
+    if (loadingData || typeof window === 'undefined') return;
+    if (!isGuest && userId) return;
+    if (guestSnapshotTimerRef.current) {
+      clearTimeout(guestSnapshotTimerRef.current);
+    }
+    const snapshot = buildGuestSnapshot();
+    guestSnapshotTimerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(`tethys_data_guest`, JSON.stringify(snapshot));
+      } catch (error) {
+        console.warn('Guest cache write failed:', error);
+      }
+    }, 1200);
+    return () => {
+      if (guestSnapshotTimerRef.current) {
+        clearTimeout(guestSnapshotTimerRef.current);
+      }
+    };
+  }, [buildGuestSnapshot, isGuest, loadingData, userId]);
 
   // compute harvest availability
   useEffect(() => {
@@ -195,6 +294,9 @@ export function TethysProvider({ children }) {
 
 
   const applyData = (data) => {
+    if (data.playerProfile) {
+      setPlayerProfile((prev) => ({ ...DEFAULT_PLAYER_PROFILE, ...data.playerProfile }));
+    }
     if (data.inventory) {
       const inv = Array.isArray(data.inventory) ? data.inventory : Object.values(data.inventory);
       setInventory(inv);
