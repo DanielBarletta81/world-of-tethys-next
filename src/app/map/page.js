@@ -10,14 +10,15 @@ import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useTethys } from '@/context/TethysContext';
 import { useAudio } from '@/context/AudioContext';
 import { useAuth } from '@/context/AuthContext';
-import IdentityAirlock from '@/components/IdentityAirLock';
-import TethysNexus from '@/components/TethysNexus';
-import StaffSequencer from '@/components/StaffSequencer';
-import Incubator from '@/components/Incubator';
-import StatusBar from '@/components/StatusBar';
-
-import TriFoldNav from '@/components/TriFoldNav';
+import IdentityAirlock from '@/components/forms/IdentityAirLock';
+import TethysNexus from '@/components/features/map/TethysNexus';
+import StaffSequencer from '@/components/features/onboarding/StaffSequencer';
+import Incubator from '@/components/features/onboarding/Incubator';
+import StatusBar from '@/components/features/player/StatusBar';
 import RelayLog from '@/components/RelayLog';
+import RavelWeatherOracle from '@/components/weather/RavelWeatherOracle';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import cdn from '@/lib/cdn';
 
 const PATH_CONFIG = [
@@ -62,6 +63,11 @@ const PATH_CONFIG = [
 
 const BASE_STAFF_STATS = { geology: 4, creature: 4, lore: 4, human: 4 };
 const STAFF_INVENTORY_OVERRIDE = ['Map_fragment'];
+
+const MAP_BREADCRUMB = [
+  { label: 'Home', href: '/' },
+  { label: 'Atlas', href: '/map', current: true },
+];
 
 function resolvePathMode(pathId) {
   if (pathId === 'mystics' || pathId === 'mystic') return 'mystic';
@@ -310,17 +316,24 @@ export default function MapPage() {
     .map(([key]) => key);
 
   return (
-    <div className="min-h-screen bg-[#0c0a09] text-stone-200 p-6 pt-32 relative overflow-hidden font-mono">
-      {viewState === 'map' && <StatusBar />}
-      {/* HEADER */}
-      <div className="max-w-7xl mx-auto mb-8 flex flex-wrap items-end justify-between gap-4 relative z-10">
-        <div className="flex items-start gap-4">
-          <Link href="/" className="text-xs text-stone-500 hover:text-white uppercase tracking-widest flex items-center gap-2 mb-4 transition-colors">
-            <ArrowLeft size={14} />
-            Return to Hub
-          </Link>
-          <TriFoldNav />
-        </div>
+    <div className="min-h-screen bg-[#0c0a09] text-stone-200 font-mono">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-orange-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+      >
+        Skip to main content
+      </a>
+
+      <main role="main" id="main-content" className="p-6 pt-32 relative overflow-hidden">
+        <PrimaryNav className="max-w-7xl mx-auto px-4 md:px-6 mb-4" />
+        <BreadcrumbTrail trail={MAP_BREADCRUMB} className="max-w-7xl mx-auto px-4 md:px-6 mb-6" />
+        {viewState === 'map' && <StatusBar />}
+        {/* HEADER */}
+        <header role="banner" className="max-w-7xl mx-auto mb-8 flex flex-wrap items-end justify-between gap-4 relative z-10">
+        <Link href="/" className="text-xs text-stone-500 hover:text-white uppercase tracking-widest flex items-center gap-2 mb-4 transition-colors">
+          <ArrowLeft size={14} />
+          Return to Hub
+        </Link>
         <div className="flex items-end gap-4">
           <h1 className="text-4xl font-serif text-white">
             {viewState === 'map' ? 'The Atlas' : 'Pteros Hatchery'}
@@ -335,7 +348,7 @@ export default function MapPage() {
             </div>
           )}
         </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto relative z-10">
         <AnimatePresence mode="wait">
@@ -362,6 +375,10 @@ export default function MapPage() {
               exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
               className="flex flex-col items-center py-12"
             >
+              <div className="mb-8 text-center">
+                <h2 className="text-2xl font-serif text-stone-200 mb-2">The Hatchery</h2>
+                <p className="text-stone-500 text-sm">Step 1 of 3: Awaken Your Guide</p>
+              </div>
               <Incubator onHatch={onEggHatch} />
               <p className="mt-12 text-stone-500 max-w-md text-center text-sm font-serif italic">
                 "The map is silent until you hatch a guide. Break the seal to begin."
@@ -375,7 +392,13 @@ export default function MapPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="relative h-[600px] w-full rounded-2xl overflow-hidden border border-stone-800/60"
+            >
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-serif text-stone-200 mb-2">Choose Your Path</h2>
+                <p className="text-stone-500 text-sm">Step 2 of 3: Select Your Entry Sigil</p>
+                <p className="text-stone-400 text-xs mt-2 max-w-lg mx-auto">Each path unlocks different regions and abilities. Click a sigil to learn more.</p>
+              </div>
+              <div className="relative h-[600px] w-full rounded-2xl overflow-hidden border border-stone-800/60"
             >
               <div
                 className="absolute inset-0 bg-cover bg-center opacity-70"
@@ -493,35 +516,7 @@ export default function MapPage() {
                   </div>
                 </div>
               )}
-            </motion.div>
-          )}
-
-          {viewState === 'scholar' && (
-            <motion.div
-              key="scholar"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-col items-center py-16 text-center"
-            >
-              <Image
-                src={cdn('/img/locations/A_Cambria_Symb1.png')}
-                alt="Cambria"
-                width={96}
-                height={96}
-                className="w-24 h-24 mb-6 opacity-90"
-                unoptimized
-              />
-              <p className="text-xs uppercase tracking-[0.3em] text-stone-500 mb-3">Archive Path</p>
-              <p className="text-sm text-stone-400 max-w-md mb-6">
-                The atlas is withheld. Continue through the Science path to rejoin the map.
-              </p>
-              <Link
-                href="/science"
-                className="px-4 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 rounded text-xs text-stone-300 transition-colors uppercase tracking-widest"
-              >
-                Enter Science Path
-              </Link>
+              </div>
             </motion.div>
           )}
 
@@ -534,6 +529,10 @@ export default function MapPage() {
               exit={{ opacity: 0, y: -20 }}
               className="max-w-3xl mx-auto"
             >
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-serif text-stone-200 mb-2">The Forge</h2>
+                <p className="text-stone-500 text-sm">Step 3 of 3: Craft Your Staff</p>
+              </div>
               <div className="mb-6 p-4 bg-emerald-900/10 border border-emerald-900/50 rounded flex items-center gap-3 text-emerald-400 text-xs uppercase tracking-widest">
                 <CheckCircle size={16} />
                 <span>Lifeform Detected. Syncing Staff Sequencer...</span>
@@ -588,7 +587,11 @@ export default function MapPage() {
               </div>
               
               <div className="space-y-6">
-                <RelayLog withAi focus="all" />
+                {/* Weather Oracle */}
+                <RavelWeatherOracle focus="pteros_crato" className="mb-6" />
+                
+                <RelayLog focus="all" />
+                
                 {/* Your Staff (Inventory Display) */}
                 <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
                   <h3 className="text-amber-500 text-xs uppercase tracking-widest mb-4">Equipped Artifact</h3>
@@ -650,6 +653,7 @@ export default function MapPage() {
           animation: sigil-spin-glow 0.7s ease-out;
         }
       `}</style>
+      </main>
     </div>
   );
 }

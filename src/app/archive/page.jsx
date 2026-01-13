@@ -4,7 +4,9 @@ import React from 'react';
 import { ArrowLeft, Skull, Shield, Database, Microscope } from 'lucide-react';
 import Link from 'next/link';
 import nextDynamic from 'next/dynamic';
-import StrataNav from '@/components/StrataNav';
+import StrataNav from '@/components/layout/navigation/StrataNav';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 
 const SkyCityArchiveNpc = nextDynamic(
   () => import('@/components/npc/SkyCityArchiveNpc'),
@@ -12,6 +14,11 @@ const SkyCityArchiveNpc = nextDynamic(
 );
 
 export const dynamic = 'force-dynamic';
+
+const ARCHIVE_BREADCRUMB = [
+  { label: 'Home', href: '/' },
+  { label: 'Archive', href: '/archive', current: true }
+];
 
 const SECTORS = [
   {
@@ -47,6 +54,11 @@ const SECTORS = [
 export default function ArchiveIndex() {
   return (
     <main className="relative min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif bg-stone-grain p-6 md:p-8 pb-36 md:pb-20">
+
+      <div className="max-w-6xl mx-auto px-0 py-8 space-y-2">
+        <PrimaryNav className="mb-1" />
+        <BreadcrumbTrail trail={ARCHIVE_BREADCRUMB} />
+      </div>
 
       {/* NAV */}
         <div className="max-w-6xl mx-auto mb-16 flex items-center justify-between gap-4">

@@ -1,28 +1,46 @@
 // src/app/mystics/page.jsx
 'use client';
 
-import TriFoldNav from '@/components/TriFoldNav';
-import MysticsClient from '@/components/MysticsClient'; // Contains OraclePool, etc.
-import PathSelector from '@/components/PathSelector';
-import StaffSequencer from '@/components/StaffSequencer';
+import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
+import MysticsClient from '@/components/page-specific/mystics/MysticsClient'; // Contains OraclePool, etc.
+import PathSelector from '@/components/features/onboarding/PathSelector';
+import StaffSequencer from '@/components/features/onboarding/StaffSequencer';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import { useState } from 'react';
 
 export default function MysticsPage() {
   const [activeRitual, setActiveRitual] = useState('path'); 
 
   return (
-    <main className="min-h-screen bg-[#050404] text-purple-100 font-serif pt-20 pb-12 px-6">
-      
-      <header className="text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-thin text-purple-400 uppercase tracking-widest mb-4">
-          The Veil
-        </h1>
-        <p className="text-purple-200/50 text-sm max-w-xl mx-auto font-sans">
-          For the seers. Choose your alignment, forge your staff, and consult the spores.
-        </p>
-      </header>
+    <div className="min-h-screen bg-[#050404] text-purple-100 font-serif">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-purple-400"
+      >
+        Skip to main content
+      </a>
 
-      <TriFoldNav />
+      <main role="main" id="main-content" className="pt-20 pb-12 px-6">
+        <div className="max-w-5xl mx-auto px-0 space-y-2 mb-8">
+          <PrimaryNav className="mb-1" />
+          <BreadcrumbTrail
+            trail={[
+              { label: 'Home', href: '/' },
+              { label: 'Mystics', href: '/mystics', current: true }
+            ]}
+          />
+        </div>
+        <header role="banner" className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-thin text-purple-400 uppercase tracking-widest mb-4">
+            The Veil
+          </h1>
+          <p className="text-purple-200/50 text-sm max-w-xl mx-auto font-sans">
+            For the seers. Choose your alignment, forge your staff, and consult the spores.
+          </p>
+        </header>
+
+        <TriFoldNav />
 
       <div className="max-w-5xl mx-auto">
         
@@ -49,7 +67,8 @@ export default function MysticsPage() {
 
         </div>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
 // World of Tethys || D.C. Barletta

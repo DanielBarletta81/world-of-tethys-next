@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import TriFoldNav from '@/components/TriFoldNav';
+import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
 
 const DEFAULT_SEED_JSON = `[
   {

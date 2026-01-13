@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import CaveWallTerminal from '@/components/CaveWallTerminal';
-import TriFoldNav from '@/components/TriFoldNav';
+import CaveWallTerminal from '@/components/page-specific/science/CaveWallTerminal';
+import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import cdn from '@/lib/cdn';
 import { fetchMediaManifest } from '@/lib/media-manifest';
 
@@ -38,6 +40,11 @@ export default function PterosTerminalPage() {
 
   const entries = mediaItems.length ? mediaItems : fallbackItems;
 
+  const PTEROS_BREADCRUMB = [
+    { label: 'Home', href: '/' },
+    { label: 'Pteros', href: '/pteros', current: true }
+  ];
+
   return (
     <main className="min-h-screen bg-[#060605] text-stone-100 font-serif">
       <div className="relative overflow-hidden">
@@ -51,6 +58,8 @@ export default function PterosTerminalPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#060605] via-transparent to-[#060605]" />
         <div className="relative z-10 px-6 pt-28 pb-16 max-w-6xl mx-auto space-y-8">
+          <PrimaryNav className="mb-1" />
+          <BreadcrumbTrail trail={PTEROS_BREADCRUMB} className="mb-2" />
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400 font-mono">

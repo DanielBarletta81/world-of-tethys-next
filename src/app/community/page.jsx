@@ -1,28 +1,38 @@
 'use client';
 
 import React from 'react';
-import TriFoldNav from '@/components/TriFoldNav';
-import BookBanner from '@/components/BookBanner';
-import SideAuthPanel from '@/components/SideAuthPanel';
-import IdentityAirLock from '@/components/IdentityAirLock';
+import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+import BookBanner from '@/components/content/BookBanner';
+import SideAuthPanel from '@/components/forms/SideAuthPanel';
+import IdentityAirLock from '@/components/forms/IdentityAirLock';
 import TheBlankSlate from '@/components/TheBlankSlate';
-import Footer from '@/components/Footer';
 
 import dynamic from 'next/dynamic';
 
 
-const FungalProxyPanel = dynamic(() => import('@/components/FungalProxyPanel'), { ssr: false });
-const MythicCard = dynamic(() => import('@/components/MythicCard'), { ssr: false });
+const FungalProxyPanel = dynamic(() => import('@/components/page-specific/mystics/FungalProxyPanel'), { ssr: false });
+const MythicCard = dynamic(() => import('@/components/content/MythicCard'), { ssr: false });
 
 const COMMUNITY_MYTHICS = [
   { name: 'Prime Signal', symbol: 'PSI', trait: 'Ignited the Cambrian wave; a harmonic that still rings.' },
   { name: 'Luminous Chorus', symbol: 'STAR', trait: 'Crown of lights over the Weep; gifted crest code.' }
 ];
 
+const COMMUNITY_BREADCRUMB = [
+  { label: 'Home', href: '/' },
+  { label: 'Community', href: '/community', current: true }
+];
+
 export default function CommunityPage() {
   return (
     <>
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif selection:bg-amber-900 selection:text-white relative overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-6 space-y-2 mt-10">
+        <PrimaryNav className="mb-1" />
+        <BreadcrumbTrail trail={COMMUNITY_BREADCRUMB} />
+      </div>
       <TriFoldNav />
       <SideAuthPanel />
       <div className="pt-20 space-y-10">
@@ -54,7 +64,6 @@ export default function CommunityPage() {
           </div>
         </section>
       </div>
-      <Footer />
     </main>
     </>
   );

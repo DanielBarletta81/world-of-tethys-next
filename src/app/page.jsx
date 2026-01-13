@@ -3,15 +3,16 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
-import StoneSideNav from "@/components/StoneSideNav";
-import MarineShowcase from "@/components/MarineShowcase";
-import BookCarousel from "@/components/BookCarousel";
-import IdentityAirLock from "@/components/IdentityAirLock"; // Corrected spelling
-import IntroOverlay from "@/components/IntroOverlay";
-import CaveWallTerminal from "@/components/CaveWallTerminal";
+import StoneSideNav from '@/components/layout/navigation/StoneSideNav';
+import MarineShowcase from '@/components/data/MarineShowcase';
+import BookCarousel from '@/components/content/BookCarousel';
+import IdentityAirLock from '@/components/forms/IdentityAirLock';
+import IntroOverlay from '@/components/overlays/IntroOverlay';
+import CaveWallTerminal from '@/components/page-specific/science/CaveWallTerminal';
 import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn } from "lucide-react";
 import Link from "next/link";
 import cdn from "@/lib/cdn";
+import PrimaryNav from "@/components/layout/navigation/PrimaryNav";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -61,7 +62,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050403] text-slate-100 font-serif overflow-x-hidden relative selection:bg-emerald-900 selection:text-white">
+    <div className="min-h-screen bg-[#050403] text-slate-100 font-serif overflow-x-hidden relative selection:bg-emerald-900 selection:text-white">
       
       {/* 1. THE GATEKEEPER (Forces Audio Unlock) */}
       {!hasInteracted && (
@@ -76,6 +77,14 @@ export default function Home() {
       {/* 3. THE MAIN SITE */}
       {introFinished && (
         <>
+          {/* Skip Navigation Link for Screen Readers */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-orange-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+          >
+            Skip to main content
+          </a>
+
           {/* Login Modal (Lives on top of UI) */}
           <IdentityAirLock isOpen={showLogin} onClose={() => setShowLogin(false)} />
 
@@ -97,7 +106,8 @@ export default function Home() {
             </div>
 
             {/* TOP BAR */}
-            <nav className="fixed top-0 inset-x-0 z-50 flex flex-wrap md:flex-nowrap items-center justify-between px-4 md:px-6 py-4 border-b border-white/5 bg-[#050403]/90 backdrop-blur-md shadow-2xl">
+            <header role="banner" className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#050403]/90 backdrop-blur-md shadow-2xl">
+              <nav role="navigation" aria-label="Main navigation" className="flex flex-wrap md:flex-nowrap items-center justify-between px-4 md:px-6 py-4">
               
               {/* BRAND */}
               <div className="flex items-center gap-4 shrink-0">
@@ -147,12 +157,14 @@ export default function Home() {
                   </div>
                 )}
               </div>
-            </nav>
+              </nav>
+            </header>
 
             <StoneSideNav />
 
             {/* MAIN CONTENT AREA */}
-            <div className="relative z-10 pt-32 pb-24 max-w-7xl mx-auto px-4 md:px-6 space-y-20">
+            <main role="main" id="main-content" className="relative z-10 pt-32 pb-24 max-w-7xl mx-auto px-4 md:px-6 space-y-20">
+              <PrimaryNav className="mb-6" />
               
               {/* HERO SECTION */}
               <section className="text-center space-y-6 mt-8">
@@ -329,12 +341,12 @@ export default function Home() {
                 </div>
               </div>
 
-            </div>
+            </main>
           </div>
           <StickyObsidianNav />
         </>
       )}
-    </main>
+    </div>
   );
 }
 

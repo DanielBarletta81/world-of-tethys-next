@@ -3,6 +3,8 @@
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import cdn from '@/lib/cdn';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,6 +56,11 @@ const angleToFreq = (angle) => {
   const t = (angle - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE);
   return MIN_FREQ + t * (MAX_FREQ - MIN_FREQ);
 };
+
+const LISTEN_BREADCRUMB = [
+  { label: 'Home', href: '/' },
+  { label: 'Listen', href: '/listen', current: true }
+];
 
 export default function ListenerPage() {
   const [dial, setDial] = useState(98.4);
@@ -171,7 +178,12 @@ export default function ListenerPage() {
       />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-cyan-900/10 blur-[120px] rounded-full" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-24">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-8 space-y-2">
+          <PrimaryNav className="mb-1" />
+          <BreadcrumbTrail trail={LISTEN_BREADCRUMB} />
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6 py-24">
         <header className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-serif text-white tracking-widest drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]">
             THE HYDRO-PHONE

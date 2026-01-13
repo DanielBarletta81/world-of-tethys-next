@@ -11,7 +11,11 @@ const NAV_ITEMS = [
 
 export default function StoneSideNav() {
   return (
-    <nav className="fixed left-0 top-1/3 z-40 hidden md:flex flex-col gap-3">
+    <nav
+      className="fixed left-0 top-1/3 z-40 hidden md:flex flex-col gap-3"
+      role="navigation"
+      aria-label="Quick access"
+    >
       {NAV_ITEMS.map((item) => {
         const Icon = item.icon;
         return (

@@ -2,17 +2,35 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Map, Dna, Box, FileJson, FileText, Terminal, ArrowLeft } from 'lucide-react';
+import { Activity, Map, Dna, Box, FileJson, FileText, Terminal, ArrowLeft, Cloud } from 'lucide-react';
 import Link from 'next/link';
-import PterosDashboard from '@/components/PterosDashboard';
-import PaleoRealityCheck from '@/components/PaleoRealityCheck';
-import PaleoGIS from '@/components/PaleoGIS';
-import VRConsole from '@/components/VRConsole';
-import AssetCrate from '@/components/AssetCrate';
-import ScientificJournal from '@/components/ScientificJournal';
-import CaveWallTerminal from '@/components/CaveWallTerminal';
+import PterosDashboard from '@/components/page-specific/science/PterosDashboard';
+import PaleoRealityCheck from '@/components/page-specific/science/PaleoRealityCheck';
+import PaleoGIS from '@/components/page-specific/science/PaleoGIS';
+import VRConsole from '@/components/page-specific/science/VRConsole';
+import AssetCrate from '@/components/page-specific/science/AssetCrate';
+import ScientificJournal from '@/components/content/ScientificJournal';
+import CaveWallTerminal from '@/components/page-specific/science/CaveWallTerminal';
+import ProxyCityWeatherPanel from '@/components/weather/ProxyCityWeatherPanel';
 import { ASSET_MANIFEST } from '@/lib/assets-manifest';
 import cdn from '@/lib/cdn';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+
+const TAB_CONFIG = [
+  { id: 'telemetry', label: 'LIVE FEED', icon: Activity, panelId: 'panel-telemetry' },
+  { id: 'weather', label: 'WEATHER', icon: Cloud, panelId: 'panel-weather' },
+  { id: 'geo', label: 'GIS MAP', icon: Map, panelId: 'panel-geo' },
+  { id: 'paleo', label: 'VALIDATOR', icon: Dna, panelId: 'panel-paleo' },
+  { id: 'journal', label: 'LOGS', icon: FileText, panelId: 'panel-journal' },
+  { id: 'archives', label: 'ASSETS', icon: Box, panelId: 'panel-archives' },
+  { id: 'vr', label: 'VR LINK', icon: FileJson, panelId: 'panel-vr' }
+];
+
+const SCIENCE_BREADCRUMB = [
+  { label: 'Home', href: '/' },
+  { label: 'Science', href: '/science', current: true }
+];
 
 export default function FieldStationPage() {
   const [activeTab, setActiveTab] = useState('telemetry');
@@ -22,6 +40,8 @@ export default function FieldStationPage() {
     const timer = setTimeout(() => setBooted(true), 800);
     return () => clearTimeout(timer);
   }, []);
+
+  const currentTabInfo = TAB_CONFIG.find((tab) => tab.id === activeTab);
 
   return (
     <main className="min-h-screen relative font-mono text-cyan-50 overflow-hidden bg-black selection:bg-cyan-900 selection:text-white">
@@ -35,9 +55,13 @@ export default function FieldStationPage() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <header className="flex flex-col md:flex-row justify-between items-end border-b border-cyan-500/20 bg-[#050607]/80 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto w-full px-4 md:px-6 space-y-3">
+          <PrimaryNav className="mb-1" />
+          <BreadcrumbTrail trail={SCIENCE_BREADCRUMB} />
+        </div>
+        <header role="banner" className="flex flex-col md:flex-row justify-between items-end border-b border-cyan-500/20 bg-[#050607]/80 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-cyan-600 hover:text-cyan-400 transition-colors">
+            <Link href="/" className="text-cyan-600 hover:text-cyan-400 transition-colors" aria-label="Return to home">
               <ArrowLeft size={20} />
             </Link>
             <div>
@@ -51,17 +75,26 @@ export default function FieldStationPage() {
             </div>
           </div>
 
-          <nav className="flex gap-1 mt-4 md:mt-0 overflow-x-auto max-w-full hide-scrollbar">
-            <TabButton id="telemetry" label="LIVE FEED" icon={<Activity size={14} />} active={activeTab} onClick={setActiveTab} />
-            <TabButton id="geo" label="GIS MAP" icon={<Map size={14} />} active={activeTab} onClick={setActiveTab} />
-            <TabButton id="paleo" label="VALIDATOR" icon={<Dna size={14} />} active={activeTab} onClick={setActiveTab} />
-            <TabButton id="journal" label="LOGS" icon={<FileText size={14} />} active={activeTab} onClick={setActiveTab} />
-            <TabButton id="archives" label="ASSETS" icon={<Box size={14} />} active={activeTab} onClick={setActiveTab} />
-            <TabButton id="vr" label="VR LINK" icon={<FileJson size={14} />} active={activeTab} onClick={setActiveTab} />
+          <nav
+            role="tablist"
+            aria-label="Field station sections"
+            className="flex gap-1 mt-4 md:mt-0 overflow-x-auto max-w-full hide-scrollbar"
+          >
+            {TAB_CONFIG.map((tab) => (
+              <TabButton
+                key={tab.id}
+                id={tab.id}
+                panelId={tab.panelId}
+                label={tab.label}
+                icon={<tab.icon size={14} aria-hidden />}
+                active={activeTab}
+                onClick={setActiveTab}
+              />
+            ))}
           </nav>
         </header>
 
-        <div className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <main role="main" id="main-content" className="flex-1 p-4 md:p-8 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             <AnimatePresence mode="wait">
               {!booted ? (
@@ -81,6 +114,10 @@ export default function FieldStationPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
+                  role="tabpanel"
+                  id={currentTabInfo?.panelId || `panel-${activeTab}`}
+                  aria-labelledby={`tab-${activeTab}`}
+                  tabIndex={0}
                   transition={{ duration: 0.3 }}
                 >
                   {activeTab === 'telemetry' && (
@@ -106,6 +143,27 @@ export default function FieldStationPage() {
                           [ Awaiting Drone Feed 02 ]
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'weather' && (
+                    <div
+                      className="space-y-6"
+                      role="region"
+                      aria-live="polite"
+                      aria-label="Proxy city weather network"
+                    >
+                      <div className="bg-cyan-950/20 border border-cyan-500/20 rounded-lg p-6">
+                        <h2 className="text-xl font-bold text-cyan-400 mb-2 flex items-center gap-2">
+                          <Cloud size={20} />
+                          Proxy City Weather Network
+                        </h2>
+                        <p className="text-xs text-cyan-600 mb-4">
+                          Real-world weather conditions from locations mirroring Tethys regions. 
+                          Use this data to assess survivability before selecting map locations.
+                        </p>
+                      </div>
+                      <ProxyCityWeatherPanel showAllCities={true} />
                     </div>
                   )}
 
@@ -140,16 +198,22 @@ export default function FieldStationPage() {
               )}
             </AnimatePresence>
           </div>
-        </div>
+        </main>
       </div>
     </main>
   );
 }
 
-function TabButton({ id, label, icon, active, onClick }) {
+function TabButton({ id, panelId, label, icon, active, onClick }) {
   const isActive = active === id;
   return (
     <button
+      type="button"
+      role="tab"
+      aria-selected={isActive}
+      aria-controls={panelId}
+      id={`tab-${id}`}
+      tabIndex={isActive ? 0 : -1}
       onClick={() => onClick(id)}
       className={`flex items-center gap-2 px-5 py-3 text-[10px] uppercase tracking-[0.15em] font-bold transition-all whitespace-nowrap border-t-2 ${
         isActive

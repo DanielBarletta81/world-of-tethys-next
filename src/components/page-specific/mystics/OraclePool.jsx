@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Sparkles, Eye } from 'lucide-react';
-// Use global styles; whisper text now just uses inline classes
-import OracleModal from "@/components/OracleModal";
-import TorchCursor from "@/components/ui/torchCursor";
+import OracleModal from '@/components/overlays/OracleModal';
+import TorchCursor from '@/components/ui/torchCursor';
 import { useTethys } from "@/context/TethysContext";
 import { writeBatch, collection, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import "../app/styles/oracle-pool.css";
+import '@/app/styles/oracle-pool.css';
 
 const WHISPERS_POOL = [
   {

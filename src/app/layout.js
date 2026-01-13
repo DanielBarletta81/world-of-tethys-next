@@ -5,7 +5,7 @@ import { AudioProvider } from '../context/AudioContext';
 import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 import GlobalAtmosphere from '../components/GlobalAtmosphere';
 import './globals.css';
-import Footer from '@/components/Footer';
+import Footer from '@/components/layout/Footer';
 import cdn from '@/lib/cdn';
 
 const inter = Inter({ 
@@ -54,6 +54,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable} ${handwriting.variable}`}>
       <body className="bg-[#0c0a09] text-[#e7e5e4] antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-orange-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+        >
+          Skip to main content
+        </a>
         <AuthProvider>
           <TethysProvider>
             <AudioProvider>

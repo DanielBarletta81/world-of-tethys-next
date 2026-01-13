@@ -2,10 +2,9 @@
 
 import dynamic from 'next/dynamic';
 
-const KithOracle = dynamic(() => import('@/components/KithOracle'), { ssr: false });
-const OraclePool = dynamic(() => import('@/components/OraclePool'), { ssr: false });
-const FungalProxyPanel = dynamic(() => import('@/components/FungalProxyPanel'), { ssr: false });
-const MythicCard = dynamic(() => import('@/components/MythicCard'), { ssr: false });
+const OraclePool = dynamic(() => import('@/components/page-specific/mystics/OraclePool'), { ssr: false });
+const FungalProxyPanel = dynamic(() => import('@/components/page-specific/mystics/FungalProxyPanel'), { ssr: false });
+const MythicCard = dynamic(() => import('@/components/content/MythicCard'), { ssr: false });
 
 const MYTHICS = [
   { name: 'Prime Signal', symbol: 'PSI', trait: 'Ignited the Cambrian wave; a harmonic that still rings.' },
@@ -18,9 +17,6 @@ export default function MysticsClient() {
     <>
       <div style={{ marginTop: '2rem' }}>
         <OraclePool />
-      </div>
-      <div style={{ marginTop: '2rem' }}>
-        <KithOracle />
       </div>
       <div style={{ marginTop: '2rem' }}>
         <FungalProxyPanel />

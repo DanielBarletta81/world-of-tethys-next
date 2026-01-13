@@ -129,6 +129,8 @@ export default function LandingSequence({ onComplete }) {
       {step < SEQUENCE_STEPS.length + 1 && (
         <motion.div
           key="landing-container"
+          role="region"
+          aria-label="Introduction sequence"
           className="fixed inset-0 z-[9999] bg-[#050403] flex flex-col items-center justify-center font-serif overflow-hidden cursor-none"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 2.0, ease: "easeInOut" } }}

@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { Shield, AlertTriangle, ArrowLeft } from 'lucide-react';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import { fetchArchive } from '../../../lib/tethys-api'; // Adjust path as needed
 
 // Mock Data for Alpha (Remove when WP is connected)
@@ -21,13 +23,29 @@ const MOCK_DATA = [
   }
 ];
 
+const formatLabel = (value) =>
+  value
+    .split('-')
+    .map((chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1))
+    .join(' ');
+
+const buildBreadcrumb = (category) => [
+  { label: 'Home', href: '/' },
+  { label: 'Archive', href: '/archive' },
+  { label: formatLabel(category), current: true }
+];
+
 export default async function CategoryPage({ params }) {
   const { category } = params;
   // const entries = await fetchArchive(category); // Use this when WP is ready
   const entries = MOCK_DATA; // Alpha Fallback
 
   return (
-    <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif p-8 bg-stone-grain">
+      <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif p-8 bg-stone-grain">
+        <div className="max-w-7xl mx-auto px-0 py-8 space-y-2">
+          <PrimaryNav className="mb-1" />
+          <BreadcrumbTrail trail={buildBreadcrumb(category)} />
+        </div>
       <div className="max-w-6xl mx-auto">
         
         {/* Header */}

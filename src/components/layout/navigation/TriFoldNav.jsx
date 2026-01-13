@@ -44,7 +44,11 @@ export default function TriFoldNav({ onSelect }) {
   };
 
   return (
-    <nav className="absolute left-0 top-0 bottom-0 w-16 hover:w-56 transition-all duration-300 bg-[#0c0a09]/90 border-r border-stone-800 z-40">
+    <nav
+      className="absolute left-0 top-0 bottom-0 w-16 hover:w-56 transition-all duration-300 bg-[#0c0a09]/90 border-r border-stone-800 z-40"
+      role="navigation"
+      aria-label="Atlas quick links"
+    >
       <div className="flex flex-col pt-20 gap-2">
         {PATHS.map(path => {
           const isOpen = open === path.id;
@@ -54,6 +58,8 @@ export default function TriFoldNav({ onSelect }) {
               {/* PATH HEADER */}
               <button
                 onClick={() => setOpen(isOpen ? null : path.id)}
+                aria-expanded={isOpen}
+                aria-controls={`tri-path-${path.id}`}
                 className={`flex items-center justify-between w-full px-4 py-3 ${headerClass} transition`}
               >
                 <span className="uppercase tracking-[0.3em] text-[10px] font-mono">
@@ -66,29 +72,33 @@ export default function TriFoldNav({ onSelect }) {
                 />
               </button>
 
-              {/* PATH ITEMS */}
-              {isOpen && (
-                <div className="pl-6 pb-2 flex flex-col gap-1">
-                  {path.items.map(item => {
-                    const linkProps = item.href ? { href: item.href } : { href: '#' };
-                    return (
-                      <Link
-                        key={item.id}
-                        {...linkProps}
-                        onClick={(e) => {
-                          if (onSelect) {
-                            e.preventDefault();
-                            onSelect(item.id);
-                          }
-                        }}
-                        className="text-left text-xs text-stone-300 hover:text-white py-1"
-                      >
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
+              <div
+                id={`tri-path-${path.id}`}
+                className={`pl-6 pb-2 flex flex-col gap-1 transition-opacity duration-150 ${
+                  isOpen
+                    ? 'opacity-100 visible pointer-events-auto'
+                    : 'opacity-0 invisible h-0 overflow-hidden pointer-events-none'
+                }`}
+              >
+                {path.items.map(item => {
+                  const linkProps = item.href ? { href: item.href } : { href: '#' };
+                  return (
+                    <Link
+                      key={item.id}
+                      {...linkProps}
+                      onClick={(e) => {
+                        if (onSelect) {
+                          e.preventDefault();
+                          onSelect(item.id);
+                        }
+                      }}
+                      className="text-left text-xs text-stone-300 hover:text-white py-1"
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           );
         })}

@@ -1,10 +1,17 @@
 'use client';
 
-import TriFoldNav from '@/components/TriFoldNav';
+import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
+import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
+import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import ContrabandItem from '@/components/ContrabandItem';
 import { ARCHIVE_CRATE } from '@/lib/library';
 import cdn from '@/lib/cdn';
 import { PackageOpen } from 'lucide-react';
+
+const STUDY_BREADCRUMB = [
+  { label: 'Home', href: '/' },
+  { label: 'Study', href: '/study', current: true }
+];
 
 export default function StudyPage() {
   return (
@@ -16,6 +23,11 @@ export default function StudyPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0c0a09] via-[#120d09]/90 to-[#0c0a09]" />
         <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
+      </div>
+
+      <div className="relative z-10 pt-6 px-4 md:px-8">
+        <PrimaryNav className="mb-1" />
+        <BreadcrumbTrail trail={STUDY_BREADCRUMB} />
       </div>
 
       <TriFoldNav />

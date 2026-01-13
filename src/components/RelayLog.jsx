@@ -5,9 +5,8 @@ import { translateWeatherToLore } from '@/lib/weatherTranslator';
 import { Radio, Activity, Loader2, WifiOff } from 'lucide-react';
 
 // Fetches /api/tethys-intel and renders relay status for proxy outposts
-export default function RelayLog({ focus = 'all', withAi = false }) {
+export default function RelayLog({ focus = 'all' }) {
   const [reports, setReports] = useState([]);
-  const [aiSummary, setAiSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,12 +16,11 @@ export default function RelayLog({ focus = 'all', withAi = false }) {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/tethys-intel?focus=${encodeURIComponent(focus)}&ai=${withAi}`, { cache: 'no-store' });
+        const res = await fetch(`/api/tethys-intel?focus=${encodeURIComponent(focus)}&ai=false`, { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!mounted) return;
         setReports(data.reports || []);
-        setAiSummary(data.aiSummary || null);
       } catch (e) {
         if (!mounted) return;
         setError(e.message || 'relay failure');
@@ -78,11 +76,6 @@ export default function RelayLog({ focus = 'all', withAi = false }) {
         </div>
       )}
 
-      {aiSummary && (
-        <div className="mt-4 border-t border-stone-800 pt-3 text-[11px] text-stone-300 font-serif leading-relaxed">
-          {aiSummary}
-        </div>
-      )}
     </div>
   );
 }

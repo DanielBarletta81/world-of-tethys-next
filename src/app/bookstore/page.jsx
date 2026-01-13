@@ -3,6 +3,13 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { catalogItems } from "../../data/catalog";
+import BreadcrumbTrail from "@/components/layout/BreadcrumbTrail";
+import PrimaryNav from "@/components/layout/navigation/PrimaryNav";
+
+const BOOKSTORE_BREADCRUMB = [
+  { label: 'Home', href: '/' },
+  { label: 'Bookstore', href: '/bookstore', current: true }
+];
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +56,8 @@ export default function BookstorePage() {
 
   return (
     <main className="site-shell">
+      <PrimaryNav className="mb-4" />
+      <BreadcrumbTrail trail={BOOKSTORE_BREADCRUMB} className="mb-8" />
       <header className="space-y-2">
         <p className="text-[10px] uppercase tracking-[0.4em] text-[#ffb87a] font-mono">Supply Drop</p>
         <h1 className="text-4xl font-display text-[#f6eee2]">Bookstore & Signals</h1>
