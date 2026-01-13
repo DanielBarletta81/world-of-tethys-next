@@ -21,7 +21,7 @@ export default function CreaturesPage() {
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif selection:bg-amber-900 selection:text-white relative overflow-x-hidden">
       <div
         className="fixed inset-0 bg-cover bg-center opacity-30 z-0"
-        style={{ backgroundImage: `url(${cdn('/img/bg/parchment-map-table.png')})` }}
+        style={{ backgroundImage: `url(https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/parchment-map-table.png)` }}
       />
       <div className="fixed inset-0 bg-gradient-to-b from-[#0c0a09] via-transparent to-[#0c0a09] z-0" />
 

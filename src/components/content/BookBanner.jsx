@@ -7,19 +7,19 @@ const BOOKS = [
   {
     id: 1,
     title: 'Sky City of Tethys',
-    coverUrl: cdn('/img/book1-cover.png'),
+    coverUrl: cdn('/img/books/book1-cover.png'),
     amazonLink: 'https://www.amazon.com/dp/B0G572X42L'
   },
   {
     id: 2,
     title: 'Unraveling Ravel',
-    coverUrl: cdn('/img/ravel-kindle.png'),
+    coverUrl: cdn('/img/books/ravel-kindle.png'),
     amazonLink: 'https://www.amazon.com/dp/B0GB5CR6HX'
   },
   {
     id: 3,
     title: 'What the Roots Remember',
-    coverUrl: cdn('/img/roots-remember.png'),
+    coverUrl: cdn('/img/books/roots-remember.png'),
     amazonLink: 'https://www.amazon.com/dp/B0G672S7YC'
   }
 ];

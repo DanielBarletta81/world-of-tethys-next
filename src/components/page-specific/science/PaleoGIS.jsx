@@ -27,6 +27,7 @@ export default function PaleoGIS() {
         </div>
 
       {/* NEW: Book Context Section */}
+      {activePoint && activePoint.book_context && (
     <div className="mt-4 pt-4 border-t border-slate-700">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-[9px] bg-amber-900/40 text-amber-500 px-2 py-0.5 rounded border border-amber-900/60 uppercase tracking-widest">
@@ -46,6 +47,7 @@ export default function PaleoGIS() {
         </div>
       </div>
     </div>
+      )}
 
 
         <div className="hidden md:flex gap-4 text-[10px] font-mono text-blue-400">

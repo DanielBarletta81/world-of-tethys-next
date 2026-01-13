@@ -33,7 +33,7 @@ export default function PterosTerminalPage() {
       title: 'Pteros Overview: The Weep',
       type: 'video',
       src: 'https://www.youtube.com/embed/aAbtMoKsNw4?autoplay=1&rel=0&modestbranding=1',
-      thumbnail: cdn('/img/bg/obsidian-coast-4k.jpg'),
+      thumbnail: 'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/obsidian-coast-4k.jpg',
       rewards: { lore: 5 }
     }
   ];

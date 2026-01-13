@@ -288,7 +288,7 @@ export default function Home() {
                     title="Signal from the Rift"
                     type="video"
                     src={cdn('/video/Spore_Cloud_Animation_Generated.mp4')}
-                    thumbnail={cdn('/img/bg/obsidian-coast-4k.jpg')}
+                    thumbnail={'https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/obsidian-coast-4k.jpg'}
                     rewards={{ lore: 5 }}
                   />
                 </div>
