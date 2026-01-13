@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { Play, X, MonitorPlay } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const DEFAULT_THRESHOLDS = [15, 30, 60]; // seconds
 

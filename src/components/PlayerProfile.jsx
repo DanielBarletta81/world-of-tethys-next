@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useTethys } from '@/context/TethysContext';
 import { generateStaffProfile } from '@/lib/staff-utils';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 import PlayerAvatar from './PlayerAvatar';
 import StaffVisualizer from './StaffVisualizer';
 import SeedVisualizer from './SeedVisualizer';

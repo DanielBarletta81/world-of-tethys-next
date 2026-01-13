@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Lock, Unlock, Scroll, Play, Flame } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export default function AncientArchive({ 
   id, 

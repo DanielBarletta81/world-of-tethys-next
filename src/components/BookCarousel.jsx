@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const BOOKS = [
   {

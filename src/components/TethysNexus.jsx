@@ -6,7 +6,7 @@ import MapFragments from '@/components/MapFragments';
 import useMapPhysics from '@/components/MapPhysics';
 import { loadKnowledge, saveKnowledge } from '@/app/hooks/useKnowledgeStore';
 import { useTorchCursor } from '@/app/hooks/useTorchSVG';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 
 function getWatcherIntensity(currentLocation) {

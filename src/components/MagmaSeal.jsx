@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export default function MagmaSeal({ className = "" }) {
   return (

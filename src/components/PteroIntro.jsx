@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export default function PteroIntro({ onComplete }) {
   const [isVisible, setIsVisible] = useState(true);

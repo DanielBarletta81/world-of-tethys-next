@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import CaveWallTerminal from '@/components/CaveWallTerminal';
 import TriFoldNav from '@/components/TriFoldNav';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 import { fetchMediaManifest } from '@/lib/media-manifest';
 
 export default function PterosTerminalPage() {

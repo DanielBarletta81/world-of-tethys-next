@@ -6,26 +6,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { FastForward } from 'lucide-react';
 import useSoundFX from '@/app/hooks/useSoundFX';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 // SEQUENCE CONFIGURATION
 // add a 'flashType' to specific steps to trigger visual jolts
 const SEQUENCE_STEPS = [
-  { 
-    text: 'Only if...', 
+  {
+    text: 'Only if...',
     sub: 'The Roots Remember',
     duration: 3000,
-    flashType: null 
+    flashType: null
   },
-  { 
-    text: 'Root Signal Found', 
-    sub: 'Ravel hum detected at 43.7 Hz', 
+  {
+    text: 'Root Signal Found',
+    sub: 'Ravel hum detected at 43.7 Hz',
     duration: 3500,
     flashType: 'signal' // Will flash a waveform/static color
   },
-  { 
-    text: 'Seal Opened', 
-    sub: 'Welcome to Tethys. War Horns Detected', 
+  {
+    text: 'Seal Opened',
+    sub: 'Welcome to Tethys. War Horns Detected',
     duration: 5000,
     flashType: 'seal' // Will flash coin image
   }

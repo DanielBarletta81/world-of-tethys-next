@@ -1,6 +1,6 @@
 'use client';
 
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const API_URL = process.env.NEXT_PUBLIC_WP_API_URL  ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
 

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import AtmosphericTotem from './AtmosphericTotem';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 // --- THE DATA: SENSORY CHANNELS ---
 const CHANNELS = [

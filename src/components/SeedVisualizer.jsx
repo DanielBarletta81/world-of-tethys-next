@@ -2,7 +2,7 @@
 import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 // Titles based on specific stat thresholds
 function pickTitle(scores) {

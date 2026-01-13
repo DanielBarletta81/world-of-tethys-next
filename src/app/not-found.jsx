@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Bone, Mountain, Waves } from 'lucide-react';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export default function NotFound() {
   return (

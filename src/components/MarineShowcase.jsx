@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { BESTIARY } from '@/data/bestiary';
 
 // Filter for only Marine/Survivor eras
-const MARINE_DATA = BESTIARY.filter(era => 
+const MARINE_DATA = BESTIARY.filter(era =>
   era.era === 'The Deep' || era.era === 'Tethys Survivors'
 ).flatMap(era => era.entries);
 

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Play } from 'lucide-react';
 import useSoundFX from '@/app/hooks/useSoundFX';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export default function IntroOverlay({ onStart }) {
   const [isEngaging, setIsEngaging] = useState(false);

@@ -12,7 +12,7 @@ import AssetCrate from '@/components/AssetCrate';
 import ScientificJournal from '@/components/ScientificJournal';
 import CaveWallTerminal from '@/components/CaveWallTerminal';
 import { ASSET_MANIFEST } from '@/lib/assets-manifest';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export default function FieldStationPage() {
   const [activeTab, setActiveTab] = useState('telemetry');

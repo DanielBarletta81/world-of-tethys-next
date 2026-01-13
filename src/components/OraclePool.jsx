@@ -8,7 +8,7 @@ import TorchCursor from "@/components/ui/torchCursor";
 import { useTethys } from "@/context/TethysContext";
 import { writeBatch, collection, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import "../../styles/oracle-pool.css";
+import "../app/styles/oracle-pool.css";
 
 const WHISPERS_POOL = [
   {
@@ -185,10 +185,10 @@ const createRipple = (e) => {
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const newRipple = { id: Date.now(), x, y };
     setRipples((prev) => [...prev, newRipple]);
-    
+
     setTimeout(() => {
       setRipples((prev) => prev.filter(r => r.id !== newRipple.id));
     }, 1000);
@@ -256,13 +256,9 @@ const harvestMushroom = (e, m) => {
   setModalOpen(true);
 };
 
-
-
- 
-
   return (
     <div
-      className={`oracle-shell oracle-pool gpu-layer relative w-full h-[600px] rounded-2xl overflow-hidden border border-emerald-900/50 shadow-[0_0_100px_rgba(45,212,191,0.1)] bg-[#0f172a] group cursor-none ${uiState ? `oracle--${uiState}` : ""}`}
+      className={`oracle-shell oracle-pool gpu-layer relative w-full h-[600px] rounded-2xl overflow-hidden border border-emerald-900/50 shadow-[0_0_100px_rgba(45,212,191,0.1)] bg-[#0f172a] group cursor-crosshair select-none ${uiState ? `oracle--${uiState}` : ""}`}
       style={{
         "--oracle-speed": oracleSpeed,
         "--oracle-opacity-mult": oracleOpacity,

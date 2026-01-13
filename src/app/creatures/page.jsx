@@ -7,7 +7,7 @@ import TriFoldNav from '@/components/TriFoldNav';
 import Footer from '@/components/Footer';
 import FieldNotebook from '@/components/FieldNotebook';
 import { BESTIARY } from '@/data/bestiary';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export default function CreaturesPage() {
   return (

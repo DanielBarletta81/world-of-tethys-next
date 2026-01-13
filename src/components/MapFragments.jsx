@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 // Simple, static pin overlays for the atlas with SVG icons
 export default function MapFragments({

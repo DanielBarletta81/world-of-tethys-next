@@ -2,7 +2,7 @@
 
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export const dynamic = 'force-dynamic';
 

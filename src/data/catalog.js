@@ -1,4 +1,4 @@
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export const catalogItems = [
   {

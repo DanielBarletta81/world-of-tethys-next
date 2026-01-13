@@ -3,7 +3,7 @@
 import TriFoldNav from '@/components/TriFoldNav';
 import ContrabandItem from '@/components/ContrabandItem';
 import { ARCHIVE_CRATE } from '@/lib/library';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 import { PackageOpen } from 'lucide-react';
 
 export default function StudyPage() {

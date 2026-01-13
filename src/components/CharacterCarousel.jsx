@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const cambrianNine = [
   { name: 'Melden', role: 'Legendary Geneticist', archetype: 'Archivist', color: 'text-amber-glow', image: cdn('/img/characters/marros_hero2.PNG') },

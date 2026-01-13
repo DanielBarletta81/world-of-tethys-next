@@ -6,7 +6,7 @@ import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 import GlobalAtmosphere from '../components/GlobalAtmosphere';
 import './globals.css';
 import Footer from '@/components/Footer';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const inter = Inter({ 
   subsets: ['latin'],

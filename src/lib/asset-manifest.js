@@ -1,5 +1,5 @@
 // src/lib/assets-manifest.js
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 export const ASSET_MANIFEST = [
   {

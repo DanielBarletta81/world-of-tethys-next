@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import React from 'react';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 
 const CARDS = [

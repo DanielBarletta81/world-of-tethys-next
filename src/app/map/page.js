@@ -18,7 +18,7 @@ import StatusBar from '@/components/StatusBar';
 
 import TriFoldNav from '@/components/TriFoldNav';
 import RelayLog from '@/components/RelayLog';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const PATH_CONFIG = [
   {

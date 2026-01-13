@@ -1,5 +1,5 @@
 
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 // src/data/strangers.js
 export const THE_ELEVEN = [

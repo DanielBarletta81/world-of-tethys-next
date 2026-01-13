@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Feather, FlaskConical, Anchor } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { cdn } from "@/lib/cdn";
+import cdn from "@/lib/cdn";
 
 const STRATA = [
   {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const BOOKS = [
   {

@@ -11,7 +11,7 @@ import IntroOverlay from "@/components/IntroOverlay";
 import CaveWallTerminal from "@/components/CaveWallTerminal";
 import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn } from "lucide-react";
 import Link from "next/link";
-import { cdn } from "@/lib/cdn";
+import cdn from "@/lib/cdn";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();

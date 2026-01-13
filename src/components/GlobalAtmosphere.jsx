@@ -2,7 +2,7 @@
 'use client';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 // Map your routes to high-quality scenic backgrounds
 // Use Getty/Stock images here. 

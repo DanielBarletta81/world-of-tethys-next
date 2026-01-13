@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation'; // <--- ADDED
 import { Fingerprint, Ghost, X, Sprout, Wind, Eye } from 'lucide-react';
-import { cdn } from '@/lib/cdn';
+import cdn from '@/lib/cdn';
 
 const WHISPERS = [
   "The soil remembers your footfall...",
