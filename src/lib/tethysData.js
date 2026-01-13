@@ -1,8 +1,8 @@
-'use server';
+'use client';
 
 import { cdn } from '@/lib/cdn';
 
-const API_URL = process.env.WORDPRESS_API_URL ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
+const API_URL = process.env.NEXT_PUBLIC_WP_API_URL  ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
 
 export async function getTethysData(endpoint = 'posts', params = {}) {
   const query = new URLSearchParams({
