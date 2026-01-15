@@ -231,11 +231,22 @@ export function TethysProvider({ children }) {
     if (!user || typeof user.getIdToken !== 'function') return;
     (async () => {
       try {
-        const token = await user.getIdToken();
-        await fetch('/api/profile/ensure', {
+        let token = await user.getIdToken();
+        let res = await fetch('/api/profile/ensure', {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` }
         });
+        // Retry once if token is stale/invalid
+        if (res.status === 401) {
+          token = await user.getIdToken(true);
+          res = await fetch('/api/profile/ensure', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+        }
+        if (!res.ok) {
+          console.warn('Profile ensure failed', res.status, await res.text());
+        }
       } catch (err) {
         console.warn('Profile ensure failed', err);
       }

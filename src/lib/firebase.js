@@ -1,3 +1,4 @@
+'use client';
 // src/lib/firebase.js
 
 import { initializeApp, getApp, getApps } from "firebase/app";
@@ -12,26 +13,25 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID // optional
 };
 
-const hasFirebaseConfig = Object.values(firebaseConfig).every(Boolean);
+// Only require the keys the client SDK actually needs; measurementId is optional.
+const requiredKeys = [
+  "NEXT_PUBLIC_FIREBASE_API_KEY",
+  "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+  "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+  "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
+  "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+  "NEXT_PUBLIC_FIREBASE_APP_ID"
+];
+
+const hasFirebaseConfig = requiredKeys.every((key) => Boolean(process.env[key]));
 
 if (typeof window !== "undefined") {
-  const required = [
-    "NEXT_PUBLIC_FIREBASE_API_KEY",
-    "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
-    "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
-    "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
-    "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
-    "NEXT_PUBLIC_FIREBASE_APP_ID",
-    "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID"
-  ];
-  const missing = required.filter((key) => !process.env[key]);
+  const missing = requiredKeys.filter((key) => !process.env[key]);
   if (missing.length) {
-    console.warn(
-      `[tethys] Firebase env vars missing: ${missing.join(", ")}`
-    );
+    console.warn(`[tethys] Firebase env vars missing: ${missing.join(", ")}`);
   }
 }
 

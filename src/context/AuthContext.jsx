@@ -1,14 +1,14 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  signInWithPopup, 
-  signOut, 
-  onAuthStateChanged, 
+import {
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
   GoogleAuthProvider,
   signInAnonymously
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase'; // Ensure this file exists!
+import { auth, hasFirebaseConfig } from '@/lib/firebase'; // Ensure this file exists!
 
 const AuthContext = createContext();
 
@@ -17,6 +17,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!hasFirebaseConfig || !auth) {
+      setLoading(false);
+      return () => {};
+    }
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
@@ -25,6 +29,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginGoogle = async () => {
+    if (!auth) return console.warn('Firebase auth is not configured');
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
@@ -34,6 +39,7 @@ export function AuthProvider({ children }) {
   };
 
   const loginGhost = async () => {
+    if (!auth) return console.warn('Firebase auth is not configured');
     try {
       await signInAnonymously(auth);
     } catch (error) {
@@ -42,6 +48,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    if (!auth) return console.warn('Firebase auth is not configured');
     try {
       await signOut(auth);
     } catch (error) {

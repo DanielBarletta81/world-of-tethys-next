@@ -45,11 +45,11 @@ export default function TriFoldNav({ onSelect }) {
 
   return (
     <nav
-      className="absolute left-0 top-0 bottom-0 w-16 hover:w-56 transition-all duration-300 bg-[#0c0a09]/90 border-r border-stone-800 z-40"
+      className="sticky top-20 self-start w-56 bg-[#0c0a09]/80 border border-stone-800 rounded-xl shadow-lg backdrop-blur-md z-30 px-2 py-3"
       role="navigation"
       aria-label="Atlas quick links"
     >
-      <div className="flex flex-col pt-20 gap-2">
+      <div className="flex flex-col gap-2">
         {PATHS.map(path => {
           const isOpen = open === path.id;
           const headerClass = colorStyles[path.color] || 'text-stone-300 hover:bg-stone-900/30';
@@ -60,7 +60,7 @@ export default function TriFoldNav({ onSelect }) {
                 onClick={() => setOpen(isOpen ? null : path.id)}
                 aria-expanded={isOpen}
                 aria-controls={`tri-path-${path.id}`}
-                className={`flex items-center justify-between w-full px-4 py-3 ${headerClass} transition`}
+                className={`flex items-center justify-between w-full px-4 py-2 rounded-lg ${headerClass} transition`}
               >
                 <span className="uppercase tracking-[0.3em] text-[10px] font-mono">
                   {path.label}
