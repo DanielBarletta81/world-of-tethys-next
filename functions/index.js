@@ -1,13 +1,13 @@
-const { initializeApp, getApps } = require('firebase-admin/app');
-const { getFirestore, FieldValue } = require('firebase-admin/firestore');
-const { onDocumentWritten } = require('firebase-functions/v2/firestore');
-const { onRequest } = require('firebase-functions/v2/https');
-const { derivePlayerDna } = require('./lib/playerDna');
+import { initializeApp, getApps } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { onDocumentWritten } from 'firebase-functions/v2/firestore';
+import { onRequest } from 'firebase-functions/v2/https';
+import { derivePlayerDna } from './lib/playerDna.js';
 
 const app = getApps().length ? getApps()[0] : initializeApp();
 const db = getFirestore(app);
 
-const enrichPlayerDnaEvent = onDocumentWritten(
+export const enrichPlayerDnaEvent = onDocumentWritten(
   { document: 'players/{userId}/dnaEvents/{eventId}', region: 'us-central1' },
   async (event) => {
     const snapshot = event.data?.after ?? event.data?.before;
@@ -46,11 +46,6 @@ const enrichPlayerDnaEvent = onDocumentWritten(
   }
 );
 
-const helloDna = onRequest({ region: 'us-central1' }, (req, res) => {
+export const helloDna = onRequest({ region: 'us-central1' }, (req, res) => {
   res.send('Hello from enrichPlayerDnaEvent!');
 });
-
-module.exports = {
-  enrichPlayerDnaEvent,
-  helloDna
-};
