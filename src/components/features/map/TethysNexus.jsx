@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import MapViewport from '@/components/features/map/MapViewport';
 import MapFragments from '@/components/features/map/MapFragments';
-import MapPhysics from '@/components/features/map/MapPhysics';
+import useMapPhysics from '@/components/features/map/MapPhysics';
 import { loadKnowledge, saveKnowledge } from '@/app/hooks/useKnowledgeStore';
 import { useTorchCursor } from '@/app/hooks/useTorchSVG';
 import cdn from '@/lib/cdn';
