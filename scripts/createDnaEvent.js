@@ -1,10 +1,14 @@
-import 'dotenv/config';
+'use server';
+
+import fs from 'fs';
 import admin from 'firebase-admin';
 import { createRequire } from 'module';
-import fs from 'fs';
+
 
 const require = createRequire(import.meta.url);
 const { env, argv } = process;
+const rawKey = env.FIREBASE_PRIVATE_KEY || '';
+const privateKey = rawKey.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
 
 if (!env.GOOGLE_APPLICATION_CREDENTIALS && !env.FIREBASE_PRIVATE_KEY) {
   throw new Error('Set GOOGLE_APPLICATION_CREDENTIALS or FIREBASE_PRIVATE_KEY before running.');
@@ -23,7 +27,7 @@ if (!admin.apps.length) {
     : {
         projectId: env.FIREBASE_PROJECT_ID,
         clientEmail: env.FIREBASE_CLIENT_EMAIL,
-        privateKey: env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+        privateKey: privateKey
       };
 
   admin.initializeApp({ credential: admin.credential.cert(creds) });

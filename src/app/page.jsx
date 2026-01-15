@@ -80,7 +80,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#050403] text-slate-100 font-serif overflow-x-hidden relative selection:bg-emerald-900 selection:text-white">
-      
+
       {/* 1. THE GATEKEEPER (Forces Audio Unlock) */}
       {!hasInteracted && (
         <IntroOverlay onStart={() => setHasInteracted(true)} />
@@ -98,7 +98,7 @@ export default function Home() {
             }
           }}
         />
-      )}
+   )}
 
       {/* 3. THE MAIN SITE */}
       {introFinished && (
@@ -145,7 +145,7 @@ export default function Home() {
 
               {/* BOOK CAROUSEL (Desktop) */}
               <div className="hidden lg:block flex-1 mx-8 max-w-xl opacity-80 hover:opacity-100 transition-opacity">
-                 <div className="scale-75 origin-left">
+                 <div className="w-full h-12 rounded-full bg-gradient-to-r from-orange-500/20 via-orange-500/10 to-transparent backdrop-blur-sm shadow-lg overflow-hidden">
                    <BookCarousel />
                  </div>
               </div>

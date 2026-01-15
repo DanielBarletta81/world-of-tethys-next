@@ -1,7 +1,7 @@
 // src/lib/tethysData.js
 // Note: Removed 'use client' so this can be used in Server Components for caching/SEO
 
-import {cdn} from './cdn';
+import { cdn } from './cdn.js';
 
 // Updated to match your Vercel Environment Variable
 const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
