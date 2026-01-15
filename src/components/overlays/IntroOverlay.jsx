@@ -38,6 +38,7 @@ export default function IntroOverlay({ onStart }) {
             src={cdn('/symbols/tethys-seal.png')} 
             alt="Enter Tethys" 
             fill
+            priority
             className="object-cover sepia-[0.5] hover:sepia-0 transition-all duration-500"
           />
           
