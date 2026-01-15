@@ -16,6 +16,7 @@ import { ASSET_MANIFEST } from '@/lib/assets-manifest';
 import cdn from '@/lib/cdn';
 import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
 
 const TAB_CONFIG = [
   { id: 'telemetry', label: 'LIVE FEED', icon: Activity, panelId: 'panel-telemetry' },
@@ -46,9 +47,10 @@ export default function FieldStationPage() {
   return (
     <main className="min-h-screen relative font-mono text-cyan-50 overflow-hidden bg-black selection:bg-cyan-900 selection:text-white">
       <div className="fixed inset-0 z-0">
+
         <div
           className="absolute inset-0 bg-cover bg-center opacity-60 scale-105"
-          style={{ backgroundImage: `url(${cdn('/img/bg/fossil-lab.jpg')})` }}
+         // style={{ backgroundImage: `url(${cdn('/img/bg/fossil-lab.jpg')})` }}
         />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] opacity-30 mix-blend-overlay pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050607] via-[#050607]/80 to-transparent" />
@@ -56,7 +58,7 @@ export default function FieldStationPage() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
         <div className="max-w-7xl mx-auto w-full px-4 md:px-6 space-y-3">
-          <PrimaryNav className="mb-1" />
+          <PrimaryNav className="mb-4" />
           <BreadcrumbTrail trail={SCIENCE_BREADCRUMB} />
         </div>
         <header role="banner" className="flex flex-col md:flex-row justify-between items-end border-b border-cyan-500/20 bg-[#050607]/80 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
@@ -66,11 +68,11 @@ export default function FieldStationPage() {
             </Link>
             <div>
               <h1 className="text-2xl md:text-4xl font-bold tracking-tighter text-white flex items-center gap-3">
-                <Terminal className="text-cyan-500" /> FIELD STATION ALPHA
+                <Terminal className="text-cyan-500" /> Pteros FIELD STATION
               </h1>
               <p className="text-[10px] text-cyan-400 uppercase tracking-[0.3em] mt-1 flex gap-4">
                 <span>// SITE: PTEROS HATCHERY</span>
-                <span>// DEPTH: 111.4 MYA</span>
+                <span>// AGE: 111.4 MYA</span>
               </p>
             </div>
           </div>
