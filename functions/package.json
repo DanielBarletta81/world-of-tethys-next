@@ -1,9 +1,0 @@
-{
-  "name": "world-of-tethys-functions",
-  "private": true,
-  "main": "index.js",
-  "dependencies": {
-    "firebase-admin": "^11.9.0",
-    "firebase-functions": "^5.1.1"
-  }
-}

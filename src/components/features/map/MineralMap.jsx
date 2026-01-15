@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import cdn from '@/lib/cdn';
+import { cdn } from '@/lib/cdn';
 
 const minerals = [
   { name: 'Amethyst / Quartz Geodes', location: 'Ural Mountains, Russia', lat: 60.0, lon: 60.0, color: '#06b6d4' },

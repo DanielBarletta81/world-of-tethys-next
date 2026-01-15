@@ -8,7 +8,6 @@ import TorchCursor from "@/components/ui/torchCursor";
 import { useTethys } from "@/context/TethysContext";
 import { writeBatch, collection, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import "../../styles/oracle-pool.css";
 
 const WHISPERS_POOL = [
   {

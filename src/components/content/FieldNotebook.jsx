@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Bookmark, Skull, Stamp } from 'lucide-react';
 import useSoundFX from '@/app/hooks/useSoundFX';
 import Image from 'next/image';
-import cdn from '@/lib/cdn';
+import { cdn } from '@/lib/cdn';
 
 export default function FieldNotebook({ bestiary = [] }) {
   const [activeEraIdx, setActiveEraIdx] = useState(0);

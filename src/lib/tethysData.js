@@ -1,8 +1,10 @@
-'use client';
+// src/lib/tethysData.js
+// Note: Removed 'use client' so this can be used in Server Components for caching/SEO
 
-import cdn from '@/lib/cdn';
+import cdn from './cdn';
 
-const API_URL = process.env.NEXT_PUBLIC_WP_API_URL  ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
+// Updated to match your Vercel Environment Variable
+const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
 
 export async function getTethysData(endpoint = 'posts', params = {}) {
   const query = new URLSearchParams({
@@ -15,7 +17,8 @@ export async function getTethysData(endpoint = 'posts', params = {}) {
     const res = await fetch(`${API_URL}/${endpoint}?${query.toString()}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      next: { revalidate: 3600 }, // Cached for 1 hour
+      // This caching strategy works best when called from Server Components
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) return [];
@@ -28,7 +31,7 @@ export async function getTethysData(endpoint = 'posts', params = {}) {
 
 // === HELPER: MAP CREATURES ===
 export async function getCleanCreatures() {
-  const raw = await getTethysData('creature'); // Use your CPT slug
+  const raw = await getTethysData('creature');
   return raw.map(item => ({
     id: item.id,
     name: item.title.rendered,
@@ -53,4 +56,3 @@ export async function getCleanCharacters() {
     sigil: item.acf?.sigil_image || cdn('/img/icons/tethys-seal.svg')
   }));
 }
-// World of Tethys || D.C. Barletta

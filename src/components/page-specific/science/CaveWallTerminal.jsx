@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Lock, FileText, Headphones, CheckCircle } from 'lucide-react';
 import { useTethys } from '@/context/TethysContext';
-import cdn from '@/lib/cdn';
+import { cdn } from '@/lib/cdn';
 
 const TYPE_META = {
   video: { label: 'projection', icon: Play },

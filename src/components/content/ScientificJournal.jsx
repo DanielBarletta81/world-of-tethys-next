@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Sprout, Anchor, Dna, FlaskConical, FileText, MapPin, Quote } from 'lucide-react';
-import cdn from '@/lib/cdn';
+import { cdn } from '@/lib/cdn';
 
 const JOURNAL_ENTRIES = [
     {

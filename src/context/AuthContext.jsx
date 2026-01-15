@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
@@ -8,19 +8,23 @@ import {
   GoogleAuthProvider,
   signInAnonymously
 } from 'firebase/auth';
-import { auth, hasFirebaseConfig } from '@/lib/firebase'; // Ensure this file exists!
+import { auth } from '@/lib/firebase';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!hasFirebaseConfig || !auth) {
+    // 1. SAFETY CHECK: If auth is null, keys are missing.
+    if (!auth) {
+      setError("Firebase not initialized. Check your .env.local file for NEXT_PUBLIC_ keys.");
       setLoading(false);
-      return () => {};
+      return;
     }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
@@ -29,7 +33,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginGoogle = async () => {
-    if (!auth) return console.warn('Firebase auth is not configured');
+    if (!auth) return;
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
@@ -39,7 +43,7 @@ export function AuthProvider({ children }) {
   };
 
   const loginGhost = async () => {
-    if (!auth) return console.warn('Firebase auth is not configured');
+    if (!auth) return;
     try {
       await signInAnonymously(auth);
     } catch (error) {
@@ -48,13 +52,26 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    if (!auth) return console.warn('Firebase auth is not configured');
+    if (!auth) return;
     try {
       await signOut(auth);
     } catch (error) {
       console.error("Sever Failed:", error);
     }
   };
+
+  // 2. RENDER ERROR STATE ON SCREEN
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-red-500 font-mono p-10 border-4 border-red-900">
+        <div>
+          <h1 className="text-2xl font-bold mb-4">CRITICAL SYSTEM FAILURE</h1>
+          <p>{error}</p>
+          <p className="text-sm text-stone-500 mt-4">Check console for specific missing keys.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ user, loading, loginGoogle, loginGhost, logout }}>
@@ -64,4 +81,3 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
-// World of Tethys || D.C. Barletta

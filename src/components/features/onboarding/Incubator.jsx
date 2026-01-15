@@ -4,11 +4,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Egg, Fingerprint, Sparkles } from 'lucide-react';
 import  useSoundFX  from '@/app/hooks/useSoundFX';
-import cdn from '@/lib/cdn';
+import { cdn } from '@/lib/cdn';
 
 export default function Incubator({ onHatch }) {
   const [hatching, setHatching] = useState(false);
-  const [hatched, setHatched] = useState(false);
   const { playRumble, playShriek, playLogoHit } = useSoundFX();
 
   const handleHatch = async () => {
@@ -17,13 +16,9 @@ export default function Incubator({ onHatch }) {
 
     // Cinematic delay simulating the shell cracking
     await new Promise(r => setTimeout(r, 2000));
-
+    
     playShriek(); // 2. Creature emerges
     playLogoHit(); // 3. Impact
-    setHatched(true);
-
-    // Brief pause to show the creature
-    await new Promise(r => setTimeout(r, 1500));
     onHatch(); // 4. Trigger parent unlock
   };
 
@@ -32,23 +27,7 @@ export default function Incubator({ onHatch }) {
       {/* Container pulsing glow */}
       <div className={`absolute inset-0 bg-orange-500/20 blur-[100px] rounded-full transition-all duration-[2000ms] ${hatching ? 'scale-150 opacity-0' : 'scale-100 opacity-50'}`} />
 
-      {/* Hatched Creature Display */}
-      {hatched && (
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-20 flex flex-col items-center gap-4"
-        >
-          <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-500/20 to-amber-500/20 border-2 border-orange-500/50 flex items-center justify-center shadow-[0_0_40px_rgba(249,115,22,0.4)]">
-            <Sparkles size={64} className="text-orange-400 animate-pulse" />
-          </div>
-          <p className="text-orange-300 text-sm font-mono uppercase tracking-wider animate-pulse">Guide Awakened</p>
-        </motion.div>
-      )}
-
       {/* The Egg Object */}
-      {!hatched && (
       <button 
         onClick={handleHatch}
         disabled={hatching}
@@ -84,10 +63,9 @@ export default function Incubator({ onHatch }) {
           </div>
         </motion.div>
       </button>
-      )}
 
       {/* Status Readout */}
-      {!hatching && !hatched && (
+      {!hatching && (
         <div className="absolute -bottom-12 left-0 right-0 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-black/40 border border-stone-800 rounded-full text-xs font-mono text-stone-400">
             <Fingerprint size={12} className="text-emerald-500" />

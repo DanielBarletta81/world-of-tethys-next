@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Feather, FlaskConical, Anchor } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import cdn from "@/lib/cdn";
+import { cdn } from "@/lib/cdn";
 
 const STRATA = [
   {
@@ -52,11 +52,7 @@ export default function StrataNav() {
   return (
     <>
       {/* Desktop rail */}
-      <nav
-        className="fixed left-0 top-1/4 z-50 hidden md:flex flex-col gap-2"
-        role="navigation"
-        aria-label="Strata navigation"
-      >
+      <nav className="fixed left-0 top-1/4 z-50 hidden md:flex flex-col gap-2">
         {STRATA.map((layer) => {
           const Icon = layer.Icon;
           const isActive = activeLayer === layer.id;
@@ -112,8 +108,6 @@ export default function StrataNav() {
             type="button"
             onClick={() => setMobileOpen((prev) => !prev)}
             className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold tracking-wide text-stone-200 uppercase"
-            aria-expanded={mobileOpen}
-            aria-controls="strata-mobile-panel"
           >
             <span className="flex items-center gap-2">
               <Anchor className="h-4 w-4 text-amber-400" />
@@ -130,7 +124,6 @@ export default function StrataNav() {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
                 className="px-4 pb-4 pt-1 space-y-3"
-                id="strata-mobile-panel"
               >
                 {STRATA.map((layer) => {
                   const Icon = layer.Icon;
