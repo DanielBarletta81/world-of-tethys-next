@@ -14,8 +14,8 @@ export function loadCredential() {
   
   // Handle Vercel's private key newlines automatically
   const rawKey = process.env.FIREBASE_PRIVATE_KEY;
-  const privateKey = rawKey 
-    ? rawKey.replace(/\\n/g, "\n") 
+  const privateKey = rawKey
+    ? rawKey.replace(/\\n/g, "\n")
     : undefined;
 
   if (projectId && clientEmail && privateKey) {

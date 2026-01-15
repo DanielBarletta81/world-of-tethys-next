@@ -1,10 +1,9 @@
-'use client';
-// src/lib/firebase.js
 
-import { initializeApp, getApp, getApps } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+// src/lib/firebase.js
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,GoogleAuthProvider,onAuthStateChanged, signOut } from 'firebase/auth';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+
 
 const firebaseConfig = {
   apiKey: "process.env.NEXT_PUBLIC_FIREBASE_API_KEY",
@@ -16,14 +15,29 @@ const firebaseConfig = {
   measurementId: "process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID" // optional
 };
 
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+const analytics =
+  typeof window !== "undefined" && firebaseConfig.measurementId
+    ? getAnalytics(app)
+    : null;
+
+hasFirebaseConfig
+  ? (getApps().length ? getApp() : initializeApp(firebaseConfig))
+  : null;
+
 // Only require the keys the client SDK actually needs; measurementId is optional.
 const requiredKeys = [
-  "NEXT_PUBLIC_FIREBASE_API_KEY",
-  "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
-  "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
-  "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
-  "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
-  "NEXT_PUBLIC_FIREBASE_APP_ID"
+  NEXT_PUBLIC_FIREBASE_API_KEY,
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  NEXT_PUBLIC_FIREBASE_APP_ID
 ];
 
 const hasFirebaseConfig = requiredKeys.every((key) => Boolean(process.env[key]));
@@ -35,17 +49,83 @@ if (typeof window !== "undefined") {
   }
 }
 
-const app = hasFirebaseConfig
-  ? (getApps().length ? getApp() : initializeApp(firebaseConfig))
-  : null;
 
-const auth = app ? getAuth(app) : null;
-const db = app ? getFirestore(app) : null;
-const googleProvider = new GoogleAuthProvider();
-const analytics =
-  app && typeof window !== "undefined" && firebaseConfig.measurementId
-    ? getAnalytics(app)
-    : null;
+// --- Authentication Functions ---
 
-export { app, auth, googleProvider, db, analytics, hasFirebaseConfig };
+// Register a new player
+async function registerPlayer(email, password) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("Registered user:", user.uid);
+    // Create a Firestore document for the new player
+    await setDoc(doc(db, "players", user.uid), {
+      email: user.email,
+      createdAt: new Date(),
+      // Add any other initial player data here
+    });
+    return user;
+  } catch (error) {
+    console.error("Error registering:", error.message);
+    throw error;
+  }
+}
+
+// Login a player
+async function loginPlayer(email, password) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("Logged in user:", user.uid);
+    return user;
+  } catch (error) {
+    console.error("Error logging in:", error.message);
+    throw error;
+  }
+}
+
+// Logout a player
+async function logoutPlayer() {
+  await signOut(auth);
+  console.log("User logged out.");
+}
+
+// Listen for auth state changes (e.g., user logs in/out)
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in
+    console.log("Auth state changed: User is signed in", user.uid);
+    // Fetch player data from Firestore
+    fetchPlayerData(user.uid);
+  } else {
+    // User is signed out
+    console.log("Auth state changed: User is signed out");
+  }
+});
+
+// --- Firestore Functions ---
+
+// Fetch player data
+async function fetchPlayerData(userId) {
+  const playerDocRef = doc(db, "players", userId);
+  const playerDocSnap = await getDoc(playerDocRef);
+
+  if (playerDocSnap.exists()) {
+    console.log("Player data:", playerDocSnap.data());
+    return playerDocSnap.data();
+  } else {
+    console.log("No such player document!");
+    return null;
+  }
+}
+
+// Update player data
+async function updatePlayerData(userId, data) {
+  const playerDocRef = doc(db, "players", userId);
+  await setDoc(playerDocRef, data, { merge: true }); // Use merge: true to update fields without overwriting the whole document
+  console.log("Player data updated for:", userId);
+}
+
+
+export { app, auth, googleProvider, db, analytics, hasFirebaseConfig, loginPlayer, registerPlayer, logoutPlayer, fetchPlayerData, updatePlayerData };
 // World of Tethys || D.C. Barletta
