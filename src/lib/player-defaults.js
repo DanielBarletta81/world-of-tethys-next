@@ -74,6 +74,25 @@ export const DEFAULT_PLAYER_PROFILE = {
   vr: {
     calibration: { worldScale: 1.0, handedness: 'right', comfortMode: 'standard' },
     lastPose: null
-  }
+  },
+  guide: {
+    sigilId: null,
+    hatchedAt: null,
+    avatarType: 'sigil',
+    creatureId: null,
+    swaps: [],
+    adornments: [],
+    level: 1
+  },
+  progress: {
+    timeOnSiteMs: 0,
+    scrollDepthMax: 0,
+    chaptersRead: 0,
+    mapVisits: 0,
+    hatchActions: 0,
+    oracleConsults: 0,
+    avatarSwaps: 0
+  },
+  adornmentUnlockedAt: {}
 };
 // World of Tethys || D.C. Barletta

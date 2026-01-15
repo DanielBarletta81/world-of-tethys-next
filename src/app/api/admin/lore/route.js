@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getFirebaseAdmin } from '@/lib/firebaseAdmin';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 function isAuthorized(req) {
   const authHeader = req.headers.get('x-admin-key');
   const bearer = req.headers.get('authorization');
@@ -60,4 +63,3 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-

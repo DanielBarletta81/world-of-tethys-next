@@ -157,6 +157,17 @@ export function TethysProvider({ children }) {
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             const data = docSnap.data();
+            const ensureFields = {
+              guide: data?.guide || DEFAULT_PLAYER_PROFILE.guide,
+              progress: data?.progress || DEFAULT_PLAYER_PROFILE.progress,
+              adornmentUnlockedAt: data?.adornmentUnlockedAt || {},
+              lastLoginAt: serverTimestamp()
+            };
+            try {
+              await setDoc(docRef, ensureFields, { merge: true });
+            } catch (e) {
+              console.warn('Login sync failed', e);
+            }
             applyData(data);
             persistGuestSnapshot(data);
             setPlayerProfile(prev => ({ ...DEFAULT_PLAYER_PROFILE, ...data }));
@@ -214,6 +225,22 @@ export function TethysProvider({ children }) {
     }
     loadData();
   }, [userId, isGuest, user?.displayName]);
+
+  // Ensure server-side profile exists/merges as soon as the user signs in
+  useEffect(() => {
+    if (!user || typeof user.getIdToken !== 'function') return;
+    (async () => {
+      try {
+        const token = await user.getIdToken();
+        await fetch('/api/profile/ensure', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (err) {
+        console.warn('Profile ensure failed', err);
+      }
+    })();
+  }, [user]);
 
   const buildGuestSnapshot = useCallback(
     () => ({
@@ -1041,6 +1068,15 @@ try {
         overrides.staffSeed ||
         template.rules?.staffSeed ||
         `KITH-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+      const guideSigil = overrides.sigilId || template.rules?.sigilId || 'starter_sigil';
+      const guideAvatar = overrides.avatarType || 'sigil';
+      const guideCreatureId =
+        guideAvatar === 'creature'
+          ? overrides.creatureId || playerProfile.guide?.creatureId || null
+          : null;
+      const guideAdornments = Array.from(
+        new Set([...(playerProfile.guide?.adornments || []), 'sigil_hatched'])
+      );
 
       const rawItemIds = overrides.items || template.rules?.giveItems || [];
       const starterItems = buildLoadoutItems(rawItemIds, { pathId: pathPrimary });
@@ -1080,6 +1116,23 @@ try {
         survivorship: {
           ...playerProfile.survivorship,
           lastFound: { label: 'Starter Cache', regionId: 'pteros_island', at: nowIso }
+        },
+        guide: {
+          sigilId: guideSigil,
+          hatchedAt: playerProfile?.guide?.hatchedAt || nowIso,
+          avatarType: guideAvatar,
+          creatureId: guideCreatureId,
+          swaps: playerProfile?.guide?.swaps || [],
+          adornments: guideAdornments,
+          level: playerProfile?.guide?.level || 1
+        },
+        progress: {
+          ...playerProfile.progress,
+          hatchActions: (playerProfile.progress?.hatchActions || 0) + 1
+        },
+        adornmentUnlockedAt: {
+          ...(playerProfile.adornmentUnlockedAt || {}),
+          sigil_hatched: playerProfile?.adornmentUnlockedAt?.sigil_hatched || nowIso
         }
       };
 
@@ -1106,8 +1159,19 @@ try {
         type: 'HATCH',
         regionId: 'pteros_island',
         at: nowIso,
-        delta: { staffStats: baseStats, inventoryAdded: starterItems.map((i) => i.id) },
+        delta: {
+          staffStats: baseStats,
+          inventoryAdded: starterItems.map((i) => i.id)
+        },
+        guide: { sigilId: guideSigil, avatarType: guideAvatar, creatureId: guideCreatureId },
         vr: { atlas: { x: 0.5, y: 0.6, heading: 1.0 }, world: { x: 0, y: 0, z: 0, yaw: 1.0 } }
+      });
+
+      await logEvent({
+        type: 'GUIDE_HATCH',
+        regionId: 'pteros_island',
+        at: nowIso,
+        guide: { sigilId: guideSigil, avatarType: guideAvatar, creatureId: guideCreatureId }
       });
 
       if (!isGuest && userId) {

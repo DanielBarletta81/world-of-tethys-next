@@ -330,7 +330,7 @@ export default function MapPage() {
         {viewState === 'map' && <StatusBar />}
         {/* HEADER */}
         <header role="banner" className="max-w-7xl mx-auto mb-8 flex flex-wrap items-end justify-between gap-4 relative z-10">
-        <Link href="/" className="text-xs text-stone-500 hover:text-white uppercase tracking-widest flex items-center gap-2 mb-4 transition-colors">
+        <Link href="/?skipIntro=1" className="text-xs text-stone-500 hover:text-white uppercase tracking-widest flex items-center gap-2 mb-4 transition-colors">
           <ArrowLeft size={14} />
           Return to Hub
         </Link>

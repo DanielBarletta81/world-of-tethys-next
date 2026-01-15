@@ -1,13 +1,25 @@
-const admin = require('firebase-admin');
-const { env } = process;
+import 'dotenv/config';
+import admin from 'firebase-admin';
+import { createRequire } from 'module';
+import fs from 'fs';
+
+const require = createRequire(import.meta.url);
+const { env, argv } = process;
 
 if (!env.GOOGLE_APPLICATION_CREDENTIALS && !env.FIREBASE_PRIVATE_KEY) {
-  throw new Error('Set FIREBASE_PRIVATE_KEY/GMAIL... or GOOGLE_APPLICATION_CREDENTIALS before running.');
+  throw new Error('Set GOOGLE_APPLICATION_CREDENTIALS or FIREBASE_PRIVATE_KEY before running.');
 }
 
 if (!admin.apps.length) {
   const creds = env.GOOGLE_APPLICATION_CREDENTIALS
-n    ? require(env.GOOGLE_APPLICATION_CREDENTIALS)
+    ? (() => {
+        if (!fs.existsSync(env.GOOGLE_APPLICATION_CREDENTIALS)) {
+          throw new Error(
+            `GOOGLE_APPLICATION_CREDENTIALS file not found at ${env.GOOGLE_APPLICATION_CREDENTIALS}`
+          );
+        }
+        return require(env.GOOGLE_APPLICATION_CREDENTIALS);
+      })()
     : {
         projectId: env.FIREBASE_PROJECT_ID,
         clientEmail: env.FIREBASE_CLIENT_EMAIL,
@@ -19,15 +31,13 @@ n    ? require(env.GOOGLE_APPLICATION_CREDENTIALS)
 
 const db = admin.firestore();
 
-const userId = process.argv[2];
-if (!userId) {
-  console.error('Usage: node scripts/createDnaEvent.js <userId>');
-  process.exit(1);
-}
+const userArgs = argv.slice(2);
+const targetUsers =
+  userArgs.length > 0
+    ? userArgs
+    : ['mock-user-a', 'mock-user-b', 'mock-user-c']; // small default set
 
-const eventRef = db.collection('players').doc(userId).collection('dnaEvents').doc();
-
-const sampleEvent = {
+const baseEvent = {
   coordinates: { x: 37.2, y: 120.5 },
   region: 'cambria_ruins',
   pathMode: 'wild',
@@ -40,8 +50,11 @@ const sampleEvent = {
 };
 
 async function run() {
-  await eventRef.set(sampleEvent);
-  console.log(`Written sample dnaEvents/${eventRef.id} for player ${userId}`);
+  for (const userId of targetUsers) {
+    const eventRef = db.collection('players').doc(userId).collection('dnaEvents').doc();
+    await eventRef.set({ ...baseEvent });
+    console.log(`Written sample dnaEvents/${eventRef.id} for player ${userId}`);
+  }
 }
 
 run().catch((err) => {

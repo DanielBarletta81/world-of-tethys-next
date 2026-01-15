@@ -34,6 +34,8 @@
     "**/*.tsx"
 , "src/app/map/page.js", "src/app/map/page.js"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "node_modules.old",
+    "**/node_modules.old/**"
   ]
 }

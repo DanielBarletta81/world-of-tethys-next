@@ -1,15 +1,14 @@
-import admin from 'firebase-admin';
-import { onDocumentWritten } from 'firebase-functions/v2/firestore';
-import { derivePlayerDna } from '../src/lib/playerDna.js';
+const { initializeApp, getApps } = require('firebase-admin/app');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const { onDocumentWritten } = require('firebase-functions/v2/firestore');
+const { onRequest } = require('firebase-functions/v2/https');
+const { derivePlayerDna } = require('./lib/playerDna');
 
-if (!admin.apps.length) {
-  admin.initializeApp();
-}
+const app = getApps().length ? getApps()[0] : initializeApp();
+const db = getFirestore(app);
 
-const db = admin.firestore();
-
-export const enrichPlayerDnaEvent = onDocumentWritten(
-  'players/{userId}/dnaEvents/{eventId}',
+const enrichPlayerDnaEvent = onDocumentWritten(
+  { document: 'players/{userId}/dnaEvents/{eventId}', region: 'us-central1' },
   async (event) => {
     const snapshot = event.data?.after ?? event.data?.before;
     if (!snapshot) return;
@@ -21,11 +20,12 @@ export const enrichPlayerDnaEvent = onDocumentWritten(
     if (payload.dnaSnapshot?.seed === dna.seed) {
       return;
     }
+
     const glyphRecord = {
       region: payload.region || 'unknown',
       glyphId: dna.glyph.glyphId,
       color: dna.glyph.color,
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
+      createdAt: FieldValue.serverTimestamp()
     };
 
     const profileRef = db.collection('playerProfiles').doc(event.params.userId);
@@ -36,8 +36,8 @@ export const enrichPlayerDnaEvent = onDocumentWritten(
       profileRef,
       {
         latestDna: dna,
-        glyphHistory: admin.firestore.FieldValue.arrayUnion(glyphRecord),
-        lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+        glyphHistory: FieldValue.arrayUnion(glyphRecord),
+        lastUpdated: FieldValue.serverTimestamp()
       },
       { merge: true }
     );
@@ -45,3 +45,12 @@ export const enrichPlayerDnaEvent = onDocumentWritten(
     await batch.commit();
   }
 );
+
+const helloDna = onRequest({ region: 'us-central1' }, (req, res) => {
+  res.send('Hello from enrichPlayerDnaEvent!');
+});
+
+module.exports = {
+  enrichPlayerDnaEvent,
+  helloDna
+};

@@ -7,8 +7,8 @@ const SFX_MANIFEST = {
   click_torch: '/sfx/click_torch.mp3',
   
   // Immersion Sounds
- // rumble_volcano: '/sfx/sub-bass-rumble.mp3',
- // high_pitch_whine: '/sfx/mosquito-whine.mp3', // For Stranger Cards
+  rumble_volcano: '/sfx/sub-bass-rumble.mp3',
+  high_pitch_whine: '/sfx/mosquito-whine.mp3', // For Stranger Cards
   
   // The Cinematic Intro Suite
   intro_drone: '/sfx/intro_drone.mp3',       // 15s Ambient Bed
@@ -61,8 +61,8 @@ export default function useSoundFX() {
     
     // Atmosphere
     playRumble: () => play('rumble_volcano', 0.4),
-    //playWhine: () => play('high_pitch_whine', 0.05),
-    //playShriek: () => play('high_pitch_whine', 0.2), // Re-using whine for now, or add specific shriek
+    playWhine: () => play('high_pitch_whine', 0.05),
+    playShriek: () => play('high_pitch_whine', 0.2), // Re-using whine as shriek for now
 
     // Cinematic Intro
     playDrone: () => play('intro_drone', 0.4, true), // Looping just in case

@@ -34,6 +34,23 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const skipIntro = params.get('skipIntro');
+    const stored = localStorage.getItem('tethys_intro_complete');
+    const onHomeRoute = window.location.pathname === '/home';
+    if (skipIntro === '1' || stored === '1' || onHomeRoute) {
+      setHasInteracted(true);
+      setIntroFinished(true);
+      try {
+        localStorage.setItem('tethys_intro_complete', '1');
+      } catch {
+        /* ignore */
+      }
+    }
+  }, []);
+
   const submitSlate = () => {
     const banned = ['http', 'www', 'sex', 'hate', 'kill']; // simple guard
     const cleaned = slateText.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
@@ -71,7 +88,16 @@ export default function Home() {
 
       {/* 2. THE CINEMATIC (Only plays AFTER interaction) */}
       {hasInteracted && !introFinished && (
-        <LandingSequence onComplete={() => setIntroFinished(true)} />
+        <LandingSequence
+          onComplete={() => {
+            setIntroFinished(true);
+            try {
+              localStorage.setItem('tethys_intro_complete', '1');
+            } catch {
+              /* ignore */
+            }
+          }}
+        />
       )}
 
       {/* 3. THE MAIN SITE */}

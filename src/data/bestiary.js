@@ -1,4 +1,5 @@
-import cdn from '@/lib/cdn';
+// Relative import for Node/SSR contexts (avoids path alias issues during scripts)
+import cdn from '../lib/cdn.js';
 
 export const BESTIARY = [
   {

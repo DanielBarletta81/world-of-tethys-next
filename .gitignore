@@ -50,3 +50,11 @@ next-env.d.ts
 # firebase functions
 /functions/node_modules
 /functions/.firebase
+/functions/lib
+
+# catch stray duplicate module dirs
+node_modules*/
+/functions/node_modules*/
+
+firebase-admin*
+
