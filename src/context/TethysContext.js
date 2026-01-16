@@ -2,19 +2,16 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
-import { db, hasFirebaseConfig } from '@/lib/firebase';
 import {
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp,
-  collection,
-  getDocs,
-  addDoc,
-  deleteDoc,
-  runTransaction,
-  increment
-} from 'firebase/firestore';
+  fetchPlayerBootstrap,
+  savePlayerSnapshot,
+  logPlayerEvent,
+  logPlayerRumor,
+  logPlayerDaily,
+  upsertPlayerCreature,
+  deletePlayerCreature,
+  fetchStarterTemplate
+} from '@/lib/playerApi';
 import { DEFAULT_PLAYER_PROFILE } from '@/lib/player-defaults';
 import { BESTIARY } from '@/data/bestiary';
 
@@ -133,11 +130,6 @@ export function TethysProvider({ children }) {
         }
       };
 
-      if (!hasFirebaseConfig || !db) {
-        loadGuestFallback();
-        setLoadingData(false);
-        return;
-      }
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
         loadGuestFallback();
         setLoadingData(false);
@@ -153,68 +145,17 @@ export function TethysProvider({ children }) {
         loadGuestFallback();
       } else {
         try {
-          const docRef = doc(db, "players", userId);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const ensureFields = {
-              guide: data?.guide || DEFAULT_PLAYER_PROFILE.guide,
-              progress: data?.progress || DEFAULT_PLAYER_PROFILE.progress,
-              adornmentUnlockedAt: data?.adornmentUnlockedAt || {},
-              lastLoginAt: serverTimestamp()
-            };
-            try {
-              await setDoc(docRef, ensureFields, { merge: true });
-            } catch (e) {
-              console.warn('Login sync failed', e);
-            }
-            applyData(data);
-            persistGuestSnapshot(data);
-            setPlayerProfile(prev => ({ ...DEFAULT_PLAYER_PROFILE, ...data }));
-            try {
-              const creatureSnap = await getDocs(collection(db, "players", userId, "creatures"));
-              const cList = [];
-              creatureSnap.forEach((c) => cList.push({ id: c.id, ...c.data() }));
-              setCreatures(cList);
-            } catch (error) {
-              console.warn('Creature sync failed:', error);
-            }
-            try {
-              const eventSnap = await getDocs(collection(db, "players", userId, "events"));
-              const eList = [];
-              eventSnap.forEach((ev) => eList.push({ id: ev.id, ...ev.data() }));
-              setEvents(eList);
-              if (data?.eventCount == null) {
-                setEventCount(eventSnap.size);
-              }
-            } catch (error) {
-              console.warn('Event sync failed:', error);
-            }
-          } else {
-            const initialData = {
-              stats: DEFAULT_STATS,
-              inventory: [],
-              unlockedNodes: ['pteros'],
-              unlockedAssets: [],
-              currentLocation: 'pteros',
-              lastHarvestDate: null,
-              eventCount: 0,
-              rumorCount: 0,
-              ...DEFAULT_PLAYER_PROFILE,
-              identity: {
-                ...DEFAULT_PLAYER_PROFILE.identity,
-                handle: user?.displayName || 'Ghost Ward',
-                title: 'Ghost Ward'
-              },
-              createdAt: serverTimestamp(),
-              lastLoginAt: serverTimestamp()
-            };
-            await setDoc(docRef, initialData);
-            applyData(initialData);
-            persistGuestSnapshot(initialData);
-            setPlayerProfile(initialData);
-            setCreatures([]);
-            setEvents([]);
+          const bootstrap = await fetchPlayerBootstrap();
+          const data = bootstrap?.profile || {};
+          applyData(data);
+          persistGuestSnapshot(data);
+          setPlayerProfile((prev) => ({ ...DEFAULT_PLAYER_PROFILE, ...data }));
+          const cList = Array.isArray(bootstrap?.creatures) ? bootstrap.creatures : [];
+          const eList = Array.isArray(bootstrap?.events) ? bootstrap.events : [];
+          setCreatures(cList);
+          setEvents(eList);
+          if (data?.eventCount == null) {
+            setEventCount(eList.length);
           }
         } catch (error) {
           console.warn("Cloud Sync Error:", error);
@@ -225,33 +166,6 @@ export function TethysProvider({ children }) {
     }
     loadData();
   }, [userId, isGuest, user?.displayName]);
-
-  // Ensure server-side profile exists/merges as soon as the user signs in
-  useEffect(() => {
-    if (!user || typeof user.getIdToken !== 'function') return;
-    (async () => {
-      try {
-        let token = await user.getIdToken();
-        let res = await fetch('/api/profile/ensure', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        // Retry once if token is stale/invalid
-        if (res.status === 401) {
-          token = await user.getIdToken(true);
-          res = await fetch('/api/profile/ensure', {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` }
-          });
-        }
-        if (!res.ok) {
-          console.warn('Profile ensure failed', res.status, await res.text());
-        }
-      } catch (err) {
-        console.warn('Profile ensure failed', err);
-      }
-    })();
-  }, [user]);
 
   const buildGuestSnapshot = useCallback(
     () => ({
@@ -702,33 +616,27 @@ export function TethysProvider({ children }) {
       if (isGuest) {
         localStorage.setItem(`tethys_data_guest`, JSON.stringify(dataToSave));
       } else {
-try {
-  const docRef = doc(db, "players", userId);
-      await setDoc(
-        docRef,
-        {
-          inventory,
-          equippedStaff,
-          stats,
-          lastHarvestDate,
-          unlockedNodes,
-          unlockedAssets,
-          currentLocation,
-          locationHistory,
-          staff: playerProfile.staff,
-          history: playerProfile?.history,
-          progression: playerProfile?.progression,
-          path: playerProfile?.path,
-          onboarding: playerProfile?.onboarding,
-          survivorship: playerProfile?.survivorship,
-          daily: playerProfile.daily,
-          eventCount,
-      rumorCount,
-      lastLoginAt: serverTimestamp(),
-    },
-    { merge: true }
-  );
-} catch (error) {
+        try {
+          await savePlayerSnapshot({
+            inventory,
+            equippedStaff,
+            stats,
+            lastHarvestDate,
+            unlockedNodes,
+            unlockedAssets,
+            currentLocation,
+            locationHistory,
+            staff: playerProfile.staff,
+            history: playerProfile?.history,
+            progression: playerProfile?.progression,
+            path: playerProfile?.path,
+            onboarding: playerProfile?.onboarding,
+            survivorship: playerProfile?.survivorship,
+            daily: playerProfile.daily,
+            eventCount,
+            rumorCount
+          });
+        } catch (error) {
           console.error("Cloud Save Error:", error);
         }
       }
@@ -772,21 +680,17 @@ try {
   }, []);
 
   const logEvent = useCallback(async (event) => {
+    const nowIso = new Date().toISOString();
     const stamped = {
       ...event,
-      at: event.at || new Date().toISOString(),
-      createdAt: event.createdAt || serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      at: event.at || nowIso,
+      createdAt: event.createdAt || nowIso,
+      updatedAt: nowIso,
     };
     setEvents((prev) => [...prev.slice(-99), stamped]); // keep recent 100
     if (!isGuest && userId) {
       try {
-        await runTransaction(db, async (tx) => {
-          const eventRef = doc(collection(db, 'players', userId, 'events'));
-          const playerRef = doc(db, 'players', userId);
-          tx.set(eventRef, stamped);
-          tx.set(playerRef, { eventCount: increment(1) }, { merge: true });
-        });
+        await logPlayerEvent(stamped);
         setEventCount((prev) => prev + 1);
       } catch (e) {
         console.warn('Event log failed', e);
@@ -867,8 +771,7 @@ try {
     });
 
     if (!isGuest && userId) {
-      const ref = doc(db, 'players', userId, 'creatures', stamped.creatureId || stamped.id || Date.now().toString());
-      await setDoc(ref, stamped, { merge: true }).catch((e) => console.warn('Creature sync failed', e));
+      await upsertPlayerCreature(stamped).catch((e) => console.warn('Creature sync failed', e));
     }
     return stamped;
   }, [isGuest, userId]);
@@ -876,8 +779,7 @@ try {
   const removeCreatureBond = useCallback(async (creatureId) => {
     setCreatures((prev) => prev.filter((c) => c.creatureId !== creatureId && c.id !== creatureId));
     if (!isGuest && userId) {
-      const ref = doc(db, 'players', userId, 'creatures', creatureId);
-      await deleteDoc(ref).catch((e) => console.warn('Creature delete failed', e));
+      await deletePlayerCreature(creatureId).catch((e) => console.warn('Creature delete failed', e));
     }
   }, [isGuest, userId]);
 
@@ -981,20 +883,16 @@ try {
   }, [currentLocation, logEvent, playerProfile, resolveBondCooldownUntil]);
 
   const logRumorEntry = useCallback(async (entry) => {
+    const nowIso = new Date().toISOString();
     const stamped = {
       ...entry,
-      at: entry.at || new Date().toISOString(),
-      createdAt: entry.createdAt || serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      at: entry.at || nowIso,
+      createdAt: entry.createdAt || nowIso,
+      updatedAt: nowIso,
     };
     if (!isGuest && userId) {
       try {
-        await runTransaction(db, async (tx) => {
-          const rumorRef = doc(collection(db, 'players', userId, 'rumorLog'));
-          const playerRef = doc(db, 'players', userId);
-          tx.set(rumorRef, stamped);
-          tx.set(playerRef, { rumorCount: increment(1) }, { merge: true });
-        });
+        await logPlayerRumor(stamped);
         setRumorCount((prev) => prev + 1);
       } catch (e) {
         console.warn('Rumor log failed', e);
@@ -1010,13 +908,10 @@ try {
     const stamped = {
       ...payload,
       date: dateKey,
-      claimedAt: payload?.claimedAt || serverTimestamp(),
+      claimedAt: payload?.claimedAt || new Date().toISOString(),
     };
     if (!isGuest && userId) {
-      const ref = doc(db, 'players', userId, 'daily', dateKey);
-      await setDoc(ref, stamped, { merge: true }).catch((e) =>
-        console.warn('Daily log failed', e)
-      );
+      await logPlayerDaily(stamped).catch((e) => console.warn('Daily log failed', e));
     } else if (typeof window !== 'undefined') {
       const key = `tethys_daily_${dateKey}`;
       localStorage.setItem(key, JSON.stringify(stamped));
@@ -1058,9 +953,8 @@ try {
   const loadStarterTemplate = useCallback(
     async (templateId = DEFAULT_STARTER_TEMPLATE.templateId) => {
       try {
-        const ref = doc(db, 'templates', 'starterLoadouts', templateId);
-        const snap = await getDoc(ref);
-        if (snap.exists()) return { templateId, ...snap.data() };
+        const template = await fetchStarterTemplate(templateId);
+        if (template) return template;
       } catch (e) {
         console.warn('Starter template lookup failed, using default', e);
       }
@@ -1185,17 +1079,9 @@ try {
         guide: { sigilId: guideSigil, avatarType: guideAvatar, creatureId: guideCreatureId }
       });
 
-      if (!isGuest && userId) {
-        try {
-          await setDoc(doc(db, 'players', userId), updatedProfile, { merge: true });
-        } catch (e) {
-          console.warn('Hatch sync failed', e);
-        }
-      }
-
       return { template, staff: staffDoc, items: starterItems, profile: updatedProfile };
     },
-    [buildLoadoutItems, isGuest, loadStarterTemplate, logEvent, playerProfile, upsertCreatureBond, userId]
+    [buildLoadoutItems, loadStarterTemplate, logEvent, playerProfile, upsertCreatureBond]
   );
 
   const claimDailyReward = useCallback(

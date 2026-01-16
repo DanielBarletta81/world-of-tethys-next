@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation'; // <--- ADDED
 import { Fingerprint, Ghost, X, Sprout, Wind, Eye } from 'lucide-react';
 import { cdn } from '@/lib/cdn';
@@ -16,7 +15,6 @@ const WHISPERS = [
 ];
 
 export default function IdentityAirlock({ isOpen, onClose }) {
-  const { loginGoogle, loginGhost } = useAuth();
   const router = useRouter(); // <--- ADDED
   const [status, setStatus] = useState('dormant'); 
   const [whisper, setWhisper] = useState(WHISPERS[0]);
@@ -30,34 +28,26 @@ export default function IdentityAirlock({ isOpen, onClose }) {
     }
   }, [status]);
 
-  const handleGoogle = async () => {
+  const handleSignal = async () => {
     setStatus('sensing');
     await new Promise(r => setTimeout(r, 2500)); // Cinematic delay
-    try {
-      await loginGoogle();
-      setStatus('woven');
-      
-      // THE REDIRECT: Transport to Game Loop
-      setTimeout(() => {
-        onClose();
-        router.push('/map'); 
-      }, 1000);
-      
-    } catch (e) {
-      setStatus('dormant');
-    }
+    setStatus('woven');
+
+    // THE REDIRECT: Transport to Login
+    setTimeout(() => {
+      onClose?.();
+      router.push('/login');
+    }, 1000);
   };
 
   const handleGhost = async () => {
     setStatus('sensing');
     await new Promise(r => setTimeout(r, 1500));
-    await loginGhost();
     setStatus('drifting');
     
     // THE REDIRECT
     setTimeout(() => {
-      onClose();
-      router.push('/map');
+      onClose?.();
     }, 1000);
   };
 
@@ -132,7 +122,7 @@ export default function IdentityAirlock({ isOpen, onClose }) {
                     "The archive is written in memory, not ink.<br/>Offer a signal to be remembered."
                   </p>
                   <button
-                    onClick={handleGoogle}
+                    onClick={handleSignal}
                     className="group/btn w-full relative flex items-center justify-center gap-3 bg-[#161311] hover:bg-[#1f1c19] border border-emerald-800/40 hover:border-emerald-500/60 text-emerald-50 py-4 transition-all duration-500 rounded-sm overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-emerald-900/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-out" />

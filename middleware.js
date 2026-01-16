@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { auth0 } from './src/lib/auth0';
 
 export async function middleware(request) {
   const hostname = request.headers.get('host');
@@ -12,7 +11,7 @@ export async function middleware(request) {
     );
   }
 
-  return auth0.middleware(request);
+  return NextResponse.next();
 }
 
 export const config = {

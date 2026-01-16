@@ -1,17 +1,6 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import {
-  signInWithPopup,
-  signOut,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInAnonymously
-} from 'firebase/auth';
-import { auth, googleProvider, hasFirebaseConfig, registerPlayer, loginPlayer, logoutPlayer } from '@/lib/firebase';
-
 
 const AuthContext = createContext();
 
@@ -21,61 +10,91 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!hasFirebaseConfig || !auth) {
-      setError('Firebase not initialized. Check your .env.local file for NEXT_PUBLIC_ keys.');
-      setLoading(false);
-      return () => {};
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    let active = true;
+    const loadSession = async () => {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!res.ok) {
+          if (active) setUser(null);
+        } else {
+          const json = await res.json();
+          if (active) setUser(json.user || null);
+        }
+      } catch (err) {
+        if (active) {
+          setUser(null);
+          setError('Session check failed.');
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    loadSession();
+    return () => {
+      active = false;
+    };
   }, []);
 
-
   const registerEmail = async (email, password) => {
-    if (!auth) return null;
-    const res = await createUserWithEmailAndPassword(auth, email, password);
-    return res.user;
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password })
+    });
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      throw new Error(json.error || 'Registration failed.');
+    }
+    const json = await res.json();
+    setUser(json.user || null);
+    return json.user;
   };
 
   const loginEmail = async (email, password) => {
-    if (!auth) return null;
-    const res = await signInWithEmailAndPassword(auth, email, password);
-    return res.user;
-  };
-
-  const loginGoogle = async () => {
-    if (!auth) return;
-    const provider = googleProvider || new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Link Failed:", error);
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password })
+    });
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      throw new Error(json.error || 'Login failed.');
     }
-  };
-
-  const loginGhost = async () => {
-    if (!auth) return;
-    try {
-      await signInAnonymously(auth);
-    } catch (error) {
-      console.error("Ghost Link Failed:", error);
-    }
+    const json = await res.json();
+    setUser(json.user || null);
+    return json.user;
   };
 
   const logout = async () => {
-    if (!auth) return;
     try {
-      await signOut(auth);
-    } catch (error) {
-      console.error("Sever Failed:", error);
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } finally {
+      setUser(null);
     }
   };
 
-  // 2. RENDER ERROR STATE ON SCREEN
+  const deleteAccount = async () => {
+    try {
+      const res = await fetch('/api/auth/delete', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        throw new Error(json.error || 'Account deletion failed.');
+      }
+      setUser(null);
+    } catch (err) {
+      console.error('Account deletion failed:', err);
+      throw err;
+    }
+  };
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-red-500 font-mono p-10 border-4 border-red-900">
@@ -89,7 +108,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginEmail, registerEmail,loginGoogle, loginGhost, logout }}>
+    <AuthContext.Provider value={{ user, loading, loginEmail, registerEmail, logout, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

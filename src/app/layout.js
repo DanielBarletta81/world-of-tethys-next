@@ -4,6 +4,7 @@ import { TethysProvider } from '../context/TethysContext';
 import { AudioProvider } from '../context/AudioContext';
 import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 import GlobalAtmosphere from '../components/GlobalAtmosphere';
+import GuestUpgradeGate from '../components/GuestUpgradeGate';
 import './globals.css';
 import Footer from '@/components/layout/Footer';
 import cdn from '@/lib/cdn';
@@ -67,6 +68,7 @@ export default function RootLayout({ children }) {
             <AudioProvider>
               <GlobalAtmosphere />
               {children}
+              <GuestUpgradeGate />
               <GlobalAudioPlayer/>
             </AudioProvider>
           </TethysProvider>

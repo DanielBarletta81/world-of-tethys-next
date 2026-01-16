@@ -1,3 +1,4 @@
+import 'server-only';
 import fetch from 'cross-fetch';
 
 const endpoint = process.env.WP_GRAPHQL_ENDPOINT;

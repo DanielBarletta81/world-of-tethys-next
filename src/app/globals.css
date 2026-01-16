@@ -2,6 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import './styles/oracle-pool.css';
 
 /* Screen Reader Only Utility */
 @layer utilities {

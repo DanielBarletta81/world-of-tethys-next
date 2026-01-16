@@ -16,7 +16,7 @@ export default function Footer({ theme = 'volcanic' }) {
   };
 
   return (
-    <footer className={`border-t ${styles.border} ${styles.bg} py-24 text-center relative overflow-hidden font-serif`}>
+    <footer role="contentinfo" className={`border-t ${styles.border} ${styles.bg} py-24 text-center relative overflow-hidden font-serif`}>
       
       {/* Background Watermark */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center select-none">

@@ -6,8 +6,6 @@ import { Sparkles, Eye } from 'lucide-react';
 import OracleModal from "@/components/OracleModal";
 import TorchCursor from "@/components/ui/torchCursor";
 import { useTethys } from "@/context/TethysContext";
-import { writeBatch, collection, doc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 
 const WHISPERS_POOL = [
   {
@@ -86,7 +84,7 @@ const journalWithheld = () => ({
 
 
 const OraclePool = () => {
-  const { playerProfile, currentLocation, setPlayerProfile } = useTethys();
+  const { playerProfile, currentLocation, setPlayerProfile, isGuest } = useTethys();
   const [ripples, setRipples] = useState([]);
   const [activeWhisper, setActiveWhisper] = useState(null);
   const [harvested, setHarvested] = useState([]);
@@ -127,8 +125,11 @@ const OraclePool = () => {
     const flush = async () => {
       const entries = Object.entries(oracleWeatherRef.current);
       if (!entries.length) return;
-      const batch = writeBatch(db);
-      entries.forEach(([key, count]) => {
+      if (isGuest) {
+        oracleWeatherRef.current = {};
+        return;
+      }
+      const payload = entries.map(([key, count]) => {
         const [
           dayBucket,
           bucketPath,
@@ -138,8 +139,7 @@ const OraclePool = () => {
           regionBand,
           interactionDepth,
         ] = key.split("|");
-        const ref = doc(collection(db, "oracle_observations"));
-        batch.set(ref, {
+        return {
           dayBucket,
           path: bucketPath,
           oracleState,
@@ -148,10 +148,20 @@ const OraclePool = () => {
           regionBand,
           interactionDepth,
           count,
-        });
+        };
       });
-      await batch.commit();
-      oracleWeatherRef.current = {};
+      try {
+        await fetch("/api/oracle/observations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ entries: payload }),
+        });
+      } catch (error) {
+        console.warn("Oracle observation sync failed", error);
+      } finally {
+        oracleWeatherRef.current = {};
+      }
     };
 
     const onHide = () => {
@@ -165,7 +175,7 @@ const OraclePool = () => {
       window.removeEventListener("visibilitychange", onHide);
       window.removeEventListener("beforeunload", flush);
     };
-  }, []);
+  }, [isGuest]);
 
   useEffect(() => {
     if (!activeWhisper || !activeWhisper.token) return;

@@ -1,34 +1,35 @@
 // app/login/page.js
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
-import { MagmaCard, MagmaButton, InputField } from "@/components/MagmaUI";
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import { MagmaCard, MagmaButton, InputField } from '@/components/MagmaUI';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { loginFirebase, loginAuth0 } = useAuth();
+  const { loginEmail, registerEmail } = useAuth();
   const router = useRouter();
 
   const handleFirebaseLogin = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      await loginFirebase(email, password);
+      await loginEmail(email, password);
       router.push("/"); // Redirect to landing
     } catch (err) {
       setError("Access denied: Invalid credentials.");
     }
   };
 
-  const handleAuth0Login = async () => {
+  const handleRegister = async () => {
+    setError("");
     try {
-      await loginAuth0();
-      router.push("/");
+      await registerEmail(email, password);
+      router.push("/map");
     } catch (err) {
-      setError("Auth0 Connection failed.");
+      setError("Registration failed. Check email/password.");
     }
   };
 
@@ -67,8 +68,8 @@ export default function LoginPage() {
             </span>
           </div>
 
-          <MagmaButton secondary onClick={handleAuth0Login}>
-             Connect via Auth0 Proxy
+          <MagmaButton secondary onClick={handleRegister}>
+            Create New Signal
           </MagmaButton>
         </MagmaCard>
       </div>

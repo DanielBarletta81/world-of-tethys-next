@@ -5,7 +5,6 @@ import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
 import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import BookBanner from '@/components/content/BookBanner';
-import SideAuthPanel from '@/components/forms/SideAuthPanel';
 import IdentityAirLock from '@/components/forms/IdentityAirLock';
 import TheBlankSlate from '@/components/TheBlankSlate';
 
@@ -34,7 +33,6 @@ export default function CommunityPage() {
         <BreadcrumbTrail trail={COMMUNITY_BREADCRUMB} />
       </div>
       <TriFoldNav />
-      <SideAuthPanel />
       <div className="pt-20 space-y-10">
         <BookBanner />
 

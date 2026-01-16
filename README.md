@@ -26,7 +26,8 @@ Interactive maps connecting fantasy locations to real geological data.
 
 
 🛠️ Tech StackFrontend: Next.js 14 (App Router)Styling: Tailwind CSS + CSS Modules (for biome themes)
-Auth: Firebase (Google & Anonymous "Ghost" Login)
+Auth: Firebase Admin (server sessions via BFF routes)
+Firestore: Server-only (client access blocked in rules)
 State: React Context API (TethysContext, AuthContext, AudioContext)
 
 Charts: Chart.js (Pteros Dashboard)
@@ -44,10 +45,13 @@ npm install
 
 Environment Setup:
 
-1. Create a `.env.local` file in the root directory and add your Firebase credentials:
+1. Create a `.env.local` file in the root directory and add your Firebase + Firebase Admin credentials:
 
 ```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_key
+FIREBASE_API_KEY=your_key
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_CLIENT_EMAIL=your_service_account_email
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_bucket
@@ -61,10 +65,12 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 NEXT_PUBLIC_CDN_DIST=https://your-distribution.cloudfront.net
 ```
 
-3. Add any optional external APIs (WordPress, etc.) as needed:
+3. Add WPGraphQL credentials for server-to-server lore fetches:
 
 ```
-NEXT_PUBLIC_WORDPRESS_API_URL=https://your-wordpress.com/graphql
+WP_GRAPHQL_ENDPOINT=https://your-wordpress.com/graphql
+WP_USER=your_wp_app_user
+WP_APP_PASS=your_wp_app_password
 ```
 
 

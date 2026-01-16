@@ -9,13 +9,13 @@ import BookCarousel from '@/components/content/BookCarousel';
 import IdentityAirLock from '@/components/forms/IdentityAirLock';
 import IntroOverlay from '@/components/overlays/IntroOverlay';
 import CaveWallTerminal from '@/components/page-specific/science/CaveWallTerminal';
-import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn } from "lucide-react";
+import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn, Trash2 } from "lucide-react";
 import Link from "next/link";
 import cdn from "@/lib/cdn";
 import PrimaryNav from "@/components/layout/navigation/PrimaryNav";
 
 export default function Home() {
-  const { user, loading: authLoading, logout } = useAuth();
+  const { user, loading: authLoading, logout, deleteAccount } = useAuth();
   const { stats, isGuest, loadingData, hasOnboarded, playerProfile } = useTethys();
   
   // State Management
@@ -75,6 +75,19 @@ export default function Home() {
       localStorage.setItem("tethys_slates_v1", JSON.stringify(next));
     } catch {
       /* ignore */
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!deleteAccount) return;
+    const confirmed = window.confirm(
+      "Delete your account? This removes your sign-in but keeps in-world records. You can create a new signal later."
+    );
+    if (!confirmed) return;
+    try {
+      await deleteAccount();
+    } catch (error) {
+      console.error("Account deletion failed:", error);
     }
   };
 
@@ -179,6 +192,13 @@ export default function Home() {
                     <div className="w-[1px] h-4 bg-stone-700"></div>
                     <button onClick={logout} className="text-stone-500 hover:text-red-400 transition-colors" title="Sever Connection">
                       <Power size={14} />
+                    </button>
+                    <button
+                      onClick={handleDeleteAccount}
+                      className="text-stone-600 hover:text-red-400 transition-colors"
+                      title="Delete Account"
+                    >
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 )}

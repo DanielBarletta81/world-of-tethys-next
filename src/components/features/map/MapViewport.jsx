@@ -170,6 +170,9 @@ return (
     />
   )}
   </div>
+  <div className="absolute inset-0">
+    {children}
+  </div>
   </>
 );
 }
