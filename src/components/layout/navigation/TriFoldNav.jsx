@@ -30,6 +30,7 @@ const PATHS = [
     color: 'amber',
     items: [
       { id: 'cambria', label: 'Cambria Archive', href: '/cambria' },
+      { id: 'signals', label: 'Signals', href: '/signals' },
       { id: 'books', label: 'Chronicle', href: '/bookstore' }
     ]
   }

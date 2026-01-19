@@ -38,8 +38,8 @@
             },
             {
                 "key": "field_bio_traits",
-                "label": "Biological Traits",
-                "name": "biological_traits",
+                "label": "Phenotype",
+                "name": "phenotype",
                 "type": "repeater",
                 "instructions": "Key stats like 'Heat Resistance' or 'Diet'.",
                 "layout": "table",

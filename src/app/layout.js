@@ -1,4 +1,11 @@
-import { Inter, Cormorant_Garamond, Nanum_Pen_Script } from 'next/font/google';
+import {
+  IM_Fell_English,
+  JetBrains_Mono,
+  Nanum_Pen_Script,
+  Space_Grotesk,
+  Spectral,
+  Uncial_Antiqua,
+} from 'next/font/google';
 import { AuthProvider } from '../context/AuthContext';
 import { TethysProvider } from '../context/TethysContext';
 import { AudioProvider } from '../context/AudioContext';
@@ -10,16 +17,37 @@ import Footer from '@/components/layout/Footer';
 import cdn from '@/lib/cdn';
 import Link from 'next/link';
 
-const inter = Inter({
+const skySans = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-sky',
   display: 'swap',
 });
 
-const cormorant = Cormorant_Garamond({
+const naturalist = Spectral({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-serif',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-naturalist',
+  display: 'swap',
+});
+
+const fieldNotes = IM_Fell_English({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-field',
+  display: 'swap',
+});
+
+const mystic = Uncial_Antiqua({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-mystic',
+  display: 'swap',
+});
+
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '600'],
+  variable: '--font-mono',
   display: 'swap',
 });
 
@@ -54,7 +82,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable} ${cormorant.variable} ${handwriting.variable}`}>
+    <html
+      lang="en"
+      className={`${skySans.variable} ${naturalist.variable} ${fieldNotes.variable} ${mystic.variable} ${mono.variable} ${handwriting.variable}`}
+    >
       <body className="bg-[#0c0a09] text-[#e7e5e4] antialiased">
         <Link
           href="#main-content"
@@ -67,7 +98,9 @@ export default function RootLayout({ children }) {
           <TethysProvider>
             <AudioProvider>
               <GlobalAtmosphere />
-              {children}
+              <div id="main-content" role="main" className="relative min-h-screen">
+                {children}
+              </div>
               <GuestUpgradeGate />
               <GlobalAudioPlayer/>
             </AudioProvider>

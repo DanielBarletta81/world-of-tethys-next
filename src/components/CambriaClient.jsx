@@ -78,12 +78,18 @@ export default function CambriaClient() {
 
       if (!isMounted) return;
 
+      const fontFamily =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--font-field')
+          .replace(/["']/g, '')
+          .trim() || 'serif';
+
       const baseOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            labels: { color: '#5c4f43', font: { family: 'EB Garamond' } }
+            labels: { color: '#5c4f43', font: { family: fontFamily } }
           },
           tooltip: {
             callbacks: {

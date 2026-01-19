@@ -9,7 +9,7 @@ const MOCK_ENTRY = {
   tethysData: {
     threatLevel: "Lethal",
     realWorldAnalog: "Komodo Dragon / Monitor Lizard",
-    biologicalTraits: [
+    phenotype: [
       { trait: "Heat Resistance", value: "900°C" },
       { trait: "Diet", value: "Sulfur-based life" }
     ]
@@ -54,7 +54,7 @@ export default function DetailPage({ params }) {
               Biometrics
             </h3>
             <ul className="space-y-3">
-              {entry.tethysData.biologicalTraits.map((t, i) => (
+              {entry.tethysData.phenotype.map((t, i) => (
                 <li key={i} className="text-sm">
                   <span className="block text-[#78716c] text-[10px] uppercase">{t.trait}</span>
                   <span className="block text-[#e7e5e4] font-mono">{t.value}</span>

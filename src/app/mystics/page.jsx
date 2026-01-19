@@ -8,6 +8,8 @@ import StaffSequencer from '@/components/features/onboarding/StaffSequencer';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import NpcRumorCard from '@/components/npc/NpcRumorCard';
+import SensoryNetwork from '@/components/SensoryNetwork';
+import PithSignals from '@/components/pith/PithSignals';
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -22,7 +24,7 @@ export default function MysticsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050404] text-purple-100 font-serif">
+    <div className="min-h-screen bg-[#050404] text-purple-100 font-field">
       <Link
         href="/"
         className="fixed left-4 top-4 z-[10000] inline-flex items-center gap-3 rounded-full border border-purple-900/40 bg-black/70 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-purple-100/90 shadow-[0_12px_30px_rgba(0,0,0,0.45)] backdrop-blur hover:border-amber-400/60 hover:text-amber-100"
@@ -50,12 +52,15 @@ export default function MysticsPage() {
           />
         </div>
         <header role="banner" className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-thin text-purple-400 uppercase tracking-widest mb-4">
+          <h1 className="text-4xl md:text-5xl font-mystic text-purple-400 uppercase tracking-widest mb-4">
             The Veil
           </h1>
-          <p className="text-purple-200/50 text-sm max-w-xl mx-auto font-sans">
+          <p className="text-purple-200/50 text-sm max-w-xl mx-auto font-field">
             For the seers. Choose your alignment, forge your staff, and consult the spores.
           </p>
+          <div className="mt-6">
+            <PithSignals />
+          </div>
         </header>
 
         <TriFoldNav />
@@ -68,17 +73,17 @@ export default function MysticsPage() {
           {/* Left: Setup (Path & Staff) */}
           <div className="space-y-8">
             <div className="bg-[#0f0b09] border border-purple-900/30 p-6 rounded-2xl">
-              <h2 className="text-xl text-purple-300 font-serif mb-4">1. Alignment</h2>
+              <h2 className="text-xl text-purple-300 font-mystic mb-4">1. Alignment</h2>
               <PathSelector onPathChange={(path) => console.log('Path set:', path)} />
             </div>
 
             <div className="bg-[#0f0b09] border border-purple-900/30 p-6 rounded-2xl">
-              <h2 className="text-xl text-purple-300 font-serif mb-4">2. The Forge</h2>
+              <h2 className="text-xl text-purple-300 font-mystic mb-4">2. The Forge</h2>
               <StaffSequencer />
             </div>
 
             <div className="bg-[#0f0b09] border border-purple-900/30 p-6 rounded-2xl">
-              <h2 className="text-xl text-purple-300 font-serif mb-4">Ravel</h2>
+              <h2 className="text-xl text-purple-300 font-mystic mb-4">Ravel</h2>
               <NpcRumorCard npc={ravelNpc} className="border-purple-900/40" />
             </div>
           </div>
@@ -91,6 +96,7 @@ export default function MysticsPage() {
         </div>
       </div>
       </main>
+      <SensoryNetwork enabled startChannelId="ironwood" />
     </div>
   );
 }

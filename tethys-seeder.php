@@ -9,7 +9,7 @@ $entries = [
                 'threat_level' => 'Caution', // Dangerous to the Triumvirate
                 'kith_requirement' => 0,   // Entry-level knowledge
                 'real_world_analog' => 'Aragorn / The Hero\'s Journey',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Origin', 'value' => 'Ironwoods (Blood) / Sky City (Raised)'],
                     ['trait' => 'Weapon', 'value' => 'Pteros-Bone Shiv'],
                     ['trait' => 'Companion', 'value' => 'Stryker (Raptor)'],
@@ -25,7 +25,7 @@ $entries = [
                 'threat_level' => 'Safe',
                 'kith_requirement' => 10,
                 'real_world_analog' => 'Da Vinci / Galileo',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Intellect', 'value' => 'Genius Level'],
                     ['trait' => 'Invention', 'value' => 'Algae-Biodiesel / Reptile Deterrent'],
                     ['trait' => 'Status', 'value' => 'Deceased (Martyr)'],
@@ -41,7 +41,7 @@ $entries = [
                 'threat_level' => 'Safe',
                 'kith_requirement' => 15,
                 'real_world_analog' => 'Arwen / The Diplomat',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Caste', 'value' => 'Elite Nobility'],
                     ['trait' => 'Motivation', 'value' => 'Justice / Love'],
                     ['trait' => 'Location', 'value' => 'Sky City Inner Sanctum']
@@ -56,7 +56,7 @@ $entries = [
                 'threat_level' => 'Caution', // Unpredictable
                 'kith_requirement' => 20,
                 'real_world_analog' => 'The Shaman / Survivalist',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Skill', 'value' => 'Chemical Camouflage (Smokers)'],
                     ['trait' => 'Sanity', 'value' => 'Fractured'],
                     ['trait' => 'Role', 'value' => 'Wild Mentor'],
@@ -72,7 +72,7 @@ $entries = [
                 'threat_level' => 'Unknown',
                 'kith_requirement' => 60,
                 'real_world_analog' => 'Copernicus / The Oracle',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Status', 'value' => 'Missing'],
                     ['trait' => 'Obsession', 'value' => 'The Horizon'],
                     ['trait' => 'Discovery', 'value' => 'The False Sunrise']
@@ -87,7 +87,7 @@ $entries = [
                 'threat_level' => 'Safe',
                 'kith_requirement' => 45,
                 'real_world_analog' => 'Gandhi / The Ascetic',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Role', 'value' => 'Philosopher King'],
                     ['trait' => 'Base', 'value' => 'Hall of Imor'],
                     ['trait' => 'Power', 'value' => 'Influence / Wisdom']
@@ -105,7 +105,7 @@ $entries = [
                 'threat_level' => 'Unknown',
                 'kith_requirement' => 95,
                 'real_world_analog' => 'Charles Darwin',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Role', 'value' => 'Observer Prime'],
                     ['trait' => 'Origin', 'value' => 'Charr Mountains (Barren Side)'],
                     ['trait' => 'Obsession', 'value' => 'Evolutionary Success']
@@ -120,7 +120,7 @@ $entries = [
                 'threat_level' => 'Unknown',
                 'kith_requirement' => 85,
                 'real_world_analog' => 'Alfred Russel Wallace',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Role', 'value' => 'Biogeographer'],
                     ['trait' => 'Ability', 'value' => 'Phase-Shift / Stealth'],
                     ['trait' => 'Obsession', 'value' => 'Speciation Barriers']
@@ -135,7 +135,7 @@ $entries = [
                 'threat_level' => 'Safe',
                 'kith_requirement' => 75,
                 'real_world_analog' => 'Matthias Schleiden',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Role', 'value' => 'Botanist'],
                     ['trait' => 'Focus', 'value' => 'Cell Theory'],
                     ['trait' => 'Quirk', 'value' => 'Phobia of trampling life']
@@ -150,7 +150,7 @@ $entries = [
                 'threat_level' => 'Unknown',
                 'kith_requirement' => 90,
                 'real_world_analog' => 'Rosalind Franklin',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Role', 'value' => 'Structuralist'],
                     ['trait' => 'Vision', 'value' => 'X-Ray / Microscopic'],
                     ['trait' => 'Obsession', 'value' => 'The Double Helix']
@@ -165,7 +165,7 @@ $entries = [
                 'threat_level' => 'Caution',
                 'kith_requirement' => 80,
                 'real_world_analog' => 'Linus Pauling',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Role', 'value' => 'Chemist'],
                     ['trait' => 'Affinity', 'value' => 'Fire / Oxidation'],
                     ['trait' => 'Obsession', 'value' => 'Molecular Bonds']
@@ -182,7 +182,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 15,
                 'real_world_analog' => 'Naked Mole Rat x T-Rex',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Senses', 'value' => 'Olfactory Overload (Blind)'],
                     ['trait' => 'Habitat', 'value' => 'Purgess Caves'],
                     ['trait' => 'Weakness', 'value' => 'Smoke / Ash']
@@ -197,7 +197,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 25,
                 'real_world_analog' => 'Triceratops / Rhinoceros',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Temperament', 'value' => 'Volatile'],
                     ['trait' => 'Usage', 'value' => 'None (Untamable)'],
                     ['trait' => 'Armor', 'value' => 'Heavy Plating']
@@ -212,7 +212,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 5,
                 'real_world_analog' => 'Quetzalcoatlus',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Wingspan', 'value' => '10-12 Meters'],
                     ['trait' => 'Tactic', 'value' => 'Aerial Ambush'],
                     ['trait' => 'Zone', 'value' => 'Twin Straits / Cimmerian Ridge']
@@ -227,7 +227,7 @@ $entries = [
                 'threat_level' => 'Caution',
                 'kith_requirement' => 25,
                 'real_world_analog' => 'Deinonychus',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Intelligence', 'value' => 'High'],
                     ['trait' => 'Status', 'value' => 'Domesticated (Partial)'],
                     ['trait' => 'Bond', 'value' => 'Igzier']
@@ -242,7 +242,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 20,
                 'real_world_analog' => 'Komodo Dragon / Monitor Lizard',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Heat Resistance', 'value' => '900°C'],
                     ['trait' => 'Diet', 'value' => 'Sulfur-based lifeforms'],
                     ['trait' => 'Habitat', 'value' => 'Watcher Mountain Caldera']
@@ -257,7 +257,7 @@ $entries = [
                 'threat_level' => 'Safe',
                 'kith_requirement' => 5,
                 'real_world_analog' => 'Protostegidae (Archelon)',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Lifespan', 'value' => '400+ Years'],
                     ['trait' => 'Size', 'value' => '15m Diameter'],
                     ['trait' => 'Role', 'value' => 'Mobile Ecosystem']
@@ -274,7 +274,7 @@ $entries = [
                 'threat_level' => 'Safe (Internal Threat)',
                 'kith_requirement' => 5,
                 'real_world_analog' => 'Minas Tirith / Wakanda',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Power Source', 'value' => 'Photobioreactors (Algae)'],
                     ['trait' => 'Defense', 'value' => 'The Western Ridge'],
                     ['trait' => 'Rulers', 'value' => 'The Triumvirate']
@@ -289,7 +289,7 @@ $entries = [
                 'threat_level' => 'Caution',
                 'kith_requirement' => 30,
                 'real_world_analog' => 'Redwood National Park (Hardened)',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Flora', 'value' => 'High-Lignin Pine'],
                     ['trait' => 'Inhabitants', 'value' => 'The Polarians'],
                     ['trait' => 'Defense', 'value' => 'Camouflage / Elevation']
@@ -304,7 +304,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 40,
                 'real_world_analog' => 'Movile Cave, Romania',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Air Quality', 'value' => 'Toxic'],
                     ['trait' => 'Visibility', 'value' => 'Zero'],
                     ['trait' => 'Resident', 'value' => 'The Squaints']
@@ -319,7 +319,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 50,
                 'real_world_analog' => 'Atacama Desert',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Artifacts', 'value' => 'The First Scrolls'],
                     ['trait' => 'Climate', 'value' => 'Hyper-Arid']
                 ]
@@ -333,7 +333,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 50,
                 'real_world_analog' => 'Straits of Messina',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Current', 'value' => 'Violent'],
                     ['trait' => 'Fauna', 'value' => 'Mosasaurs'],
                     ['trait' => 'Status', 'value' => 'Navigational Hazard']
@@ -348,7 +348,7 @@ $entries = [
                 'threat_level' => 'Lethal',
                 'kith_requirement' => 40,
                 'real_world_analog' => 'Vesuvius / Etna',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Type', 'value' => 'Volcanic Pair'],
                     ['trait' => 'Activity', 'value' => 'Continuous'],
                     ['trait' => 'Atmosphere', 'value' => 'Ash-Heavy']
@@ -365,7 +365,7 @@ $entries = [
                 'threat_level' => 'Caution',
                 'kith_requirement' => 15,
                 'real_world_analog' => 'Cargo Cults / Industrial Revolution',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Base', 'value' => 'The Rust Spire'],
                     ['trait' => 'Tech', 'value' => 'Steam & Hydraulic']
                 ]
@@ -381,7 +381,7 @@ $entries = [
                 'threat_level' => 'Unknown',
                 'kith_requirement' => 80,
                 'real_world_analog' => 'Celestial Phenomenon',
-                'biological_traits' => [
+                'phenotype' => [
                     ['trait' => 'Source', 'value' => 'Byrge\'s Log'],
                     ['trait' => 'Date', 'value' => 'The Year of the Fire'],
                     ['trait' => 'Implication', 'value' => 'Artificial Manipulation']

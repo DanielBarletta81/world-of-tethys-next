@@ -58,3 +58,29 @@ node_modules*/
 
 firebase-admin*
 
+# local seeders / data (not required for deployment)
+acf_tethys_data.json
+seed-tethys0.2.php
+seed_tethys_docs.sh
+seedOracleRavel.js
+tethys-seeder.php
+tethys-taxonomy-seed.php
+docs/seed-data/
+docs/seed-plan-*.md
+scripts/wp/tethys-schema.php
+Firebase-Oracle-Notes.pdf
+World_of_Tethys_Brand_Bible_v1.0.pdf
+World_Bible_notes.pages
+tethys-taxonomy-seed.php.zip
+tethys-bible.md
+tethys_knowledge_v1.json
+tethys_events.json
+Tethys___Book_1_Pacing_Board__Ch_1_36_.pdf
+Tethys___Book_1_Pacing_Board__Ch_1_36_.numbers
+Tethys Sea Climate and Environments.pdf
+
+# local notes/data archives (non-deploy)
+notes/
+data/
+docs/*.pages
+docs/*.pdf

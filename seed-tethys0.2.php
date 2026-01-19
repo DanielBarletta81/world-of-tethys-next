@@ -71,15 +71,15 @@ function tethys_seed_static_entries() {
                 if (isset($acf['real_world_analog'])) {
                     update_field('real_world_analog', sanitize_text_field($acf['real_world_analog']), $post_id);
                 }
-                if (!empty($acf['biological_traits']) && is_array($acf['biological_traits'])) {
+                if (!empty($acf['phenotype']) && is_array($acf['phenotype'])) {
                     $clean_traits = [];
-                    foreach ($acf['biological_traits'] as $trait) {
+                    foreach ($acf['phenotype'] as $trait) {
                         $clean_traits[] = [
                             'trait' => sanitize_text_field($trait['trait'] ?? ''),
                             'value' => sanitize_text_field($trait['value'] ?? ''),
                         ];
                     }
-                    update_field('biological_traits', $clean_traits, $post_id);
+                    update_field('phenotype', $clean_traits, $post_id);
                 }
             }
         }

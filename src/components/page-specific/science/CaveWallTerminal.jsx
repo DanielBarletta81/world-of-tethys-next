@@ -19,13 +19,16 @@ export default function CaveWallTerminal({
   src,
   previewSrc,
   thumbnail,
-  rewards = { lore: 5 }
+  rewards = { lore: 5 },
+  onWatchProgress,
+  thresholds = [15, 30, 60]
 }) {
   const { hasOnboarded, consumeMedia, playerProfile, applyPlayerAction } = useTethys();
   const [isOpen, setIsOpen] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const isConsumed = playerProfile?.history?.mediaConsumed?.includes(mediaId);
   const previewRef = useRef(null);
+  const firedRef = useRef(new Set());
   const [previewReady, setPreviewReady] = useState(false);
   const [previewInView, setPreviewInView] = useState(false);
 
@@ -81,6 +84,23 @@ export default function CaveWallTerminal({
     };
     play();
   }, [previewInView, previewReady]);
+
+  useEffect(() => {
+    if (isOpen) {
+      firedRef.current = new Set();
+    }
+  }, [isOpen, mediaId]);
+
+  const handleTime = (e) => {
+    if (!onWatchProgress || !Array.isArray(thresholds) || !thresholds.length) return;
+    const t = e?.target?.currentTime || 0;
+    thresholds.forEach((th) => {
+      if (t >= th && !firedRef.current.has(th)) {
+        firedRef.current.add(th);
+        onWatchProgress(t * 1000, th);
+      }
+    });
+  };
 
   const handleOpen = () => {
     if (!hasOnboarded) return;
@@ -221,6 +241,7 @@ export default function CaveWallTerminal({
                     controls
                     autoPlay
                     onPlay={handleMediaPlay}
+                    onTimeUpdate={handleTime}
                   />
                 ) : (
                   <iframe
@@ -234,7 +255,14 @@ export default function CaveWallTerminal({
               )}
               {type === 'audio' && mediaUrl && (
                 <div className="w-full h-full flex items-center justify-center">
-                  <audio controls autoPlay src={mediaUrl} className="w-2/3" onPlay={handleMediaPlay} />
+                  <audio
+                    controls
+                    autoPlay
+                    src={mediaUrl}
+                    className="w-2/3"
+                    onPlay={handleMediaPlay}
+                    onTimeUpdate={handleTime}
+                  />
                 </div>
               )}
               {type === 'text' && mediaUrl && (

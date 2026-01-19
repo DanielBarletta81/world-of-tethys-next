@@ -34,7 +34,7 @@ export async function fetchArchive(category = null, slug = null) {
             threatLevel
             kithRequirement
             realWorldAnalog
-            biologicalTraits {
+            phenotype {
               trait
               value
             }

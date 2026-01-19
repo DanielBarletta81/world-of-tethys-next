@@ -4,42 +4,44 @@ export default {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-],
+  ],
   theme: {
     extend: {
       // 1. FONTS (Connected to layout.js)
       fontFamily: {
-        header: ['var(--font-header)', 'serif'], // Cinzel
-        body: ['var(--font-body)', 'serif'],     // Newsreader
-        mono: ['var(--font-mono)', 'monospace'], // JetBrains Mono
+        sans: ['var(--font-sky)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-naturalist)', 'serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+        header: ['var(--font-field)', 'serif'],
+        body: ['var(--font-naturalist)', 'serif'],
+        mystic: ['var(--font-mystic)', 'serif'],
+        field: ['var(--font-field)', 'serif'],
+        sky: ['var(--font-sky)', 'system-ui', 'sans-serif'],
+        hand: ['var(--font-hand)', 'cursive'],
       },
-      
+
       // 2. COLORS (Aligned with your "Stone/Ash" aesthetic)
       // I swapped your 'slate' hexes for 'stone' hexes to keep the "Ancient" warmth.
       colors: {
         'tethys-bg': '#0c0a09',     // Stone 950 (The Deep Dark)
         'tethys-card': '#1c1917',   // Stone 900 (The UI Cards)
         'tethys-muted': '#44403c',  // Stone 700 (Borders)
-        
+        'tethys-estuary': '#0f766e', // Blue-green estuary
+        'tethys-lava': '#c2410c',    // Volcanic glow
+        'tethys-glow': '#22d3ee',    // Bioluminescent glow
+
         // Faction Colors
         'amber-glow': '#f59e0b',    // Sky City / Oil
         'cyan-glow': '#22d3ee',     // Science / Echoes
         'emerald-glow': '#10b981',  // Ironwood / Nature
         'rose-glow': '#f43f5e',     // Danger / Magma
         'violet-glow': '#a78bfa',  // Mystery / Spire
-        
-
-
-
-          // ... your other colors (keep tethys-bg etc) ...
-  
-         // THE FORGE PALETTE
+        // THE FORGE PALETTE
         'forge-white': '#fffbeb',   // Almost white-hot center
         'forge-yellow': '#f59e0b',  // Bright yellow heat
         'forge-orange': '#ea580c',  // Cooling orange edge
         'forge-red': '#dc2626',     // Deep red glow surrounding
         'forge-dark': '#1c1917',    // Dark stone background
-
 
         // Paper/Study Mode
         'ancient-bg': '#e7e5e4',    // Stone 200
@@ -86,6 +88,9 @@ export default {
       backgroundImage: {
         'noise': "url('/noise.svg')",
         'grid': "url('/grid-pattern.svg')",
+        'estuary-flow': 'radial-gradient(circle at 20% 20%, rgba(13,148,136,0.45), rgba(2,6,23,0.9) 55%)',
+        'lava-glow': 'radial-gradient(circle at 70% 80%, rgba(194,65,12,0.45), rgba(2,6,23,0.95) 60%)',
+        'tethys-glow': 'radial-gradient(circle at 50% 35%, rgba(34,211,238,0.35), rgba(2,6,23,0.9) 55%)',
       }
     },
   },

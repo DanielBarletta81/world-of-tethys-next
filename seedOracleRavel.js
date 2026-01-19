@@ -4,8 +4,8 @@
  * Idempotent via merge on meta + per-doc overwrite of responses.
  */
 
-const admin = require("firebase-admin");
-const seeder = require("./oracle_pool/ravel_seeder.json");
+import admin from 'firebase-admin';
+import seeder from './oracle_pool/ravel_seeder.json' assert { type: 'json' };
 
 if (!admin.apps.length) {
   admin.initializeApp({

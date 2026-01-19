@@ -15,7 +15,7 @@ const WHISPERS = [
 ];
 
 export default function IdentityAirlock({ isOpen, onClose }) {
-  const { user, loginEmail, registerEmail, logout } = useAuth();
+  const { user, loginEmail, loginGoogle, registerEmail, logout } = useAuth();
   const [status, setStatus] = useState('dormant');
   const [whisper, setWhisper] = useState(WHISPERS[0]);
   const [mode, setMode] = useState('choice');
@@ -62,6 +62,24 @@ export default function IdentityAirlock({ isOpen, onClose }) {
     setTimeout(() => {
       onClose?.();
     }, 800);
+  };
+
+  const handleGoogle = async () => {
+    setBusy(true);
+    setError('');
+    setStatus('sensing');
+    try {
+      await loginGoogle();
+      setStatus('woven');
+      setTimeout(() => {
+        onClose?.();
+      }, 600);
+    } catch (err) {
+      setStatus('dormant');
+      setError(err?.message || 'Google sign-in failed.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleLogin = async (e) => {
@@ -175,6 +193,18 @@ export default function IdentityAirlock({ isOpen, onClose }) {
                   <p className="text-xs text-stone-500 text-center font-serif italic leading-relaxed">
                     "The archive is written in memory, not ink.<br/>Offer a signal to be remembered."
                   </p>
+                  {error && <p className="text-[11px] text-amber-300 text-center">{error}</p>}
+                  <button
+                    onClick={handleGoogle}
+                    disabled={busy}
+                    className={`group/btn w-full relative flex items-center justify-center gap-3 bg-[#161311] hover:bg-[#1f1c19] border border-emerald-800/40 hover:border-emerald-500/60 text-emerald-50 py-4 transition-all duration-500 rounded-sm overflow-hidden ${busy ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  >
+                    <div className="absolute inset-0 bg-emerald-900/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-out" />
+                    <Fingerprint size={16} className="text-emerald-600 group-hover/btn:text-emerald-400 transition-colors relative z-10" />
+                    <span className="text-xs font-bold uppercase tracking-[0.25em] relative z-10">
+                      Enter by Kith Gate
+                    </span>
+                  </button>
                   <button
                     onClick={handleSignal}
                     className="group/btn w-full relative flex items-center justify-center gap-3 bg-[#161311] hover:bg-[#1f1c19] border border-emerald-800/40 hover:border-emerald-500/60 text-emerald-50 py-4 transition-all duration-500 rounded-sm overflow-hidden"

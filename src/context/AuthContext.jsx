@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { signInWithPopup } from 'firebase/auth';
+import { getFirebaseAuth, getGoogleProvider } from '@/lib/firebaseClient';
 
 const AuthContext = createContext();
 
@@ -81,6 +83,44 @@ export function AuthProvider({ children }) {
     return json.user;
   };
 
+  const loginGoogle = async () => {
+    let userCredential;
+    try {
+      const auth = getFirebaseAuth();
+      const provider = getGoogleProvider();
+      userCredential = await signInWithPopup(auth, provider);
+    } catch (err) {
+      const code = err?.code;
+      if (code === 'auth/popup-closed-by-user') {
+        throw new Error('Sign-in window closed.');
+      }
+      console.error('[auth] google popup error', err);
+      throw new Error('Google sign-in failed.');
+    }
+
+    const idToken = await userCredential.user.getIdToken();
+    let res;
+    try {
+      res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ idToken })
+      });
+    } catch (err) {
+      console.error('[auth] google network error', err);
+      throw err;
+    }
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      console.error('[auth] google failed', res.status, json);
+      throw new Error(json.error || 'Google sign-in failed.');
+    }
+    const json = await res.json();
+    setUser(json.user || null);
+    return json.user;
+  };
+
   const logout = async () => {
     try {
       await fetch('/api/auth/logout', {
@@ -122,7 +162,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginEmail, registerEmail, logout, deleteAccount }}>
+    <AuthContext.Provider value={{ user, loading, loginEmail, loginGoogle, registerEmail, logout, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

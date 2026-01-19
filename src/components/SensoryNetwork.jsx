@@ -66,12 +66,15 @@ const CHANNELS = [
   }
 ];
 
-export default function SensoryNetwork() {
-  const [currentChannel, setCurrentChannel] = useState(CHANNELS[3]); // Start with Sky City
+export default function SensoryNetwork({ enabled = true, startChannelId = 'skycity' }) {
+  const initialChannel =
+    CHANNELS.find((channel) => channel.id === startChannelId) || CHANNELS[3];
+  const [currentChannel, setCurrentChannel] = useState(initialChannel);
   const [msgIndex, setMsgIndex] = useState(0);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    if (!enabled) return;
     setIsClient(true);
 
     // CHANGE CHANNEL & MESSAGE EVERY 10 SECONDS
@@ -86,9 +89,17 @@ export default function SensoryNetwork() {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [enabled]);
 
-  if (!isClient) return null;
+  useEffect(() => {
+    const found = CHANNELS.find((channel) => channel.id === startChannelId);
+    if (found) {
+      setCurrentChannel(found);
+      setMsgIndex(0);
+    }
+  }, [startChannelId]);
+
+  if (!isClient || !enabled) return null;
 
   return (
     <div className="fixed bottom-6 left-6 z-40 max-w-sm pointer-events-none font-serif">

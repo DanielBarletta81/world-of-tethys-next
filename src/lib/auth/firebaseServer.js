@@ -53,6 +53,11 @@ export async function verifySessionCookie(sessionCookie) {
   return app.auth().verifySessionCookie(sessionCookie, true);
 }
 
+export async function verifyIdToken(idToken) {
+  const { app } = getFirebaseAdmin();
+  return app.auth().verifyIdToken(idToken);
+}
+
 export async function deleteUser(uid) {
   const { app } = getFirebaseAdmin();
   await app.auth().deleteUser(uid);
