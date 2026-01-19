@@ -72,6 +72,9 @@ export default function SurvivorIdentityPanel({ className = "" }) {
   const survivorship = playerProfile?.survivorship || {};
   const perception = playerProfile?.perception || {};
   const path = playerProfile?.path || {};
+  const aura = playerProfile?.aura || {};
+  const protection = playerProfile?.protection || {};
+  const drift = playerProfile?.drift || {};
 
   const callsign = identity?.handle || user?.displayName || "Unmarked Survivor";
   const title = identity?.title || "";
@@ -102,6 +105,11 @@ export default function SurvivorIdentityPanel({ className = "" }) {
     null;
 
   const essentials = useMemo(() => pickEssentials(inventory, 6), [inventory]);
+  const staffAdornments = useMemo(() => {
+    const adorns = Array.isArray(playerProfile?.staff?.adornments) ? playerProfile.staff.adornments : [];
+    const ornaments = Array.isArray(playerProfile?.staff?.ornaments) ? playerProfile.staff.ornaments : [];
+    return Array.from(new Set([...adorns, ...ornaments])).slice(0, 6);
+  }, [playerProfile?.staff?.adornments, playerProfile?.staff?.ornaments]);
 
   const bondFocus =
     survivorship?.bond?.focusType ||
@@ -129,6 +137,16 @@ export default function SurvivorIdentityPanel({ className = "" }) {
   }, [survivorship?.scars, events]);
 
   const stillness = typeof perception?.stillness === "number" ? perception.stillness : null;
+  const auraTone = Math.round(aura?.tone ?? 0);
+  const auraStability = Math.round(aura?.stability ?? 0);
+  const auraGlow = Math.round((aura?.glow ?? 0) * 100);
+  const protectionShell = Math.round(protection?.shell ?? 0);
+  const driftAggression = Math.round(drift?.aggression ?? 0);
+  const driftIgnorance = Math.round(drift?.ignorance ?? 0);
+  const warnings = [];
+  if (driftAggression >= 40) warnings.push("Aggression thins protection.");
+  if (driftIgnorance >= 35) warnings.push("Ignorance dims aura.");
+  if (auraTone <= 30) warnings.push("Aura flicker detected.");
   const isMystic = path?.primary === "mystic";
   const tuning = DEVICE_TUNING[device] || DEVICE_TUNING.desktop;
   const idleFactor = Math.min(1, (idleMinutes || 0) / tuning.idleDivisor);
@@ -272,10 +290,48 @@ export default function SurvivorIdentityPanel({ className = "" }) {
               </div>
             )}
           </div>
+
+          <div className="mt-4">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-stone-500 font-mono">
+              Staff Adornments
+            </div>
+            {staffAdornments.length ? (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {staffAdornments.map((adornment) => (
+                  <span
+                    key={adornment}
+                    className="px-2 py-1 rounded border border-amber-700/40 bg-amber-900/10 text-[9px] uppercase tracking-widest text-amber-300 font-mono"
+                  >
+                    {String(adornment).replaceAll("_", " ")}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-2">
+                <Empty>no adornments yet</Empty>
+              </div>
+            )}
+          </div>
         </Panel>
 
         {/* Bond + Last Found */}
         <div className="space-y-4">
+          <Panel title="Attunement">
+            <div className="space-y-3">
+              <Meter label="Aura tone" value={auraTone} tint="from-amber-500/70 to-orange-600/60" />
+              <Meter label="Aura stability" value={auraStability} tint="from-emerald-500/60 to-lime-600/50" />
+              <Meter label="Aura glow" value={auraGlow} tint="from-amber-300/60 to-yellow-500/50" />
+              <Meter label="Protection shell" value={protectionShell} tint="from-cyan-500/60 to-sky-600/50" />
+              <Meter label="Drift: aggression" value={driftAggression} tint="from-rose-600/70 to-red-600/60" />
+              <Meter label="Drift: ignorance" value={driftIgnorance} tint="from-purple-600/70 to-fuchsia-500/60" />
+              {warnings.length ? (
+                <div className="rounded-lg border border-amber-900/40 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-widest text-amber-200 font-mono">
+                  {warnings.join(" ")}
+                </div>
+              ) : null}
+            </div>
+          </Panel>
+
           <Panel
             title="Bond"
             right={
@@ -360,4 +416,19 @@ function Panel({ title, right, children }) {
 function Empty({ children }) {
   return <div className="text-xs text-stone-600 italic">{children}</div>;
 };
+
+function Meter({ label, value, tint = "from-amber-600/60 to-orange-500/40" }) {
+  const pct = Math.min(100, Math.max(0, Number(value || 0)));
+  return (
+    <div>
+      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-stone-600">
+        <span>{label}</span>
+        <span className="text-stone-300">{pct}</span>
+      </div>
+      <div className="mt-2 h-2 rounded-full bg-black/40 border border-stone-800 overflow-hidden">
+        <div className={`h-full bg-gradient-to-r ${tint}`} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
 // World of Tethys || D.C. Barletta

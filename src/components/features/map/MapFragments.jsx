@@ -43,43 +43,57 @@ export default function MapFragments({
 
   return (
     <svg className="absolute inset-0" viewBox="0 0 100 100" role="presentation">
-      {fragments.map((f) => (
-        <g
-          key={f.id}
-          transform={`translate(${f.pos.x * 100} ${f.pos.y * 100})`}
-          className="cursor-pointer"
-          onClick={() => onTravel?.(f.region)}
-        >
-          {lockedRegions.includes(f.region) && (
-            <circle r="6.5" fill="none" stroke="#64748b" strokeWidth="0.6" opacity="0.6" />
-          )}
-          <circle
-            r="5.2"
-            fill={cambriaActive ? '#7c2d12' : '#0b0a09'}
-            stroke={f.fractured ? '#f97316' : '#f59e0b'}
-            strokeWidth="0.6"
-            opacity={lockedRegions.includes(f.region) ? 0.45 : 0.92}
-          />
-          <image
-            href={cdn(f.icon || '/img/icons/pteros_island.svg')}
-            x="-4.5"
-            y="-4.5"
-            width="9"
-            height="9"
-            opacity={lockedRegions.includes(f.region) ? 0.45 : 0.92}
-          />
-          <text
-            x="7"
-            y="3"
-            fontSize="3.2"
-            fill="#e7e5e4"
-            opacity={lockedRegions.includes(f.region) ? 0.45 : 0.85}
-            className="font-sans"
+      {fragments.map((f) => {
+        const isLocked = lockedRegions.includes(f.region);
+        const isClickable = f.clickable !== false;
+        const showPin = f.showPin !== false;
+        const labelX = f.labelOffset?.x ?? 7;
+        const labelY = f.labelOffset?.y ?? 3;
+
+        return (
+          <g
+            key={f.id}
+            transform={`translate(${f.pos.x * 100} ${f.pos.y * 100})`}
+            className={isClickable ? 'cursor-pointer' : 'cursor-default'}
+            onClick={isClickable ? () => onTravel?.(f.region) : undefined}
           >
-            {f.label || f.id}
-          </text>
-        </g>
-      ))}
+            {showPin && isLocked && (
+              <circle r="6.5" fill="none" stroke="#64748b" strokeWidth="0.6" opacity="0.6" />
+            )}
+            {showPin && (
+              <circle
+                r="5.2"
+                fill={cambriaActive ? '#7c2d12' : '#0b0a09'}
+                stroke={f.fractured ? '#f97316' : '#f59e0b'}
+                strokeWidth="0.6"
+                opacity={isLocked ? 0.45 : 0.92}
+              />
+            )}
+            {showPin && f.icon ? (
+              <image
+                href={cdn(f.icon)}
+                x="-4.5"
+                y="-4.5"
+                width="9"
+                height="9"
+                opacity={isLocked ? 0.45 : 0.92}
+              />
+            ) : null}
+            {f.label ? (
+              <text
+                x={labelX}
+                y={labelY}
+                fontSize="3.2"
+                fill="#e7e5e4"
+                opacity={isLocked ? 0.45 : 0.85}
+                className="font-sans"
+              >
+                {f.label}
+              </text>
+            ) : null}
+          </g>
+        );
+      })}
     </svg>
   );
 }

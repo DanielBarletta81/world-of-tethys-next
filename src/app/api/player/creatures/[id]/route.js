@@ -16,7 +16,8 @@ export async function DELETE(req, { params }) {
     await db.collection('players').doc(uid).collection('creatures').doc(creatureId).delete();
     return NextResponse.json({ ok: true });
   } catch (error) {
-    const status = error.status || 401;
-    return NextResponse.json({ error: 'Unauthorized' }, { status });
+    const status = error?.status === 401 ? 401 : 500;
+    const message = status === 401 ? 'Unauthorized' : 'Creature delete failed';
+    return NextResponse.json({ error: message }, { status });
   }
 }

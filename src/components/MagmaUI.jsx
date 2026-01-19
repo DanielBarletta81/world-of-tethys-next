@@ -14,12 +14,14 @@ export const MagmaCard = ({ children, className = "" }) => (
   </div>
 );
 
-export const MagmaButton = ({ onClick, children, secondary = false }) => {
+export const MagmaButton = ({ onClick, children, secondary = false, type = 'button', className = '', ...props }) => {
   if (secondary) {
     return (
       <button 
         onClick={onClick}
-        className="w-full mt-3 px-4 py-2 text-slate-400 bg-slate-900 border border-slate-700 hover:text-white hover:border-slate-500 rounded transition-colors text-sm"
+        type={type}
+        className={`w-full mt-3 px-4 py-2 text-slate-400 bg-slate-900 border border-slate-700 hover:text-white hover:border-slate-500 rounded transition-colors text-sm ${className}`}
+        {...props}
       >
         {children}
       </button>
@@ -28,19 +30,22 @@ export const MagmaButton = ({ onClick, children, secondary = false }) => {
   return (
     <button
       onClick={onClick}
-      className="w-full px-6 py-3 font-bold text-white transition-all duration-300 rounded bg-gradient-to-r from-orange-600 to-red-700 hover:from-orange-500 hover:to-red-600 shadow-[0_0_15px_rgba(234,88,12,0.5)] hover:shadow-[0_0_25px_rgba(234,88,12,0.8)]"
+      type={type}
+      className={`w-full px-6 py-3 font-bold text-white transition-all duration-300 rounded bg-gradient-to-r from-orange-600 to-red-700 hover:from-orange-500 hover:to-red-600 shadow-[0_0_15px_rgba(234,88,12,0.5)] hover:shadow-[0_0_25px_rgba(234,88,12,0.8)] ${className}`}
+      {...props}
     >
       {children}
     </button>
   );
 };
 
-export const InputField = ({ type, placeholder, value, onChange }) => (
+export const InputField = ({ type, placeholder, value, onChange, ...props }) => (
   <input
     type={type}
     placeholder={placeholder}
     value={value}
     onChange={onChange}
+    {...props}
     className="w-full p-3 mb-4 bg-slate-900 border border-slate-700 rounded text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all placeholder-slate-500"
   />
 );

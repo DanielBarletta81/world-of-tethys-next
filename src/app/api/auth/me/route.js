@@ -6,21 +6,29 @@ import { SESSION_COOKIE_NAME } from '@/lib/auth/session';
 export const runtime = 'nodejs';
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (!sessionCookie) {
-    return NextResponse.json({ user: null }, { status: 401 });
+    console.warn('[auth/me] missing session cookie');
+    const res = NextResponse.json({ user: null }, { status: 401 });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
+    return res;
   }
 
   try {
     const decoded = await verifySessionCookie(sessionCookie);
     const userRecord = await getUser(decoded.uid);
-    return NextResponse.json({
+    const res = NextResponse.json({
       user: { uid: userRecord.uid, email: userRecord.email || null }
     });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
+    console.info('[auth/me] success', { uid: userRecord.uid });
+    return res;
   } catch (error) {
-    console.error('Session verify error:', error);
-    return NextResponse.json({ user: null }, { status: 401 });
+    console.error('[auth/me] error', error);
+    const res = NextResponse.json({ user: null }, { status: 401 });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
+    return res;
   }
 }

@@ -31,6 +31,11 @@ export async function POST(req) {
         onboarding: data.onboarding,
         path: data.path,
         staff: data.staff,
+        progression: data.progression,
+        dna: data.dna,
+        aura: data.aura,
+        protection: data.protection,
+        drift: data.drift,
         lastLoginAt: data.lastLoginAt
       }
     });

@@ -44,7 +44,7 @@ const DOCKHAND_NPC = {
 
 const ARCHIVIST_NPC = {
   id: 'sky_archive_01',
-  name: 'Archivist',
+  name: 'Marros',
   faction: 'sky-city',
   wasPresent: false,
   proximity: 0.6

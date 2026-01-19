@@ -1,6 +1,7 @@
 // src/components/GlobalAtmosphere.jsx
 'use client';
 import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import cdn from '@/lib/cdn';
 
@@ -9,14 +10,22 @@ import cdn from '@/lib/cdn';
 // TIP: Use images with "Fog", "Volcanic Ash", or "Underwater" themes.
 const SCENES = {
   '/': cdn('/img/bg/obsidian-coast-4k.jpg'),       // Dark, volcanic shore
-  '/study': cdn('/img/bg/library-ruins.jpg'),      // Ancient stone shelves, dust motes
-  '/mystics': cdn('/img/bg/biolum-forest.jpg'),    // Dark jungle, glowing spores
-  '/science': cdn('/img/bg/fossil-lab.jpg'),       // Clean, cold light, bones
+  '/study': cdn('/img/bg/laboratory-6515519.jpg'), // Ancient stone shelves, dust motes
+  '/mystics': cdn('/forest-2107470.jpg'),          // Dark jungle, glowing spores
+  '/science': cdn('/img/bg/laboratory-6515519.jpg'), // Clean, cold light, bones
   '/map': cdn('/img/bg/parchment-map-table.png'),  // Top-down wooden table feel
 };
 
 export default function GlobalAtmosphere() {
   const pathname = usePathname();
+  const isMystic = pathname?.startsWith('/mystics');
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.classList.toggle('mystic-path', Boolean(isMystic));
+    return () => {
+      document.body.classList.remove('mystic-path');
+    };
+  }, [isMystic]);
   
   // Default to the main coast if route not found
   const activeBg = SCENES[pathname] || SCENES['/'];

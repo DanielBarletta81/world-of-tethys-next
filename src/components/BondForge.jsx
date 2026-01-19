@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getAmazonBookUrl } from '@/lib/links';
 import { useExpedition } from '@/lib/useExpedition';
+import { useTethys } from '@/context/TethysContext';
+import StaffVisualizer from '@/components/StaffVisualizer';
 
 const basePairs = [
   { name: 'Igzier', partner: 'Karys', faction: 'Sky City', vibe: 'Heat + Resolve', img: '/images/bond-igz-karys.jpg' },
@@ -22,6 +24,7 @@ const hybridPairs = [
 
 export default function BondForge() {
   const { sessionTime, inventory } = useExpedition();
+  const { equippedStaff } = useTethys();
   const amazonUrl = getAmazonBookUrl();
   const [illuminated, setIlluminated] = useState(false);
   const [bond, setBond] = useState(null);
@@ -66,6 +69,15 @@ export default function BondForge() {
         <p className="text-sm text-[#e8dfcf]/80 leading-relaxed">
           Navigate Sky City politics and keep Igzier ↔ Karys in view. Illuminating the path (session time or a single purchase) unlocks hybrid alliances.
         </p>
+
+        {equippedStaff ? (
+          <div className="bg-[#0f0b09] border border-[#ff8c50]/20 rounded-lg p-4">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#ffb87a] font-mono">Equipped Staff</p>
+            <div className="mt-2">
+              <StaffVisualizer staffData={equippedStaff} heightClass="h-[260px]" />
+            </div>
+          </div>
+        ) : null}
 
         <div className="flex flex-wrap gap-2 text-[11px] font-mono text-[#ffdcc3]/80">
           <button

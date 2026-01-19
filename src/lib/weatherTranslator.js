@@ -13,14 +13,14 @@ export function translateWeatherToLore(weatherData, biome) {
   // --- BIOME: MONSOON (e.g. The Mystic Wood) ---
   if (biome === 'Monsoon') {
     if (condition.includes('rain') || condition.includes('drizzle')) return {
-      status: 'SPORE BLOOM',
+      status: 'GLOW TIDE',
       color: 'text-emerald-400',
-      message: 'The rains feed the rot. The fungal paths are expanding.'
+      message: 'Glow tide rises in the roots. The fungal paths widen.'
     };
     if (condition.includes('thunder') || condition.includes('storm')) return {
-      status: 'SKY WRATH',
+      status: 'TEMPEST',
       color: 'text-dissonant-red',
-      message: 'The Great Storm wakes. Hide beneath the roots.'
+      message: 'The Tempest wakes. Keep low and let it pass.'
     };
     if (condition.includes('clear') || condition.includes('sun')) return {
       status: 'DORMANCY',
@@ -37,9 +37,9 @@ export function translateWeatherToLore(weatherData, biome) {
   // --- BIOME: HIGH ALTITUDE (e.g. Sky City) ---
   if (biome === 'High_Altitude') {
     if (condition.includes('rain') || condition.includes('thunder')) return {
-      status: 'ACID WASHOUT',
+      status: 'WATCHER ASHFALL',
       color: 'text-forge-orange',
-      message: 'The falling water burns. Retreat to the lower caves.'
+      message: 'Ash rides the rain. Keep to the lower stone.'
     };
     if (condition.includes('clouds')) return {
       status: 'BLINDING FOG',

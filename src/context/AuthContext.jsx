@@ -36,14 +36,21 @@ export function AuthProvider({ children }) {
   }, []);
 
   const registerEmail = async (email, password) => {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password })
-    });
+    let res;
+    try {
+      res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+    } catch (err) {
+      console.error('[auth] register network error', err);
+      throw err;
+    }
     if (!res.ok) {
       const json = await res.json().catch(() => ({}));
+      console.error('[auth] register failed', res.status, json);
       throw new Error(json.error || 'Registration failed.');
     }
     const json = await res.json();
@@ -52,14 +59,21 @@ export function AuthProvider({ children }) {
   };
 
   const loginEmail = async (email, password) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password })
-    });
+    let res;
+    try {
+      res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+    } catch (err) {
+      console.error('[auth] login network error', err);
+      throw err;
+    }
     if (!res.ok) {
       const json = await res.json().catch(() => ({}));
+      console.error('[auth] login failed', res.status, json);
       throw new Error(json.error || 'Login failed.');
     }
     const json = await res.json();

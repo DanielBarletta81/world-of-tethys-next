@@ -39,7 +39,7 @@ export async function getCleanCreatures() {
     image:
       item.acf?.creature_image ||
       item._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
-      cdn('/img/placeholder.jpg'),
+      cdn('/img/creatures/darter_hero.png'),
     status: item.acf?.danger_level || 'Unknown'
   }));
 }
@@ -53,6 +53,6 @@ export async function getCleanCharacters() {
     role: item.acf?.role || 'Wanderer',
     archetype: item.acf?.archetype || 'Unknown',
     faction: item.acf?.faction_allegiance || 'Unaligned',
-    sigil: item.acf?.sigil_image || cdn('/img/icons/tethys-seal.svg')
+    sigil: item.acf?.sigil_image || cdn('/symbols/tethys-seal.png')
   }));
 }

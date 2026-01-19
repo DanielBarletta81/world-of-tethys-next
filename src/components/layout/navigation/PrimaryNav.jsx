@@ -8,7 +8,7 @@ export const PRIMARY_NAV_ITEMS = [
   { id: 'science', label: 'Science', href: '/science', hint: 'Field station' },
   { id: 'mystics', label: 'Mystics', href: '/mystics', hint: 'The Veil' },
   { id: 'pteros', label: 'Pteros', href: '/pteros', hint: 'Echo Wall' },
-  { id: 'community', label: 'Community', href: '/community', hint: 'Living slate' },
+  { id: 'peek', label: 'Peek', href: '/peek', hint: 'World primer' },
   { id: 'bookstore', label: 'Bookstore', href: '/bookstore', hint: 'Supply drop' },
 ];
 

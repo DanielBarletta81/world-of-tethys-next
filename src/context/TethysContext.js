@@ -13,6 +13,8 @@ import {
   fetchStarterTemplate
 } from '@/lib/playerApi';
 import { DEFAULT_PLAYER_PROFILE } from '@/lib/player-defaults';
+import { applyPlayerAction as applyProgressionAction } from '@/lib/player-progression';
+import { evolvePlayerDna } from '@/lib/player-dna-evolve';
 import { BESTIARY } from '@/data/bestiary';
 
 const TethysContext = createContext();
@@ -103,6 +105,8 @@ export function TethysProvider({ children }) {
   const [eventCount, setEventCount] = useState(0);
   const [rumorCount, setRumorCount] = useState(0);
   const guestSnapshotTimerRef = useRef(null);
+  const engagementTimerRef = useRef(null);
+  const dnaPulseRef = useRef(0);
  
   const hasOnboarded = Boolean(equippedStaff || playerProfile?.onboarding?.status === 'complete');
 
@@ -221,6 +225,46 @@ export function TethysProvider({ children }) {
       }
     };
   }, [buildGuestSnapshot, isGuest, loadingData, userId]);
+
+  const updatePlayerDna = useCallback((event = {}) => {
+    setPlayerProfile((prev) => {
+      const nextDna = evolvePlayerDna(prev?.dna, {
+        ...event,
+        pathMode: event.pathMode || prev?.path?.primary || 'wild'
+      });
+      return { ...prev, dna: nextDna };
+    });
+  }, []);
+
+  useEffect(() => {
+    if (loadingData || typeof window === 'undefined') return;
+    if (engagementTimerRef.current) clearInterval(engagementTimerRef.current);
+    engagementTimerRef.current = setInterval(() => {
+      setPlayerProfile((prev) => {
+        const nextTime = (prev?.progress?.timeOnSiteMs || 0) + 15000;
+        return {
+          ...prev,
+          progress: {
+            ...prev.progress,
+            timeOnSiteMs: nextTime
+          }
+        };
+      });
+
+      const now = Date.now();
+      if (now - dnaPulseRef.current > 120000) {
+        dnaPulseRef.current = now;
+        updatePlayerDna({
+          action: 'site_retention',
+          region: currentLocation,
+          envPressure: 0.05
+        });
+      }
+    }, 15000);
+    return () => {
+      if (engagementTimerRef.current) clearInterval(engagementTimerRef.current);
+    };
+  }, [loadingData, updatePlayerDna, currentLocation]);
 
   // compute harvest availability
   useEffect(() => {
@@ -750,9 +794,15 @@ export function TethysProvider({ children }) {
         at: new Date().toISOString()
       });
 
+      updatePlayerDna({
+        action: type === 'video' ? 'video_watch' : 'lore_read',
+        region: currentLocation,
+        envPressure: 0.05
+      });
+
       return { success: true, message: 'Knowledge integrated.', stats: nextStats };
     },
-    [equippedStaff?.id, logEvent, playerProfile]
+    [equippedStaff?.id, logEvent, playerProfile, updatePlayerDna, currentLocation]
   );
 
   const upsertCreatureBond = useCallback(async (creature) => {
@@ -918,6 +968,49 @@ export function TethysProvider({ children }) {
     }
     return stamped;
   }, [isGuest, userId]);
+
+
+  const applyPlayerAction = useCallback(
+    async (action = {}) => {
+      let result = null;
+      setPlayerProfile((prev) => {
+        result = applyProgressionAction(prev, action);
+        return result.profile;
+      });
+
+      if (result?.profile?.staff?.adornments?.length && equippedStaff?.id) {
+        setEquippedStaff((prev) =>
+          prev ? { ...prev, adornments: result.profile.staff.adornments } : prev
+        );
+      }
+
+      if (result?.delta) {
+        await logEvent({
+          type: 'PLAYER_ACTION',
+          action: action.type || action.id || 'unknown',
+          repeated: result.delta.repeated,
+          leveledUp: result.delta.leveledUp,
+          delta: {
+            xp: result.delta.xp,
+            drift: result.delta.drift,
+            aura: result.delta.aura,
+            protection: result.delta.protection,
+            adornmentsUnlocked: result.delta.adornmentsUnlocked
+          },
+          at: action.at || new Date().toISOString()
+        });
+      }
+
+      updatePlayerDna({
+        action: action.type || action.id || 'interaction',
+        region: action.region || currentLocation,
+        envPressure: action.envPressure ?? playerProfile?.perception?.stillness ?? 0
+      });
+
+      return result;
+    },
+    [equippedStaff?.id, logEvent, updatePlayerDna, currentLocation, playerProfile?.perception?.stillness]
+  );
 
   const performDailyHarvest = useCallback((newStaff, newItems, bonusStats) => {
     if (!canHarvest) return false;
@@ -1102,6 +1195,15 @@ export function TethysProvider({ children }) {
       setLastHarvestDate(now.toISOString());
       setCanHarvest(false);
 
+      const nextStreak = (playerProfile.daily?.streak || 0) + 1;
+      if (nextStreak >= 2) {
+        updatePlayerDna({
+          action: 'daily_streak',
+          region: currentLocation,
+          envPressure: 0.04
+        });
+      }
+
       await logDailyClaim(dateKey, {
         date: dateKey,
         claimedAt: now.toISOString(),
@@ -1121,7 +1223,7 @@ export function TethysProvider({ children }) {
 
       return { success: true, dateKey, staffAfter, itemsGranted };
     },
-    [canHarvest, logDailyClaim, logEvent, playerProfile.staff?.stats]
+    [canHarvest, logDailyClaim, logEvent, playerProfile.daily?.streak, playerProfile.staff?.stats, updatePlayerDna, currentLocation]
   );
 
   // The function your AssetCrate is trying to call
@@ -1157,6 +1259,13 @@ export function TethysProvider({ children }) {
     if (!HAZARD_LOCATIONS.includes(locationId)) {
       adjustStaffReliability(0.02);
     }
+    updatePlayerDna({
+      action: 'travel',
+      region: locationId,
+      locationId,
+      envPressure: playerProfile?.perception?.stillness ?? 0,
+      pathMode: playerProfile?.path?.primary
+    });
     tickAccessLocks();
     const nextMoveCount = (playerProfile?.survivorship?.moveCount || 0) + 1;
     maybeGrantStaffOrnament(nextMoveCount);
@@ -1218,6 +1327,8 @@ export function TethysProvider({ children }) {
     logEvent,
     logRumorEntry,
     logDailyClaim,
+    applyPlayerAction,
+    updatePlayerDna,
     loadStarterTemplate,
     hatchFromTemplate,
     claimDailyReward,

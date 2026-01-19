@@ -11,7 +11,8 @@ export async function GET() {
     const { data } = await ensurePlayerProfile(uid);
     return NextResponse.json({ profile: data });
   } catch (error) {
-    const status = error.status || 401;
-    return NextResponse.json({ error: 'Unauthorized' }, { status });
+    const status = error?.status === 401 ? 401 : 500;
+    const message = status === 401 ? 'Unauthorized' : 'Profile fetch failed';
+    return NextResponse.json({ error: message }, { status });
   }
 }

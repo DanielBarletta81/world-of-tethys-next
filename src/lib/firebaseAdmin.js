@@ -2,21 +2,49 @@
 import "server-only"; // Prevents this file from ever crashing the client
 import admin from "firebase-admin";
 
-export function loadCredential() {
+function loadCredential() {
+  const rawServiceAccount =
+    process.env.FIREBASE_SERVICE_ACCOUNT_JSON ||
+    process.env.FIREBASE_SERVICE_ACCOUNT_JSON_BASE64;
+  if (rawServiceAccount) {
+    try {
+      const jsonString = rawServiceAccount.includes('{')
+        ? rawServiceAccount
+        : Buffer.from(rawServiceAccount, 'base64').toString('utf8');
+      const parsed = JSON.parse(jsonString);
+      return admin.credential.cert(parsed);
+    } catch (error) {
+      throw new Error('Firebase Admin Credential Error: Invalid FIREBASE_SERVICE_ACCOUNT_JSON.');
+    }
+  }
+
   // 1. Vercel / Production (Environment Variables)
-  const projectId = 
-    process.env.FIREBASE_PROJECT_ID || 
+  const projectId =
+    process.env.FIREBASE_PROJECT_ID ||
     process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-    
-  const clientEmail = 
-    process.env.FIREBASE_CLIENT_EMAIL || 
+
+  const clientEmail =
+    process.env.FIREBASE_CLIENT_EMAIL ||
     process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-  
-  // Handle Vercel's private key newlines automatically
-  const rawKey = process.env.FIREBASE_PRIVATE_KEY;
-  const privateKey = rawKey
-    ? rawKey.replace(/\\n/g, "\n")
-    : undefined;
+
+  // Handle Vercel/newline escaping and base64-encoded keys.
+  const rawKey =
+    process.env.FIREBASE_PRIVATE_KEY ||
+    process.env.FIREBASE_PRIVATE_KEY_BASE64;
+  let privateKey;
+  if (rawKey) {
+    if (rawKey.includes('BEGIN PRIVATE KEY')) {
+      privateKey = rawKey.replace(/\\n/g, "\n").replace(/\\r/g, "\r");
+    } else {
+      try {
+        const decoded = Buffer.from(rawKey, 'base64').toString('utf8');
+        privateKey = decoded.replace(/\\n/g, "\n").replace(/\\r/g, "\r");
+      } catch {
+        privateKey = rawKey.replace(/\\n/g, "\n").replace(/\\r/g, "\r");
+      }
+    }
+    privateKey = privateKey.trim().replace(/^"|"$/g, '');
+  }
 
   if (projectId && clientEmail && privateKey) {
     return admin.credential.cert({ projectId, clientEmail, privateKey });

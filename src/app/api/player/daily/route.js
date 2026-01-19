@@ -63,8 +63,9 @@ export async function GET(req) {
     const nextCursorId = items.length ? lastItem?.id || null : null;
     return NextResponse.json({ items, nextCursor, nextCursorId });
   } catch (error) {
-    const status = error.status || 401;
-    return NextResponse.json({ error: 'Unauthorized' }, { status });
+    const status = error?.status === 401 ? 401 : 500;
+    const message = status === 401 ? 'Unauthorized' : 'Daily fetch failed';
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
@@ -96,7 +97,8 @@ export async function POST(req) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    const status = error.status || 401;
-    return NextResponse.json({ error: 'Unauthorized' }, { status });
+    const status = error?.status === 401 ? 401 : 500;
+    const message = status === 401 ? 'Unauthorized' : 'Daily log failed';
+    return NextResponse.json({ error: message }, { status });
   }
 }

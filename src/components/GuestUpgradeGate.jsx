@@ -67,7 +67,7 @@ export default function GuestUpgradeGate() {
           <button
             onClick={() => {
               setOpen(false);
-              router.push('/login');
+              router.push('/map');
             }}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-emerald-900/20 border border-emerald-500/40 text-emerald-200 uppercase tracking-[0.2em] text-[11px] rounded-sm hover:bg-emerald-900/40 transition-colors"
           >

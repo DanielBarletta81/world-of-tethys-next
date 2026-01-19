@@ -29,7 +29,8 @@ export default function useMapPhysics({
   cfg,
   mode = "wild",
   watcherIntensity = "far",
-  envPressure = 0
+  envPressure = 0,
+  initialTransform = null
 } = {}) {
   const MIN_SCALE = cfg?.MIN_SCALE ?? 0.9;
   const MAX_SCALE = cfg?.MAX_SCALE ?? 2.4;
@@ -53,6 +54,7 @@ export default function useMapPhysics({
     lastTime: 0,
     lastInputTime: Date.now()
   });
+  const initializedRef = useRef(false);
 
   const lastMoveAt = useRef(Date.now());
   const driftVel = useRef({ x: 0, y: 0 });
@@ -120,6 +122,20 @@ export default function useMapPhysics({
     state.current.scale = nextScale;
     setTransform((prev) => ({ ...prev, scale: nextScale }));
   };
+
+  useEffect(() => {
+    if (initializedRef.current) return;
+    if (!initialTransform) return;
+    state.current.x = initialTransform.x || 0;
+    state.current.y = initialTransform.y || 0;
+    state.current.scale = initialTransform.scale || 1;
+    setTransform({
+      x: state.current.x,
+      y: state.current.y,
+      scale: state.current.scale
+    });
+    initializedRef.current = true;
+  }, [initialTransform]);
 
   useEffect(() => {
     let raf = 0;

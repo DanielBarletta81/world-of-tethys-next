@@ -20,7 +20,8 @@ export async function GET() {
 
     return NextResponse.json({ profile, creatures, events });
   } catch (error) {
-    const status = error.status || 401;
-    return NextResponse.json({ error: 'Unauthorized' }, { status });
+    const status = error?.status === 401 ? 401 : 500;
+    const message = status === 401 ? 'Unauthorized' : 'Bootstrap failed';
+    return NextResponse.json({ error: message }, { status });
   }
 }

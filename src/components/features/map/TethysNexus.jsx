@@ -1,21 +1,32 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import useMapPhysics from '@/components/features/map/MapPhysics';
 import MapViewport from '@/components/features/map/MapViewport';
 import MapFragments from '@/components/features/map/MapFragments';
 import cdn from '@/lib/cdn';
+import StaffVisualizer from '@/components/StaffVisualizer';
 
 const FRAGMENTS = [
-  { id: 'pteros', label: 'Pteros', region: 'pteros_island', anchor: { x: 0.52, y: 0.68 }, icon: '/img/icons/pteros_island.svg' },
-  { id: 'watcher', label: 'Watcher Volcano', region: 'watcher_volcano', anchor: { x: 0.62, y: 0.35 }, icon: '/img/icons/watcher_volcano.svg' },
-  { id: 'cambria', label: 'Cambria', region: 'cambria_ruins', anchor: { x: 0.42, y: 0.45 }, icon: '/img/icons/cambria_ruins.svg' },
-  { id: 'gargantua', label: 'Gargantua', region: 'gargantua_archipelago', anchor: { x: 0.24, y: 0.32 }, icon: '/img/icons/gargantua_archipelago.svg' },
-  { id: 'skycity', label: 'Sky City', region: 'sky_city', anchor: { x: 0.48, y: 0.18 }, icon: '/img/icons/sky_city.svg' }
+  { id: 'skycity', label: 'Sky City', region: 'sky_city', anchor: { x: 0.26, y: 0.84 }, icon: '/img/icons/sky-city.svg' },
+  { id: 'cimmerian', label: 'Cimmerian Mtns', region: 'cimmerian_mtns', anchor: { x: 0.16, y: 0.73 }, showPin: false, clickable: false },
+  { id: 'denisova', label: 'Denisova', region: 'denisova', anchor: { x: 0.28, y: 0.56 }, showPin: false, clickable: false },
+  { id: 'siluria', label: 'Siluria', region: 'siluria', anchor: { x: 0.18, y: 0.44 }, icon: '/img/icons/silurian.svg', clickable: false },
+  { id: 'younger', label: 'Younger Woods', region: 'younger_woods', anchor: { x: 0.3, y: 0.22 }, showPin: false, clickable: false },
+  { id: 'ironwoods', label: 'Ironwoods', region: 'ironwoods', anchor: { x: 0.62, y: 0.2 }, icon: '/img/icons/ironwood.svg' },
+  { id: 'straits', label: 'Straits of Dier', region: 'straits-of-dier', anchor: { x: 0.43, y: 0.48 }, icon: '/img/icons/straits-of-dier.svg' },
+  { id: 'pteros', label: 'Pteros Island', region: 'pteros_island', anchor: { x: 0.46, y: 0.56 }, icon: '/img/icons/pteros_island.svg' },
+  { id: 'mammoth', label: 'Mammoth Island', region: 'mammoth-hand-island', anchor: { x: 0.72, y: 0.46 }, icon: '/img/icons/mammoth-hand-island.svg' },
+  { id: 'thal', label: 'Thal Territory', region: 'thal_territory', anchor: { x: 0.74, y: 0.51 }, showPin: false, clickable: false, labelOffset: { x: 7, y: 7 } },
+  { id: 'tethys-sea', label: 'Tethys Sea', region: 'tethys_sea', anchor: { x: 0.53, y: 0.64 }, showPin: false, clickable: false },
+  { id: 'rogue', label: 'Rogue Island', region: 'rogue_island', anchor: { x: 0.74, y: 0.73 }, showPin: false, clickable: false },
+  { id: 'new-tethys', label: 'New Tethys', region: 'new_tethys', anchor: { x: 0.78, y: 0.9 }, showPin: false, clickable: false }
 ];
 
+const PTEROS_FOCUS = { x: 0.46, y: 0.56, scale: 1.6 };
+
 const MAP_FALLBACK = {
-  atlas: '/img/map/tethys-atlas-clean.png',
+  atlas: '/img/map/tethys-atlas-canon.png',
   relief: '/img/map/tethys-relief-ghost.png',
   mist: '/img/map/tethys-mist-noise.png',
   ember: '/img/map/tethys-ember-scar.png',
@@ -35,14 +46,24 @@ export default function TethysNexus({
   pathMode = 'wild',
   lockedRegions = [],
   weatherUnlocked = false,
-  onTravel
+  onTravel,
+  equippedStaff = null,
+  showStaffOverlay = false
 }) {
+  const containerRef = useRef(null);
+  const [initialTransform, setInitialTransform] = useState(null);
   const watcherIntensity = watcherIntensityFor(currentLocation);
   const cfg = useMemo(
     () => ({ STILL_DELAY: 1800, STILL_FULL: 2600, MIN_SCALE: 0.9, MAX_SCALE: 2.4 }),
     []
   );
-  const physics = useMapPhysics({ cfg, mode: pathMode, watcherIntensity, envPressure: 0 });
+  const physics = useMapPhysics({
+    cfg,
+    mode: pathMode,
+    watcherIntensity,
+    envPressure: 0,
+    initialTransform
+  });
   const [stillnessReady, setStillnessReady] = useState(false);
 
   useEffect(() => {
@@ -69,8 +90,19 @@ export default function TethysNexus({
     return { relief: 0.28, mist: 0.22 + lockedBoost, ember: 0.45, ash: 0.25 };
   }, [pathMode, weatherUnlocked]);
 
+  useEffect(() => {
+    if (initialTransform || !containerRef.current) return;
+    const { clientWidth, clientHeight } = containerRef.current;
+    if (!clientWidth || !clientHeight) return;
+    const scale = PTEROS_FOCUS.scale;
+    const x = (0.5 - PTEROS_FOCUS.x) * clientWidth * scale;
+    const y = (0.5 - PTEROS_FOCUS.y) * clientHeight * scale;
+    setInitialTransform({ x, y, scale });
+  }, [initialTransform]);
+
   return (
     <div
+      ref={containerRef}
       className="relative w-full h-[80vh] overflow-hidden bg-[#0a0a0a] rounded-2xl border border-stone-800"
       {...physics.handlers}
     >
@@ -105,6 +137,12 @@ export default function TethysNexus({
           />
         </MapViewport>
       </div>
+      {showStaffOverlay && equippedStaff ? (
+        <div className="pointer-events-none absolute bottom-4 right-4 w-[220px] rounded-xl border border-stone-800/80 bg-black/70 p-3 shadow-[0_16px_30px_rgba(0,0,0,0.45)]">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400">Staff Echo</p>
+          <StaffVisualizer staffData={equippedStaff} heightClass="h-[200px]" />
+        </div>
+      ) : null}
     </div>
   );
 }

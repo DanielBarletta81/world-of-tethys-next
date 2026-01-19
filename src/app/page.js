@@ -145,7 +145,7 @@ export default function Home() {
             </div>
 
             {/* TOP BAR */}
-            <header role="banner" className="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#050403]/90 backdrop-blur-md shadow-2xl">
+            <header role="banner" className="fixed top-0 inset-x-0 z-[10000] border-b border-white/5 bg-[#050403]/90 backdrop-blur-md shadow-2xl">
               <nav role="navigation" aria-label="Main navigation" className="flex flex-wrap md:flex-nowrap items-center justify-between px-4 md:px-6 py-4">
               
               {/* BRAND */}
@@ -158,9 +158,10 @@ export default function Home() {
 
               {/* BOOK CAROUSEL (Desktop) */}
               <div className="hidden lg:block flex-1 mx-8 max-w-xl opacity-80 hover:opacity-100 transition-opacity">
-                 <div className="w-full h-12 rounded-full bg-gradient-to-r from-orange-500/20 via-orange-500/10 to-transparent backdrop-blur-sm shadow-lg overflow-hidden">
-                   <BookCarousel />
-                 </div>
+                <BookCarousel
+                  compact
+                  className="rounded-full bg-gradient-to-r from-orange-500/20 via-orange-500/10 to-transparent backdrop-blur-sm shadow-lg"
+                />
               </div>
 
               {/* RIGHT: RESIN & AUTH */}

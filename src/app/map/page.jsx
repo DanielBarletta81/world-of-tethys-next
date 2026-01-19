@@ -17,6 +17,7 @@ import Incubator from '@/components/features/onboarding/Incubator';
 import StatusBar from '@/components/features/player/StatusBar';
 import RelayLog from '@/components/RelayLog';
 import RavelWeatherOracle from '@/components/weather/RavelWeatherOracle';
+import StaffVisualizer from '@/components/StaffVisualizer';
 import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import cdn from '@/lib/cdn';
@@ -87,7 +88,8 @@ export default function MapPage() {
     attemptBondEncounter,
     setPlayerProfile,
     setEquippedStaff,
-    hatchFromTemplate
+    hatchFromTemplate,
+    applyPlayerAction
   } = useTethys();
   const { user, loading: authLoading } = useAuth();
   const { playTrack } = useAudio();
@@ -165,6 +167,22 @@ export default function MapPage() {
     lastVoRef.current = nextCue;
     playTrack(nextCue);
   }, [viewState, loadingData, playerProfile?.voice?.muteVoiceovers, playTrack]);
+
+  useEffect(() => {
+    if (viewState !== 'map') return;
+    const timer = setInterval(() => {
+      applyPlayerAction({
+        id: 'map_retention',
+        type: 'restorative',
+        intensity: 0.4,
+        xp: 1,
+        repeatPenalty: false,
+        envPressure: 0.05,
+        region: currentLocation
+      });
+    }, 90000);
+    return () => clearInterval(timer);
+  }, [viewState, applyPlayerAction, currentLocation]);
 
   // 2. Progression Handlers
   const onEggHatch = () => {
@@ -558,6 +576,8 @@ export default function MapPage() {
                   pathMode={pathMode}
                   lockedRegions={lockedRegions}
                   currentLocation={currentLocation}
+                  equippedStaff={equippedStaff}
+                  showStaffOverlay={Boolean(equippedStaff)}
                   bondAmbientLevel={
                     bondEncounter?.state === 'active' &&
                     bondEncounter.regionId === currentLocation
@@ -591,12 +611,15 @@ export default function MapPage() {
                 <RavelWeatherOracle focus="pteros_crato" className="mb-6" />
                 
                 <RelayLog focus="all" />
-                
+
                 {/* Your Staff (Inventory Display) */}
                 <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
                   <h3 className="text-amber-500 text-xs uppercase tracking-widest mb-4">Equipped Artifact</h3>
                   {equippedStaff ? (
                     <div>
+                      <div className="mb-4">
+                        <StaffVisualizer staffData={equippedStaff} heightClass="h-[200px]" />
+                      </div>
                       <div className="text-xl font-serif text-white">{equippedStaff.name}</div>
                       <div className="text-xs text-stone-500 font-mono mt-1">{equippedStaff.id}</div>
                       <div className="mt-4 flex gap-2">

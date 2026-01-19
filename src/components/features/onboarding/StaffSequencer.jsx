@@ -1,9 +1,11 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { generateStaffProfile } from '@/lib/staff-utils';
 import { useTethys } from '@/context/TethysContext';
 import { Hammer, Check, Loader2 } from 'lucide-react';
+import StaffVisualizer from '@/components/StaffVisualizer';
 
 export default function StaffSequencer({ initialStats, initialPath, inventoryOverride, onProfile, onFinalize }) {
   const [stats, setStats] = useState(initialStats || { geology: 0, creature: 0, lore: 0, human: 0 });
@@ -39,9 +41,7 @@ export default function StaffSequencer({ initialStats, initialPath, inventoryOve
     // Or you can expose setEquippedStaff in context if you prefer.
     // For now, we assume performDailyHarvest handles it:
     if (performDailyHarvest) {
-       // We can trigger a "harvest" to save it, or just use the UI feedback
-       // Ideally, TethysContext should expose setEquippedStaff for this specific action.
-       // But visually, this confirms the action.
+      performDailyHarvest(staff);
     }
     
     setIsForging(false);
@@ -62,11 +62,52 @@ export default function StaffSequencer({ initialStats, initialPath, inventoryOve
           </div>
           <h3 className="text-2xl font-serif text-white tracking-widest">SEQUENCE LOCKED</h3>
           <p className="text-stone-400 text-xs mt-2 font-mono">Staff data written to core memory.</p>
+          <Link
+            href="/"
+            className="mt-6 inline-flex items-center gap-3 rounded-full border border-stone-700/80 bg-stone-900/60 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-stone-200 hover:border-amber-400/70 hover:text-amber-200"
+          >
+            <span className="relative h-8 w-8 overflow-hidden rounded-full border border-amber-400/40 bg-black/30">
+              <img src="/symbols/tethys-seal.png" alt="" className="h-full w-full object-cover" />
+            </span>
+            Return Home
+          </Link>
         </div>
       )}
 
       <div className="bg-[#0c0a09] p-6 rounded-[10px] relative overflow-hidden">
-        {/* ... (Keep existing Visuals and Stats Grid) ... */}
+        <div className="space-y-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-cyan-300/70 font-mono">Sequence Draft</p>
+            <h3 className="text-xl text-stone-100 font-serif">{staff.name}</h3>
+            <p className="text-xs text-stone-500 mt-1">{staff.lore?.summary}</p>
+          </div>
+          <StaffVisualizer staffData={staff} />
+          <div className="grid grid-cols-3 gap-2 text-[10px] text-stone-300 uppercase tracking-[0.2em]">
+            <div className="bg-stone-900/70 border border-stone-700/60 rounded px-2 py-2 text-center">
+              Core
+              <div className="text-[11px] text-amber-300 mt-1">{staff.components?.core?.label}</div>
+            </div>
+            <div className="bg-stone-900/70 border border-stone-700/60 rounded px-2 py-2 text-center">
+              Wrap
+              <div className="text-[11px] text-amber-300 mt-1">{staff.components?.wrap?.label}</div>
+            </div>
+            <div className="bg-stone-900/70 border border-stone-700/60 rounded px-2 py-2 text-center">
+              Apex
+              <div className="text-[11px] text-amber-300 mt-1">{staff.components?.apex?.label}</div>
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-[11px] text-stone-400 uppercase tracking-[0.2em]">
+            <span>Power</span>
+            <span className="text-emerald-300">{Math.round(staff.stats?.power || 0)}</span>
+          </div>
+          {staff.perks?.length ? (
+            <ul className="text-[11px] text-stone-400 space-y-1">
+              {staff.perks.map((perk, idx) => (
+                <li key={`${perk}-${idx}`}>• {perk}</li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
         
         {/* EXPORT BUTTON */}
         <button 

@@ -7,6 +7,7 @@ import nextDynamic from 'next/dynamic';
 import StrataNav from '@/components/layout/navigation/StrataNav';
 import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
+import NpcRumorCard from '@/components/npc/NpcRumorCard';
 
 const SkyCityArchiveNpc = nextDynamic(
   () => import('@/components/npc/SkyCityArchiveNpc'),
@@ -52,6 +53,14 @@ const SECTORS = [
 ];
 
 export default function ArchiveIndex() {
+  const marrosNpc = {
+    id: 'npc-marros',
+    name: 'Marros',
+    faction: 'sky-city',
+    regionId: 'sky-city',
+    regionLabel: 'Sky City'
+  };
+
   return (
     <main className="relative min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif bg-stone-grain p-6 md:p-8 pb-36 md:pb-20">
 
@@ -83,8 +92,9 @@ export default function ArchiveIndex() {
         </p>
       </header>
 
-      <div className="max-w-6xl mx-auto mb-16">
+      <div className="max-w-6xl mx-auto mb-16 grid gap-6 md:grid-cols-[1.2fr_0.8fr]">
         <SkyCityArchiveNpc />
+        <NpcRumorCard npc={marrosNpc} />
       </div>
 
       {/* SECTOR GRID */}

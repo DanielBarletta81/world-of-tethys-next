@@ -1,44 +1,57 @@
 'use client';
 
-import React from 'react';
-import { Skull } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { cdn } from '@/lib/cdn';
 
-export default function Footer({ theme = 'volcanic' }) {
-  // Theme Logic: Adapts colors based on the biome
-  const isVernal = theme === 'vernal';
-  
-  const styles = {
-    border: isVernal ? 'border-teal-900/30' : 'border-[#1c1917]',
-    bg: isVernal ? 'transparent' : 'bg-[#050404]',
-    quote: isVernal ? 'text-emerald-900/60' : 'text-[#292524]',
-    copy: isVernal ? 'text-teal-900/50' : 'text-[#44403c]',
-    icon: isVernal ? 'text-teal-900/20' : 'text-[#1c1917]'
-  };
+const FOOTER_PLATES = [
+  { match: (p) => p === '/', plate: '/img/plates/footer/footer-home-watcher.webp' },
+  { match: (p) => p.startsWith('/map'), plate: '/img/plates/footer/footer-map-ghostrelief.webp' },
+  { match: (p) => p.startsWith('/creatures'), plate: '/img/plates/footer/footer-creatures-rookery.webp' },
+  { match: (p) => p.startsWith('/mystics'), plate: '/img/plates/footer/footer-mystics-moonwater.webp' },
+  { match: () => true, plate: '/img/plates/footer/footer-home-watcher.webp' },
+];
+
+export default function SiteFooter() {
+  const pathname = usePathname() || '/';
+  const plate = (FOOTER_PLATES.find((x) => x.match(pathname)) ?? FOOTER_PLATES.at(-1)).plate;
+  const isMystics = pathname.startsWith('/mystics');
+  const isHome = pathname === '/';
 
   return (
-    <footer role="contentinfo" className={`border-t ${styles.border} ${styles.bg} py-24 text-center relative overflow-hidden font-serif`}>
-      
-      {/* Background Watermark */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center select-none">
-         <Skull size={300} className={`opacity-50 ${styles.icon}`} />
-      </div>
+    <footer
+      role="contentinfo"
+      className="relative overflow-hidden"
+      style={{
+        backgroundImage: `
+          radial-gradient(1200px 380px at 50% 110%, rgba(255,106,42,0.18), rgba(0,0,0,0) 62%),
+          linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.35)),
+          url(${cdn(plate)})
+        `,
+        backgroundSize: 'cover',
+        backgroundPosition: isMystics ? 'center top' : isHome ? '50% 50%' : 'center',
+      }}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
+        style={{ backgroundImage: `url(${cdn('/noise.svg')})`, backgroundSize: '420px 420px' }}
+      />
 
-      <div className="relative z-10 flex flex-col items-center gap-8 px-4">
-        
-        {/* The Memento Mori Quote */}
-        <blockquote className={`text-lg md:text-xl italic ${styles.quote} max-w-lg leading-relaxed`}>
-          "99.9% of all species that have ever lived are extinct.<br/>
-          We are just the current ghosts."
-        </blockquote>
+      <img
+        src={cdn('/icons/creator_seal_coin.svg')}
+        alt=""
+        className={
+          isMystics
+            ? 'pointer-events-none absolute left-1/2 top-10 w-[160px] -translate-x-1/2 opacity-[0.18]'
+            : 'pointer-events-none absolute bottom-[32px] right-[118px] w-[160px] opacity-[0.16]'
+        }
+        style={{ filter: 'drop-shadow(0 10px 24px rgba(255,106,42,0.35))', mixBlendMode: 'screen' }}
+      />
 
-        <div className={`w-12 h-[1px] ${isVernal ? 'bg-teal-900/30' : 'bg-[#292524]'}`}></div>
-
-        {/* Copyright & Legal */}
-        <div className={`text-[10px] font-sans uppercase tracking-[0.25em] ${styles.copy} space-y-2`}>
-          <p>© {new Date().getFullYear()} World of Tethys</p>
-          <p>D.C. Barletta</p>
+      <div className="relative mx-auto max-w-6xl px-6 py-16 text-white/70">
+        <div className="text-sm tracking-[0.28em] uppercase">
+          D.C. Barletta • World of Tethys
         </div>
-
+        <div className="mt-2 text-xs text-white/45">© {new Date().getFullYear()}</div>
       </div>
     </footer>
   );

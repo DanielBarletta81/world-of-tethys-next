@@ -7,13 +7,31 @@ import PathSelector from '@/components/features/onboarding/PathSelector';
 import StaffSequencer from '@/components/features/onboarding/StaffSequencer';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
+import NpcRumorCard from '@/components/npc/NpcRumorCard';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function MysticsPage() {
   const [activeRitual, setActiveRitual] = useState('path'); 
+  const ravelNpc = {
+    id: 'npc-ravel',
+    name: 'Ravel',
+    faction: 'mystic',
+    regionId: 'mystic-woods',
+    regionLabel: 'Mystic Woods'
+  };
 
   return (
     <div className="min-h-screen bg-[#050404] text-purple-100 font-serif">
+      <Link
+        href="/"
+        className="fixed left-4 top-4 z-[10000] inline-flex items-center gap-3 rounded-full border border-purple-900/40 bg-black/70 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-purple-100/90 shadow-[0_12px_30px_rgba(0,0,0,0.45)] backdrop-blur hover:border-amber-400/60 hover:text-amber-100"
+      >
+        <span className="relative h-9 w-9 overflow-hidden rounded-full border border-amber-400/50 bg-black/40">
+          <img src="/symbols/tethys-seal.png" alt="World of Tethys" className="h-full w-full object-cover" />
+        </span>
+        Return Home
+      </Link>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-purple-400"
@@ -57,6 +75,11 @@ export default function MysticsPage() {
             <div className="bg-[#0f0b09] border border-purple-900/30 p-6 rounded-2xl">
               <h2 className="text-xl text-purple-300 font-serif mb-4">2. The Forge</h2>
               <StaffSequencer />
+            </div>
+
+            <div className="bg-[#0f0b09] border border-purple-900/30 p-6 rounded-2xl">
+              <h2 className="text-xl text-purple-300 font-serif mb-4">Ravel</h2>
+              <NpcRumorCard npc={ravelNpc} className="border-purple-900/40" />
             </div>
           </div>
 

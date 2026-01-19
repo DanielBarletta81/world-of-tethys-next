@@ -17,6 +17,11 @@ export async function ensurePlayerProfile(uid, overrides = {}) {
     onboarding: { ...DEFAULT_PLAYER_PROFILE.onboarding, status: 'new' },
     guide: { ...DEFAULT_PLAYER_PROFILE.guide },
     progress: { ...DEFAULT_PLAYER_PROFILE.progress },
+    progression: { ...DEFAULT_PLAYER_PROFILE.progression },
+    dna: { ...DEFAULT_PLAYER_PROFILE.dna },
+    aura: { ...DEFAULT_PLAYER_PROFILE.aura },
+    protection: { ...DEFAULT_PLAYER_PROFILE.protection },
+    drift: { ...DEFAULT_PLAYER_PROFILE.drift },
     adornmentUnlockedAt: {},
     createdAt: new Date().toISOString(),
     lastLoginAt: new Date().toISOString()
@@ -32,6 +37,11 @@ export async function ensurePlayerProfile(uid, overrides = {}) {
     lastLoginAt: new Date().toISOString(),
     guide: data.guide || base.guide,
     progress: data.progress || base.progress,
+    progression: data.progression || base.progression,
+    dna: data.dna || base.dna,
+    aura: data.aura || base.aura,
+    protection: data.protection || base.protection,
+    drift: data.drift || base.drift,
     adornmentUnlockedAt: data.adornmentUnlockedAt || {}
   };
 

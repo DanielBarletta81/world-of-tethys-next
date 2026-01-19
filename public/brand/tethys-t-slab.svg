@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="160" viewBox="0 0 520 160" fill="none">
+  <defs>
+    <!-- “Stone cut” edge -->
+    <linearGradient id="stone" x1="0" y1="0" x2="520" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b0f14"/>
+      <stop offset="0.55" stop-color="#0a0d12"/>
+      <stop offset="1" stop-color="#07090d"/>
+    </linearGradient>
+
+    <!-- soft fog sheen -->
+    <radialGradient id="sheen" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(170 40) rotate(15) scale(240 90)">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- aura (color injected via CSS variable) -->
+    <filter id="aura" x="-40%" y="-80%" width="180%" height="260%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <style>
+      /* Defaults; you’ll override these from CSS */
+      :root { --aura: rgba(255,106,42,0.55); --ink: rgba(255,255,255,0.76); }
+
+      .slab { fill: url(#stone); }
+      .edge { stroke: rgba(255,255,255,0.12); stroke-width: 2; }
+      .cut  { stroke: rgba(255,255,255,0.78); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+      .cut2 { stroke: rgba(255,255,255,0.22); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+      .roots { stroke: rgba(255,255,255,0.26); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .rootsGlow { stroke: var(--aura); stroke-width: 4; opacity: 0.85; filter: url(#aura); }
+
+      .horizon { stroke: rgba(255,255,255,0.18); stroke-width: 2; stroke-linecap: round; }
+      .horizonGlow { stroke: var(--aura); stroke-width: 3; opacity: 0.55; filter: url(#aura); }
+      .ripples { stroke: rgba(255,255,255,0.16); stroke-width: 1.6; stroke-linecap: round; }
+      .ripplesGlow { stroke: var(--aura); stroke-width: 2.2; opacity: 0.45; filter: url(#aura); }
+
+      .grain { opacity: 0.06; mix-blend-mode: overlay; }
+    </style>
+  </defs>
+
+  <!-- slab -->
+  <path class="slab" d="M24 20H480c10 0 16 6 16 16v88c0 10-6 16-16 16H24c-10 0-16-6-16-16V36c0-10 6-16 16-16Z"/>
+  <path class="edge" d="M24 20H480c10 0 16 6 16 16v88c0 10-6 16-16 16H24c-10 0-16-6-16-16V36c0-10 6-16 16-16Z"/>
+
+  <!-- fog sheen -->
+  <path d="M30 30H470c8 0 14 6 14 14v24c0 8-6 14-14 14H30c-8 0-14-6-14-14V44c0-8 6-14 14-14Z" fill="url(#sheen)"/>
+
+  <!-- horizon + ripples -->
+  <g transform="translate(0,0)">
+    <path class="horizonGlow" d="M90 92 H430" />
+    <path class="horizon" d="M90 92 H430" />
+    <path class="ripplesGlow" d="M120 110 Q170 102 220 110 T320 110 T420 110" />
+    <path class="ripples" d="M120 110 Q170 102 220 110 T320 110 T420 110" />
+    <path class="ripplesGlow" d="M140 122 Q195 116 250 122 T360 122 T440 122" />
+    <path class="ripples" d="M140 122 Q195 116 250 122 T360 122 T440 122" />
+  </g>
+
+  <!-- ROOTS (draw glow first, then ink) -->
+  <g transform="translate(0,0)">
+    <!-- glow -->
+    <path class="rootsGlow" d="M110 132 C140 124 154 118 172 108 C188 100 206 96 228 102" />
+    <path class="rootsGlow" d="M165 134 C186 126 204 122 224 126 C244 130 260 130 284 120" />
+    <path class="rootsGlow" d="M240 134 C262 132 278 130 296 122 C314 114 332 110 356 112" />
+    <path class="rootsGlow" d="M310 134 C330 128 350 122 370 112 C390 102 408 96 430 98" />
+
+    <!-- ink -->
+    <path class="roots" d="M110 132 C140 124 154 118 172 108 C188 100 206 96 228 102" />
+    <path class="roots" d="M165 134 C186 126 204 122 224 126 C244 130 260 130 284 120" />
+    <path class="roots" d="M240 134 C262 132 278 130 296 122 C314 114 332 110 356 112" />
+    <path class="roots" d="M310 134 C330 128 350 122 370 112 C390 102 408 96 430 98" />
+  </g>
+
+  <!-- CHISELED T (two-pass for “cut depth”) -->
+  <g transform="translate(0,0)">
+    <!-- depth pass -->
+    <path class="cut2" d="M220 52 H360" />
+    <path class="cut2" d="M290 52 V112" />
+
+    <!-- main cut -->
+    <path class="cut" d="M220 50 H360" />
+    <path class="cut" d="M290 50 V112" />
+  </g>
+
+  <!-- tiny grain dots (subtle) -->
+  <g class="grain" fill="#ffffff">
+    <circle cx="74" cy="54" r="1"/><circle cx="98" cy="78" r="1"/><circle cx="132" cy="60" r="1"/>
+    <circle cx="410" cy="68" r="1"/><circle cx="448" cy="52" r="1"/><circle cx="462" cy="88" r="1"/>
+  </g>
+</svg>

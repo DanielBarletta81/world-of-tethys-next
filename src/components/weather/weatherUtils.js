@@ -39,16 +39,16 @@ export function calculateSurvivability(weatherData) {
   if (condition) {
     if (condition.includes('thunderstorm') || condition.includes('storm')) {
       score -= 40;
-      warnings.push('Active storm - seek shelter immediately');
+      warnings.push('Tempest active - seek shelter immediately');
     } else if (condition.includes('rain') && windSpeed > 10) {
       score -= 25;
-      warnings.push('Heavy rain with wind - poor visibility');
+      warnings.push('Glow tide with wind - visibility reduced');
     } else if (condition.includes('snow')) {
       score -= 20;
       warnings.push('Snowfall - reduced mobility');
     } else if (condition.includes('fog') || condition.includes('mist')) {
       score -= 10;
-      warnings.push('Low visibility conditions');
+      warnings.push('Veil conditions - low visibility');
     }
   }
 

@@ -2,10 +2,16 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useEffect, useState, useMemo } from 'react';
+import { cdn } from '@/lib/cdn';
 
 const CYCLE_LABEL = 'Cycle: Albian Awakening';
+const DEFAULT_IMAGE = cdn('/symbols/tethys-seal.png');
 
-export default function CelestialDisk({ label = CYCLE_LABEL, className = 'tethys-disk' }) {
+export default function CelestialDisk({
+  label = CYCLE_LABEL,
+  className = 'tethys-disk',
+  imageSrc = DEFAULT_IMAGE
+}) {
   const [degrees, setDegrees] = useState(0);
 
   useEffect(() => {
@@ -35,7 +41,7 @@ export default function CelestialDisk({ label = CYCLE_LABEL, className = 'tethys
       >
         <div className="absolute inset-2 rounded-full border border-amber-900/30"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.08),transparent_60%)]"></div>
-        <Image src="/logo-disk.png" alt="Tethys Celestial Disk" className="w-full h-full object-contain opacity-80" />
+        <Image src={imageSrc} alt="Tethys Celestial Disk" fill sizes="96px" className="object-contain opacity-80" />
       </motion.div>
       <div className="text-center space-y-1">
         <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400 font-mono">{label}</p>

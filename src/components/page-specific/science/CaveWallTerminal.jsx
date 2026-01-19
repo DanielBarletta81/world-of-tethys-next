@@ -21,7 +21,7 @@ export default function CaveWallTerminal({
   thumbnail,
   rewards = { lore: 5 }
 }) {
-  const { hasOnboarded, consumeMedia, playerProfile } = useTethys();
+  const { hasOnboarded, consumeMedia, playerProfile, applyPlayerAction } = useTethys();
   const [isOpen, setIsOpen] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const isConsumed = playerProfile?.history?.mediaConsumed?.includes(mediaId);
@@ -93,6 +93,17 @@ export default function CaveWallTerminal({
     await new Promise((resolve) => setTimeout(resolve, 700));
     await consumeMedia(mediaId, type, rewards);
     setIsClaiming(false);
+  };
+
+  const handleMediaPlay = () => {
+    applyPlayerAction({
+      id: `terminal_${mediaId || 'media'}_${type}`,
+      type: 'restorative',
+      intensity: 0.3,
+      xp: 2,
+      repeatPenalty: false,
+      envPressure: 0.05
+    });
   };
 
   const TypeIcon = TYPE_META[type]?.icon || Play;
@@ -209,6 +220,7 @@ export default function CaveWallTerminal({
                     className="w-full h-full opacity-90 mix-blend-screen"
                     controls
                     autoPlay
+                    onPlay={handleMediaPlay}
                   />
                 ) : (
                   <iframe
@@ -222,7 +234,7 @@ export default function CaveWallTerminal({
               )}
               {type === 'audio' && mediaUrl && (
                 <div className="w-full h-full flex items-center justify-center">
-                  <audio controls autoPlay src={mediaUrl} className="w-2/3" />
+                  <audio controls autoPlay src={mediaUrl} className="w-2/3" onPlay={handleMediaPlay} />
                 </div>
               )}
               {type === 'text' && mediaUrl && (

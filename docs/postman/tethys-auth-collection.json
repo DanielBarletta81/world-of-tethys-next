@@ -440,6 +440,17 @@
           "raw": "{\n  \"entries\": [\n    {\n      \"dayBucket\": \"{{dateKey}}\",\n      \"path\": \"mystic\",\n      \"oracleState\": \"text\",\n      \"stillnessBand\": \"low\",\n      \"watcherState\": \"quiet\",\n      \"regionBand\": \"far\",\n      \"interactionDepth\": \"first\",\n      \"count\": 1\n    }\n  ]\n}"
         }
       }
+    },
+    {
+      "name": "Admin Health",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "admin", "health"]
+        }
+      }
     }
   ]
 }

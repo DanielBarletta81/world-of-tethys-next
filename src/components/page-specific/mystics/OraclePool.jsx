@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Sparkles, Eye } from 'lucide-react';
 // Use global styles; whisper text now just uses inline classes
 import OracleModal from "@/components/OracleModal";
-import TorchCursor from "@/components/ui/torchCursor";
 import { useTethys } from "@/context/TethysContext";
 
 const WHISPERS_POOL = [
@@ -277,7 +276,6 @@ const harvestMushroom = (e, m) => {
         "--oracle-opacity-mult": oracleOpacity,
       }}
     >
-    <TorchCursor enabled={true} />
       <OracleModal open={modalOpen} onClose={() => setModalOpen(false)} entry={modalEntry} />
 
       {/* 1. THE POOL SURFACE */}

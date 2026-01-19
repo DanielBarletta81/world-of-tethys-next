@@ -15,8 +15,18 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+function isoWeekKey(date = new Date()) {
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`;
+}
+
 async function seedRavelOracle() {
   const batch = db.batch();
+  const weekKey = isoWeekKey();
 
   // meta/config doc
   const metaRef = db.doc("oracle/seeders/ravel_v1");
@@ -30,7 +40,8 @@ async function seedRavelOracle() {
       selectors: seeder.selectors,
       fallback: seeder.fallback,
       version: 1,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      weekKey,
+      seededAt: admin.firestore.FieldValue.serverTimestamp(),
     },
     { merge: true }
   );

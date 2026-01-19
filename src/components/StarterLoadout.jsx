@@ -61,9 +61,9 @@ const StarterLoadout = () => {
   };
 
   if (!mounted || loadingData) return <div className="p-8 text-orange-900/50 font-mono text-center uppercase tracking-widest text-xs">Syncing Supply...</div>;
- if (playerProfile.onboarding?.status === 'complete') {
-  return { success: false, reason: 'already_hatched' };
-}
+  if (playerProfile.onboarding?.status === 'complete') {
+    return null;
+  }
 
   return (
     <div className="w-full bg-[#1c1917] border border-[#292524] shadow-2xl font-serif text-[#e7e5e4] relative overflow-hidden rounded-sm">

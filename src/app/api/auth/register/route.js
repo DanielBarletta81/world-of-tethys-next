@@ -13,9 +13,11 @@ export async function POST(req) {
   try {
     const { email, password } = await req.json();
     if (!email || !password) {
+      console.warn('[auth/register] missing credentials');
       return NextResponse.json({ error: 'Email and password are required.' }, { status: 400 });
     }
 
+    console.info('[auth/register] attempt', { hasEmail: Boolean(email) });
     const authData = await signUpWithEmail(email, password);
     const sessionCookie = await createSessionCookie(authData.idToken);
 
@@ -31,6 +33,7 @@ export async function POST(req) {
     const res = NextResponse.json({
       user: { uid: authData.localId, email: authData.email }
     });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
 
     res.cookies.set({
       name: SESSION_COOKIE_NAME,
@@ -42,9 +45,12 @@ export async function POST(req) {
       maxAge: SESSION_MAX_AGE_SEC
     });
 
+    console.info('[auth/register] success', { uid: authData.localId });
     return res;
   } catch (error) {
-    console.error('Register error:', error);
-    return NextResponse.json({ error: error.message || 'Registration failed.' }, { status: 400 });
+    console.error('[auth/register] error', error);
+    const res = NextResponse.json({ error: error.message || 'Registration failed.' }, { status: 400 });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
+    return res;
   }
 }

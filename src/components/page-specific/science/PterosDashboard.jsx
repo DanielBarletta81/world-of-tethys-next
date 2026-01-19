@@ -39,8 +39,50 @@ const PterosDashboard = () => {
   const [oracleLoading, setOracleLoading] = useState(false);
   const [oracleError, setOracleError] = useState(null);
   const [showUnlockHint, setShowUnlockHint] = useState(false);
+  const [activeLore, setActiveLore] = useState(null);
   const weatherUnlocked = Boolean(playerProfile?.progression?.weatherUnlocked);
   const oracleConsultedAt = playerProfile?.progression?.oracleConsultedAt;
+  const loreScrolls = useMemo(
+    () => ({
+      br: {
+        title: 'Burn Rate (BR)',
+        body:
+          'Rate of danger accumulation. A higher BR means the air is pulling heat out of you or pushing it in. ' +
+          'Sky City logs BR as a warning. Ironwood only notes when it crosses the shade line.'
+      },
+      sf: {
+        title: 'Spine Flow (SF)',
+        body:
+          'River vitality measured in spine-pulse. A higher SF means the channel carries memory and force. ' +
+          'Pteros stations treat SF as life-risk, not bounty.'
+      },
+      sw: {
+        title: 'Salt Wake (SW)',
+        body:
+          'Estuary influence. SW climbs when the sea asserts itself. High SW shifts the hatchery schedule and ' +
+          'changes which predators cross the straits.'
+      },
+      sb: {
+        title: 'Silt Breath (SB)',
+        body:
+          'How much the water remembers stone. SB rises after tempests and ashfall. Loaded water changes the color ' +
+          'of everything it touches.'
+      },
+      vp: {
+        title: 'Veil Pressure (VP)',
+        body:
+          'Barometric pressure measured as veil weight. Higher VP means the air is pressing the surface quiet. ' +
+          'Lower VP invites Tempest behavior and Watcher whisper.'
+      },
+      bv: {
+        title: 'Brim Vein (BV)',
+        body:
+          'Sulfur trace index. Old logs call it brim-mark. Modern crews treat BV as an early warning for Watcher ashfall ' +
+          'and vent breach.'
+      }
+    }),
+    []
+  );
 
   useEffect(() => {
     if (!weatherUnlocked) {
@@ -58,7 +100,8 @@ const PterosDashboard = () => {
         setTelemetry({
           weather: pterosReport?.weather,
           aiBrief: data.aiSummary,
-          integrity: pterosReport?.signalIntegrity
+          integrity: pterosReport?.signalIntegrity,
+          tethys: pterosReport?.tethys
         });
       } catch (err) {
         if (err.name !== 'AbortError') {
@@ -134,7 +177,7 @@ const PterosDashboard = () => {
     maintainAspectRatio: false,
     scales: {
       y: {
-        grid: { color: '#292524' },
+        grid: { color: '#3a2416' },
         ticks: { color: '#78716c' }
       },
       x: {
@@ -149,10 +192,10 @@ const PterosDashboard = () => {
 
   if (!weatherUnlocked) {
     return (
-      <div className="bg-[#1c1917] border border-amber-900/40 p-8 rounded-lg flex flex-col items-center justify-center text-center space-y-3">
-        <div className="text-xs uppercase tracking-[0.3em] text-amber-500/80">Signal Muted</div>
+      <div className="bg-[#150c08] border border-amber-900/50 p-8 rounded-lg flex flex-col items-center justify-center text-center space-y-3">
+        <div className="text-xs uppercase tracking-[0.3em] text-amber-500/80">Signal Buried</div>
         <p className="text-sm text-stone-400 max-w-md">
-          The station cannot read the sky without a spore link.
+          The river lattice cannot read the sky without a spore link.
           Consult the Oracle Pool to attune the carrier.
         </p>
       </div>
@@ -161,9 +204,9 @@ const PterosDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0c0a09] p-8 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0b0705] p-8 flex items-center justify-center">
         <div className="text-amber-600 animate-pulse uppercase tracking-widest text-xs">
-          Initializing Pteros Sensor Array...
+          Igniting Pteros River Lattice...
         </div>
       </div>
     );
@@ -172,53 +215,79 @@ const PterosDashboard = () => {
   const weatherMain = telemetry?.weather?.weather?.[0]?.main?.toLowerCase() || '';
   const isStorming = weatherMain.includes('rain') || weatherMain.includes('storm') || weatherMain.includes('thunder');
   const temp = telemetry?.weather?.main?.temp ?? 30;
-  const calculatedFlow = isStorming ? 12000 : 8500;
-  const calculatedSalinity = temp > 32 ? 38 : 34;
+  const calculatedFlow = telemetry?.tethys?.metrics?.spineFlow ?? (isStorming ? 12000 : 8500);
+  const calculatedSalinity = telemetry?.tethys?.metrics?.saltWake ?? (temp > 32 ? 38 : 34);
+  const calculatedTurbidity = telemetry?.tethys?.metrics?.siltBreath ?? (isStorming ? 6.8 : 4.2);
+  const thermalDrift = telemetry?.tethys?.metrics?.burnRate ?? Math.round((temp + 12) * 1.2);
+  const veilPressure = telemetry?.tethys?.metrics?.veilPressure;
+  const brimVein = telemetry?.tethys?.metrics?.brimVein;
   const now = telemetry?.weather?.dt;
   const sunrise = telemetry?.weather?.sys?.sunrise;
   const sunset = telemetry?.weather?.sys?.sunset;
   const isNight = typeof now === 'number' && typeof sunrise === 'number' && typeof sunset === 'number'
     ? now < sunrise || now > sunset
     : false;
-  const threatLevel = isStorming ? 'CRITICAL' : 'ELEVATED';
+  const threatLevel = isStorming ? 'TEMPEST' : 'ELEVATED';
 
   return (
     <div
       className={`min-h-screen text-[#e7e5e4] font-mono p-4 md:p-8 transition-colors duration-1000 ${
-        isNight ? 'bg-[#050b14]' : 'bg-[#0c0a09]'
+        isNight ? 'bg-[#07060a]' : 'bg-[#0b0705]'
       }`}
     >
       {showUnlockHint && (
         <div className="mb-6 border border-emerald-900/40 bg-emerald-950/30 text-emerald-300 text-[10px] uppercase tracking-[0.3em] px-4 py-3 rounded">
-          Spore Link Established
+          Spore Link Sealed
         </div>
       )}
       
       {/* Top Bar: Station Info */}
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#292524] pb-6 mb-8 gap-4">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#3a2416] pb-6 mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter text-amber-500 uppercase flex items-center gap-3">
-            <Anchor className="w-8 h-8" /> Outpost: Pteros Central
+          <h1 className="text-3xl font-black tracking-tighter text-amber-400 uppercase flex items-center gap-3">
+            <Anchor className="w-8 h-8" /> Pteros River Watch
           </h1>
           <p className="text-xs text-[#78716c] uppercase tracking-[0.2em] mt-1">
-            Twin Straits Monitoring Station • Estuary Sector Alpha
+            Twin Straits River-ward • Estuary Vault
           </p>
           <p className="mt-2 text-[10px] font-mono text-amber-500/80 leading-relaxed uppercase">
             {">"} {telemetry?.aiBrief || 'Awaiting Gemini Packet...'}
           </p>
         </div>
-        <div className="flex items-center gap-4 bg-[#1c1917] p-3 rounded border border-[#292524]">
+        <div className="flex items-center gap-4 bg-[#150c08] p-3 rounded border border-[#3a2416]">
           <div className="text-right">
             <div className="text-[10px] text-[#78716c] uppercase">Current Era</div>
             <div className="font-bold text-amber-500">111.4 M.Y.A.</div>
           </div>
-          <div className="h-8 w-[1px] bg-[#44403c]"></div>
+          <div className="h-8 w-[1px] bg-[#4a2b18]"></div>
           <div className="text-right">
             <div className="text-[10px] text-[#78716c] uppercase">Threat Status</div>
-            <div className={`font-bold ${threatLevel === 'CRITICAL' ? 'text-rose-500 animate-pulse' : 'text-amber-500'}`}>
+            <div className={`font-bold ${threatLevel === 'TEMPEST' ? 'text-rose-500 animate-pulse' : 'text-amber-500'}`}>
               {threatLevel}
             </div>
           </div>
+          <div className="h-8 w-[1px] bg-[#4a2b18]"></div>
+          <div className="text-right">
+            <div className="text-[10px] text-[#78716c] uppercase">BR</div>
+            <div className="font-bold text-amber-500">
+              {Number.isFinite(thermalDrift) ? `${thermalDrift} (m/s)` : '--'}
+            </div>
+          </div>
+          <div className="h-8 w-[1px] bg-[#4a2b18]"></div>
+          <div className="text-right">
+            <div className="text-[10px] text-[#78716c] uppercase">VP</div>
+            <div className="font-bold text-amber-500">
+              {Number.isFinite(veilPressure) ? veilPressure : '--'}
+            </div>
+          </div>
+          <div className="h-8 w-[1px] bg-[#4a2b18]"></div>
+          <div className="text-right">
+            <div className="text-[10px] text-[#78716c] uppercase">BV</div>
+            <div className="font-bold text-amber-500">
+              {Number.isFinite(brimVein) ? `${brimVein} (m/s)` : '--'}
+            </div>
+          </div>
+          <div className="h-8 w-[1px] bg-[#4a2b18]"></div>
           <div className="text-right">
             <div className="text-[10px] text-[#78716c] uppercase">Signal Integrity</div>
             <div className="font-bold text-amber-500">
@@ -227,6 +296,23 @@ const PterosDashboard = () => {
           </div>
         </div>
       </header>
+      <div className="mb-6 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-stone-500">
+        {['BR', 'SF', 'SW', 'SB', 'VP', 'BV'].map((sigil) => (
+          <button
+            key={sigil}
+            type="button"
+            onMouseEnter={() => setActiveLore(sigil.toLowerCase())}
+            onMouseLeave={() => setActiveLore(null)}
+            onFocus={() => setActiveLore(sigil.toLowerCase())}
+            onBlur={() => setActiveLore(null)}
+            onClick={() => setActiveLore((prev) => (prev === sigil.toLowerCase() ? null : sigil.toLowerCase()))}
+            className="relative flex h-7 w-7 items-center justify-center rounded-full border border-amber-700/40 bg-[#120b07] text-[9px] text-amber-200/80 transition hover:border-amber-400/70"
+            aria-label={`Open lore for ${sigil}`}
+          >
+            {sigil}
+          </button>
+        ))}
+      </div>
 
       {/* Main Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -234,41 +320,41 @@ const PterosDashboard = () => {
         {/* Column 1: Hydro-Dynamics */}
         <div className="space-y-6">
           
-          <div className="bg-[#1c1917] border border-[#292524] p-6 rounded-lg relative overflow-hidden group hover:border-cyan-800 transition-colors">
+          <div className="bg-[#150c08] border border-[#3a2416] p-6 rounded-lg relative overflow-hidden group hover:border-amber-700 transition-colors">
             <div className="absolute top-0 right-0 p-3 opacity-10"><Waves size={64} /></div>
-            <h3 className="text-cyan-500 text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
-              <Navigation className="w-4 h-4" /> Danian River Inflow
+            <h3 className="text-amber-400 text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+              <Navigation className="w-4 h-4" /> SF
             </h3>
             <div className="flex items-end gap-2 mb-2">
               {/* Data is safe to render now because of 'mounted' check */}
               <span className="text-4xl font-bold text-white">{Math.floor(calculatedFlow)}</span>
-              <span className="text-sm text-[#78716c] mb-1">m³/s</span>
+              <span className="text-sm text-[#78716c] mb-1">SF (m/s)</span>
             </div>
-            <div className="w-full bg-[#0c0a09] h-1.5 rounded-full overflow-hidden">
-              <div className="h-full bg-cyan-600 w-[75%] animate-pulse"></div>
+            <div className="w-full bg-[#0b0705] h-1.5 rounded-full overflow-hidden">
+              <div className="h-full bg-amber-500/80 w-[75%] animate-pulse"></div>
             </div>
             <p className="text-[10px] text-[#78716c] mt-3">
               {isStorming
-                ? 'Storm surge detected from offshore systems. Tidal backflow expected.'
+                ? 'Tempest surge detected from offshore systems. Tidal backflow expected.'
                 : 'Freshwater pulse detected from Ironwoods watershed. Nutrient load increasing.'}
             </p>
           </div>
 
-          <div className="bg-[#1c1917] border border-[#292524] p-6 rounded-lg relative overflow-hidden group hover:border-emerald-800 transition-colors">
+          <div className="bg-[#150c08] border border-[#3a2416] p-6 rounded-lg relative overflow-hidden group hover:border-amber-700 transition-colors">
             <div className="absolute top-0 right-0 p-3 opacity-10"><Droplets size={64} /></div>
-            <h3 className="text-emerald-500 text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
-              <Activity className="w-4 h-4" /> Estuary Salinity
+            <h3 className="text-amber-400 text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+              <Activity className="w-4 h-4" /> SW
             </h3>
             <div className="flex items-end gap-2 mb-2">
               <span className="text-4xl font-bold text-white">{calculatedSalinity.toFixed(1)}</span>
-              <span className="text-sm text-[#78716c] mb-1">PPT</span>
+              <span className="text-sm text-[#78716c] mb-1">SW (m/s)</span>
             </div>
             <div className="flex text-[10px] uppercase tracking-wider justify-between text-[#57534e] mt-2">
               <span>Fresh (0)</span>
               <span>Brackish (15)</span>
               <span>Marine (35)</span>
             </div>
-            <div className="w-full h-2 rounded-full mt-1 bg-gradient-to-r from-cyan-300 via-emerald-500 to-blue-900 relative">
+            <div className="w-full h-2 rounded-full mt-1 bg-gradient-to-r from-amber-300 via-orange-500 to-red-900 relative">
               <div 
                 className="absolute top-1/2 -translate-y-1/2 w-2 h-4 bg-white border border-black shadow"
                 style={{ left: `${(calculatedSalinity / 35) * 100}%`, transition: 'left 1s ease' }}
@@ -279,12 +365,12 @@ const PterosDashboard = () => {
         </div>
 
         {/* Column 2: The Feeding Frenzy (Central Chart) */}
-        <div className="lg:col-span-2 bg-[#1c1917] border border-[#292524] p-6 rounded-lg shadow-xl">
+        <div className="lg:col-span-2 bg-[#150c08] border border-[#3a2416] p-6 rounded-lg shadow-xl">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-[#a8a29e] text-xs uppercase tracking-widest font-bold flex items-center gap-2">
               <Fish className="w-4 h-4" /> Biomass Interaction Log
             </h3>
-            <span className="px-2 py-1 bg-[#292524] text-[10px] uppercase text-rose-400 border border-rose-900/30 rounded animate-pulse">
+            <span className="px-2 py-1 bg-[#23140c] text-[10px] uppercase text-rose-400 border border-rose-900/30 rounded animate-pulse">
               Frenzy Imminent
             </span>
           </div>
@@ -293,7 +379,7 @@ const PterosDashboard = () => {
             <Line data={activityData} options={chartOptions} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-[#292524]">
+          <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-[#3a2416]">
              <div>
                <div className="text-[10px] text-[#78716c] uppercase">Dominant Bait</div>
                <div className="text-cyan-400 font-bold">Silver-Scale Schools</div>
@@ -310,12 +396,12 @@ const PterosDashboard = () => {
       {/* Bottom Section: The Twin Straits Status */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        <div className="bg-[#1c1917] border border-[#292524] p-4 rounded flex items-center justify-between">
+        <div className="bg-[#150c08] border border-[#3a2416] p-4 rounded flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded bg-[#0c0a09] flex items-center justify-center border border-[#292524] text-[#57534e]">W</div>
+            <div className="w-10 h-10 rounded bg-[#0b0705] flex items-center justify-center border border-[#3a2416] text-[#57534e]">W</div>
             <div>
               <h4 className="font-bold text-sm text-[#e7e5e4]">West Strait</h4>
-              <p className="text-[10px] text-[#78716c] uppercase">Turbidity: High (River Plume)</p>
+              <p className="text-[10px] text-[#78716c] uppercase">SB: {calculatedTurbidity.toFixed(1)} (m/s)</p>
             </div>
           </div>
           <div className="text-emerald-500 text-xs font-bold bg-emerald-950/30 px-3 py-1 rounded border border-emerald-900">
@@ -323,12 +409,12 @@ const PterosDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-[#1c1917] border-l-4 border-rose-600 p-4 rounded flex items-center justify-between">
+        <div className="bg-[#150c08] border-l-4 border-rose-600 p-4 rounded flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded bg-[#0c0a09] flex items-center justify-center border border-[#292524] text-rose-800">E</div>
+            <div className="w-10 h-10 rounded bg-[#0b0705] flex items-center justify-center border border-[#3a2416] text-rose-800">E</div>
             <div>
               <h4 className="font-bold text-sm text-[#e7e5e4]">East Strait</h4>
-              <p className="text-[10px] text-[#78716c] uppercase">Marine Influx Detected</p>
+              <p className="text-[10px] text-[#78716c] uppercase">SW: {calculatedSalinity.toFixed(1)} (m/s)</p>
             </div>
           </div>
           <div className="flex items-center gap-2 text-rose-500 text-xs font-bold bg-rose-950/30 px-3 py-1 rounded border border-rose-900">
@@ -339,7 +425,7 @@ const PterosDashboard = () => {
 
       </div>
 
-      <div className="mt-6 bg-[#0f0d0c] border border-[#292524] p-4 rounded">
+      <div className="mt-6 bg-[#120b07] border border-[#3a2416] p-4 rounded">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
             <div className="text-[10px] uppercase tracking-widest text-[#78716c]">Oracle Seeder Status</div>
@@ -356,7 +442,7 @@ const PterosDashboard = () => {
               value={adminKey}
               onChange={(event) => setAdminKey(event.target.value)}
               placeholder="Admin key"
-              className="bg-[#1c1917] border border-[#292524] rounded px-3 py-2 text-xs text-[#e7e5e4] placeholder:text-[#57534e]"
+              className="bg-[#150c08] border border-[#3a2416] rounded px-3 py-2 text-xs text-[#e7e5e4] placeholder:text-[#57534e]"
             />
             <button
               type="button"
@@ -369,6 +455,71 @@ const PterosDashboard = () => {
           </div>
         </div>
       </div>
+
+      {activeLore && loreScrolls[activeLore] ? (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4" onClick={() => setActiveLore(null)}>
+          <div
+            className="max-w-md w-full rounded-2xl border border-amber-700/40 bg-[#120b07] p-6 text-stone-200 shadow-[0_20px_60px_rgba(0,0,0,0.6)] lore-portal"
+            onClick={(e) => e.stopPropagation()}
+            onMouseLeave={() => setActiveLore(null)}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-xs uppercase tracking-[0.3em] text-amber-300">{loreScrolls[activeLore].title}</div>
+              <button
+                type="button"
+                onClick={() => setActiveLore(null)}
+                className="text-[10px] uppercase tracking-[0.3em] text-stone-400 hover:text-amber-200"
+              >
+                Close
+              </button>
+            </div>
+            <div className="mt-4 max-h-[45vh] overflow-y-auto text-sm leading-relaxed text-stone-300">
+              {loreScrolls[activeLore].body}
+            </div>
+          </div>
+        </div>
+      ) : null}
+      <style jsx>{`
+        .lore-portal {
+          position: relative;
+          animation: portalBloom 420ms ease-out;
+        }
+        .lore-portal::before {
+          content: "";
+          position: absolute;
+          inset: -6px;
+          border-radius: 18px;
+          border: 1px solid rgba(88, 248, 220, 0.18);
+          box-shadow:
+            0 0 18px rgba(88, 248, 220, 0.18),
+            0 0 28px rgba(251, 191, 36, 0.16);
+          background: radial-gradient(circle at 30% 20%, rgba(88, 248, 220, 0.08), transparent 45%),
+            radial-gradient(circle at 80% 70%, rgba(251, 191, 36, 0.08), transparent 50%);
+          animation: portalRing 4.2s ease-in-out infinite;
+          pointer-events: none;
+        }
+        @keyframes portalBloom {
+          0% {
+            transform: scale(0.96);
+            opacity: 0.1;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        @keyframes portalRing {
+          0%,
+          100% {
+            opacity: 0.28;
+            filter: blur(0.2px);
+          }
+          50% {
+            opacity: 0.65;
+            filter: blur(1px);
+          }
+        }
+      `}</style>
       
     </div>
   );

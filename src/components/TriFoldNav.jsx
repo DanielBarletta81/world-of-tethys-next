@@ -20,7 +20,7 @@ const PATHS = [
     label: 'Bond',
     color: 'rose',
     items: [
-      { id: 'characters', label: 'Figures', href: '/community' },
+      { id: 'characters', label: 'Peek', href: '/peek' },
       { id: 'forge', label: 'Bond Forge', href: '/mystics' }
     ]
   },

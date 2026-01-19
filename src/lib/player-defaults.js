@@ -53,6 +53,7 @@ export const DEFAULT_PLAYER_PROFILE = {
     stats: { geology: 0, creature: 0, lore: 0, human: 0, reliability: 1 },
     path: 'pteros',
     seed: 'KITH-EMBER-000',
+    adornments: [],
     ornaments: [],
     variants: [],
     updatedAt: null
@@ -60,10 +61,37 @@ export const DEFAULT_PLAYER_PROFILE = {
   progression: {
     level: 1,
     xp: 0,
+    next: 100,
+    stage: 'spark',
     regionUnlocks: {},
     weatherUnlocked: false,
     oracleConsultedAt: null,
-    recentWhispers: { ids: [], updatedAt: null }
+    recentWhispers: { ids: [], updatedAt: null },
+    actionTrail: []
+  },
+  dna: {
+    seed: null,
+    traits: null,
+    glyph: null,
+    history: [],
+    lastUpdatedAt: null
+  },
+  aura: {
+    tone: 70,
+    stability: 70,
+    glow: 0.7,
+    lastShiftAt: null
+  },
+  protection: {
+    shell: 75,
+    ward: 0,
+    lastBreachAt: null
+  },
+  drift: {
+    aggression: 0,
+    ignorance: 0,
+    lastActionId: null,
+    lastActionAt: null
   },
   daily: {
     lastClaimAt: null,

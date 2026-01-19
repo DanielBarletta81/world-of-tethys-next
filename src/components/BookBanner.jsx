@@ -7,19 +7,19 @@ const BOOKS = [
   {
     id: 1,
     title: 'Sky City of Tethys',
-    coverUrl: cdn('/img/book1-cover.png'),
+    coverUrl: cdn('/img/books/book1-cover.png'),
     amazonLink: 'https://www.amazon.com/dp/B0G572X42L'
   },
   {
     id: 2,
     title: 'Unraveling Ravel',
-    coverUrl: cdn('/img/ravel-kindle.png'),
+    coverUrl: cdn('/img/books/ravel-kindle.png'),
     amazonLink: 'https://www.amazon.com/dp/B0GB5CR6HX'
   },
   {
     id: 3,
     title: 'What the Roots Remember',
-    coverUrl: cdn('/img/roots-remember.png'),
+    coverUrl: cdn('/img/books/roots-remember.png'),
     amazonLink: 'https://www.amazon.com/dp/B0G672S7YC'
   }
 ];
@@ -28,7 +28,7 @@ const BookBanner = () => {
   const looped = useMemo(() => [...BOOKS, ...BOOKS], []);
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto overflow-hidden py-3 px-4 mb-8 border border-amber-900/30 bg-[#0c0a09]/80 backdrop-blur-md rounded-sm shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+    <div className="relative isolate z-40 w-full max-w-6xl mx-auto overflow-hidden py-3 px-4 mb-8 border border-amber-900/30 bg-[#0c0a09]/80 backdrop-blur-md rounded-sm shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(251,191,36,0.05),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.05),transparent_35%)] pointer-events-none" />
       <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0c0a09] to-transparent pointer-events-none" />
       <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0c0a09] to-transparent pointer-events-none" />
@@ -42,11 +42,14 @@ const BookBanner = () => {
             rel="noopener noreferrer"
             className="group flex items-center gap-3 pr-6 hover:translate-y-[-2px] transition-transform duration-200"
           >
-            <div className="relative w-18 h-28 flex-shrink-0 rounded-sm overflow-hidden border border-[#2a1b14] bg-[#1c1917] shadow-[0_10px_20px_rgba(0,0,0,0.35)] group-hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] group-hover:border-amber-500/70 transition-all duration-300">
+            <div className="relative w-18 h-28 flex-shrink-0 rounded-sm border border-[#3a261d] bg-[#1c1917] shadow-[0_12px_22px_rgba(0,0,0,0.45)] group-hover:shadow-[0_0_35px_rgba(245,158,11,0.5)] group-hover:border-amber-400/80 transition-all duration-300">
+              <div className="absolute -inset-3 bg-[radial-gradient(circle,rgba(255,126,0,0.35),transparent_70%)] opacity-45 blur-lg group-hover:opacity-80 transition-opacity duration-300 pointer-events-none" />
               <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
               <div className="absolute inset-0 border border-amber-900/30 mix-blend-soft-light rounded-sm" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={book.coverUrl} alt={book.title} className="w-full h-full object-cover" />
+              <div className="relative h-full w-full p-1">
+                <img src={book.coverUrl} alt={book.title} className="w-full h-full object-cover rounded-[2px] shadow-[0_8px_16px_rgba(0,0,0,0.45)] group-hover:-translate-y-1 transition-transform duration-300" />
+              </div>
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-[0.2em] text-amber-500 font-mono">Amazon</span>

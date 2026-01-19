@@ -8,10 +8,10 @@ import cdn from '@/lib/cdn';
 
 const FRAGMENTS = [
   { id: 'pteros', label: 'Pteros', region: 'pteros_island', anchor: { x: 0.52, y: 0.68 }, icon: '/img/icons/pteros_island.svg' },
-  { id: 'watcher', label: 'Watcher Volcano', region: 'watcher_volcano', anchor: { x: 0.62, y: 0.35 }, icon: '/img/icons/watcher_volcano.svg' },
-  { id: 'cambria', label: 'Cambria', region: 'cambria_ruins', anchor: { x: 0.42, y: 0.45 }, icon: '/img/icons/cambria_ruins.svg' },
-  { id: 'gargantua', label: 'Gargantua', region: 'gargantua_archipelago', anchor: { x: 0.24, y: 0.32 }, icon: '/img/icons/gargantua_archipelago.svg' },
-  { id: 'skycity', label: 'Sky City', region: 'sky_city', anchor: { x: 0.48, y: 0.18 }, icon: '/img/icons/sky_city.svg' }
+  { id: 'watcher', label: 'Watcher Volcano', region: 'watcher_volcano', anchor: { x: 0.62, y: 0.35 }, icon: '/img/icons/watcher-volcano.svg' },
+  { id: 'cambria', label: 'Cambria', region: 'cambria_ruins', anchor: { x: 0.42, y: 0.45 }, icon: '/img/icons/cambria.svg' },
+  { id: 'gargantua', label: 'Gargantua', region: 'gargantua_archipelago', anchor: { x: 0.24, y: 0.32 }, icon: '/img/icons/mammoth-hand-island.svg' },
+  { id: 'skycity', label: 'Sky City', region: 'sky_city', anchor: { x: 0.48, y: 0.18 }, icon: '/img/icons/sky-city.svg' }
 ];
 
 const MAP_FALLBACK = {

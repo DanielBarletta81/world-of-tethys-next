@@ -8,7 +8,7 @@ import { useTethys } from '@/context/TethysContext';
 import { generateStaffProfile } from '@/lib/staff-utils';
 import { cdn } from '@/lib/cdn';
 import PlayerAvatar from './PlayerAvatar';
-import StaffVisualizer from './StaffVisualizer';
+import StaffVisualizer from '@/components/StaffVisualizer';
 import SeedVisualizer from './SeedVisualizer';
 import StaffSequencer from './StaffSequencer';
 import SurvivorIdentityPanel from "./SurvivorIdentityPanel";

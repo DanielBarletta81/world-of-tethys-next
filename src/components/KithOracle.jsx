@@ -3,12 +3,38 @@
 
 import { useState } from 'react';
 import { Sparkles, Send, Eye } from 'lucide-react';
+import { useTethys } from '@/context/TethysContext';
 
 export default function KithOracle() {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { playerProfile } = useTethys();
+
+  const readRecent = () => {
+    if (typeof window === 'undefined') return { weekKey: null, ids: [] };
+    try {
+      const raw = window.localStorage.getItem('tethys_oracle_recent');
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (parsed && Array.isArray(parsed.ids)) return parsed;
+    } catch {
+      /* ignore */
+    }
+    return { weekKey: null, ids: [] };
+  };
+
+  const writeRecent = (weekKey, ids) => {
+    if (typeof window === 'undefined') return;
+    try {
+      window.localStorage.setItem(
+        'tethys_oracle_recent',
+        JSON.stringify({ weekKey, ids })
+      );
+    } catch {
+      /* ignore */
+    }
+  };
 
   const askTheSpores = async () => {
     if (!query.trim()) return;
@@ -19,14 +45,24 @@ export default function KithOracle() {
     // await new Promise(r => setTimeout(r, 1000));
 
     try {
+      const recent = readRecent();
       const res = await fetch('/api/tethys/consult_oracle', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query })
+        body: JSON.stringify({
+          query,
+          dnaSeed: playerProfile?.dna?.seed || '',
+          dnaLean: playerProfile?.dna?.lean || '',
+          recentIds: recent.ids || []
+        })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Spores fell silent.');
-      setResponse(data.reply);
+      setResponse({ text: data.text || data.reply, speaker: data.speaker || 'Ravel' });
+      if (data.id) {
+        const nextIds = [data.id, ...(recent.ids || [])].slice(0, 6);
+        writeRecent(data.weekKey || recent.weekKey, nextIds);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -50,8 +86,8 @@ export default function KithOracle() {
       <div className="min-h-[80px] mb-4 p-4 rounded bg-black/40 border border-purple-900/20 font-serif text-sm leading-relaxed text-purple-100/90 italic shadow-inner">
         {loading ? (
           <span className="animate-pulse text-purple-500/50">Translating mycelial network...</span>
-        ) : response ? (
-          `“${response}”`
+        ) : response?.text ? (
+          `“${response.text}”`
         ) : (
           <span className="opacity-40">The spores are listening. Ask of the deep history.</span>
         )}

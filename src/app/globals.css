@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=EB+Garamond:wght@400;500&family=Courier+Prime:wght@400;700&display=swap');
+@import './styles/oracle-pool.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import './styles/oracle-pool.css';
 
 /* Screen Reader Only Utility */
 @layer utilities {
@@ -528,6 +528,7 @@ body::before {
     radial-gradient(circle at 36% 78%, var(--cretaceous-silt), transparent 65%);
   opacity: 0.5;
   mix-blend-mode: screen;
+  animation: tethys-breathe 14s ease-in-out infinite;
 }
 
 body::after {
@@ -538,6 +539,50 @@ body::after {
   background-position: center, center;
   opacity: 0.18;
   mix-blend-mode: soft-light;
+  animation: tethys-veil 18s ease-in-out infinite;
+}
+
+body.mystic-path::before {
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(140, 120, 220, 0.14), transparent 52%),
+    radial-gradient(circle at 68% 28%, rgba(120, 240, 210, 0.12), transparent 58%),
+    radial-gradient(circle at 42% 78%, var(--cretaceous-silt), transparent 65%),
+    radial-gradient(circle at 12% 18%, var(--lava-glow), transparent 60%);
+  opacity: 0.58;
+}
+
+body.mystic-path::after {
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+
+@keyframes tethys-breathe {
+  0%, 100% {
+    opacity: 0.42;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.62;
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+@keyframes tethys-veil {
+  0%, 100% {
+    opacity: 0.14;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.24;
+    filter: blur(0.6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+  }
 }
 
 main, header, section, article, nav {

@@ -36,8 +36,8 @@ export default function HomeContent({ creatures, characters }) {
               <Link href="/map" className="px-8 py-3 border border-forge-orange text-forge-orange uppercase">
                 Open The Atlas
               </Link>
-              <Link href="/community" className="px-8 py-3 border border-amber-700 text-amber-200 uppercase bg-amber-900/20 hover:bg-amber-900/30">
-                Join the World
+              <Link href="/peek" className="px-8 py-3 border border-amber-700 text-amber-200 uppercase bg-amber-900/20 hover:bg-amber-900/30">
+                Peek into the World
               </Link>
             </div>
           </section>

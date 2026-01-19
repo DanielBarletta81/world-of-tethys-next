@@ -96,6 +96,9 @@ export function derivePlayerDna(event = {}) {
 
   const regionFactor = REGION_COEFFICIENTS[event.region] ?? REGION_COEFFICIENTS.default;
   seed = BigInt(Math.abs(Number(seed) * regionFactor)) & 0xffffffffffffffffn; // keep 64-bit slice
+  if (typeof event.seedOverride === 'bigint') {
+    seed = event.seedOverride & 0xffffffffffffffffn;
+  }
 
   const affinity = traitFromTable(Number(seed), 56, AFFINITY_TRAITS);
   const scar = SCAR_PATTERNS[Number((seed >> 48n) & 0xffn) % SCAR_PATTERNS.length];

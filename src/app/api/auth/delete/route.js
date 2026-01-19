@@ -6,10 +6,11 @@ import { SESSION_COOKIE_NAME } from '@/lib/auth/session';
 export const runtime = 'nodejs';
 
 export async function POST() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (!sessionCookie) {
+    console.warn('[auth/delete] missing session cookie');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -20,6 +21,7 @@ export async function POST() {
     await deleteUser(decoded.uid);
 
     const res = NextResponse.json({ ok: true });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
     res.cookies.set({
       name: SESSION_COOKIE_NAME,
       value: '',
@@ -29,9 +31,12 @@ export async function POST() {
       path: '/',
       maxAge: 0
     });
+    console.info('[auth/delete] success', { uid: decoded.uid });
     return res;
   } catch (error) {
-    console.error('Delete account error:', error);
-    return NextResponse.json({ error: 'Delete failed' }, { status: 400 });
+    console.error('[auth/delete] error', error);
+    const res = NextResponse.json({ error: 'Delete failed' }, { status: 400 });
+    res.headers.set('Cache-Control', 'no-store, max-age=0');
+    return res;
   }
 }

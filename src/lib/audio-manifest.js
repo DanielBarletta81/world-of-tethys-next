@@ -5,15 +5,14 @@ export const AUDIO_TRACKS = [
     id: 'intro_drone',
     title: 'Magma Forge Drone',
     artist: 'Pteros Field Bade',
-    // Use a real URL or a placeholder mp3
-    src: './public/audio/', 
+    src: cdn('/sfx/intro_drone.mp3'),
     type: 'Ambience'
   },
   {
     id: 'ambience_volcanic',
     title: 'Magma Chamber Rumble',
     artist: 'Watcher Mountain Sensor',
-    src: './public/audio/volcanic-rumble.mp3',
+    src: cdn('/sfx/rumble_volcano.mp3'),
     type: 'Ambience'
   },
   {
@@ -28,21 +27,21 @@ export const AUDIO_TRACKS = [
     id: 'vo_hatch_intro',
     title: 'Hatch: Whisper',
     artist: 'Narrator: Ravel',
-    src: cdn('/audio/vo-hatch-intro.mp3'),
+    src: cdn('/audio/roar_scare.mp3'),
     type: 'Voiceover'
   },
   {
     id: 'vo_forge_primer',
     title: 'Forge: Primer',
     artist: 'Narrator: Ravel',
-    src: cdn('/audio/vo-forge-primer.mp3'),
+    src: cdn('/audio/sharp_rise.mp3'),
     type: 'Voiceover'
   },
   {
     id: 'vo_atlas_open',
     title: 'Atlas: Unlock',
     artist: 'Narrator: Ravel',
-    src: cdn('/audio/vo-atlas-open.mp3'),
+    src: cdn('/audio/bush-rustle.mp3'),
     type: 'Voiceover'
   }
 ];
