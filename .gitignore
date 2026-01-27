@@ -1,0 +1,135 @@
+### Node / Next.js outputs & build artifacts
+/node_modules/
+/.next/
+/out/
+/build/
+/dist/
+/.vercel/
+
+### Environment / credential files
+.env
+.env.*
+
+### Logs and debugging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+### OS-generated files
+.DS_Store
+Thumbs.db
+Icon?
+
+### TypeScript / cache files
+*.tsbuildinfo
+/cache/
+
+### Coverage reports
+/coverage/
+
+### Notes, drafts, and PDFs (keep auxiliary book assets out of Git)
+notes/
+*.pdf
+*.pages
+*.numbers
+docs/**/*.pdf
+docs/**/*.pages
+
+### Firebase / Google Cloud junk
+firebase-debug.log
+
+### Misc local tools and temp files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.tmp
+*.bak# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+    
+# firebase
+firebase.json
+firestore.rules
+firestore.indexes.json
+
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+.env*.local
+
+# firebase functions
+/functions/node_modules
+/functions/.firebase
+/functions/lib
+
+# catch stray duplicate module dirs
+node_modules*/
+/functions/node_modules*/
+
+firebase-admin*
+
+# local seeders / data (not required for deployment)
+acf_tethys_data.json
+seed-tethys0.2.php
+seed_tethys_docs.sh
+seedOracleRavel.js
+tethys-seeder.php
+tethys-taxonomy-seed.php
+docs/seed-data/
+docs/seed-plan-*.md
+scripts/wp/tethys-schema.php
+scripts/wp/seed-*.php
+Firebase-Oracle-Notes.pdf
+World_of_Tethys_Brand_Bible_v1.0.pdf
+World_Bible_notes.pages
+tethys-taxonomy-seed.php.zip
+tethys-bible.md
+tethys_knowledge_v1.json
+tethys_events.json
+Tethys___Book_1_Pacing_Board__Ch_1_36_.pdf
+Tethys___Book_1_Pacing_Board__Ch_1_36_.numbers
+Tethys Sea Climate and Environments.pdf
+
+# local notes/data archives (non-deploy)
+notes/
+data/
+docs/*.pages
+docs/*.pdf

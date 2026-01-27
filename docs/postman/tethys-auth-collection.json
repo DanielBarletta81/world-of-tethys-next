@@ -1,0 +1,456 @@
+{
+  "info": {
+    "name": "Tethys Auth (Server Sessions)",
+    "_postman_id": "b8c2b59e-4c3a-4a77-9fcb-0e4f8f8f4e5a",
+    "description": "Server-to-server auth routes backed by Firebase Admin session cookies.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "register"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200/201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Has user payload\", function () {",
+              "  pm.expect(json).to.have.property(\"user\");",
+              "  pm.expect(json.user).to.have.property(\"uid\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Has user payload\", function () {",
+              "  pm.expect(json).to.have.property(\"user\");",
+              "  pm.expect(json.user).to.have.property(\"uid\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth Me",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "me"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"User is present\", function () {",
+              "  pm.expect(json).to.have.property(\"user\");",
+              "  pm.expect(json.user).to.have.property(\"uid\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth Logout",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "logout"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Logout ok\", function () {",
+              "  pm.expect(json).to.have.property(\"ok\", true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth Delete",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/delete",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "delete"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Delete ok\", function () {",
+              "  pm.expect(json).to.have.property(\"ok\", true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player Bootstrap",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/bootstrap",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "bootstrap"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Has profile\", function () {",
+              "  pm.expect(json).to.have.property(\"profile\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player Snapshot",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/player/snapshot",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "snapshot"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inventory\": [],\n  \"stats\": { \"resin\": 0 }\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Snapshot ok\", function () {",
+              "  pm.expect(json).to.have.property(\"ok\", true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player Log Event",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/player/events",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "events"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"POSTMAN_EVENT\",\n  \"regionId\": \"pteros\",\n  \"at\": \"{{isoNow}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Player Log Rumor",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/player/rumors",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "rumors"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"POSTMAN_RUMOR\",\n  \"at\": \"{{isoNow}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Player Log Daily",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/player/daily",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "daily"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"date\": \"{{dateKey}}\",\n  \"claimedAt\": \"{{isoNow}}\",\n  \"itemsGranted\": []\n}"
+        }
+      }
+    },
+    {
+      "name": "Player Get Profile",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/profile",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "profile"]
+        }
+      }
+    },
+    {
+      "name": "Player Get Events",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/events?limit=50&type={{eventType}}&regionId={{regionId}}&since={{since}}&until={{until}}&startAfter={{startAfter}}&startAfterId={{startAfterId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "events"],
+          "query": [
+            { "key": "limit", "value": "50" },
+            { "key": "type", "value": "{{eventType}}" },
+            { "key": "regionId", "value": "{{regionId}}" },
+            { "key": "since", "value": "{{since}}" },
+            { "key": "until", "value": "{{until}}" },
+            { "key": "startAfter", "value": "{{startAfter}}" },
+            { "key": "startAfterId", "value": "{{startAfterId}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Player Get Rumors",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/rumors?limit=50&type={{eventType}}&regionId={{regionId}}&since={{since}}&until={{until}}&startAfter={{startAfter}}&startAfterId={{startAfterId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "rumors"],
+          "query": [
+            { "key": "limit", "value": "50" },
+            { "key": "type", "value": "{{eventType}}" },
+            { "key": "regionId", "value": "{{regionId}}" },
+            { "key": "since", "value": "{{since}}" },
+            { "key": "until", "value": "{{until}}" },
+            { "key": "startAfter", "value": "{{startAfter}}" },
+            { "key": "startAfterId", "value": "{{startAfterId}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Player Get Daily",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/daily?limit=30&since={{dateKey}}&until={{dateKey}}&startAfter={{startAfter}}&startAfterId={{startAfterId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "daily"],
+          "query": [
+            { "key": "limit", "value": "30" },
+            { "key": "since", "value": "{{dateKey}}" },
+            { "key": "until", "value": "{{dateKey}}" },
+            { "key": "startAfter", "value": "{{startAfter}}" },
+            { "key": "startAfterId", "value": "{{startAfterId}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Player Get Daily By Date",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/daily?date={{dateKey}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "daily"],
+          "query": [
+            { "key": "date", "value": "{{dateKey}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Player Get Creatures",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/creatures?limit=200&archetype=&startAfter={{startAfter}}&startAfterId={{startAfterId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "creatures"],
+          "query": [
+            { "key": "limit", "value": "200" },
+            { "key": "archetype", "value": "" },
+            { "key": "startAfter", "value": "{{startAfter}}" },
+            { "key": "startAfterId", "value": "{{startAfterId}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Player Upsert Creature",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/player/creatures",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "creatures"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"creatureId\": \"postman_creature\",\n  \"givenName\": \"Postman Beast\",\n  \"bondLevel\": 1,\n  \"createdAt\": \"{{isoNow}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Player Delete Creature",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/player/creatures/postman_creature",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "player", "creatures", "postman_creature"]
+        }
+      }
+    },
+    {
+      "name": "Starter Template",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/templates/starter?templateId={{templateId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "templates", "starter"],
+          "query": [
+            { "key": "templateId", "value": "{{templateId}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Oracle Observations",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/oracle/observations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "oracle", "observations"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entries\": [\n    {\n      \"dayBucket\": \"{{dateKey}}\",\n      \"path\": \"mystic\",\n      \"oracleState\": \"text\",\n      \"stillnessBand\": \"low\",\n      \"watcherState\": \"quiet\",\n      \"regionBand\": \"far\",\n      \"interactionDepth\": \"first\",\n      \"count\": 1\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "Admin Health",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "admin", "health"]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <rect width="800" height="600" fill="#1a1510"/>
+  
+  <path d="M100 50 L700 50 L700 550 L100 550 Z" stroke="#3d2b1f" stroke-width="4" fill="rgba(16, 185, 129, 0.05)"/>
+  <line x1="120" y1="50" x2="120" y2="550" stroke="#3d2b1f" stroke-width="1" opacity="0.5"/>
+  <line x1="680" y1="50" x2="680" y2="550" stroke="#3d2b1f" stroke-width="1" opacity="0.5"/>
+  
+  <path d="M100 150 Q 400 140 700 150" stroke="#10b981" stroke-width="2" opacity="0.3" fill="none"/>
+  
+  <circle cx="400" cy="400" r="2" fill="#10b981" opacity="0.4">
+    <animate attributeName="cy" values="400;300" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="450" cy="450" r="3" fill="#10b981" opacity="0.3">
+    <animate attributeName="cy" values="450;320" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <path d="M350 350 Q 400 300 450 350 T 550 400" stroke="#3d2b1f" stroke-width="10" stroke-linecap="round" opacity="0.2" filter="blur(4px)"/>
+</svg>

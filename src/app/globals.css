@@ -1,0 +1,925 @@
+@import './styles/oracle-pool.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .tethys-cta {
+    @apply font-tethys-volcanic font-bold uppercase tracking-[0.25em];
+  }
+
+  .tethys-section-title {
+    @apply font-tethys-volcanic font-normal uppercase tracking-[0.3em];
+  }
+}
+
+/* Screen Reader Only Utility */
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .focus\:not-sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+/* THE RAVEL ATMOSPHERE */
+@layer utilities {
+  .animate-float {
+    animation: float 20s linear infinite;
+  }
+  
+  .delay-0 { animation-delay: 0s; }
+  .delay-1000 { animation-delay: 1s; }
+  .delay-2000 { animation-delay: 2s; }
+  .delay-5000 { animation-delay: 5s; }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5; /* Fade in */
+  }
+  90% {
+    opacity: 0.5; /* Stay visible */
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px) rotate(180deg); /* Drift up and right */
+    opacity: 0;
+  }
+}
+
+/* --- ORACLE POOL STATE ANIMATIONS --- */
+.oracle-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.oracle-surface {
+  transition: filter 600ms ease, box-shadow 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* STATE: SILENCE */
+.oracle--silence .oracle-surface {
+  filter: brightness(0.96) saturate(0.92);
+}
+.oracle--silence .oracle-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 60%, rgba(69, 94, 104, 0.08), transparent 50%);
+  pointer-events: none;
+  animation: oracle-silence-ripple 3.6s ease-out 1;
+}
+@keyframes oracle-silence-ripple {
+  0% { opacity: 0; transform: scale(0.94); }
+  30% { opacity: 0.4; }
+  100% { opacity: 0; transform: scale(1.08); }
+}
+
+/* STATE: ECHO ONLY */
+.oracle--echo .oracle-surface {
+  box-shadow: 0 0 18px rgba(120, 220, 170, 0.12), inset 0 0 32px rgba(60, 140, 120, 0.12);
+}
+.oracle--echo .oracle-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background: radial-gradient(circle at 48% 52%, rgba(120, 220, 170, 0.2), transparent 60%);
+  animation: oracle-echo-pulse 1.6s cubic-bezier(0.25, 0.8, 0.4, 1) 1;
+  pointer-events: none;
+}
+@keyframes oracle-echo-pulse {
+  0% { opacity: 0.02; transform: scale(0.95); }
+  40% { opacity: 0.16; }
+  100% { opacity: 0; transform: scale(1.12); }
+}
+
+/* Echo-specific reactions */
+[data-echo="spores"] .oracle-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 60%, rgba(160, 220, 180, 0.2), transparent 55%);
+  mix-blend-mode: screen;
+  animation: oracle-spore-drift 2.8s ease-out 1;
+  pointer-events: none;
+}
+@keyframes oracle-spore-drift {
+  0% { opacity: 0.25; transform: translateY(6px) scale(0.96); }
+  40% { opacity: 0.4; }
+  100% { opacity: 0; transform: translateY(-14px) scale(1.05); }
+}
+
+[data-echo="rumble"] .oracle-surface,
+[data-echo="deep_rumble"] .oracle-surface {
+  animation: oracle-rumble 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+[data-echo="deep_rumble"] .oracle-surface {
+  animation-duration: 1.2s;
+  filter: brightness(0.92);
+}
+@keyframes oracle-rumble {
+  0% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-1px, 1px, 0); }
+  40% { transform: translate3d(1px, -1px, 0); }
+  60% { transform: translate3d(-1px, 0, 0); }
+  80% { transform: translate3d(1px, 1px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* STATE: WITHHELD */
+.oracle--withheld .oracle-dialogue {
+  border-color: rgba(180, 180, 180, 0.25);
+  opacity: 0.35;
+  transition: opacity 400ms ease, border-color 400ms ease;
+}
+.oracle--withheld .oracle-dialogue::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  width: 8px;
+  height: 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+  animation: oracle-cursor-blink 1.8s steps(2) 2;
+}
+@keyframes oracle-cursor-blink {
+  0%, 60% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* STATE: SILENCE + ECHO shared tiny spore drift */
+.oracle--silence .oracle-spores,
+.oracle--echo .oracle-spores {
+  opacity: 0.35;
+  animation: oracle-spore-loop 12s ease-in-out infinite;
+}
+@keyframes oracle-spore-loop {
+  0% { transform: translateY(0); opacity: 0.15; }
+  40% { opacity: 0.4; }
+  100% { transform: translateY(-12px); opacity: 0.1; }
+}
+
+/* Mushrooms recede briefly after echo */
+.oracle-mushroom[data-state="echoed"] {
+  transform: scale(0.88);
+  opacity: 0.6;
+  transition: transform 320ms ease, opacity 320ms ease;
+}
+
+/* Magma Text Burn Effect */
+.text-magma-burn {
+  background: linear-gradient(to bottom, #fff 0%, #fcd34d 40%, #ea580c 70%, #7f1d1d 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: burn 4s ease-in-out infinite alternate;
+}
+
+@keyframes burn {
+  0% { filter: brightness(1) drop-shadow(0 0 2px rgba(234,88,12,0.5)); }
+  100% { filter: brightness(1.3) drop-shadow(0 0 10px rgba(234,88,12,0.8)); }
+}
+
+@keyframes sigil-mystic-shimmer {
+  0% { filter: drop-shadow(0 0 0 rgba(56,189,248,0.0)); }
+  50% { filter: drop-shadow(0 0 10px rgba(56,189,248,0.5)) drop-shadow(0 0 18px rgba(168,85,247,0.45)); }
+  100% { filter: drop-shadow(0 0 14px rgba(255,255,255,0.6)) drop-shadow(0 0 20px rgba(56,189,248,0.4)); }
+}
+
+@keyframes sigil-sky-flare {
+  0% { filter: drop-shadow(0 0 0 rgba(239,68,68,0)); }
+  60% { filter: drop-shadow(0 0 14px rgba(239,68,68,0.6)); }
+  100% { filter: drop-shadow(0 0 20px rgba(239,68,68,0.5)); }
+}
+
+@keyframes sigil-stryker-ember {
+  0% { filter: drop-shadow(0 0 0 rgba(249,115,22,0)); }
+  50% { filter: drop-shadow(0 0 16px rgba(249,115,22,0.6)); }
+  100% { filter: drop-shadow(0 0 22px rgba(220,38,38,0.5)); }
+}
+
+@keyframes sigil-cambria-bleach {
+  0% { filter: brightness(1) drop-shadow(0 0 0 rgba(255,255,255,0)); }
+  100% { filter: brightness(1.25) saturate(0.1) drop-shadow(0 0 18px rgba(255,255,255,0.65)); }
+}
+
+.sigil-button.sigil-mystics:hover .sigil-icon,
+.sigil-button.sigil-mystics:focus-visible .sigil-icon,
+.sigil-button.sigil-mystics .sigil-animate {
+  animation: sigil-mystic-shimmer 0.9s ease-out forwards;
+}
+
+.sigil-button.sigil-sky-city:hover .sigil-icon,
+.sigil-button.sigil-sky-city:focus-visible .sigil-icon,
+.sigil-button.sigil-sky-city .sigil-animate {
+  animation: sigil-sky-flare 0.7s ease-out forwards;
+  filter: drop-shadow(0 0 16px rgba(239,68,68,0.6)) drop-shadow(0 0 6px rgba(255,255,255,0.6));
+}
+
+.sigil-button.sigil-stryker:hover .sigil-icon,
+.sigil-button.sigil-stryker:focus-visible .sigil-icon,
+.sigil-button.sigil-stryker .sigil-animate {
+  animation: sigil-stryker-ember 0.7s ease-out forwards;
+}
+
+.sigil-button.sigil-cambria:hover .sigil-icon,
+.sigil-button.sigil-cambria:focus-visible .sigil-icon,
+.sigil-button.sigil-cambria .sigil-animate {
+  animation: sigil-cambria-bleach 0.8s ease-out forwards;
+}
+
+/* --- 1. CORE VARIABLES (The Volcanic Palette) --- */
+:root {
+  /* Obsidian & Basalt Base */
+  --background-start-rgb: 12, 10, 9;   /* #0c0a09 */
+  --background-end-rgb: 28, 25, 23;    /* #1c1917 */
+  
+  /* Text Colors */
+  --foreground-rgb: 231, 229, 228;     /* #e7e5e4 (Stone-200) */
+  --muted-rgb: 120, 113, 108;          /* #78716c (Stone-500) */
+  
+  /* The Forge Colors (for use in standard CSS) */
+  --forge-white: #ffffff;
+  --forge-yellow: #f59e0b; /* Amber-500 */
+  --forge-orange: #ea580c; /* Orange-600 */
+  --forge-red: #dc2626;    /* Red-600 */
+  /* Base token colors (tweak once, all icons update) */
+
+  --icon-stroke: rgba(240, 240, 240, 0.78);
+  --icon-fill: rgba(240, 240, 240, 0.16);
+  --icon-accent: rgba(120, 180, 170, 0.85); /* teal */
+  --icon-ember: rgba(255, 135, 60, 0.85);   /* ember */
+  --icon-halo: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 60%);
+
+  /* World tones */
+  --lava-glow: rgba(234, 88, 12, 0.18);
+  --estuary-mist: rgba(56, 189, 248, 0.14);
+  --cretaceous-silt: rgba(132, 204, 22, 0.12);
+}
+
+/* Container class for any icon button */
+.tethys-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.0);
+  border: 1px solid rgba(63, 63, 70, 0.35);
+  transition: transform 120ms ease, filter 120ms ease, border-color 160ms ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+.tethys-icon svg {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.tethys-icon::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 16px;
+  background: var(--icon-halo);
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+/* Hover = slightly brighter + subtle glow */
+.tethys-icon:hover {
+  filter: drop-shadow(0 0 10px rgba(120, 180, 170, 0.15));
+  border-color: rgba(120, 180, 170, 0.4);
+}
+.tethys-icon:hover svg {
+  --icon-stroke: rgba(255, 255, 255, 0.9);
+  --icon-fill: rgba(255, 255, 255, 0.22);
+  --icon-accent: rgba(140, 210, 198, 0.95);
+}
+.tethys-icon:hover::before {
+  opacity: 0.5;
+}
+
+/* Active = pressed + hotter accent */
+.tethys-icon:active {
+  transform: scale(0.97);
+  filter: drop-shadow(0 0 12px rgba(255, 135, 60, 0.12));
+  border-color: rgba(255, 135, 60, 0.45);
+}
+.tethys-icon:active svg {
+  --icon-stroke: rgba(255, 255, 255, 0.78);
+  --icon-fill: rgba(255, 255, 255, 0.14);
+  --icon-accent: rgba(110, 200, 185, 0.88);
+  --icon-ember: rgba(255, 150, 75, 0.95);
+}
+
+/* Optional explicit states (for controlled UI) */
+.tethys-icon[data-state="base"] svg { }
+.tethys-icon[data-state="hover"] svg {
+  --icon-stroke: rgba(255, 255, 255, 0.9);
+  --icon-fill: rgba(255, 255, 255, 0.22);
+  --icon-accent: rgba(140, 210, 198, 0.95);
+}
+.tethys-icon[data-state="active"] svg {
+  --icon-stroke: rgba(255, 255, 255, 0.78);
+  --icon-fill: rgba(255, 255, 255, 0.14);
+  --icon-ember: rgba(255, 150, 75, 0.95);
+}
+
+.tethys-icon:hover .pith-ring { opacity: 0.9; }
+.tethys-icon:active .pith-ring { opacity: 1; }
+
+/* --- Faction palettes --- */
+.tethys-icon[data-faction="sky-city"] {
+  --icon-stroke: rgba(226, 232, 240, 0.95);
+  --icon-fill: rgba(125, 211, 252, 0.12);
+  --icon-accent: rgba(148, 163, 184, 0.9);
+  --icon-ember: rgba(251, 191, 36, 0.8);
+  --icon-halo: radial-gradient(circle at 50% 40%, rgba(148, 163, 184, 0.22), transparent 60%);
+}
+
+.tethys-icon[data-faction="mystic"] {
+  --icon-stroke: rgba(190, 242, 100, 0.9);
+  --icon-fill: rgba(74, 222, 128, 0.12);
+  --icon-accent: rgba(163, 230, 53, 0.85);
+  --icon-halo: radial-gradient(circle at 45% 45%, rgba(132, 204, 22, 0.2), transparent 60%);
+}
+
+.tethys-icon[data-faction="lower-tier"] {
+  --icon-stroke: rgba(250, 204, 21, 0.9);
+  --icon-fill: rgba(234, 88, 12, 0.12);
+  --icon-accent: rgba(251, 146, 60, 0.85);
+  --icon-halo: radial-gradient(circle at 50% 50%, rgba(234, 88, 12, 0.18), transparent 60%);
+}
+
+.tethys-icon[data-faction="ironwood"] {
+  --icon-stroke: rgba(34, 197, 94, 0.9);
+  --icon-fill: rgba(22, 163, 74, 0.12);
+  --icon-accent: rgba(74, 222, 128, 0.85);
+  --icon-halo: radial-gradient(circle at 45% 55%, rgba(34, 197, 94, 0.18), transparent 60%);
+}
+
+.tethys-icon[data-faction="wild"] {
+  --icon-stroke: rgba(248, 113, 113, 0.9);
+  --icon-fill: rgba(239, 68, 68, 0.12);
+  --icon-accent: rgba(252, 165, 165, 0.85);
+  --icon-halo: radial-gradient(circle at 50% 55%, rgba(239, 68, 68, 0.18), transparent 60%);
+}
+
+.tethys-icon[data-faction="cambria"] {
+  --icon-stroke: rgba(254, 215, 170, 0.9);
+  --icon-fill: rgba(251, 146, 60, 0.08);
+  --icon-accent: rgba(251, 191, 36, 0.85);
+  --icon-halo: radial-gradient(circle at 50% 45%, rgba(245, 158, 11, 0.18), transparent 60%);
+}
+
+/* --- Location accents --- */
+.tethys-icon[data-region="pteros"] {
+  --icon-accent: rgba(244, 114, 182, 0.85);
+}
+.tethys-icon[data-region="watcher-volcano"],
+.tethys-icon[data-region="watcher-flats"] {
+  --icon-ember: rgba(239, 68, 68, 0.95);
+  --icon-halo: radial-gradient(circle at 50% 60%, rgba(239, 68, 68, 0.22), transparent 60%);
+}
+.tethys-icon[data-region="mystic-woods"] {
+  --icon-accent: rgba(34, 197, 94, 0.9);
+}
+.tethys-icon[data-region="cambria-ruins"] {
+  --icon-accent: rgba(251, 191, 36, 0.85);
+}
+
+.torch-layer{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+.torch-light{
+  position:absolute;
+  width: 520px;
+  height: 520px;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(circle,
+    rgba(255,180,90,0.12) 0%,
+    rgba(255,180,90,0.06) 22%,
+    rgba(140,210,198,0.04) 36%,
+    rgba(0,0,0,0) 62%);
+  mix-blend-mode: screen;
+  filter: blur(1px);
+}
+.torch-glyph{
+  position:absolute;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%,-50%);
+  opacity: 0.88;
+  filter: drop-shadow(0 0 6px rgba(120, 90, 60, 0.18)) sepia(0.3) saturate(0.75);
+  pointer-events: none;
+}
+.torchMode-real{
+  cursor: none;
+}
+
+.status-bar {
+  position: relative;
+  overflow: hidden;
+}
+
+
+.status-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(120,180,90,0.25), transparent 40%),
+    radial-gradient(circle at 70% 30%, rgba(90,140,110,0.18), transparent 45%);
+  opacity: var(--fungal-opacity);
+  filter: blur(6px);
+  pointer-events: none;
+  transition: opacity 12s linear;
+}
+
+
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+.spore {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(160,220,180,0.4);
+  border-radius: 50%;
+  animation: drift 18s infinite alternate ease-in-out;
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  cursor: auto;
+}
+
+.torch-flicker {
+  animation: flicker 1.8s infinite ease-in-out;
+}
+
+@keyframes flicker {
+  0% { opacity: 1; }
+  45% { opacity: 0.85; }
+  60% { opacity: 0.95; }
+  100% { opacity: 1; }
+}
+
+
+
+/* --- 2. GLOBAL RESET & BODY --- */
+body {
+  margin: 0;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    );
+  background-attachment: fixed; /* Parallax feel */
+  font-family: var(--font-naturalist), serif;
+  -webkit-font-smoothing: antialiased;
+  
+  /* Custom Cursor (From your snippet - adds RPG feel) */
+  cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='9' stroke='%23ea580c' stroke-width='1.5' fill='none'/%3E%3Cline x1='12' y1='3' x2='12' y2='0' stroke='%23ea580c' stroke-width='1.5'/%3E%3Cline x1='12' y1='24' x2='12' y2='21' stroke='%23ea580c' stroke-width='1.5'/%3E%3Cline x1='3' y1='12' x2='0' y2='12' stroke='%23ea580c' stroke-width='1.5'/%3E%3Cline x1='24' y1='12' x2='21' y2='12' stroke='%23ea580c' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, crosshair;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--lava-glow), transparent 55%),
+    radial-gradient(circle at 78% 22%, var(--estuary-mist), transparent 60%),
+    radial-gradient(circle at 36% 78%, var(--cretaceous-silt), transparent 65%);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  animation: tethys-breathe 14s ease-in-out infinite;
+}
+
+body::after {
+  background-image:
+    url("/noise.svg"),
+    url("/img/watcher-ashfall.svg");
+  background-size: 320px 320px, cover;
+  background-position: center, center;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+  animation: tethys-veil 18s ease-in-out infinite;
+}
+
+body.mystic-path::before {
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(140, 120, 220, 0.14), transparent 52%),
+    radial-gradient(circle at 68% 28%, rgba(120, 240, 210, 0.12), transparent 58%),
+    radial-gradient(circle at 42% 78%, var(--cretaceous-silt), transparent 65%),
+    radial-gradient(circle at 12% 18%, var(--lava-glow), transparent 60%);
+  opacity: 0.58;
+}
+
+body.mystic-path::after {
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+
+@keyframes tethys-breathe {
+  0%, 100% {
+    opacity: 0.42;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.62;
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+@keyframes tethys-veil {
+  0%, 100% {
+    opacity: 0.14;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.24;
+    filter: blur(0.6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+  }
+}
+
+main, header, section, article, nav {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- 3. UTILITIES & EFFECTS --- */
+
+/* Basalt Grain Texture (Replaces 'natural-paper') */
+.bg-stone-grain {
+  position: relative;
+}
+.bg-stone-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* src/app/globals.css */
+
+/* The Magma Brand Effect */
+.text-magma-burn {
+  background-image: linear-gradient(
+    180deg, 
+    #450a0a 0%,   /* Deep Red/Black */
+    #dc2626 40%,  /* Red */
+    #ea580c 60%,  /* Orange */
+    #fef08a 90%,  /* White Hot */
+    #ffffff 100%
+  );
+  background-size: 100% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: magmaFlow 8s ease-in-out infinite alternate;
+  filter: drop-shadow(0 2px 10px rgba(220, 38, 38, 0.6));
+}
+
+@keyframes magmaFlow {
+  0% { background-position: 0% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* Obsidian Glass Pane */
+.glass-obsidian {
+  background: rgba(12, 10, 9, 0.7); /* Slate-950 with opacity */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+
+/* Magma Pulse Animation */
+@keyframes magma-pulse {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 10px rgba(234, 88, 12, 0.2); }
+  50% { opacity: 1; box-shadow: 0 0 25px rgba(234, 88, 12, 0.6); }
+}
+.animate-magma {
+  animation: magma-pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* SVG Ink Bleed (Modified for Dark Mode) */
+img[src$='.svg'] {
+  filter: drop-shadow(0 0 2px rgba(234, 88, 12, 0.5)); /* Glow instead of multiply */
+}
+
+/* Discovery Toast Animation */
+@keyframes slideUpFade {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.discovery-toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #1c1917;
+  color: #ea580c;
+  border: 1px solid #7c2d12;
+  padding: 1rem 2rem;
+  font-family: var(--font-field), serif;
+  z-index: 50;
+  animation: slideUpFade 0.5s ease-out forwards;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+/* --- 4. THE FORGE UTILITIES (Your Custom Additions) --- */
+@layer utilities {
+  
+  /* Molten Text: White-hot center -> Orange edges */
+  .text-forge {
+    @apply bg-gradient-to-b from-white via-orange-400 to-orange-700;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 
+      0 0 4px rgba(255, 255, 255, 0.5),
+      0 0 10px rgba(245, 158, 11, 0.5);
+  }
+
+  /* Intense Version for Titles */
+  .text-forge-intense {
+    @apply text-forge;
+    text-shadow: 
+      0 0 5px rgba(255, 255, 255, 0.8),
+      0 0 15px rgba(245, 158, 11, 0.8),
+      0 0 30px rgba(220, 38, 38, 0.6);
+  }
+
+  /* Molten Border: Glowing Metal Bars */
+  .border-forge {
+    border-color: #ea580c;
+    box-shadow: 
+      0 0 5px #f59e0b,
+      0 0 10px #dc2626,
+      inset 0 0 5px #f59e0b;
+  }
+
+  /* Flicker Animation */
+  .animate-forge-pulse {
+    animation: forgePulse 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes forgePulse {
+    0% {
+      filter: brightness(100%) drop-shadow(0 0 5px rgba(220, 38, 38, 0.3));
+    }
+    100% {
+      filter: brightness(130%) drop-shadow(0 0 15px rgba(245, 158, 11, 0.6));
+    }
+  }
+}
+
+/* Journal visuals */
+.journal-stamp {
+  opacity: 0.6;
+  transform: rotate(-4deg);
+  margin-bottom: 0.5rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.journal-entry--withheld {
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+}
+
+/* Journal wear variables (set per render via inline style) */
+.journal-wear {
+  background-color: hsl(
+    38,
+    calc(25% - var(--wear-exposure, 0) * 10%),
+    calc(92% - var(--wear-trauma, 0) * 12%)
+  );
+}
+
+.journal-entry {
+  filter: blur(calc(var(--wear-handling, 0) * 0.4px));
+}
+
+.journal-entry--withheld {
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black calc(50% - var(--wear-trauma, 0) * 20%),
+    transparent 100%
+  );
+}
+
+/* Optional static wear overlays (apply conditionally in JSX) */
+.journal-wear--ash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(120,120,120,0.15) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mix-blend-mode: multiply;
+}
+
+.journal-wear--bent-corner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.25) 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.journal-wear--tear::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 14px,
+    rgba(0,0,0,0.2) 15px,
+    transparent 16px
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  opacity: 0.4;
+}
+/* World of Tethys || D.C. Barletta */
+
+/* Idle Growth Overlay */
+.idle-growth {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.6s ease;
+  mix-blend-mode: screen;
+}
+
+.idle-growth--active {
+  opacity: 1;
+}
+
+.idle-growth__film,
+.idle-growth__algae,
+.idle-growth__moss,
+.idle-growth__spores {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.idle-growth__film {
+  background:
+    radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.15), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(20, 184, 166, 0.12), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.35), transparent 60%);
+  animation: idle-film-drift 90s linear infinite;
+}
+
+.idle-growth__algae {
+  background:
+    radial-gradient(circle at 30% 60%, rgba(34, 197, 94, 0.18), transparent 55%),
+    radial-gradient(circle at 70% 40%, rgba(74, 222, 128, 0.12), transparent 60%);
+  animation: idle-algae-bloom 120s ease-in-out infinite;
+}
+
+.idle-growth__moss {
+  background:
+    radial-gradient(circle at 15% 35%, rgba(163, 230, 53, 0.16), transparent 45%),
+    radial-gradient(circle at 85% 70%, rgba(101, 163, 13, 0.14), transparent 55%);
+  animation: idle-moss-creep 150s ease-in-out infinite;
+}
+
+.idle-growth__spores {
+  background:
+    radial-gradient(circle at 40% 30%, rgba(192, 132, 252, 0.18), transparent 40%),
+    radial-gradient(circle at 60% 70%, rgba(217, 70, 239, 0.16), transparent 45%);
+  animation: idle-spore-rise 110s ease-in-out infinite;
+}
+
+.idle-growth[data-stage="1"] .idle-growth__film {
+  opacity: 0.45;
+}
+
+.idle-growth[data-stage="2"] .idle-growth__film {
+  opacity: 0.6;
+}
+
+.idle-growth[data-stage="2"] .idle-growth__algae {
+  opacity: 0.5;
+}
+
+.idle-growth[data-stage="3"] .idle-growth__film {
+  opacity: 0.8;
+}
+
+.idle-growth[data-stage="3"] .idle-growth__algae {
+  opacity: 0.7;
+}
+
+.idle-growth[data-stage="3"] .idle-growth__moss {
+  opacity: 0.6;
+}
+
+.idle-growth[data-stage="3"] .idle-growth__spores {
+  opacity: 0.5;
+}
+
+@keyframes idle-film-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-2%, 1%, 0) scale(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes idle-algae-bloom {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes idle-moss-creep {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(1%, -1%, 0) scale(1.03); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes idle-spore-rise {
+  0% { transform: translate3d(0, 2%, 0) scale(1); }
+  50% { transform: translate3d(0, -2%, 0) scale(1.02); }
+  100% { transform: translate3d(0, 2%, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idle-growth,
+  .idle-growth__film,
+  .idle-growth__algae,
+  .idle-growth__moss,
+  .idle-growth__spores {
+    animation: none !important;
+    transition: none !important;
+  }
+}

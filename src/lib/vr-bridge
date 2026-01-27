@@ -1,0 +1,186 @@
+// src/lib/vr-bridge.js
+import { ARCHIVE_DOCUMENTS } from '@/data/archive-documents';
+import { TETHYS_CRUCIBLE_MAPPINGS } from '@/data/tethys-crucible';
+
+const VR_METADATA_VERSION = '3.0-NARRATIVE';
+
+/**
+ * @typedef {Object} VRUser
+ * @property {string} uid
+ * @property {string=} displayName
+ */
+
+/**
+ * @typedef {Object} VRStats
+ * @property {number=} geology
+ * @property {number=} creature
+ * @property {number=} lore
+ * @property {number=} resin
+ * @property {number=} kith
+ * @property {number=} igzier
+ * @property {number=} total
+ * @property {string=} alignment
+ * @property {string=} archetype
+ * @property {string=} location
+ */
+
+/**
+ * @typedef {Object} VRStaff
+ * @property {string=} rarity
+ * @property {Object=} components
+ * @property {Object=} visuals
+ */
+
+/**
+ * @typedef {Object} VRInventoryItem
+ * @property {string} id
+ */
+
+const VR_SEED = {
+  user: { uid: 'seed_user', displayName: 'Seeded' },
+  stats: {
+    geology: 35,
+    creature: 60,
+    lore: 45,
+    resin: 120,
+    kith: 50,
+    igzier: 55,
+    total: 80,
+    alignment: 'Cohab',
+    archetype: 'Survivor',
+    location: 'ironwoods',
+  },
+  staff: {
+    rarity: 'Rare',
+    components: {
+      core: { id: 'driftwood' },
+      wrap: { id: 'kelp' },
+      apex: { id: 'shard' },
+    },
+    visuals: {
+      shaftGradient: '#2b4f4a',
+      glowColor: '#2dd4bf',
+    },
+  },
+  inventory: [{ id: 'compass' }, { id: 'kith_spore' }],
+};
+
+function generateSampleVRMetadata() {
+  return generateVRMetadata(
+    VR_SEED.user,
+    VR_SEED.stats,
+    VR_SEED.staff,
+    VR_SEED.inventory
+  );
+}
+
+function toArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function buildShaderParams(stats, staff) {
+  return {
+    heatVal: (stats.geology || 0) / 100,
+    bioVal: (stats.creature || 0) / 100,
+    voidVal: (stats.lore || 0) / 100,
+    roughness: staff?.rarity === 'Rare' ? 0.2 : 0.8,
+    emissionStrength: Math.max(1.0, (stats.resin || 0) / 50),
+  };
+}
+
+function buildStaffBlueprint(staff, inventory) {
+  return {
+    meshId_Core: `MESH_${staff?.components?.core?.id?.toUpperCase() || 'BASE'}`,
+    meshId_Wrap: `MESH_${staff?.components?.wrap?.id?.toUpperCase() || 'NONE'}`,
+    meshId_Apex: `MESH_${staff?.components?.apex?.id?.toUpperCase() || 'EMPTY'}`,
+    socket_A: inventory.some((i) => i.id === 'compass') ? 'ATTACH_COMPASS' : 'EMPTY',
+    socket_B: inventory.some((i) => i.id === 'kith_spore') ? 'ATTACH_FAMILIAR' : 'EMPTY',
+  };
+}
+
+function buildNarrativeState(stats, inventory) {
+  const locationSlug = stats.location || 'pteros';
+  const biomeData =
+    TETHYS_CRUCIBLE_MAPPINGS.find((entry) => entry.id === locationSlug) ||
+    TETHYS_CRUCIBLE_MAPPINGS.find((entry) => entry.aliases?.includes(locationSlug)) ||
+    TETHYS_CRUCIBLE_MAPPINGS[0];
+
+  return {
+    law_code: stats.alignment === 'Chaos' ? 'EXILE' : 'COHAB_CODE',
+    titan_bond: stats.creature > 75 ? 'ACTIVE' : 'DORMANT',
+    kith_sensitivity: stats.kith > 40 ? 'HIGH' : 'LOW',
+    memories: {
+      has_seen_cambria: inventory.some((i) => i.id === 'cambria_relic'),
+      survived_the_ledge: stats.igzier > 50,
+      met_ravel: true,
+    },
+    atmosphere: {
+      sky_color: stats.location === 'ironwoods' ? '#2d4a22' : '#87CEEB',
+      fog_density: stats.location === 'the-weep' ? 0.95 : 0.1,
+      water_level: 'CRETACEOUS_HIGH',
+    },
+    environment: {
+      id: locationSlug,
+      biome_type: biomeData?.type,
+      terrain: {
+        substrate_material: biomeData?.terrain?.substrate,
+        ground_color: biomeData?.terrain?.color,
+        hazard_tags: biomeData?.terrain?.hazards || []
+      },
+      atmosphere: {
+        fog_density: locationSlug === 'the-weep' ? 0.95 : 0.1,
+        sky_color: stats.location === 'ironwoods' ? '#2d4a22' : '#87CEEB',
+        audio_scape: biomeData?.terrain?.hazards?.includes('ashfall') ? 'rumble_volcano' : 'ambience_estuary'
+      }
+    }
+  };
+}
+
+function generateVRMetadata(user, stats = {}, staff = {}, inventory = []) {
+  if (!user) return null;
+  const safeInventory = toArray(inventory);
+  const shaderParams = buildShaderParams(stats, staff);
+  const staffBlueprint = buildStaffBlueprint(staff, safeInventory);
+  const narrativeState = buildNarrativeState(stats, safeInventory);
+
+  return {
+    version: VR_METADATA_VERSION,
+    timestamp: new Date().toISOString(),
+    player: {
+      uid: user.uid,
+      handle: user.displayName || 'Anonymous',
+      archetype: stats.archetype || 'Survivor',
+      tier: Math.floor((stats.total || 0) / 10) + 1,
+    },
+    chronicle: narrativeState,
+    documents: ARCHIVE_DOCUMENTS.map((doc) => ({
+      id: doc.id,
+      slug: doc.slug,
+      title: doc.title,
+      subtitle: doc.subtitle,
+      render: doc.render,
+      db: doc.db,
+    })),
+    loadout: {
+      ...staffBlueprint,
+      visuals: {
+        primaryColor: staff?.visuals?.shaftGradient || '#333333',
+        glowColor: staff?.visuals?.glowColor || '#ff8800',
+        ...shaderParams,
+      },
+    },
+    currency: {
+      resin: stats.resin || 0,
+    },
+  };
+}
+
+export {
+  VR_METADATA_VERSION,
+  VR_SEED,
+  generateSampleVRMetadata,
+  buildShaderParams,
+  buildStaffBlueprint,
+  buildNarrativeState,
+  generateVRMetadata,
+};

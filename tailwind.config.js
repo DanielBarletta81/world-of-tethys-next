@@ -1,0 +1,102 @@
+/** @type {import('tailwindcss').Config} */
+const config = {
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      // 1. FONTS (Connected to layout.js)
+      fontFamily: {
+        sans: ['var(--font-sky)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-naturalist)', 'serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+        header: ['var(--font-field)', 'serif'],
+        body: ['var(--font-naturalist)', 'serif'],
+        mystic: ['var(--font-mystic)', 'serif'],
+        field: ['var(--font-field)', 'serif'],
+        sky: ['var(--font-sky)', 'system-ui', 'sans-serif'],
+        hand: ['var(--font-hand)', 'cursive'],
+        'tethys-volcanic': ['var(--font-volcanic)', 'serif'],
+      },
+
+      // 2. COLORS (Aligned with your "Stone/Ash" aesthetic)
+      // I swapped your 'slate' hexes for 'stone' hexes to keep the "Ancient" warmth.
+      colors: {
+        'tethys-bg': '#0c0a09',     // Stone 950 (The Deep Dark)
+        'tethys-card': '#1c1917',   // Stone 900 (The UI Cards)
+        'tethys-muted': '#44403c',  // Stone 700 (Borders)
+        'tethys-estuary': '#0f766e', // Blue-green estuary
+        'tethys-lava': '#c2410c',    // Volcanic glow
+        'tethys-glow': '#22d3ee',    // Bioluminescent glow
+
+        // Faction Colors
+        'amber-glow': '#f59e0b',    // Sky City / Oil
+        'cyan-glow': '#22d3ee',     // Science / Echoes
+        'emerald-glow': '#10b981',  // Ironwood / Nature
+        'rose-glow': '#f43f5e',     // Danger / Magma
+        'violet-glow': '#a78bfa',  // Mystery / Spire
+        // THE FORGE PALETTE
+        'forge-white': '#fffbeb',   // Almost white-hot center
+        'forge-yellow': '#f59e0b',  // Bright yellow heat
+        'forge-orange': '#ea580c',  // Cooling orange edge
+        'forge-red': '#dc2626',     // Deep red glow surrounding
+        'forge-dark': '#1c1917',    // Dark stone background
+
+        // Paper/Study Mode
+        'ancient-bg': '#e7e5e4',    // Stone 200
+        'ancient-ink': '#292524',   // Stone 800
+        'ancient-accent': '#78350f' // Amber 900
+      },
+
+      // 3. ANIMATIONS (The Magic)
+      // These support the Weather, Login, and Whispers components
+      animation: {
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'spin-slow': 'spin 12s linear infinite',
+        'scan': 'scan 4s ease-in-out infinite',
+        'fall': 'fall 10s linear infinite',
+        'rain': 'rain 0.5s linear infinite',
+        'flash': 'flash 4s infinite',
+      },
+      
+      // 4. KEYFRAMES (The Math behind the Magic)
+      keyframes: {
+        scan: {
+          '0%, 100%': { backgroundPosition: '0% 0%' },
+          '50%': { backgroundPosition: '0% 100%' },
+        },
+        fall: {
+          '0%': { transform: 'translateY(-10%)', opacity: '0' },
+          '50%': { opacity: '0.5' },
+          '100%': { transform: 'translateY(100%)', opacity: '0' },
+        },
+        rain: {
+          '0%': { backgroundPosition: '0% 0%' },
+          '100%': { backgroundPosition: '0% 100%' },
+        },
+        flash: {
+          '0%, 95%': { opacity: '0' },
+          '96%': { opacity: '0.8' },
+          '98%': { opacity: '0' },
+          '99%': { opacity: '0.3' },
+          '100%': { opacity: '0' },
+        }
+      },
+
+      // 5. BACKGROUND IMAGES (Shortcuts)
+      backgroundImage: {
+        'noise': "url('/noise.svg')",
+        'grid': "url('/grid-pattern.svg')",
+        'estuary-flow': 'radial-gradient(circle at 20% 20%, rgba(13,148,136,0.45), rgba(2,6,23,0.9) 55%)',
+        'lava-glow': 'radial-gradient(circle at 70% 80%, rgba(194,65,12,0.45), rgba(2,6,23,0.95) 60%)',
+        'tethys-glow': 'radial-gradient(circle at 50% 35%, rgba(34,211,238,0.35), rgba(2,6,23,0.9) 55%)',
+      }
+    },
+  },
+  plugins: [],
+};
+
+export default config;
+// World of Tethys || D.C. Barletta

@@ -1,0 +1,374 @@
+:root {
+  --oracle-speed: 1;
+  --oracle-opacity-mult: 1;
+  --oracle-growth: 0.6;
+}
+
+/* Oracle Pool Animation System — slow, restrained, biological */
+
+/* 0) Rim & Growth */
+.oracle-rim {
+  position: absolute;
+  inset: 8px;
+  border-radius: 24px;
+  border: 1px solid rgba(20, 83, 45, 0.35);
+  box-shadow:
+    inset 0 0 30px rgba(2, 6, 23, 0.8),
+    inset 0 0 60px rgba(2, 6, 23, 0.65);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(71, 85, 105, 0.2), transparent 60%),
+    radial-gradient(circle at 80% 90%, rgba(30, 41, 59, 0.35), transparent 55%);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.oracle-growth {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  opacity: calc(0.35 * var(--oracle-growth));
+  background:
+    radial-gradient(circle at 12% 86%, rgba(20, 184, 166, 0.25), transparent 45%),
+    radial-gradient(circle at 88% 14%, rgba(34, 197, 94, 0.22), transparent 50%),
+    radial-gradient(circle at 50% 8%, rgba(110, 231, 183, 0.2), transparent 40%);
+  filter: blur(8px);
+  animation: oracle-growth-drift 80s linear infinite;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@keyframes oracle-growth-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-1%, 1%, 0) scale(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* 1) Mushroom Hover */
+.oracle-mushroom {
+  transition:
+    transform 1.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 1.8s cubic-bezier(0.16, 0.84, 0.44, 1);
+}
+.oracle-mushroom:hover {
+  transform: translateY(-2px) rotate(-0.4deg);
+  filter: brightness(1.05) saturate(1.08);
+}
+
+/* 2) Mushroom Click */
+.oracle-mushroom--selected {
+  animation: mushroom-commit calc(1.8s * var(--oracle-speed)) cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+@keyframes mushroom-commit {
+  0% {
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+  40% {
+    transform: translateY(2px);
+    filter: brightness(0.95);
+  }
+  100% {
+    transform: translateY(1px);
+    filter: brightness(0.98);
+  }
+}
+
+.oracle-mushroom--background {
+  opacity: 0.55;
+  transition: opacity 1.2s ease-out;
+}
+
+/* 3) Text Reveal */
+.oracle-text {
+  animation: oracle-text-rise calc(1.6s * var(--oracle-speed)) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  opacity: calc(1 * var(--oracle-opacity-mult));
+}
+@keyframes oracle-text-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.oracle-text p {
+  opacity: 0;
+  animation: oracle-text-rise calc(1.6s * var(--oracle-speed)) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.oracle-text p:nth-child(1) { animation-delay: 0.2s; }
+.oracle-text p:nth-child(2) { animation-delay: 0.6s; }
+.oracle-text p:nth-child(3) { animation-delay: 1s; }
+
+/* 4) Silence State */
+.oracle--silence {
+  animation: silence-pulse calc(4.5s * var(--oracle-speed)) ease-in-out 1;
+}
+@keyframes silence-pulse {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(0.96); }
+  100% { filter: brightness(1); }
+}
+
+/* 5) Echo-Only State */
+.oracle-echo--spores::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 70%, rgba(140, 240, 190, 0.25), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(120, 220, 170, 0.18), transparent 50%);
+  filter: blur(10px);
+  animation: spores-drift calc(6s * var(--oracle-speed)) cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  pointer-events: none;
+}
+@keyframes spores-drift {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+.oracle-echo--rumble {
+  animation: rumble-nudge calc(0.8s * var(--oracle-speed)) cubic-bezier(0.36, 0, 0.66, -0.56);
+}
+@keyframes rumble-nudge {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(-1px); }
+  60% { transform: translateX(1px); }
+  100% { transform: translateX(0); }
+}
+.oracle-echo--deep_rumble {
+  animation: rumble-deep calc(1.2s * var(--oracle-speed)) cubic-bezier(0.36, 0, 0.66, -0.56);
+}
+@keyframes rumble-deep {
+  0% { transform: translateX(0) scale(1); }
+  35% { transform: translateX(-1px) scale(0.997); }
+  70% { transform: translateX(1px) scale(0.998); }
+  100% { transform: translateX(0) scale(1); }
+}
+.oracle-echo--crack {
+  animation: crack-shiver calc(0.5s * var(--oracle-speed)) steps(2, end);
+}
+@keyframes crack-shiver {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-2px); }
+  100% { transform: translateX(1px); }
+}
+.oracle-echo--heartbeat {
+  animation: heartbeat-pulse calc(1.6s * var(--oracle-speed)) ease-in-out;
+}
+@keyframes heartbeat-pulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.005); }
+  60% { transform: scale(0.997); }
+  100% { transform: scale(1); }
+}
+
+/* 6) Withheld State */
+.oracle--withheld {
+  animation: withheld-frame calc(3.2s * var(--oracle-speed)) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+@keyframes withheld-frame {
+  from { opacity: 0; }
+  30% { opacity: 0.35; }
+  to   { opacity: 0.28; }
+}
+.oracle-cursor {
+  animation: cursor-once calc(1.2s * var(--oracle-speed)) steps(1) 1 forwards;
+}
+@keyframes cursor-once {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  60%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* 7) Cooldown / Overuse */
+.oracle--cooldown .oracle-mushroom {
+  filter: saturate(0.75) brightness(0.97);
+  transition: filter 2.5s ease-out;
+}
+
+/* --- MOBILE TUNING (pointer: coarse) --- */
+@media (pointer: coarse) {
+  /* 1) Mushroom interaction */
+  .oracle-mushroom {
+    transition:
+      transform 1.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+      filter 2.2s cubic-bezier(0.16, 0.84, 0.44, 1);
+  }
+  .oracle-mushroom:hover {
+    transform: none;
+    filter: none;
+  }
+  .oracle-mushroom--selected {
+    animation: mushroom-commit-mobile calc(2.4s * var(--oracle-speed)) cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  }
+  @keyframes mushroom-commit-mobile {
+    0% {
+      transform: translateY(0);
+      filter: brightness(1);
+    }
+    50% {
+      transform: translateY(1px);
+      filter: brightness(0.96);
+    }
+    100% {
+      transform: translateY(0.5px);
+      filter: brightness(0.98);
+    }
+  }
+
+  /* 2) Text reveal */
+  .oracle-text {
+    animation: oracle-text-rise-mobile calc(2.2s * var(--oracle-speed)) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+  @keyframes oracle-text-rise-mobile {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .oracle-text p:nth-child(1) { animation-delay: 0.3s; }
+  .oracle-text p:nth-child(2) { animation-delay: 0.9s; }
+  .oracle-text p:nth-child(n+3) { animation-delay: 0s; }
+
+  /* 3) Silence state */
+  .oracle--silence {
+    animation: silence-pulse-mobile calc(3.8s * var(--oracle-speed)) ease-in-out 1;
+  }
+  @keyframes silence-pulse-mobile {
+    0%   { filter: brightness(1); }
+    50%  { filter: brightness(0.97); }
+    100% { filter: brightness(1); }
+  }
+
+  /* 4) Echo-only */
+  .oracle-echo--spores::after {
+    filter: blur(12px);
+    animation: spores-drift-mobile calc(7.5s * var(--oracle-speed)) cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+  @keyframes spores-drift-mobile {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    40% {
+      opacity: 0.85;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  /* 5) Rumble echo */
+  .oracle-echo--rumble {
+    animation: rumble-mobile calc(1.2s * var(--oracle-speed)) cubic-bezier(0.36, 0, 0.66, 1);
+  }
+  @keyframes rumble-mobile {
+    0% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    40% {
+      transform: scale(0.996);
+      filter: brightness(0.96);
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+  }
+
+  /* 6) Withheld */
+  .oracle--withheld {
+    animation: withheld-frame-mobile calc(4.2s * var(--oracle-speed)) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+  @keyframes withheld-frame-mobile {
+    from { opacity: 0; }
+    40% { opacity: 0.38; }
+    to   { opacity: 0.3; }
+  }
+  .oracle-cursor {
+    animation: cursor-once-mobile calc(1.6s * var(--oracle-speed)) steps(1) 1 forwards;
+  }
+  @keyframes cursor-once-mobile {
+    0%   { opacity: 0; }
+    40%  { opacity: 1; }
+    70%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  /* 7) Cooldown */
+  .oracle--cooldown .oracle-mushroom {
+    filter: saturate(0.82) brightness(0.98);
+    transition: filter 3.2s ease-out;
+  }
+}
+
+/* GPU compositing utility */
+.gpu-layer {
+  transform: translateZ(0);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+/* Safari touch filter fallback */
+@supports (-webkit-touch-callout: none) {
+  .oracle-mushroom,
+  .oracle--silence,
+  .oracle-echo--rumble {
+    filter: none !important;
+  }
+  .oracle--silence {
+    opacity: 0.97;
+  }
+  .oracle--cooldown .oracle-mushroom {
+    opacity: 0.82;
+  }
+}
+
+/* Reduced motion: preserve cues, drop displacement */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .oracle-mushroom,
+  .oracle-text,
+  .oracle--silence,
+  .oracle--withheld,
+  .oracle-echo--spores::after {
+    transform: none !important;
+  }
+
+  .oracle-text {
+    opacity: 1;
+  }
+
+  .oracle--silence {
+    filter: brightness(0.98);
+  }
+
+  .oracle--withheld {
+    opacity: 0.32;
+  }
+}
+
+/* World of Tethys || D.C. Barletta */

@@ -1,0 +1,686 @@
+{
+  "id": "ravel_oracle_v1",
+  "speaker": "ravel",
+  "tone": {
+    "style": "restrained",
+    "energy": "low",
+    "comfort": false,
+    "certainty": true
+  },
+  "rules": {
+    "maxSentences": 3,
+    "minSentences": 1,
+    "allowSilence": true,
+    "explainSystem": false,
+    "promiseSafety": false,
+    "askDirectQuestions": false
+  },
+  "selectors": {
+    "path": ["mystic", "wild", "city", "any"],
+    "stillness": ["low", "medium", "high", "any"],
+    "visit": ["first", "repeat", "any"],
+    "watcherState": ["quiet", "stirring", "active", "any"]
+  },
+  "fallback": {
+    "type": "silence",
+    "environmentalEcho": true
+  },
+  "responses": [
+    {
+      "id": "ravel_001",
+      "path": "any",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You chose without knowing why. That’s how most people survive their first mistake.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_002",
+      "path": "any",
+      "stillness": "low",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "Quick hands don’t last long here.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_003",
+      "path": "any",
+      "stillness": "high",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "Good. You waited. The world noticed.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_004",
+      "path": "any",
+      "stillness": "medium",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You’re between breath and blur. Hold that edge.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_005",
+      "path": "any",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "stirring",
+      "text": "You arrived while something older was turning over.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_006",
+      "path": "any",
+      "stillness": "low",
+      "visit": "first",
+      "watcherState": "stirring",
+      "text": "The ground is counting your steps already.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_007",
+      "path": "any",
+      "stillness": "high",
+      "visit": "first",
+      "watcherState": "stirring",
+      "text": "Patience is its own signal. You just sent one.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_008",
+      "path": "any",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "active",
+      "text": "You chose to enter mid-sentence. Listen for the rest.",
+      "weight": 3,
+      "echo": "rumble"
+    },
+    {
+      "id": "ravel_009",
+      "path": "any",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You think you can leave. That’s why you’re allowed in.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_010",
+      "path": "mystic",
+      "stillness": "low",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "You’re touching the surface. It goes deeper than that.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_011",
+      "path": "mystic",
+      "stillness": "medium",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "The fungus remembers heat. That should concern you.",
+      "weight": 2,
+      "echo": "spores"
+    },
+    {
+      "id": "ravel_012",
+      "path": "mystic",
+      "stillness": "high",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "You’re starting to hear what the roots won’t say out loud.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_013",
+      "path": "mystic",
+      "stillness": "high",
+      "visit": "repeat",
+      "watcherState": "stirring",
+      "text": "Ash writes faster than water. Read carefully.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_014",
+      "path": "mystic",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "The mountain isn’t angry. It’s deciding.",
+      "weight": 3,
+      "echo": "low_rumble"
+    },
+    {
+      "id": "ravel_015",
+      "path": "mystic",
+      "stillness": "medium",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You keep returning to the same ring of stone. It’s not the same ring.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_016",
+      "path": "mystic",
+      "stillness": "low",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You skim the lichen and call it searching.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_017",
+      "path": "mystic",
+      "stillness": "high",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You held your breath long enough to hear the stone answer back.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_018",
+      "path": "mystic",
+      "stillness": "any",
+      "visit": "repeat",
+      "watcherState": "active",
+      "text": "If you insist on asking, ask slower.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_019",
+      "path": "mystic",
+      "stillness": "medium",
+      "visit": "first",
+      "watcherState": "stirring",
+      "text": "Ash drifts differently when you’re watched.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_020",
+      "path": "wild",
+      "stillness": "low",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "You already know this isn’t safe.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_021",
+      "path": "wild",
+      "stillness": "medium",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "Keep your weight low. The ground remembers pressure.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_022",
+      "path": "wild",
+      "stillness": "high",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "You’re learning when not to move. That’s rare.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_023",
+      "path": "wild",
+      "stillness": "any",
+      "visit": "repeat",
+      "watcherState": "stirring",
+      "text": "Animals leave before the ground tells you why.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_024",
+      "path": "wild",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "If you feel the tremor twice, it wasn’t the same tremor.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_025",
+      "path": "wild",
+      "stillness": "medium",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You’re reading wind like scripture. Keep going.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_026",
+      "path": "wild",
+      "stillness": "high",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You rest where predators don’t. That’s the point.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_027",
+      "path": "wild",
+      "stillness": "low",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You sprint the same route and hope it changed.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_028",
+      "path": "wild",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "stirring",
+      "text": "The forest paused to see if you understood that pause.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_029",
+      "path": "wild",
+      "stillness": "low",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "If you outrun fear, it learns your stride.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_030",
+      "path": "city",
+      "stillness": "low",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "You were taught to admire walls.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_031",
+      "path": "city",
+      "stillness": "medium",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "Maps don’t lie. They just omit.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_032",
+      "path": "city",
+      "stillness": "high",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "You’re staring past the decoration. Careful.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_033",
+      "path": "city",
+      "stillness": "any",
+      "visit": "repeat",
+      "watcherState": "stirring",
+      "text": "The City will rename danger until it obeys. It won’t.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_034",
+      "path": "city",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "The walls believe the paper they’re drawn on.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_035",
+      "path": "city",
+      "stillness": "medium",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You keep tracing the avenue that failed you.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_036",
+      "path": "city",
+      "stillness": "low",
+      "visit": "first",
+      "watcherState": "stirring",
+      "text": "The lamps burn brighter when they sense a stranger.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_037",
+      "path": "city",
+      "stillness": "high",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You found the corridor without echoes. That was deliberate.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_038",
+      "path": "city",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "active",
+      "text": "The plazas tilt slightly toward the crater. Notice it.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_039",
+      "path": "city",
+      "stillness": "medium",
+      "visit": "any",
+      "watcherState": "stirring",
+      "text": "Architects build apologies into the corners.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_040",
+      "path": "any",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "stirring",
+      "text": "That isn’t smoke. It’s the mountain practicing.",
+      "weight": 3,
+      "echo": "rumble"
+    },
+    {
+      "id": "ravel_041",
+      "path": "any",
+      "stillness": "high",
+      "visit": "any",
+      "watcherState": "stirring",
+      "text": "The Ledge isn’t a view. It’s a dare.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_042",
+      "path": "any",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "The estuary was spared once. That’s not a treaty.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_043",
+      "path": "any",
+      "stillness": "low",
+      "visit": "any",
+      "watcherState": "stirring",
+      "text": "Listen to how the slope answers gravel.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_044",
+      "path": "any",
+      "stillness": "medium",
+      "visit": "any",
+      "watcherState": "stirring",
+      "text": "The air thins on purpose before it speaks.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_045",
+      "path": "any",
+      "stillness": "high",
+      "visit": "repeat",
+      "watcherState": "active",
+      "text": "It waited for you to return before it fractured.",
+      "weight": 3,
+      "echo": "crack"
+    },
+    {
+      "id": "ravel_046",
+      "path": "any",
+      "stillness": "any",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You kept the path intact by walking it the same way.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_047",
+      "path": "any",
+      "stillness": "low",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You pretend to hurry. You’re looking for permission.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_048",
+      "path": "any",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You arrived before the echo returned. That matters.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_049",
+      "path": "any",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "The ridge is rehearsing collapse. Stay light.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_050",
+      "path": "mystic",
+      "stillness": "low",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You hear whispers where moss should be. Noted.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_051",
+      "path": "mystic",
+      "stillness": "medium",
+      "visit": "any",
+      "watcherState": "stirring",
+      "text": "The ash halo over your boots is a map you’re ignoring.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_052",
+      "path": "mystic",
+      "stillness": "high",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "Something beneath the basalt is timing your breath.",
+      "weight": 3,
+      "echo": "heartbeat"
+    },
+    {
+      "id": "ravel_053",
+      "path": "mystic",
+      "stillness": "low",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You keep brushing the same charred root as if it will thank you.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_054",
+      "path": "mystic",
+      "stillness": "medium",
+      "visit": "repeat",
+      "watcherState": "active",
+      "text": "Don’t confuse echoes for answers.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_055",
+      "path": "mystic",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "The spores are listening harder than you are.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_056",
+      "path": "mystic",
+      "stillness": "high",
+      "visit": "repeat",
+      "watcherState": "stirring",
+      "text": "Silence is telling you to wait outside. You won’t.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_057",
+      "path": "mystic",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "The ink in the cracks keeps pace with your pulse.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_058",
+      "path": "mystic",
+      "stillness": "medium",
+      "visit": "repeat",
+      "watcherState": "stirring",
+      "text": "You’re close enough for the fumes to recognize you.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_059",
+      "path": "mystic",
+      "stillness": "low",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "Your shadow is stuttering. Adjust.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_060",
+      "path": "wild",
+      "stillness": "medium",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You learned which branches break before they bend.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_061",
+      "path": "wild",
+      "stillness": "high",
+      "visit": "first",
+      "watcherState": "stirring",
+      "text": "The clearing gave you space. That was a test.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_062",
+      "path": "wild",
+      "stillness": "low",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "You keep stepping on old ash to feel taller.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_063",
+      "path": "wild",
+      "stillness": "any",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You looked for a trail. There isn’t one. Good.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_064",
+      "path": "wild",
+      "stillness": "medium",
+      "visit": "any",
+      "watcherState": "active",
+      "text": "If you smell iron, leave the ridge.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_065",
+      "path": "wild",
+      "stillness": "high",
+      "visit": "repeat",
+      "watcherState": "active",
+      "text": "You waited, and the roots pushed back. Accept that answer.",
+      "weight": 3
+    },
+    {
+      "id": "ravel_066",
+      "path": "wild",
+      "stillness": "low",
+      "visit": "repeat",
+      "watcherState": "stirring",
+      "text": "Your shortcuts are starting to look like patterns.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_067",
+      "path": "wild",
+      "stillness": "medium",
+      "visit": "first",
+      "watcherState": "quiet",
+      "text": "You touched bark that wasn’t there yesterday.",
+      "weight": 1
+    },
+    {
+      "id": "ravel_068",
+      "path": "wild",
+      "stillness": "any",
+      "visit": "repeat",
+      "watcherState": "quiet",
+      "text": "You are calibrating to fear. Keep calibrating.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_069",
+      "path": "wild",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "stirring",
+      "text": "The birds warned you an hour ago.",
+      "weight": 2
+    },
+    {
+      "id": "ravel_900",
+      "path": "any",
+      "stillness": "low",
+      "visit": "repeat",
+      "watcherState": "any",
+      "text": "",
+      "weight": 1,
+      "echo": "silence"
+    },
+    {
+      "id": "ravel_901",
+      "path": "any",
+      "stillness": "high",
+      "visit": "repeat",
+      "watcherState": "active",
+      "text": "",
+      "weight": 2,
+      "echo": "deep_rumble"
+    },
+    {
+      "id": "ravel_902",
+      "path": "any",
+      "stillness": "any",
+      "visit": "any",
+      "watcherState": "quiet",
+      "text": "",
+      "weight": 1
+    }
+  ]
+}

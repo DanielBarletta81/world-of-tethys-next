@@ -1,0 +1,26 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <rect width="1920" height="1080" fill="#0a0806"/>
+  
+  <path d="M0 0 H1920 V1080 H0 Z" fill="url(#ashGradient)"/>
+  <defs>
+    <radialGradient id="ashGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3d2b1f" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#0a0806" stop-opacity="0.9"/>
+    </radialGradient>
+  </defs>
+
+  <path d="M600 1080 L960 300 L1320 1080 H600Z" fill="#1a1510" stroke="#3d2b1f" stroke-width="4"/>
+  <path d="M960 300 L800 1080 M960 300 L1120 1080" stroke="#3d2b1f" stroke-width="2" opacity="0.5"/>
+  
+  <circle cx="960" cy="280" r="4" fill="#8a3c23" opacity="0.8">
+    <animate attributeName="cy" values="280;200" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="980" cy="290" r="3" fill="#8a3c23" opacity="0.6">
+    <animate attributeName="cy" values="290;210" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <line x1="100" y1="100" x2="1820" y2="980" stroke="#3d2b1f" stroke-width="1" stroke-dasharray="4 8" opacity="0.2"/>
+  <line x1="1820" y1="100" x2="100" y2="980" stroke="#3d2b1f" stroke-width="1" stroke-dasharray="4 8" opacity="0.2"/>
+</svg>

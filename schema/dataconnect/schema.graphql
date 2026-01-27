@@ -1,0 +1,204 @@
+# Firebase Data Connect schema (proposed)
+# Adjust directives to your generator's syntax (`@table`, `@id`, `@unique`, `@relation`).
+
+enum Rarity {
+  SILT
+  SHALE
+  LIMESTONE
+  CHALK
+  BASALT
+  AMBER
+}
+
+enum PathId {
+  MYSTIC
+  CITY
+  WILD
+  PTEROS
+}
+
+enum CreatureArchetype {
+  TETHYS_SKY
+  TETHYS_DEEP
+  TETHYS_WARDEN
+  TETHYS_SURVIVOR
+}
+
+enum CreatureStage {
+  HATCHLING
+  JUVENILE
+  ADULT
+  ELDER
+}
+
+type User @table {
+  id: String! @id
+  username: String! @unique
+  email: String! @unique
+  avatarUrl: String
+  createdAt: Timestamp!
+}
+
+type Player @table {
+  id: String! @id
+  userId: String! @relation(table: "User", field: "id")
+  playerName: String!
+  createdAt: Timestamp!
+  description: String
+  currentLevel: Int
+  playerDNA: [String!]!
+  primaryPath: PathId
+  mapAccess: Boolean
+  staffSeed: String
+  staffName: String
+  # Basic stats (mirrors DEFAULT_PLAYER_PROFILE.staff.stats)
+  statGeology: Int
+  statCreature: Int
+  statLore: Int
+  statHuman: Int
+  statReliability: Float
+  # Onboarding + guide summary
+  onboardingStatus: String
+  onboardingStartedAt: Timestamp
+  onboardingCompletedAt: Timestamp
+  guideSigilId: String
+  guideAvatarType: String
+  guideCreatureId: String
+  guideLevel: Int
+  # Progress counters
+  timeOnSiteMs: Int
+  chaptersRead: Int
+  mapVisits: Int
+  hatchActions: Int
+  oracleConsults: Int
+  avatarSwaps: Int
+  survivalScore: Float
+  isLost: Boolean
+}
+
+type Location @table {
+  id: String! @id
+  name: String!
+  lat: Float
+  lng: Float
+  createdAt: Timestamp!
+  description: String
+  uniqueTrait: String
+}
+
+type LoreEntry @table {
+  id: String! @id
+  title: String!
+  content: String!
+  createdAt: Timestamp!
+  category: String
+}
+
+type BoneStaffAdornment @table {
+  id: String! @id
+  name: String!
+  rarity: Rarity!
+  createdAt: Timestamp!
+  description: String
+  imageUrl: String
+  effect: String
+  unlockRequirement: String
+}
+
+type PlayerLocationHistory @table(key: ["playerId", "visitedAt"]) {
+  playerId: String! @relation(table: "Player", field: "id")
+  locationId: String! @relation(table: "Location", field: "id")
+  visitedAt: Timestamp!
+  orderIndex: Int!
+}
+
+type CreatureEncounter @table(key: ["playerId", "encounteredAt"]) {
+  playerId: String! @relation(table: "Player", field: "id")
+  creatureName: String!
+  encounteredAt: Timestamp!
+  description: String
+  locationId: String @relation(table: "Location", field: "id")
+}
+
+type PlayerEvent @table(key: ["playerId", "at"]) {
+  playerId: String! @relation(table: "Player", field: "id")
+  type: String!
+  at: Timestamp!
+  regionId: String
+  metadataJson: String
+}
+
+# --- Extended content ---
+
+type Creature @table {
+  id: String! @id
+  name: String!
+  archetype: CreatureArchetype
+  temperament: String
+  regionId: String
+  description: String
+  rarity: Rarity
+  createdAt: Timestamp!
+  era: String
+  tag: String
+  niche: String
+  science: String
+  imageUrl: String
+  microsatelliteMarkers: [String!]
+}
+
+type PlayerCreatureBond @table(key: ["playerId", "creatureId"]) {
+  playerId: String! @relation(table: "Player", field: "id")
+  creatureId: String! @relation(table: "Creature", field: "id")
+  bondLevel: Int
+  bondXp: Int
+  lastFedAt: Timestamp
+  lastTrainedAt: Timestamp
+  stage: CreatureStage
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+}
+
+type StaffTemplate @table {
+  id: String! @id
+  name: String!
+  path: PathId
+  baseStaffStatsGeology: Int
+  baseStaffStatsCreature: Int
+  baseStaffStatsLore: Int
+  baseStaffStatsHuman: Int
+  baseStaffStatsReliability: Float
+  defaultCreatureArchetype: CreatureArchetype
+  giveItems: [String!]
+  createdAt: Timestamp!
+}
+
+type AdornmentUnlock @table(key: ["playerId", "adornmentId"]) {
+  playerId: String! @relation(table: "Player", field: "id")
+  adornmentId: String!
+  unlockedAt: Timestamp!
+  sourceEvent: String
+}
+
+# Optional: bestiary catalog direct mapping for static entries
+type BestiaryEntry @table {
+  id: String! @id
+  name: String!
+  era: String
+  tag: String
+  niche: String
+  science: String
+  imageUrl: String
+  archetype: CreatureArchetype
+  rarity: Rarity
+  microsatelliteMarkers: [String!]
+  createdAt: Timestamp!
+}
+
+type PlayerEvent @table(key: ["playerId", "at"]) {
+  playerId: String! @relation(table: "Player", field: "id")
+  type: String!
+  at: Timestamp!
+  regionId: String
+  metadataJson: String
+}

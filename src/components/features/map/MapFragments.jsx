@@ -1,0 +1,138 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { cdn } from '@/lib/cdn';
+
+// Simple, static pin overlays for the atlas with SVG icons
+export default function MapFragments({
+  fragmentsConfig,
+  stillnessReady,
+  cambriaActive = false,
+  lockedRegions = [],
+  labelIds = null,
+  labelOpacity = 0.22,
+  ghosted = false,
+  foodWebHints = {},
+  foodWebActive = false,
+  foodWebAliases = {},
+  analogHints = {},
+  onTravel,
+  onInspect,
+  onUnlock,
+  onFracture
+}) {
+  const [fragments, setFragments] = useState(
+    fragmentsConfig.map((f) => ({
+      ...f,
+      pos: f.anchor,
+      snapped: true,
+      fractured: false
+    }))
+  );
+
+  // When the mist clears (stillness), trigger unlock/fracture callbacks once.
+  useEffect(() => {
+    if (!stillnessReady) return;
+    setFragments((fs) =>
+      fs.map((f) => {
+        if (f.fractured) return f;
+        if (lockedRegions.includes(f.region)) {
+          return f;
+        }
+        if (cambriaActive) {
+          onFracture?.(f.region);
+          return { ...f, fractured: true };
+        }
+        onUnlock?.(f.region);
+        return f;
+      })
+    );
+  }, [stillnessReady, cambriaActive, lockedRegions, onUnlock, onFracture]);
+
+  return (
+    <svg className="absolute inset-0" viewBox="0 0 100 100" role="presentation">
+      {fragments.map((f) => {
+        const isLocked = lockedRegions.includes(f.region);
+        const isClickable = f.clickable !== false;
+        const showPin = f.showPin !== false;
+        const showLabel = !labelIds || labelIds.includes(f.id) || labelIds.includes(f.region);
+        const labelX = f.labelOffset?.x ?? 7;
+        const labelY = f.labelOffset?.y ?? 3;
+        const baseOpacity = ghosted ? 0.55 : 1;
+        const aliasKey = foodWebAliases?.[f.region];
+        const foodHints = foodWebActive
+          ? foodWebHints?.[f.region] || foodWebHints?.[aliasKey] || []
+          : [];
+        const foodHintText = foodHints.length
+          ? `Food Web\\n${foodHints
+              .map((hint) =>
+                hint.creatureId ? `${hint.tethys} [${hint.creatureId}]` : hint.tethys
+              )
+              .join('\\n')}`
+          : null;
+        const analogList = analogHints?.[f.region] || analogHints?.[aliasKey] || [];
+        const analogText = analogList.length
+          ? `Analogs\\n${analogList
+              .map((analog) => `${analog.tethys} → ${analog.realWorld}`)
+              .join('\\n')}`
+          : null;
+        const tooltipText = [foodHintText, analogText].filter(Boolean).join('\\n\\n') || null;
+
+        const handleClick = (event) => {
+          if (!isClickable) return;
+          if (event.shiftKey || event.altKey) {
+            onInspect?.(f.region);
+            return;
+          }
+          onTravel?.(f.region);
+        };
+
+        return (
+          <g
+            key={f.id}
+            transform={`translate(${f.pos.x * 100} ${f.pos.y * 100})`}
+            className={isClickable ? 'cursor-pointer' : 'cursor-default'}
+            onClick={handleClick}
+          >
+            {tooltipText ? <title>{tooltipText}</title> : null}
+            {showPin && isLocked && (
+              <circle r="6.5" fill="none" stroke="#64748b" strokeWidth="0.6" opacity={0.6 * baseOpacity} />
+            )}
+            {showPin && (
+              <circle
+                r="5.2"
+                fill={cambriaActive ? '#7c2d12' : '#0b0a09'}
+                stroke={f.fractured ? '#f97316' : '#f59e0b'}
+                strokeWidth="0.6"
+                opacity={(isLocked ? 0.35 : 0.85) * baseOpacity}
+              />
+            )}
+            {showPin && f.icon ? (
+              <image
+                href={cdn(f.icon)}
+                x="-4.5"
+                y="-4.5"
+                width="9"
+                height="9"
+                opacity={(isLocked ? 0.3 : 0.8) * baseOpacity}
+              />
+            ) : null}
+            {f.label && showLabel ? (
+              <text
+                x={labelX}
+                y={labelY}
+                fontSize={ghosted ? '2.4' : '2.8'}
+                fill="#e7e5e4"
+                opacity={(isLocked ? 0.18 : labelOpacity) * baseOpacity}
+                className="font-sky uppercase tracking-[0.2em]"
+              >
+                {f.label}
+              </text>
+            ) : null}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+// World of Tethys || D.C. Barletta
