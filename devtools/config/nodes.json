@@ -1,0 +1,7 @@
+{
+  "nodes": [
+    {"id": "node-a", "cpu": 16, "mem_gb": 64, "gpu": 1, "accelerator": "gpu", "arch": "x86"},
+    {"id": "node-b", "cpu": 32, "mem_gb": 128, "gpu": 4, "accelerator": "gpu", "arch": "x86"},
+    {"id": "node-c", "cpu": 64, "mem_gb": 256, "gpu": 0, "accelerator": "cpu", "arch": "arm"}
+  ]
+}

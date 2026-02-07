@@ -19,13 +19,25 @@ const SCENES = {
 export default function GlobalAtmosphere() {
   const pathname = usePathname();
   const isMystic = pathname?.startsWith('/mystics');
+
+  const theme = (() => {
+    if (!pathname) return 'coast';
+    if (pathname.startsWith('/mystics')) return 'mystic';
+    if (pathname.startsWith('/portal') || pathname.startsWith('/peek') || pathname.startsWith('/login') || pathname.startsWith('/study') || pathname.startsWith('/home')) return 'sky';
+    if (pathname.startsWith('/map') || pathname.startsWith('/locations') || pathname.startsWith('/signals') || pathname.startsWith('/stories')) return 'wild';
+    if (pathname.startsWith('/science') || pathname.startsWith('/archive') || pathname.startsWith('/timeline')) return 'archive';
+    return 'coast';
+  })();
+
   useEffect(() => {
     if (typeof document === 'undefined') return;
     document.body.classList.toggle('mystic-path', Boolean(isMystic));
+    document.body.dataset.tethysTheme = theme;
     return () => {
       document.body.classList.remove('mystic-path');
+      delete document.body.dataset.tethysTheme;
     };
-  }, [isMystic]);
+  }, [isMystic, theme]);
   
   // Default to the main coast if route not found
   const activeBg = SCENES[pathname] || SCENES['/'];
@@ -60,6 +72,13 @@ export default function GlobalAtmosphere() {
       
       {/* 4. The "Weep" Mist (Optional: Subtle moving fog at bottom) */}
       <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80" />
+
+      {/* 5. Tethys ambient layers (theme-driven, CSS-controlled) */}
+      <div className="tethys-layer tethys-layer--torch" />
+      <div className="tethys-layer tethys-layer--scrolls" />
+      <div className="tethys-layer tethys-layer--mushrooms" />
+      <div className="tethys-layer tethys-layer--vines" />
+      <div className="tethys-layer tethys-layer--glowtide" />
     </div>
   );
 }

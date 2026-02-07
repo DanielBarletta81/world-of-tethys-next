@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Sparkles, Eye } from 'lucide-react';
-import OracleModal from "@/components/OracleModal";
+import OracleModal from "@/components/overlays/OracleModal";
 import { pickRavelWeeklyResponse } from '@/lib/oraclePicker';
 import { useTethys } from "@/context/TethysContext";
 import baseSeeder from '@/oracle_pool/ravel_seeder.json';

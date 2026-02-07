@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Sparkles, Eye } from 'lucide-react';
 // Use global styles; whisper text now just uses inline classes
-import OracleModal from "@/components/OracleModal";
+import OracleModal from "@/components/overlays/OracleModal";
 import { useTethys } from "@/context/TethysContext";
 
 const WHISPERS_POOL = [

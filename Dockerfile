@@ -1,33 +1,14 @@
-# syntax=docker/dockerfile:1
+FROM node:22-alpine
 
-FROM node:18-alpine AS base
 WORKDIR /app
-ENV NODE_ENV=production
 
-# Install dependencies first for better caching
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+# Install deps first (cache-friendly)
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev
+RUN npm ci
 
-# Build stage
-FROM base AS builder
+# Copy the rest (in dev, bind-mount overwrites it)
 COPY . .
-COPY --from=deps /app/node_modules ./node_modules
-RUN npm run build
-
-# Production runtime
-FROM base AS runner
-WORKDIR /app
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
-
-# Copy only what we need to run
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY package.json ./
-COPY --from=deps /app/node_modules ./node_modules
 
 EXPOSE 3000
-CMD ["npm", "start"]
-# World of Tethys || D.C. Barletta
+CMD ["npm","run","dev"]
+

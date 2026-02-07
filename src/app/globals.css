@@ -115,6 +115,135 @@
   100% { opacity: 0; transform: scale(1.12); }
 }
 
+/* --- TETHYS GLOBAL AMBIENT LAYERS (LIGHTWEIGHT) --- */
+.tethys-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.tethys-layer--glowtide {
+  bottom: 0;
+  top: auto;
+  height: 18vh;
+  background: radial-gradient(120% 120% at 50% 120%, rgba(38, 184, 160, 0.18), transparent 60%);
+  mix-blend-mode: screen;
+  opacity: 0.25;
+}
+
+.tethys-layer--mushrooms {
+  background:
+    radial-gradient(10px 6px at 15% 78%, rgba(110, 220, 190, 0.25), transparent 70%),
+    radial-gradient(12px 8px at 22% 82%, rgba(90, 200, 170, 0.2), transparent 70%),
+    radial-gradient(9px 6px at 30% 76%, rgba(120, 230, 200, 0.25), transparent 70%),
+    radial-gradient(12px 8px at 78% 80%, rgba(80, 190, 170, 0.22), transparent 70%),
+    radial-gradient(10px 6px at 86% 84%, rgba(120, 220, 200, 0.2), transparent 70%);
+  filter: blur(0.4px);
+  animation: spore-glow 6s ease-in-out infinite;
+}
+
+.tethys-layer--vines {
+  background:
+    linear-gradient(120deg, transparent 40%, rgba(12, 20, 18, 0.65) 44%, transparent 48%),
+    linear-gradient(200deg, transparent 30%, rgba(10, 18, 16, 0.55) 34%, transparent 38%),
+    linear-gradient(160deg, transparent 55%, rgba(12, 22, 18, 0.5) 58%, transparent 62%);
+  opacity: 0.18;
+}
+
+.tethys-layer--torch {
+  background:
+    radial-gradient(120px 180px at 6% 30%, rgba(240, 140, 70, 0.18), transparent 70%),
+    radial-gradient(160px 220px at 94% 40%, rgba(240, 160, 90, 0.16), transparent 70%);
+  mix-blend-mode: screen;
+  animation: torch-flicker 3.4s ease-in-out infinite;
+}
+
+.tethys-layer--scrolls {
+  background:
+    linear-gradient(180deg, rgba(120, 100, 60, 0.06), transparent 40%),
+    repeating-linear-gradient(100deg, rgba(160, 130, 80, 0.06) 0 1px, transparent 1px 8px);
+  filter: blur(0.2px);
+  animation: scroll-flicker 5.6s ease-in-out infinite;
+}
+
+@keyframes torch-flicker {
+  0% { opacity: 0.2; }
+  35% { opacity: 0.35; }
+  70% { opacity: 0.22; }
+  100% { opacity: 0.3; }
+}
+
+@keyframes scroll-flicker {
+  0% { opacity: 0.12; }
+  50% { opacity: 0.22; }
+  100% { opacity: 0.14; }
+}
+
+@keyframes spore-glow {
+  0% { opacity: 0.18; }
+  50% { opacity: 0.32; }
+  100% { opacity: 0.2; }
+}
+
+/* Theme toggles */
+body[data-tethys-theme="sky"] .tethys-layer--torch,
+body[data-tethys-theme="sky"] .tethys-layer--scrolls {
+  opacity: 0.35;
+}
+body[data-tethys-theme="sky"] .tethys-layer--mushrooms,
+body[data-tethys-theme="sky"] .tethys-layer--vines {
+  opacity: 0.08;
+}
+
+body[data-tethys-theme="mystic"] .tethys-layer--mushrooms,
+body[data-tethys-theme="mystic"] .tethys-layer--vines {
+  opacity: 0.35;
+}
+body[data-tethys-theme="mystic"] .tethys-layer--torch,
+body[data-tethys-theme="mystic"] .tethys-layer--scrolls {
+  opacity: 0.1;
+}
+
+body[data-tethys-theme="wild"] .tethys-layer--vines {
+  opacity: 0.32;
+}
+body[data-tethys-theme="wild"] .tethys-layer--mushrooms {
+  opacity: 0.2;
+}
+
+body[data-tethys-theme="archive"] .tethys-layer--scrolls {
+  opacity: 0.28;
+}
+
+/* Glow tide present across themes */
+body .tethys-layer--glowtide { opacity: 0.2; }
+body[data-tethys-theme="coast"] .tethys-layer--glowtide { opacity: 0.35; }
+
+/* Subtle UI feedback without heavy effects */
+#main-content :where(a, button, [role="button"]) {
+  transition: box-shadow 240ms ease, filter 240ms ease, transform 240ms ease;
+}
+#main-content :where(a, button, [role="button"]):hover {
+  box-shadow: 0 0 14px rgba(80, 190, 170, 0.18);
+  filter: brightness(1.04);
+}
+#main-content :where(a, button, [role="button"]):active {
+  transform: translateY(0.5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tethys-layer--torch,
+  .tethys-layer--scrolls,
+  .tethys-layer--mushrooms {
+    animation: none;
+  }
+  #main-content :where(a, button, [role="button"]) {
+    transition: none;
+  }
+}
+
 /* Echo-specific reactions */
 [data-echo="spores"] .oracle-surface::before {
   content: "";

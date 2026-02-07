@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import MineralMap from '@/components/MineralMap';
+import MineralMap from '@/components/features/map/MineralMap';
 import NPCDialogue from '@/components/npc/NPCDialogue';
 import { useNpcDialogue } from '@/hooks/useNpcDialogue';
 import { loadKnowledge } from '@/app/hooks/useKnowledgeStore';

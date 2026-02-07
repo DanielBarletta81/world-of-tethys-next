@@ -1,0 +1,35 @@
+{
+  "name": "Tethys Progressive Delivery",
+  "owner": "Release Captain",
+  "steps": [
+    {
+      "name": "Canary 5%",
+      "goal": "Validate API routes and map rendering under light load",
+      "checks": [
+        "API health endpoints green",
+        "Error rate < 0.5%",
+        "Map atlas loads under 1.5s"
+      ],
+      "rollback": "Return traffic to stable release"
+    },
+    {
+      "name": "Soak 50%",
+      "goal": "Hold traffic for 2 hours with stable error rates",
+      "checks": [
+        "No elevated latency",
+        "No memory growth",
+        "No auth regressions"
+      ],
+      "rollback": "Drain canary nodes and revert"
+    },
+    {
+      "name": "Full 100%",
+      "goal": "Complete rollout",
+      "checks": [
+        "Final health check",
+        "Post-deploy snapshot saved"
+      ],
+      "rollback": "Emergency rollback playbook"
+    }
+  ]
+}

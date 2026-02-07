@@ -1,0 +1,595 @@
+metadata:
+  title: Tethys Atlas (252-111 Ma)
+  scope: Faction, biome, micro-biome, navigation, and hazard synthesis
+  format_version: '1.0'
+sources:
+- Tethyan Worldbuilding_ Biomes and Evolution.pdf
+- Tethys Ocean Research and Navigation Simulation.pdf
+- Paleogeography, Microbiology, and Gigantism.pdf
+timeframe:
+  start_ma: 252
+  end_ma: 111
+  focal_slice_ma: 111
+environment:
+  climate:
+    state: super-greenhouse
+    CO2_multiplier_preindustrial: 3x to 10x (range as stated in source PDF)
+    sea_level_vs_present_m: approx +150 to +250
+  circulation:
+    equatorial_current: westward circumglobal flow
+    gyres: paired northern and southern gyres
+    stratification: freshwater surface lid over warm saline, low-oxygen deep water
+biomes:
+- id: ironwood
+  name: Ironwood Domain
+  analogs:
+  - Wealden Group floodplains
+  - Patagonian fossil forests
+  vegetation:
+  - Araucaria
+  - Agathis
+  - Podocarps
+  - Cheirolepidiaceae (Frenelopsis)
+  micro_biomes:
+  - canopy emergents
+  - braided-river log jam rafts
+  - coastal conifer mangroves
+- id: gargantua
+  name: Gargantua Domain
+  analogs:
+  - Kohistan-Ladakh intra-oceanic arc
+  terrain:
+  - stratovolcano chains
+  - ash fields and pumice rafts
+  - obsidian slopes
+  micro_biomes:
+  - caldera rims
+  - lava tubes and flank caves
+  - ash plains
+- id: rookery
+  name: Rookery Domain
+  analogs:
+  - Apulia carbonate platform
+  - Hateg Island
+  terrain:
+  - karst cliffs
+  - ventilated cave networks
+  - shallow platform lagoons
+  micro_biomes:
+  - karst caves
+  - reef gaps and tidal channels
+  - wadeable platform tops
+microbiology:
+  OAEs:
+  - OAE 1a (Selli Event)
+  - OAE 1b (Aptian-Albian)
+  - OAE 2 (Bonarelli Event)
+  photic_zone_euxinia:
+    markers:
+    - isorenieratane (Chlorobiaceae biomarker)
+    visual_cue: purple or red water
+  sulfur_loop:
+  - sulfate-reducing bacteria produce H2S
+  - H2S degassing creates toxic fog and aerosols
+  viral_shunt: microbial loop traps productivity at low trophic levels
+hypercane_atmosphere:
+  threshold_sst_c: 50
+  triggers:
+  - bolide impact into shallow shelves
+  - LIP eruptions in restricted platforms
+  dynamics:
+  - central pressure below 700 hPa
+  - sustained winds >800 km/h
+  - stratospheric injection of water vapor and sea salts
+  consequences:
+  - ozone collapse and UV sterilization windows
+  - deep mixing releases H2S and purple-water blooms
+megaflora_failure:
+  araucaria_wollemia: longitudinal splintering; shallow root plate failure in surge soils
+  frenelopsis: fragmentation under extreme surge; sediment-scour loads
+  equisetum: local buckling; high buoyancy rafting
+earth_tune:
+  limestone_platforms: low attenuation; long-range ringing for seismic cues
+  volcanic_arcs: vesicular basalts filter to infrasound precursors
+  biological_response: bone-conduction hearing for route safety
+silurian_additions:
+- PDE10A splenomegaly for extended diving
+- nasal drift toward mid-skull for surface breathing
+- bone-conduction hearing for seismic/infra cues
+- dense bone ballast for bottom-walking
+deltas_and_sediments:
+  north_african_systems:
+  - Paleo-Nile and Nubian systems
+  - quartz-rich mature sands, humid tropical weathering
+  khorat_basin:
+  - red beds from seasonal aridity
+  - giant evaporites from basin isolation
+  pontides_margin:
+  - steep arc shelves and turbidite fans
+  - submarine canyon collapses
+  wealden_floodplains:
+  - braided rivers and log jams
+  - lagoonal swamps and wildfire cycles
+rivers_and_mixing_zones:
+  danian_river:
+    alignment:
+    - Mystics
+    - Ironwoods
+    path:
+    - Shastea Adjacent
+    - Ordovic
+    splits:
+    - Silurian wetland swamps
+    - Silurian estuaries
+  cimmerian_branch:
+    route: splits and dumps over Sky City (southwest map quadrant)
+    tiers:
+    - Higher Tiers
+    - Lower Tiers
+    - ledge and out
+    mixing_zone:
+      description: open-sea/ocean mixing zone
+      effect: cooler Cimmerian water mixes with warmer surface flow
+      ecology: benthic + pelagic nutrient hotspot; concentrates fish, larger predators,
+        apex hunters
+river_faction_links:
+- faction: Mystics
+  link: Danian headwaters custodians; seasonal flow rituals and flood timing
+- faction: Ironwoods
+  link: depend on Danian flood pulses for masting cycles; river-raft trade
+- faction: Silurians
+  link: control Danian splits in wetlands/estuaries; brackish nurseries and tidal
+    gates
+- faction: Sky City
+  link: Cimmerian branch spillover creates canopy mist-fall zone; fish and drift scavenging
+- faction: Thals
+  link: intermittent access to mixing-zone pulses via pumice lanes/ashfall shelves
+settlement_web:
+- name: Sky City of New Tethysia
+  ties:
+  - Ordovic River intake
+  - greenhouse tiers and turbine raceways
+- name: Lower Tiers
+  ties:
+  - estuary-facing platforms
+  - Weeping Sentinels (oyster filter monuments)
+- name: Danian Headwaters Sancta
+  ties:
+  - Mystic flow gates and river shrines
+- name: Ironwood Riverholds
+  ties:
+  - log-raft markets
+  - braided Danian channels
+- name: Silurian Estuary Stakes
+  ties:
+  - stilted wetland towns
+  - brackish nurseries and tidal locks
+- name: Strait of Dier
+  ties:
+  - narrows control point
+  - smuggler corridor
+- name: Lonely Span (Iriel salt flats)
+  ties:
+  - exile crossing
+  - salt flats margin
+- name: Glow-Tide Bloom Zone
+  ties:
+  - biolum hazard band
+  - seasonal filter-fishing
+- name: Cimmerian Ledge
+  ties:
+  - cold-water drop-off
+  - mist-fall zone
+- name: Shastea Adjacent
+  ties:
+  - high-ground arc proxy
+  - ashfall shelters and ridge watchposts
+- name: Apulia Shelfway (analog)
+  ties:
+  - karst cliff settlement chain
+  - ventilated cave harbors
+- name: Pontide Chute (analog)
+  ties:
+  - steep margin turbidite corridor
+  - landslide ruins and salvage cliffs
+- name: Khorat Salt Wells (analog)
+  ties:
+  - evaporite basin outposts
+  - salt and brine tech exchange
+- name: Nubian Sandbar Run (analog)
+  ties:
+  - seasonal deltaic sand islands
+  - shift with flood pulses
+trade_routes:
+- name: Danian Run
+  path: headwaters -> Ironwood Riverholds -> Silurian Estuary Stakes -> Strait of
+    Dier
+- name: Ordovic Intake Loop
+  path: Sky City intake -> Lower Tiers filter monuments -> estuary markets
+- name: Cimmerian Drop
+  path: cold branch spillover -> Sky City mist-fall -> mixing zone
+- name: Pumice Lane
+  path: Thal arc islets -> ashfall shelves -> mixing zone -> estuary barter
+- name: Apulia Shelfway
+  path: karst cliff chain -> cave-vent harbors -> reef gap crossings
+- name: Pontide Chute Drift
+  path: steep margin salvage corridor; timed to megatide slack
+- name: Khorat Salt Road
+  path: evaporite outposts -> estuary brine guilds -> Sky City sealant markets
+- name: Nubian Sandbar Exchange
+  path: seasonal sand islands -> Ironwood seed trade -> Mystic ritual goods
+seasonal_calendar:
+- name: Flood Pulse (Danian Rise)
+  effect: wet-season surge; Ironwood masting and fish runs peak
+- name: Slack Window Week
+  effect: megatide slack aligns; long crossings and market convergence
+- name: Purple Water Warning
+  effect: photic-zone euxinia blooms; estuary closures and offshore retreat
+- name: Fog Season
+  effect: H2S degassing and aerosol haze; stilt cities go vertical, caves preferred
+- name: Ashfall Weeks
+  effect: arc eruptions; Thal routes shift to lava tubes and pumice lanes
+- name: Glow-Tide Bloom
+  effect: biolum band expands; predator gatherings and filter harvesting
+- name: Hyper-Storm Window
+  effect: extreme cyclones scour air; post-storm travel window opens
+- name: Cimmerian Cool-Down
+  effect: cold branch strengthens; mixing-zone bounty spikes
+- name: Ozone Scar
+  effect: UV-scorched interval after hypercane stratospheric injection; surface travel restricted
+- name: Toxic Fog Pulse
+  effect: H2S release after deep mixing; low-lying routes closed
+navigation:
+  bathymetry:
+  - microplate archipelago
+  - rapid platform drowning
+  currents:
+  - westward circumglobal current, 2-4 knots
+  - western intensification and bottlenecks
+  tides:
+    range_m: 6-8 in funnel straits
+    currents_m_per_s: 2-3 in constricted channels
+    rule: travel on flood/ebb, use slack windows
+  visibility:
+  - persistent haze and cloud cover
+  - swell refraction and bioluminescence for wayfinding
+  chemistry:
+  - toxic H2S fog in low-lying zones
+  - purple water indicates lethal photic-zone euxinia
+hazards:
+- platform drowning and shifting shoals
+- megatides and tidal bores
+- ash fall, pumice rafts, PDCs in arc zones
+- toxic fog from H2S degassing
+- hyper-storm corridors tied to high SSTs
+factions:
+- id: sky_city
+  name: Sky City
+  biome: ironwood
+  micro_biomes:
+  - canopy emergents
+  - log raft channels
+  - coastal conifer mangroves
+  constraints:
+  - predation on forest floor
+  - wildfire cycles
+- id: thals
+  name: Thals
+  biome: gargantua
+  micro_biomes:
+  - ash plains
+  - lava tubes
+  - caldera rims
+  constraints:
+  - ashfall toxicity
+  - PDC risk
+  - seismic collapse
+- id: silurians
+  name: Silurians
+  biome: rookery
+  micro_biomes:
+  - karst caves
+  - wadeable platforms
+  - tidal channels
+  constraints:
+  - photic-zone euxinia
+  - H2S fog
+  - megatides
+variants:
+- Platform Walkers
+- Tidal Bore Riders
+- Purple-Water Exiles
+- Fog-Top Settlers
+- Pumice Mariners
+- Swell Readers
+- Storm Migrants
+gigantism:
+  terrestrial:
+  - sauropod air-sac pneumaticity
+  - giant heel pads for soft substrate
+  - heat dumping via respiratory system
+  semi_aquatic:
+  - Spinosaurus osteosclerosis for ballast
+  - paddle tail for aquatic thrust
+  marine:
+  - thunniform locomotion in later marine reptiles
+  invertebrate:
+  - heteromorph ammonites drift-feeding in stratified waters
+biological_technologies:
+  desalination:
+  - Frenelopsis xylem tension and salt glands
+  optics:
+  - calcite lenses and polarization navigation (sunstone analog)
+permissible_worldbuilding_overlay:
+  relict_desert_thread:
+    basis: arid red beds + evaporite basins (Khorat model)
+    note: treated as a persistent relic zone within 252-111 Ma continuity
+tethys_naming:
+  doctrine:
+  - spoken names are short, functional, immediate
+  - Moon = Watcher; Sun = Giver; Desert = Taker; Volcano = Watcher Volcano
+  - 'route labels are 2-3 words: noun + function + place'
+  - Sky City keeps ornate written forms; field speech stays clipped
+  - glyphs and sign sequences carry full meaning outside shelter
+  tokens:
+  - Watcher
+  - Giver
+  - Taker
+  - Mouth
+  - Split
+  - Drop
+  - Gate
+  - Breath
+  route_founders:
+  - name: Ravel-of-Roots
+    role: namer of splits, wetlands, and rootline crossings
+  - name: The Weep Witness
+    role: namer of exile routes and tide-shift warnings
+  - name: Shastea Ridge-Hand
+    role: namer of ashfall shelters and ridge beacons
+  - name: Cimmerian Coldline
+    role: namer of mixing zones and predator funnels
+  - name: Lower-Tier Carver
+    role: namer of filter monuments and oyster grounds
+  place_names:
+  - place: Watcher Mountain
+    spoken: Watcher Mount
+    sky_city_script: Watcher of High Stone
+  - place: Giver Mountain
+    spoken: Giver Mount
+    sky_city_script: Giver's Crown
+  - place: Taker Desert
+    spoken: Taker
+    sky_city_script: Taker Expanse
+  - place: Watcher Volcano
+    spoken: Watcher Fire
+    sky_city_script: Watcher of the Burning Spine
+  - place: Danian Mouth
+    spoken: Danian Mouth
+    sky_city_script: Danian Estuary Gate
+  - place: Ordovic Intake
+    spoken: Ordovic In
+    sky_city_script: Ordovic Receiving Arches
+  - place: Cimmerian Drop
+    spoken: Cold Drop
+    sky_city_script: Cimmerian Ledgefall
+  - place: Strait of Dier
+    spoken: Dier Gate
+    sky_city_script: Dier Narrow
+  - place: Apulia Shelfway
+    spoken: Shelf Run
+    sky_city_script: Apulia Cliffchain
+  - place: Pontide Chute
+    spoken: Chute
+    sky_city_script: Pontide Slideway
+map_index:
+- node: Danian River
+  spoken: Danian Flow
+  sky_city_script: Danian River of Record
+  namer: Ravel-of-Roots
+  glyph: DR
+  icon: /img/icons/danian-river.svg
+- node: Danian Mouth
+  spoken: Danian Mouth
+  sky_city_script: Danian Estuary Gate
+  namer: The Weep Witness
+  glyph: DM
+  icon: /img/icons/danian-mouth.svg
+- node: Danian Split (wetlands)
+  spoken: Danian Split
+  sky_city_script: Danian Fork of Reeds
+  namer: Ravel-of-Roots
+  glyph: DS
+  icon: /img/icons/danian-split.svg
+- node: Silurian Estuary Stakes
+  spoken: Stake Town
+  sky_city_script: Silurian Nursery Chains
+  namer: Lower-Tier Carver
+  glyph: SE
+  icon: /img/icons/silurian.svg
+- node: Ordovic River
+  spoken: Ordovic Flow
+  sky_city_script: Ordovic Receiving Arches
+  namer: Lower-Tier Carver
+  glyph: OR
+  icon: /img/icons/ordovic-river.svg
+- node: Sky City of New Tethysia
+  spoken: Sky City
+  sky_city_script: New Tethysia Ascendant
+  namer: Melden lineage
+  glyph: SC
+  icon: /img/icons/sky-city.svg
+- node: Lower Tiers
+  spoken: Low Tiers
+  sky_city_script: Lesser Terraces of Mercy
+  namer: The Weep Witness
+  glyph: LT
+  icon: /img/icons/lower-tiers.svg
+- node: The Weeping Sentinels
+  spoken: Sentinel Faces
+  sky_city_script: Weeping Sentinels
+  namer: Lower-Tier Carver
+  glyph: WS
+  icon: /img/icons/weeping-sentinels.svg
+- node: Strait of Dier
+  spoken: Dier Gate
+  sky_city_script: Dier Narrow
+  namer: The Weep Witness
+  glyph: SD
+  icon: /img/icons/straits-of-dier.svg
+- node: Lonely Span (Iriel)
+  spoken: Lonely Span
+  sky_city_script: Iriel Exile Walk
+  namer: The Weep Witness
+  glyph: LS
+  icon: /img/icons/lonely-span.svg
+- node: Glow-Tide Bloom
+  spoken: Glow Tide
+  sky_city_script: Luminous Surge
+  namer: Ravel-of-Roots
+  glyph: GT
+  icon: /img/icons/glow-tide.svg
+- node: Cimmerian Branch
+  spoken: Cold Branch
+  sky_city_script: Cimmerian Spill
+  namer: Cimmerian Coldline
+  glyph: CB
+  icon: /img/icons/cimmerian-branch.svg
+- node: Cimmerian Drop/Ledge
+  spoken: Cold Drop
+  sky_city_script: Cimmerian Ledgefall
+  namer: Cimmerian Coldline
+  glyph: CD
+  icon: /img/icons/cimmerian-drop.svg
+- node: Mixing Zone
+  spoken: Feed Line
+  sky_city_script: Benthic-Pelagic Confluence
+  namer: Cimmerian Coldline
+  glyph: MZ
+  icon: /img/icons/mixing-zone.svg
+- node: Shastea Adjacent
+  spoken: Shastea Ridge
+  sky_city_script: Shastea High Edge
+  namer: Shastea Ridge-Hand
+  glyph: SA
+  icon: /img/icons/mount-shastea.svg
+- node: Ironwood Riverholds
+  spoken: Riverholds
+  sky_city_script: Ironwood Flood Markets
+  namer: Ravel-of-Roots
+  glyph: IR
+  icon: /img/icons/ironwood.svg
+- node: Ironwood Canopy
+  spoken: High Wood
+  sky_city_script: Ironwood Crown
+  namer: Ravel-of-Roots
+  glyph: IC
+  icon: /img/icons/ironwood.svg
+- node: Apulia Shelfway (analog)
+  spoken: Shelf Run
+  sky_city_script: Apulia Cliffchain
+  namer: Lower-Tier Carver
+  glyph: AS
+  icon: /img/icons/apulia-shelfway.svg
+- node: Pontide Chute (analog)
+  spoken: Chute
+  sky_city_script: Pontide Slideway
+  namer: Shastea Ridge-Hand
+  glyph: PC
+  icon: /img/icons/pontide-chute.svg
+- node: Khorat Salt Wells (analog)
+  spoken: Salt Wells
+  sky_city_script: Khorat Evaporite Pans
+  namer: Ravel-of-Roots
+  glyph: KS
+  icon: /img/icons/khorat-salt-wells.svg
+- node: Nubian Sandbar Run (analog)
+  spoken: Sand Run
+  sky_city_script: Nubian Bar Shift
+  namer: Ravel-of-Roots
+  glyph: NS
+  icon: /img/icons/nubian-sandbar.svg
+- node: Ironwood Mangrove Belt
+  spoken: Resin Edge
+  sky_city_script: Frenelopsis Margin
+  namer: Ravel-of-Roots
+  glyph: IM
+  icon: /img/icons/ironwood-mangrove.svg
+- node: Wealden Log-Rafts
+  spoken: Log Sea
+  sky_city_script: Wealden Drift
+  namer: Ravel-of-Roots
+  glyph: WL
+  icon: /img/icons/wealden-log-rafts.svg
+- node: Apulia Karst Vents
+  spoken: Breath Caves
+  sky_city_script: Apulia Air Shafts
+  namer: Lower-Tier Carver
+  glyph: AK
+  icon: /img/icons/apulia-karst-vents.svg
+- node: Reef Gap Chain
+  spoken: Gap Run
+  sky_city_script: Rookery Passages
+  namer: Lower-Tier Carver
+  glyph: RG
+  icon: /img/icons/reef-gap-chain.svg
+- node: Megatide Straits
+  spoken: Pull Straits
+  sky_city_script: Resonant Narrows
+  namer: The Weep Witness
+  glyph: MS
+  icon: /img/icons/megatide-straits.svg
+- node: Purple Water Band
+  spoken: Purple Line
+  sky_city_script: Euxinia Veil
+  namer: Ravel-of-Roots
+  glyph: PW
+  icon: /img/icons/purple-water.svg
+- node: Fog Floor
+  spoken: Low Fog
+  sky_city_script: Sulfur Shelf
+  namer: The Weep Witness
+  glyph: FF
+  icon: /img/icons/fog-floor.svg
+- node: Ashfall Lanes
+  spoken: Ash Ways
+  sky_city_script: Gargantua Fall
+  namer: Shastea Ridge-Hand
+  glyph: AL
+  icon: /img/icons/ashfall-lanes.svg
+- node: Pumice Drift
+  spoken: Float Stone
+  sky_city_script: Pumice Lane
+  namer: Shastea Ridge-Hand
+  glyph: PD
+  icon: /img/icons/pumice-drift.svg
+- node: Hyper-Storm Corridor
+  spoken: Storm Cut
+  sky_city_script: Heaven Split
+  namer: Cimmerian Coldline
+  glyph: HS
+  icon: /img/icons/hyper-storm.svg
+- node: Shelf Drop-Off
+  spoken: Edge
+  sky_city_script: Apulia Escarp
+  namer: Lower-Tier Carver
+  glyph: SD2
+  icon: /img/icons/shelf-dropoff.svg
+- node: Tethys Current Belt
+  spoken: West Run
+  sky_city_script: Circumglobal Road
+  namer: Cimmerian Coldline
+  glyph: TB
+  icon: /img/icons/tethys-current.svg
+- node: Anoxic Basin
+  spoken: Black Deep
+  sky_city_script: OAE Pit
+  namer: Ravel-of-Roots
+  glyph: AB
+  icon: /img/icons/anoxic-basin.svg
+- node: Watcher Volcano
+  spoken: Watcher Fire
+  sky_city_script: Watcher of the Burning Spine
+  namer: Shastea Ridge-Hand
+  glyph: WV
+  icon: /img/icons/watcher-volcano.svg

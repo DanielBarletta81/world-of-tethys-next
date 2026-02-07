@@ -39,7 +39,8 @@ const CARDS = [
 ];
 
 export default function MagmaCarousel() {
-  const [activeId, setActiveId] = useState(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
+
 
   return (
     <>
