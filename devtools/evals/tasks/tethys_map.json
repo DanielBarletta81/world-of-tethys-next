@@ -1,0 +1,12 @@
+{
+  "id": "tethys_map",
+  "title": "Map overlay integrity",
+  "description": "Ensure map overlays render with in-world naming and correct layer order.",
+  "inputs": {
+    "paths": ["src/components/features/map/MapViewport.jsx", "src/components/features/map/MapFragments.jsx"]
+  },
+  "expected": {
+    "artifacts": ["layer order list", "naming check summary"],
+    "constraints": ["no external network calls", "in-world terminology"]
+  }
+}

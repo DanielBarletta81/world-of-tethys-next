@@ -1,0 +1,22 @@
+{
+  "queries": [
+    {
+      "name": "GetArchive",
+      "variables": {"category": null, "slug": null},
+      "required": [
+        "archiveEntries.nodes.title",
+        "archiveEntries.nodes.slug",
+        "archiveEntries.nodes.tethysData.threatLevel"
+      ]
+    },
+    {
+      "name": "PageBySlug",
+      "variables": {"id": "home"},
+      "required": [
+        "page.title",
+        "page.content",
+        "page.slug"
+      ]
+    }
+  ]
+}

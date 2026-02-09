@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Hammer, RefreshCw, Lock, Clock, Gem } from 'lucide-react';
 import { useTethys } from '@/context/TethysContext';
 
-const StarterLoadout = () => {
+const StarterLoadout = ({ hideActions = false, hideOnComplete = true }) => {
   const {
     canHarvest,
     inventory,
@@ -61,7 +61,7 @@ const StarterLoadout = () => {
   };
 
   if (!mounted || loadingData) return <div className="p-8 text-orange-900/50 font-mono text-center uppercase tracking-widest text-xs">Syncing Supply...</div>;
-  if (playerProfile.onboarding?.status === 'complete') {
+  if (hideOnComplete && playerProfile.onboarding?.status === 'complete') {
     return null;
   }
 
@@ -81,50 +81,52 @@ const StarterLoadout = () => {
         </div>
         
         {/* Mobile: Full Width Button */}
-        {playerProfile?.onboarding?.status !== 'complete' ? (
-          <button
-            onClick={handleHatch}
-            disabled={isHatching}
-            className={`w-full md:w-auto group flex items-center justify-center gap-2 px-6 py-3 md:py-2 border transition-all uppercase text-[10px] tracking-[0.2em] font-sans ${
-              !isHatching
-                ? 'bg-[#292524] border-orange-900/50 hover:border-orange-500 hover:text-orange-500 cursor-pointer active:scale-95'
-                : 'bg-black/50 border-[#292524] text-[#44403c] cursor-not-allowed'
-            }`}
-          >
-            {isHatching ? (
-              <>
-                <Clock size={12} className="animate-pulse" />
-                Issuing Loadout...
-              </>
-            ) : (
-              <>
-                <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
-                Hatch Starter
-              </>
-            )}
-          </button>
-        ) : (
-          <button
-            onClick={handleDailyClaim}
-            disabled={!canHarvest || isClaiming}
-            className={`w-full md:w-auto group flex items-center justify-center gap-2 px-6 py-3 md:py-2 border transition-all uppercase text-[10px] tracking-[0.2em] font-sans ${
-              canHarvest && !isClaiming
-                ? 'bg-[#292524] border-orange-900/50 hover:border-orange-500 hover:text-orange-500 cursor-pointer active:scale-95'
-                : 'bg-black/50 border-[#292524] text-[#44403c] cursor-not-allowed'
-            }`}
-          >
-            {canHarvest && !isClaiming ? (
-              <>
-                <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
-                Daily Claim
-              </>
-            ) : (
-              <>
-                <Lock size={12} />
-                Cooldown
-              </>
-            )}
-          </button>
+        {!hideActions && (
+          playerProfile?.onboarding?.status !== 'complete' ? (
+            <button
+              onClick={handleHatch}
+              disabled={isHatching}
+              className={`w-full md:w-auto group flex items-center justify-center gap-2 px-6 py-3 md:py-2 border transition-all uppercase text-[10px] tracking-[0.2em] font-sans ${
+                !isHatching
+                  ? 'bg-[#292524] border-orange-900/50 hover:border-orange-500 hover:text-orange-500 cursor-pointer active:scale-95'
+                  : 'bg-black/50 border-[#292524] text-[#44403c] cursor-not-allowed'
+              }`}
+            >
+              {isHatching ? (
+                <>
+                  <Clock size={12} className="animate-pulse" />
+                  Issuing Loadout...
+                </>
+              ) : (
+                <>
+                  <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                  Hatch Starter
+                </>
+              )}
+            </button>
+          ) : (
+            <button
+              onClick={handleDailyClaim}
+              disabled={!canHarvest || isClaiming}
+              className={`w-full md:w-auto group flex items-center justify-center gap-2 px-6 py-3 md:py-2 border transition-all uppercase text-[10px] tracking-[0.2em] font-sans ${
+                canHarvest && !isClaiming
+                  ? 'bg-[#292524] border-orange-900/50 hover:border-orange-500 hover:text-orange-500 cursor-pointer active:scale-95'
+                  : 'bg-black/50 border-[#292524] text-[#44403c] cursor-not-allowed'
+              }`}
+            >
+              {canHarvest && !isClaiming ? (
+                <>
+                  <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                  Daily Claim
+                </>
+              ) : (
+                <>
+                  <Lock size={12} />
+                  Cooldown
+                </>
+              )}
+            </button>
+          )
         )}
       </div>
 

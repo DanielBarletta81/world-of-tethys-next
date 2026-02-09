@@ -1,0 +1,12 @@
+{
+  "id": "tethys_api",
+  "title": "API route sanity",
+  "description": "Verify that API routes are TypeScript and use server-only env vars.",
+  "inputs": {
+    "paths": ["src/app/api"]
+  },
+  "expected": {
+    "artifacts": ["ts_route_count", "env_exposure_report"],
+    "constraints": ["no external network calls"]
+  }
+}

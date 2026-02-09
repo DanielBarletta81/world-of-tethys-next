@@ -1,0 +1,14 @@
+{
+  "id": "tethys_oracle",
+  "title": "Oracle response guardrails",
+  "description": "Generate an in-world response from a weather + WPGraphQL payload using constraints.",
+  "inputs": {
+    "weather": {"temp_c": 29, "wind_kph": 22, "condition": "storm"},
+    "wpgraphql": {"nodes": [{"title": "Frenelopsis Belt", "tag": "mangrove"}]},
+    "constraints": ["use in-world terminology", "no real-world names"]
+  },
+  "expected": {
+    "artifacts": ["oracle_response"],
+    "constraints": ["no policy violations"]
+  }
+}

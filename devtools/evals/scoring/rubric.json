@@ -1,0 +1,23 @@
+{
+  "weights": {
+    "task_success": 0.38,
+    "autonomy": 0.22,
+    "recovery": 0.18,
+    "policy_compliance": 0.14,
+    "efficiency": 0.08
+  },
+  "autonomy_ladder": [
+    {"level": 0, "label": "Needs step-by-step"},
+    {"level": 1, "label": "Minor guidance"},
+    {"level": 2, "label": "Self-directed"},
+    {"level": 3, "label": "Proactive"}
+  ],
+  "failure_taxonomy": [
+    "policy_violation",
+    "hallucination",
+    "missed_requirement",
+    "recovery_failure",
+    "tool_misuse",
+    "performance_regression"
+  ]
+}

@@ -9,6 +9,7 @@ import BookCarousel from '@/components/content/BookCarousel';
 import IdentityAirLock from '@/components/forms/IdentityAirLock';
 import IntroOverlay from '@/components/overlays/IntroOverlay';
 import CaveWallTerminal from '@/components/page-specific/science/CaveWallTerminal';
+import OnboardingRitual from '@/components/features/onboarding/OnboardingRitual';
 import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn, Trash2 } from "lucide-react";
 import Link from "next/link";
 import cdn from "@/lib/cdn";
@@ -223,6 +224,10 @@ export default function Home() {
                   Choose your vector: Science, Mysticism, or the Chronicle.
                 </p>
               </section>
+
+              {!hasOnboarded && (
+                <OnboardingRitual />
+              )}
 
               {/* ONBOARDING QUICK START */}
               <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">

@@ -1,0 +1,12 @@
+{
+  "profile": "strict",
+  "tools": {
+    "fs.read": true,
+    "fs.write": true,
+    "fs.delete": false,
+    "net.http": false,
+    "shell.exec": true,
+    "shell.exec_allowed": ["rg", "ls", "cat", "sed", "python", "node", "npm", "git"],
+    "browser.open": false
+  }
+}

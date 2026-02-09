@@ -13,7 +13,15 @@ export const DEFAULT_PLAYER_PROFILE = {
   history: {
     mediaConsumed: []
   },
-  onboarding: { status: 'new', hatchedAt: null, starterLoadoutId: 'starter_v1', tutorialStep: 0 },
+  onboarding: {
+    status: 'new',
+    hatchedAt: null,
+    starterLoadoutId: 'starter_v1',
+    tutorialStep: 0,
+    pathId: null,
+    allegiance: null,
+    updatedAt: null
+  },
   path: {
     primary: 'mystic',
     declaredAt: null,

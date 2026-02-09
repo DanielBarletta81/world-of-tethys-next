@@ -31,6 +31,20 @@ Simulate placement using CPU/GPU/memory and accelerator affinity.
 python devtools/scheduler_sim.py --nodes devtools/config/nodes.json --jobs devtools/config/jobs.json
 ```
 
+## 5) Schema Audit (WPGraphQL)
+Validate fields used by live queries (dev-only, no runtime cost).
+
+```
+python devtools/schema_audit.py --out-html devtools/output/schema_audit.html
+```
+
+## 6) Map Audit (coverage + assets)
+Compare atlas map_index to MAP_FRAGMENTS and verify icon/asset paths.
+
+```
+python devtools/map_audit.py --out-html devtools/output/map_audit.html
+```
+
 ## Notes
 - Outputs are static; no external deps.
 - HTML output is stored under `devtools/output/`.

@@ -97,6 +97,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   const [inventory, setInventory] = useState([]);
   const [equippedStaff, setEquippedStaff] = useState(null);
   const [atmosphereTelemetry, setAtmosphereTelemetry] = useState(null);
+  const [oracleLive, setOracleLive] = useState(null);
   const [lastHarvestDate, setLastHarvestDate] = useState(null);
   const [stats, setStats] = useState(DEFAULT_STATS);
   const [canHarvest, setCanHarvest] = useState(false);
@@ -724,6 +725,83 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     eventCount,
     rumorCount
   ]);
+
+  // --- 2B. ORACLE LIVE POLL (weather + volcano + lore) ---
+  const scanAtmosphere = useCallback(async () => {
+    try {
+      const res = await fetch('/api/oracle-live', { cache: 'no-store' });
+      if (!res.ok) return null;
+      const data = await res.json();
+
+      const threat = Number(data?.threat_level || 1);
+      let condition = 'clear';
+      let visibility = 0.9;
+
+      if (threat >= 5) {
+        condition = 'storm';
+        visibility = 0.3;
+      } else if (threat === 4) {
+        condition = 'rain';
+        visibility = 0.5;
+      } else if (threat === 3) {
+        condition = 'fog';
+        visibility = 0.6;
+      }
+
+      const nowSec = Math.floor(Date.now() / 1000);
+      const nextTelemetry = {
+        weather: {
+          dt: nowSec,
+          visibility: Math.round(visibility * 10000),
+          weather: [{ main: condition, description: condition }],
+          wind: { speed: threat * 2 },
+          main: { temp: 22, pressure: 1013, humidity: 60 }
+        },
+        tethys: {
+          metrics: {
+            spineFlow: threat * 10,
+            veilPressure: 1013,
+            siltBreath: visibility * 10,
+            brimVein: threat * 2
+          }
+        },
+        condition,
+        visibility,
+        aiBrief: data?.atmosphere,
+        whispers: data?.whispers,
+        lastScanAt: new Date().toISOString()
+      };
+
+      setOracleLive(data);
+      setAtmosphereTelemetry(nextTelemetry);
+      return nextTelemetry;
+    } catch (err) {
+      console.warn('Oracle Connection Severed:', err);
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    let timer;
+
+    const pollOracle = async () => {
+      try {
+        const next = await scanAtmosphere();
+        if (active && next) {
+          setAtmosphereTelemetry(next);
+        }
+      } finally {
+        timer = setTimeout(pollOracle, 1000 * 60 * 5);
+      }
+    };
+
+    pollOracle();
+    return () => {
+      active = false;
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
 
   // --- 3. ACTIONS ---
 
@@ -1430,6 +1508,8 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     removeInventoryItem,
     atmosphereTelemetry,
     setAtmosphereTelemetry,
+    scanAtmosphere,
+    oracleLive,
     worldState,
     markNodeHarvested,
     creatures,
