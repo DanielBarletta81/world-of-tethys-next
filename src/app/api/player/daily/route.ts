@@ -28,7 +28,7 @@ export async function GET(req) {
       return NextResponse.json({ item: snap.exists ? { id: snap.id, ...snap.data() } : null });
     }
 
-    let query = db
+    let query: any = db
       .collection('players')
       .doc(uid)
       .collection('daily');
@@ -57,12 +57,12 @@ export async function GET(req) {
 
     const snap = await query.limit(limit).get();
 
-    const items = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const items = snap.docs.map((doc) => ({ id: doc.id, ...(doc.data() as any) })) as any[];
     const lastItem = items[items.length - 1];
     const nextCursor = items.length ? lastItem?.date || null : null;
     const nextCursorId = items.length ? lastItem?.id || null : null;
     return NextResponse.json({ items, nextCursor, nextCursorId });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Daily fetch failed';
     return NextResponse.json({ error: message }, { status });
@@ -96,7 +96,7 @@ export async function POST(req) {
       );
 
     return NextResponse.json({ ok: true });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Daily log failed';
     return NextResponse.json({ error: message }, { status });

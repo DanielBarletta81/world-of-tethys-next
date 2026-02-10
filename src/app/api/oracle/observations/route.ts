@@ -30,7 +30,7 @@ export async function POST(req) {
 
     await batch.commit();
     return NextResponse.json({ ok: true });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Oracle sync failed';
     return NextResponse.json({ error: message }, { status });

@@ -33,9 +33,13 @@ Format: JSON Array of objects with keys: "gibberish" (made up alien sounds), "tr
 Example: [{"gibberish": "Kzzzt... orem...", "translation": "The mountain breathes.", "intensity": "low"}]
 `;
 
-    const result = await ai.models.generateContent({ model: MODEL, contents: prompt });
-    const text = typeof result?.text === 'function' ? result.text() : result?.response?.text?.() || '';
-    const cleanJson = text.replace(/```json|```/g, '').trim();
+    const result = await ai.models.generateContent({
+      model: MODEL,
+      contents: prompt,
+      config: { responseMimeType: 'application/json' }
+    });
+    const text = result?.text ?? '';
+    const cleanJson = String(text).replace(/```json|```/g, '').trim();
     const whispers = JSON.parse(cleanJson);
 
     const { db } = getFirebaseAdmin();
@@ -57,9 +61,9 @@ Example: [{"gibberish": "Kzzzt... orem...", "translation": "The mountain breathe
     });
 
     return NextResponse.json({ success: true, count: whispers.length });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Oracle seed error', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Oracle seed failed' }, { status: 500 });
   }
 }
 
@@ -92,9 +96,9 @@ export async function GET(req) {
       count,
       lastSeededAt: newest || null
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Oracle status error', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Oracle status failed' }, { status: 500 });
   }
 }
 // World of Tethys || D.C. Barletta

@@ -10,7 +10,9 @@ const KEY = 'tethys_knowledge_v1';
 export function loadKnowledge(): KnowledgeStore {
   if (typeof window === 'undefined') return { regions: {}, myths: {} };
   try {
-    return JSON.parse(localStorage.getItem(KEY)) ?? { regions: {}, myths: {} };
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return { regions: {}, myths: {} };
+    return JSON.parse(raw) ?? { regions: {}, myths: {} };
   } catch {
     return { regions: {}, myths: {} };
   }

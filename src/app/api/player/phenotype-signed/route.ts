@@ -25,7 +25,7 @@ export async function GET(request) {
 
     const decoded = await requireSession();
     const uid = decoded.uid;
-    const { data: profile } = await ensurePlayerProfile(uid);
+    const { data: profile } = (await ensurePlayerProfile(uid)) as any;
     const dna = profile?.dna || {};
     const flags = Array.isArray(dna.flags) && dna.flags.length === 4 ? dna.flags : ['A', 'C', 'G', 'T'];
 
@@ -66,7 +66,7 @@ export async function GET(request) {
     const signature = signPayload(payload, secret);
 
     return NextResponse.json({ payload, signature, alg: 'HMAC-SHA256' });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Signed phenotype fetch failed';
     return NextResponse.json({ error: message }, { status });

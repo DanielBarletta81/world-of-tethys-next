@@ -47,9 +47,9 @@ export async function POST(req) {
 
     console.info('[auth/register] success', { uid: authData.localId });
     return res;
-  } catch (error) {
+  } catch (error: any) {
     console.error('[auth/register] error', error);
-    const res = NextResponse.json({ error: error.message || 'Registration failed.' }, { status: 400 });
+    const res = NextResponse.json({ error: error?.message || 'Registration failed.' }, { status: 400 });
     res.headers.set('Cache-Control', 'no-store, max-age=0');
     return res;
   }

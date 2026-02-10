@@ -23,7 +23,7 @@ export async function POST(req) {
       );
 
     return NextResponse.json({ ok: true });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Snapshot failed';
     return NextResponse.json({ error: message }, { status });

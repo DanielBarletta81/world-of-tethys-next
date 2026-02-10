@@ -58,8 +58,8 @@ export async function POST(req) {
     await docRef.set(payload);
 
     return NextResponse.json({ ok: true, id: docRef.id, slug });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Lore admin error', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Lore admin failed' }, { status: 500 });
   }
 }

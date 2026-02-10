@@ -36,9 +36,9 @@ export async function POST(req) {
 
     console.info('[auth/login] success', { uid: authData.localId });
     return res;
-  } catch (error) {
+  } catch (error: any) {
     console.error('[auth/login] error', error);
-    const res = NextResponse.json({ error: error.message || 'Login failed.' }, { status: 401 });
+    const res = NextResponse.json({ error: error?.message || 'Login failed.' }, { status: 401 });
     res.headers.set('Cache-Control', 'no-store, max-age=0');
     return res;
   }

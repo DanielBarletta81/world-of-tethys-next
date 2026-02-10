@@ -84,8 +84,8 @@ export async function POST(req) {
       collection: collectionName || null,
       collectionPath: collectionPath || null
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Seed direct error', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Seed direct failed' }, { status: 500 });
   }
 }

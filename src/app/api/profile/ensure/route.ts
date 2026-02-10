@@ -18,7 +18,7 @@ export async function POST(req) {
     const decoded = await app.auth().verifyIdToken(token);
     const uid = decoded.uid;
 
-    const { created, data } = await ensurePlayerProfile(uid);
+    const { created, data } = (await ensurePlayerProfile(uid)) as any;
 
     return NextResponse.json({
       ok: true,
@@ -39,8 +39,8 @@ export async function POST(req) {
         lastLoginAt: data.lastLoginAt
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('ensure profile error', error);
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: error?.message || 'Unauthorized' }, { status: 401 });
   }
 }

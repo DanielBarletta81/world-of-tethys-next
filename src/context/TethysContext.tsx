@@ -94,31 +94,31 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   const isGuest = !user;
 
   // --- STATE ---
-  const [currentLocation, setCurrentLocation] = useState('pteros');
-  const [locationHistory, setLocationHistory] = useState([]);
-      const [unlockedNodes, setUnlockedNodes] = useState(['pteros', 'sky-city']);
-  const [unlockedAssets, setUnlockedAssets] = useState([]); // <--- ADDED
-  const [inventory, setInventory] = useState([]);
-  const [equippedStaff, setEquippedStaff] = useState(null);
-  const [atmosphereTelemetry, setAtmosphereTelemetry] = useState(null);
-  const [oracleLive, setOracleLive] = useState(null);
-  const [danianTelemetry, setDanianTelemetry] = useState(null);
-  const [danianSource, setDanianSource] = useState(null);
-  const [danianMode, setDanianMode] = useState(DEFAULT_DANIAN_MODE);
-  const [lastHarvestDate, setLastHarvestDate] = useState(null);
-  const [stats, setStats] = useState(DEFAULT_STATS);
+  const [currentLocation, setCurrentLocation] = useState<string>('pteros');
+  const [locationHistory, setLocationHistory] = useState<any[]>([]);
+  const [unlockedNodes, setUnlockedNodes] = useState<string[]>(['pteros', 'sky-city']);
+  const [unlockedAssets, setUnlockedAssets] = useState<any[]>([]);
+  const [inventory, setInventory] = useState<any[]>([]);
+  const [equippedStaff, setEquippedStaff] = useState<any | null>(null);
+  const [atmosphereTelemetry, setAtmosphereTelemetry] = useState<any | null>(null);
+  const [oracleLive, setOracleLive] = useState<any | null>(null);
+  const [danianTelemetry, setDanianTelemetry] = useState<any | null>(null);
+  const [danianSource, setDanianSource] = useState<any | null>(null);
+  const [danianMode, setDanianMode] = useState<string>(DEFAULT_DANIAN_MODE);
+  const [lastHarvestDate, setLastHarvestDate] = useState<string | null>(null);
+  const [stats, setStats] = useState<typeof DEFAULT_STATS>(DEFAULT_STATS);
   const [canHarvest, setCanHarvest] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile>(DEFAULT_PLAYER_PROFILE as PlayerProfile);
-  const [worldState, setWorldState] = useState({});
-  const [creatures, setCreatures] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [eventCount, setEventCount] = useState(0);
-  const [rumorCount, setRumorCount] = useState(0);
-  const guestSnapshotTimerRef = useRef(null);
-  const engagementTimerRef = useRef(null);
-  const dnaPulseRef = useRef(0);
-  const worldStateSaveRef = useRef(null);
+  const [worldState, setWorldState] = useState<Record<string, any>>({});
+  const [creatures, setCreatures] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
+  const [eventCount, setEventCount] = useState<number>(0);
+  const [rumorCount, setRumorCount] = useState<number>(0);
+  const guestSnapshotTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const engagementTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const dnaPulseRef = useRef<number>(0);
+  const worldStateSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
  
   const hasOnboarded = Boolean(equippedStaff || playerProfile?.onboarding?.status === 'complete');
 
@@ -286,7 +286,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     };
   }, [buildGuestSnapshot, isGuest, loadingData, userId]);
 
-  const updatePlayerDna = useCallback((event = {}) => {
+  const updatePlayerDna = useCallback((event: any = {}) => {
     setPlayerProfile((prev) => {
       const nextDna = evolvePlayerDna(prev?.dna, {
         ...event,
@@ -465,12 +465,13 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   const tickAccessLocks = useCallback(() => {
     setPlayerProfile((prev) => {
       const path = prev?.path || {};
-      const accessLocks = path.accessLocks || {};
-      const nextLocks = {};
+      const accessLocks = (path.accessLocks || {}) as Record<string, any>;
+      const nextLocks: Record<string, any> = {};
       Object.entries(accessLocks).forEach(([key, value]) => {
-        const remaining = Math.max(0, (value?.remaining || 0) - 1);
+        const lock = value as Record<string, any>;
+        const remaining = Math.max(0, (lock?.remaining || 0) - 1);
         if (remaining > 0) {
-          nextLocks[key] = { ...value, remaining };
+          nextLocks[key] = { ...lock, remaining };
         }
       });
       return {
@@ -519,7 +520,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
         const ornaments = Array.isArray(staff.ornaments) ? [...staff.ornaments] : [];
         const has = new Set(ornaments.map((o) => o.id));
         const nowIso = new Date().toISOString();
-        const additions = [];
+        const additions: Array<{ id: string; label: string; at: string }> = [];
 
         if (nextMoveCount >= 5 && !has.has('ornament_wayfinder_thread')) {
           additions.push({ id: 'ornament_wayfinder_thread', label: 'Wayfinder Thread', at: nowIso });
@@ -547,7 +548,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
         const ornaments = Array.isArray(prev.ornaments) ? [...prev.ornaments] : [];
         const has = new Set(ornaments.map((o) => o.id));
         const nowIso = new Date().toISOString();
-        const additions = [];
+        const additions: Array<{ id: string; label: string; at: string }> = [];
         if (nextMoveCount >= 5 && !has.has('ornament_wayfinder_thread')) {
           additions.push({ id: 'ornament_wayfinder_thread', label: 'Wayfinder Thread', at: nowIso });
         }
@@ -681,7 +682,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const buildLoadoutItems = useCallback((itemIds = [], source = {}) => {
+  const buildLoadoutItems = useCallback((itemIds: string[] = [], source: any = {}) => {
     const nowIso = new Date().toISOString();
     return itemIds.map((id) => ({
       id,
@@ -1001,7 +1002,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     });
   }, [isGuest, userId]);
 
-  const logEvent = useCallback(async (event) => {
+  const logEvent = useCallback(async (event: any) => {
     const nowIso = new Date().toISOString();
     const stamped = {
       ...event,
@@ -1024,7 +1025,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   }, [isGuest, userId]);
 
   const consumeMedia = useCallback(
-    async (mediaId, type = 'video', rewardStats = {}) => {
+    async (mediaId: string, type = 'video', rewardStats: Record<string, any> = {}) => {
       if (!mediaId) return { success: false, message: 'Missing media id.' };
       const history = playerProfile?.history?.mediaConsumed || [];
       if (history.includes(mediaId)) {
@@ -1083,7 +1084,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     [equippedStaff?.id, logEvent, playerProfile, updatePlayerDna, currentLocation]
   );
 
-  const upsertCreatureBond = useCallback(async (creature) => {
+  const upsertCreatureBond = useCallback(async (creature: any) => {
     const stamped = {
       ...creature,
       createdAt: creature.createdAt || new Date().toISOString(),
@@ -1129,7 +1130,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     const nowIso = new Date().toISOString();
     const cooldownUntil = resolveBondCooldownUntil();
 
-    let creature = null;
+    let creature: any = null;
     if (success) {
       const pick = pickBondCreature();
       if (pick) {
@@ -1210,7 +1211,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     return { ok: true, success: false };
   }, [currentLocation, logEvent, playerProfile, resolveBondCooldownUntil]);
 
-  const logRumorEntry = useCallback(async (entry) => {
+  const logRumorEntry = useCallback(async (entry: any) => {
     const nowIso = new Date().toISOString();
     const stamped = {
       ...entry,
@@ -1231,7 +1232,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     return stamped;
   }, [isGuest, userId]);
 
-  const logDailyClaim = useCallback(async (dateKey, payload) => {
+  const logDailyClaim = useCallback(async (dateKey: string, payload: any) => {
     if (!dateKey) return;
     const stamped = {
       ...payload,
@@ -1249,8 +1250,8 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
 
 
   const applyPlayerAction = useCallback(
-    async (action = {}) => {
-      let result = null;
+    async (action: any = {}) => {
+      let result: any = null;
       setPlayerProfile((prev) => {
         result = applyProgressionAction(prev, action);
         return result.profile;
@@ -1297,7 +1298,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     // Streak Logic
     let newStreak = (stats.loginStreak || 0) + 1;
     const last = lastHarvestDate ? new Date(lastHarvestDate) : new Date(0);
-    const hoursSince = (now - last) / (1000 * 60 * 60);
+    const hoursSince = (now.getTime() - last.getTime()) / (1000 * 60 * 60);
     if (hoursSince > 48) newStreak = 1;
 
     // Map Unlock Logic
@@ -1335,7 +1336,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   );
 
   const hatchFromTemplate = useCallback(
-    async (templateId = DEFAULT_STARTER_TEMPLATE.templateId, overrides = {}) => {
+    async (templateId = DEFAULT_STARTER_TEMPLATE.templateId, overrides: any = {}) => {
       const template = await loadStarterTemplate(templateId);
       const nowIso = new Date().toISOString();
       const pathPrimary = overrides.path || playerProfile.path.primary || 'mystic';
@@ -1456,7 +1457,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   );
 
   const claimDailyReward = useCallback(
-    async (opts = {}) => {
+    async (opts: any = {}) => {
       if (!canHarvest) return { success: false, reason: 'cooldown' };
       const now = new Date();
       const dateKey = opts.dateKey || now.toISOString().slice(0, 10);
@@ -1600,7 +1601,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const applyStatus = useCallback((statusId, payload = {}) => {
+  const applyStatus = useCallback((statusId: string, payload: any = {}) => {
     if (!statusId) return;
     const nowIso = new Date().toISOString();
     setPlayerProfile((prev) => {

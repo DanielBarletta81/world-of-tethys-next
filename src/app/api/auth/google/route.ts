@@ -49,9 +49,9 @@ export async function POST(req) {
 
     console.info('[auth/google] success', { uid });
     return res;
-  } catch (error) {
+  } catch (error: any) {
     console.error('[auth/google] error', error);
-    const res = NextResponse.json({ error: error.message || 'Google sign-in failed.' }, { status: 401 });
+    const res = NextResponse.json({ error: error?.message || 'Google sign-in failed.' }, { status: 401 });
     res.headers.set('Cache-Control', 'no-store, max-age=0');
     return res;
   }

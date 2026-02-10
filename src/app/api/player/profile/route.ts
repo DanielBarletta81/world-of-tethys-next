@@ -10,7 +10,7 @@ export async function GET() {
     const uid = decoded.uid;
     const { data } = await ensurePlayerProfile(uid);
     return NextResponse.json({ profile: data });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Profile fetch failed';
     return NextResponse.json({ error: message }, { status });

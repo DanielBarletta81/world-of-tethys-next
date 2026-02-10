@@ -10,7 +10,7 @@ export async function GET() {
   try {
     const decoded = await requireSession();
     const uid = decoded.uid;
-    const { data: profile } = await ensurePlayerProfile(uid);
+    const { data: profile } = (await ensurePlayerProfile(uid)) as any;
     const dna = profile?.dna || {};
     const flags = Array.isArray(dna.flags) && dna.flags.length === 4 ? dna.flags : ['A', 'C', 'G', 'T'];
 
@@ -40,7 +40,7 @@ export async function GET() {
     }
 
     return NextResponse.json({ baseModel });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Phenotype fetch failed';
     return NextResponse.json({ error: message }, { status });

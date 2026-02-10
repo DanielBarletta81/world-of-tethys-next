@@ -19,7 +19,7 @@ export async function GET() {
     const events = eventsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
     return NextResponse.json({ profile, creatures, events });
-  } catch (error) {
+  } catch (error: any) {
     const status = error?.status === 401 ? 401 : 500;
     const message = status === 401 ? 'Unauthorized' : 'Bootstrap failed';
     return NextResponse.json({ error: message }, { status });

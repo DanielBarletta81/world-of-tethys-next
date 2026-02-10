@@ -4,8 +4,8 @@ import { getFirebaseAdmin } from '@/lib/firebaseAdmin';
 // Protect the ingest endpoint with a shared token (set VR_METADATA_TOKEN in env).
 const AUTH_TOKEN = process.env.VR_METADATA_TOKEN;
 
-function validateRecord(record) {
-  const errors = [];
+function validateRecord(record: any) {
+  const errors: string[] = [];
   if (!record || typeof record !== 'object') {
     return { ok: false, errors: ['Payload must be an object'] };
   }
@@ -34,9 +34,9 @@ function validateRecord(record) {
   if (tags && !Array.isArray(tags)) errors.push('tags must be an array of strings');
   if (source && typeof source !== 'string') errors.push('source must be a string');
   if (dimensions) {
-    const { width, height, depth } = dimensions;
+    const dims = dimensions as Record<string, any>;
     ['width', 'height', 'depth'].forEach((k) => {
-      if (dimensions[k] !== undefined && typeof dimensions[k] !== 'number') {
+      if (dims[k] !== undefined && typeof dims[k] !== 'number') {
         errors.push(`dimensions.${k} must be a number`);
       }
     });
@@ -46,7 +46,7 @@ function validateRecord(record) {
   return { ok: errors.length === 0, errors };
 }
 
-async function upsertRecord(record, firebase) {
+async function upsertRecord(record: any, firebase: { db: any; bucket: any }) {
   const version = record.version || '1.0.0';
   const key = `${record.assetId}:${version}`;
   const payload = {
@@ -57,7 +57,7 @@ async function upsertRecord(record, firebase) {
 
   await firebase.db.collection('vrMetadata').doc(key).set(payload, { merge: true });
 
-  let storagePath = null;
+  let storagePath: string | null = null;
   if (firebase.bucket) {
     storagePath = `vr-metadata/${record.assetId}/${version}.json`;
     await firebase.bucket.file(storagePath).save(JSON.stringify(payload, null, 2), {
@@ -68,30 +68,31 @@ async function upsertRecord(record, firebase) {
   return { key, storagePath };
 }
 
-export async function POST(request) {
+export async function POST(request: Request) {
   const token = request.headers.get('x-vr-token') || request.headers.get('authorization');
   if (!AUTH_TOKEN || token !== AUTH_TOKEN) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let payload;
+  let payload: any;
   try {
     payload = await request.json();
-  } catch (err) {
+  } catch (err: any) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const firebase = (() => {
+  const firebaseResult = (() => {
     try {
       return getFirebaseAdmin();
-    } catch (err) {
+    } catch (err: any) {
       return { error: err?.message || 'Firebase admin init failed' };
     }
   })();
 
-  if (firebase.error) {
-    return NextResponse.json({ error: firebase.error }, { status: 500 });
+  if ('error' in firebaseResult) {
+    return NextResponse.json({ error: firebaseResult.error }, { status: 500 });
   }
+  const firebase = firebaseResult;
 
   const records = Array.isArray(payload) ? payload : [payload];
 
@@ -104,7 +105,7 @@ export async function POST(request) {
       try {
         const upserted = await upsertRecord(record, firebase);
         return { status: 'upserted', key: upserted.key, storagePath: upserted.storagePath };
-      } catch (err) {
+      } catch (err: any) {
         return { status: 'error', error: err?.message || 'DB write failed', record };
       }
     })

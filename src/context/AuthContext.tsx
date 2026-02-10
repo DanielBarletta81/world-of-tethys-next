@@ -7,6 +7,7 @@ import { getFirebaseAuth, getGoogleProvider } from '@/lib/firebaseClient';
 type AuthUser = {
   uid: string;
   email?: string;
+  displayName?: string;
 };
 
 type AuthContextValue = {
@@ -104,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const auth = getFirebaseAuth();
       const provider = getGoogleProvider();
       userCredential = await signInWithPopup(auth, provider);
-    } catch (err) {
+    } catch (err: any) {
       const code = err?.code;
       if (code === 'auth/popup-closed-by-user') {
         throw new Error('Sign-in window closed.');
