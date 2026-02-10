@@ -45,6 +45,21 @@ Compare atlas map_index to MAP_FRAGMENTS and verify icon/asset paths.
 python devtools/map_audit.py --out-html devtools/output/map_audit.html
 ```
 
+## 7) Telemetry Simulator (Danian River)
+Generate deterministic telemetry signals for evals and demos.
+
+```
+python devtools/telemetry_sim.py --days 60 --out-json data/danian_sim.json --out-csv data/danian_sim.csv
+python devtools/telemetry_report.py --in-json data/danian_sim.json --out-html devtools/output/telemetry_report.html
+```
+
+## 8) Telemetry Sync (live analog cache)
+Fetch USGS + delta analog data and cache for offline use or API fallback.
+
+```
+python devtools/telemetry_sync.py --out-json data/danian_real.json
+```
+
 ## Notes
 - Outputs are static; no external deps.
 - HTML output is stored under `devtools/output/`.

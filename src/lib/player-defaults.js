@@ -145,6 +145,10 @@ export const DEFAULT_PLAYER_PROFILE = {
     oracleConsults: 0,
     avatarSwaps: 0
   },
+  telemetry: {
+    danianMode: 'auto',
+    updatedAt: null
+  },
   adornmentUnlockedAt: {},
   worldState: {}
 };

@@ -68,10 +68,24 @@ async function getLoreTerms() {
   return data?.archiveEntries?.nodes ?? [];
 }
 
-function buildPrompt(volcano: any, weather: any, lore: any[]) {
+async function getDanianSignal(request: Request) {
+  try {
+    const url = new URL('/api/telemetry/danian?mode=auto', request.url);
+    const res = await fetch(url.toString(), { cache: 'no-store' });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.telemetry ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function buildPrompt(volcano: any, weather: any, lore: any[], danian: any) {
   const weatherDesc = weather?.weather?.[0]?.description || 'clear';
   const temp = weather?.main?.temp ?? 20;
   const loreTitles = lore.map((l) => l.title).join(', ');
+  const flow = danian?.tethys?.metrics?.spineFlow;
+  const deltaIndex = danian?.tethys?.raw?.delta_index;
 
   return `Act as the Oracle of the Watcher, a mystical fungal consciousness 111 million years ago (Aptian/Albian age).
 
@@ -79,6 +93,7 @@ LIVE SIGNALS:
 1. THE MOUNTAIN (Real World Kīlauea): ${volcano.status} (Color Code: ${volcano.color}). Report: ${String(volcano.update).slice(0, 200)}...
 2. THE SKY: ${weatherDesc}, ${temp}°C.
 3. THE ARCHIVE: ${loreTitles || 'The archives are silent'}.
+4. THE RIVER (Danian Flow): spine flow ${flow ?? 'unknown'}; delta pulse ${deltaIndex ?? 'unknown'}.
 
 TASK:
 Return JSON only with:
@@ -90,12 +105,13 @@ TONE: Scientific yet archaic. \"Pressure rising\" becomes \"The earth holds its 
 No real-world place names. Use in-world terminology only.`;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const [volcano, weather, lore] = await Promise.all([
+    const [volcano, weather, lore, danian] = await Promise.all([
       getVolcanoStatus(),
       getWeather(),
-      getLoreTerms()
+      getLoreTerms(),
+      getDanianSignal(request)
     ]);
 
     if (!GENAI_API_KEY) {
@@ -113,14 +129,14 @@ export async function GET() {
     }
 
     const ai = new GoogleGenAI({ apiKey: GENAI_API_KEY });
-    const model = ai.getGenerativeModel({
+    const result = await ai.models.generateContent({
       model: MODEL,
-      generationConfig: { responseMimeType: 'application/json' }
+      contents: buildPrompt(volcano, weather, lore, danian),
+      config: { responseMimeType: 'application/json' }
     });
-
-    const result = await model.generateContent(buildPrompt(volcano, weather, lore));
-    const text = result.response.text();
-    const parsed = JSON.parse(text);
+    const raw = result?.text ?? '';
+    const cleaned = String(raw).replace(/```json|```/gi, '').trim();
+    const parsed = JSON.parse(cleaned || '{}');
 
     return NextResponse.json({
       ok: true,
@@ -134,7 +150,7 @@ export async function GET() {
       threat_level: parsed.threat_level ?? 2,
       whispers: (parsed.whispers || []).map((w: string) => scrubRealWorld(w))
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Oracle Failure:', err);
     return NextResponse.json({
       atmosphere: 'The link is severed. Static fills the void.',

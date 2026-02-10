@@ -31,13 +31,23 @@ ChartJS.register(
 );
 
 const PterosDashboard = () => {
-  const { playerProfile, setAtmosphereTelemetry } = useTethys();
+  const {
+    playerProfile,
+    setAtmosphereTelemetry,
+    danianTelemetry,
+    danianSource,
+    scanDanianTelemetry,
+    danianMode,
+    setDanianMode
+  } = useTethys();
   const [telemetry, setTelemetry] = useState(null);
+  const [telemetrySource, setTelemetrySource] = useState(null);
   const [loading, setLoading] = useState(true);
   const [adminKey, setAdminKey] = useState('');
   const [oracleStatus, setOracleStatus] = useState(null);
   const [oracleLoading, setOracleLoading] = useState(false);
   const [oracleError, setOracleError] = useState(null);
+  const [modeToast, setModeToast] = useState(null);
   const [showUnlockHint, setShowUnlockHint] = useState(false);
   const [activeLore, setActiveLore] = useState(null);
   const weatherUnlocked = Boolean(playerProfile?.progression?.weatherUnlocked);
@@ -89,42 +99,34 @@ const PterosDashboard = () => {
       setLoading(false);
       return;
     }
-    const controller = new AbortController();
-
-    async function initSystem() {
+    let active = true;
+    const boot = async () => {
       try {
-        const res = await fetch('/api/tethys-intel?focus=pteros&ai=true', { signal: controller.signal });
-        const data = await res.json();
-        const pterosReport = data.reports?.find((report) => report.id === 'pteros');
-
-        const nextTelemetry = {
-          weather: pterosReport?.weather,
-          aiBrief: data.aiSummary,
-          integrity: pterosReport?.signalIntegrity,
-          tethys: pterosReport?.tethys
-        };
-
-        setTelemetry(nextTelemetry);
-        setAtmosphereTelemetry(nextTelemetry);
-        if (typeof window !== 'undefined') {
-          window.sessionStorage.setItem(
-            'tethys_atmosphere:pteros',
-            JSON.stringify({ at: Date.now(), telemetry: nextTelemetry })
-          );
-        }
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error('Signal Lost:', err);
+        if (!danianTelemetry && scanDanianTelemetry) {
+          await scanDanianTelemetry();
         }
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
+    };
+    boot();
+    return () => {
+      active = false;
+    };
+  }, [weatherUnlocked, danianTelemetry, scanDanianTelemetry]);
+
+  useEffect(() => {
+    if (!danianTelemetry) return;
+    setTelemetry(danianTelemetry);
+    setTelemetrySource(danianSource || null);
+    setAtmosphereTelemetry(danianTelemetry);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(
+        'tethys_atmosphere:pteros',
+        JSON.stringify({ at: Date.now(), telemetry: danianTelemetry })
+      );
     }
-
-    initSystem();
-
-    return () => controller.abort();
-  }, [setAtmosphereTelemetry, weatherUnlocked]);
+  }, [danianTelemetry, danianSource, setAtmosphereTelemetry]);
 
   useEffect(() => {
     if (!weatherUnlocked || !oracleConsultedAt) return;
@@ -136,6 +138,12 @@ const PterosDashboard = () => {
     const timer = setTimeout(() => setShowUnlockHint(false), 5000);
     return () => clearTimeout(timer);
   }, [oracleConsultedAt, weatherUnlocked]);
+
+  useEffect(() => {
+    if (!modeToast) return;
+    const timer = setTimeout(() => setModeToast(null), 3200);
+    return () => clearTimeout(timer);
+  }, [modeToast]);
 
   async function checkOracleStatus() {
     setOracleLoading(true);
@@ -237,6 +245,23 @@ const PterosDashboard = () => {
     ? now < sunrise || now > sunset
     : false;
   const threatLevel = isStorming ? 'TEMPEST' : 'ELEVATED';
+  const sourceMode = telemetrySource?.mode || danianMode || 'auto';
+  const sourceKind = telemetrySource?.source?.usgs
+    ? 'USGS'
+    : telemetrySource?.source?.sim
+      ? 'SIM'
+      : telemetrySource?.source?.cache
+        ? 'CACHE'
+        : sourceMode.toUpperCase();
+  const sourceSite = telemetrySource?.source?.usgs?.site;
+  const deltaBlend = telemetrySource?.source?.delta?.blend;
+  const deltaLabels = telemetrySource?.source?.delta?.labels;
+  const deltaWeight = telemetrySource?.source?.delta?.weight;
+  const deltaIndex =
+    telemetry?.tethys?.raw?.delta_index ??
+    (deltaBlend
+      ? Math.round(((deltaBlend.humidity / 100) * 0.6 + (deltaBlend.precipMm / 10) * 0.4) * 100) / 100
+      : null);
 
   return (
     <div
@@ -305,6 +330,59 @@ const PterosDashboard = () => {
           </div>
         </div>
       </header>
+
+      <div className="mb-3 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-stone-500">
+        <span className="px-2 py-1 border border-amber-700/30 rounded bg-[#120b07] text-amber-200/80">
+          Source: {sourceKind}
+        </span>
+        <label className="flex items-center gap-2 px-2 py-1 border border-stone-700/40 rounded bg-[#120b07] text-stone-300">
+          Mode
+          <select
+            value={sourceMode}
+            onChange={async (event) => {
+              const nextMode = event.target.value;
+              if (setDanianMode) {
+                const ok = await setDanianMode(nextMode);
+                if (!ok) {
+                  setModeToast('Mode failed. Reverted to last stable signal.');
+                } else {
+                  setModeToast(`Mode locked: ${nextMode.toUpperCase()}`);
+                }
+              } else if (scanDanianTelemetry) {
+                const result = await scanDanianTelemetry(nextMode);
+                if (!result) {
+                  setModeToast('Mode failed. Reverted to last stable signal.');
+                } else {
+                  setModeToast(`Mode locked: ${nextMode.toUpperCase()}`);
+                }
+              }
+            }}
+            className="bg-[#0b0705] border border-stone-700/40 rounded px-1 py-0.5 text-[10px] uppercase tracking-widest text-amber-200"
+          >
+            {['auto', 'usgs', 'cache', 'sim'].map((mode) => (
+              <option key={mode} value={mode}>
+                {mode.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        </label>
+        {sourceSite && (
+          <span className="px-2 py-1 border border-stone-700/40 rounded bg-[#120b07] text-stone-300">
+            USGS {sourceSite}
+          </span>
+        )}
+        {deltaLabels && (
+          <span className="px-2 py-1 border border-cyan-700/30 rounded bg-[#120b07] text-cyan-300/80">
+            Delta Blend {Math.round((deltaWeight ?? 0.5) * 100)}% {deltaLabels.a}/{deltaLabels.b}
+          </span>
+        )}
+      </div>
+      {modeToast && (
+        <div className="mb-4 border border-amber-900/40 bg-[#150c08] text-amber-300 text-[10px] uppercase tracking-[0.3em] px-3 py-2 rounded">
+          {modeToast}
+        </div>
+      )}
+
       <div className="mb-6 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-stone-500">
         {['BR', 'SF', 'SW', 'SB', 'VP', 'BV'].map((sigil) => (
           <button
@@ -398,6 +476,42 @@ const PterosDashboard = () => {
                <div className="text-rose-400 font-bold">Spinosaurus Aegyptiacus</div>
              </div>
           </div>
+        </div>
+
+        <div className="bg-[#150c08] border border-[#3a2416] p-6 rounded-lg relative overflow-hidden group hover:border-amber-700 transition-colors">
+          <div className="absolute top-0 right-0 p-3 opacity-10"><Waves size={64} /></div>
+          <h3 className="text-amber-400 text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+            <Droplets className="w-4 h-4" /> Delta Blend
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="text-[10px] uppercase text-[#78716c]">Humidity</div>
+              <div className="text-lg text-amber-200 font-bold">
+                {deltaBlend ? `${Math.round(deltaBlend.humidity)}%` : '--'}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase text-[#78716c]">Precip</div>
+              <div className="text-lg text-amber-200 font-bold">
+                {deltaBlend ? `${deltaBlend.precipMm.toFixed(1)} mm` : '--'}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase text-[#78716c]">Temp</div>
+              <div className="text-lg text-amber-200 font-bold">
+                {deltaBlend ? `${deltaBlend.tempC.toFixed(1)}°C` : '--'}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase text-[#78716c]">Delta Index</div>
+              <div className="text-lg text-amber-200 font-bold">
+                {deltaIndex != null ? deltaIndex.toFixed(2) : '--'}
+              </div>
+            </div>
+          </div>
+          <p className="text-[10px] text-[#78716c] mt-3">
+            Analog mix: {deltaLabels ? `${deltaLabels.a} × ${deltaLabels.b}` : 'delta proxy blend'}.
+          </p>
         </div>
 
       </div>

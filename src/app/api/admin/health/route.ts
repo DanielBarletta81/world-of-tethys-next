@@ -16,9 +16,10 @@ export async function GET() {
       ok: true,
       projectId: app.options.projectId || null
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Health check failed.';
     return NextResponse.json(
-      { ok: false, error: error?.message || 'Health check failed.' },
+      { ok: false, error: message },
       { status: 500 }
     );
   }

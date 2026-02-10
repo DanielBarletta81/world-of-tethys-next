@@ -57,7 +57,8 @@ export async function POST(req: Request) {
     const oracle = await buildOracleResponse({ terms, facts });
 
     return NextResponse.json({ ok: true, oracle });
-  } catch (error: any) {
-    return NextResponse.json({ ok: false, error: error?.message || 'Oracle failed' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Oracle failed';
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }

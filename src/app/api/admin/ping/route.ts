@@ -10,9 +10,10 @@ export async function GET() {
       ok: true,
       projectId: app.options.projectId || null
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Admin init failed.';
     return NextResponse.json(
-      { ok: false, error: error?.message || 'Admin init failed.' },
+      { ok: false, error: message },
       { status: 500 }
     );
   }

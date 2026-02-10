@@ -148,7 +148,7 @@ export async function GET(request) {
     const ai = new GoogleGenAI({ apiKey: GENAI_API_KEY });
     const prompt = buildPrompt(reports, focus);
     const result = await ai.models.generateContent({ model: MODEL, contents: prompt });
-    const aiText = typeof result?.text === 'function' ? result.text() : result?.response?.text?.() || null;
+    const aiText = result?.text ?? null;
 
     return NextResponse.json({
       reports,

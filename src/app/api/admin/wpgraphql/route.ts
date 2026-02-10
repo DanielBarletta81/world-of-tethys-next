@@ -14,7 +14,7 @@ export async function GET() {
     );
   }
 
-  const headers = { 'Content-Type': 'application/json' };
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (wpUser && wpAppPass) {
     const auth = Buffer.from(`${wpUser}:${wpAppPass}`).toString('base64');
     headers.Authorization = `Basic ${auth}`;
@@ -63,9 +63,10 @@ export async function GET() {
       data: json.data?.generalSettings || null,
       errors: json.errors || null
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'GraphQL request failed.';
     return NextResponse.json(
-      { ok: false, error: error?.message || 'GraphQL request failed.' },
+      { ok: false, error: message },
       { status: 500 }
     );
   }

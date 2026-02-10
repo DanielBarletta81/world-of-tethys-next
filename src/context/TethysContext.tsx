@@ -20,6 +20,8 @@ import { BESTIARY } from '@/data/bestiary';
 
 const TethysContext = createContext<any>(null);
 
+type PlayerProfile = Record<string, any>;
+
 const DEFAULT_STATS = { 
   kith: 50,    
   igzier: 50,  
@@ -27,6 +29,8 @@ const DEFAULT_STATS = {
   resin: 0,
   loginStreak: 0 
 };
+
+const DEFAULT_DANIAN_MODE = 'auto';
 
 const DEFAULT_STARTER_TEMPLATE = {
   templateId: 'starter_v1',
@@ -98,11 +102,14 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   const [equippedStaff, setEquippedStaff] = useState(null);
   const [atmosphereTelemetry, setAtmosphereTelemetry] = useState(null);
   const [oracleLive, setOracleLive] = useState(null);
+  const [danianTelemetry, setDanianTelemetry] = useState(null);
+  const [danianSource, setDanianSource] = useState(null);
+  const [danianMode, setDanianMode] = useState(DEFAULT_DANIAN_MODE);
   const [lastHarvestDate, setLastHarvestDate] = useState(null);
   const [stats, setStats] = useState(DEFAULT_STATS);
   const [canHarvest, setCanHarvest] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
-  const [playerProfile, setPlayerProfile] = useState(DEFAULT_PLAYER_PROFILE);
+  const [playerProfile, setPlayerProfile] = useState<PlayerProfile>(DEFAULT_PLAYER_PROFILE as PlayerProfile);
   const [worldState, setWorldState] = useState({});
   const [creatures, setCreatures] = useState([]);
   const [events, setEvents] = useState([]);
@@ -114,6 +121,52 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   const worldStateSaveRef = useRef(null);
  
   const hasOnboarded = Boolean(equippedStaff || playerProfile?.onboarding?.status === 'complete');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const stored = window.localStorage.getItem('tethys_danian_mode');
+      if (stored) setDanianMode(stored);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    const profileMode = playerProfile?.telemetry?.danianMode;
+    if (!profileMode || profileMode === danianMode) return;
+    setDanianMode(profileMode);
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem('tethys_danian_mode', profileMode);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [playerProfile?.telemetry?.danianMode, danianMode]);
+
+  useEffect(() => {
+    if (loadingData) return;
+    const profileMode = playerProfile?.telemetry?.danianMode;
+    if (profileMode) return;
+    if (typeof window === 'undefined') return;
+    try {
+      const stored = window.localStorage.getItem('tethys_danian_mode');
+      if (stored) {
+        const nowIso = new Date().toISOString();
+        setPlayerProfile((prev) => ({
+          ...prev,
+          telemetry: {
+            ...(prev.telemetry || {}),
+            danianMode: stored,
+            updatedAt: nowIso
+          }
+        }));
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [loadingData, playerProfile?.telemetry?.danianMode]);
 
   // --- 1. LOAD DATA ---
   useEffect(() => {
@@ -772,7 +825,23 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
         lastScanAt: new Date().toISOString()
       };
 
+      const nextWorldState = {
+        condition,
+        temp: 22,
+        wind: threat * 10,
+        visibility,
+        lastScanAt: new Date().toISOString(),
+        aiBrief: data?.atmosphere,
+        whispers: data?.whispers
+      };
+
       setOracleLive(data);
+      const hasAtmosphere =
+        typeof data?.atmosphere === 'string' && data.atmosphere.trim().length > 0;
+      const hasWhispers = Array.isArray(data?.whispers) && data.whispers.length > 0;
+      if (hasAtmosphere || hasWhispers) {
+        setWorldState((prev) => ({ ...prev, ...nextWorldState }));
+      }
       setAtmosphereTelemetry(nextTelemetry);
       return nextTelemetry;
     } catch (err) {
@@ -780,6 +849,62 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
   }, []);
+
+  // --- 2C. DANIAN TELEMETRY (Colorado analog + delta blend) ---
+  const scanDanianTelemetry = useCallback(async (modeOverride?: string, enforceMode = false) => {
+    try {
+      const mode = modeOverride || danianMode || 'auto';
+      const res = await fetch(`/api/telemetry/danian?mode=${encodeURIComponent(mode)}`, { cache: 'no-store' });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data?.telemetry) return null;
+      if (enforceMode && modeOverride && modeOverride !== 'auto' && data.mode !== modeOverride) {
+        return null;
+      }
+
+      const updatedAt = new Date().toISOString();
+      setDanianTelemetry(data.telemetry);
+      setDanianSource({ mode: data.mode, source: data.source, updatedAt });
+      setWorldState((prev) => ({
+        ...prev,
+        danian: data.telemetry,
+        danianSource: data.source,
+        danianMode: data.mode,
+        danianUpdatedAt: updatedAt
+      }));
+      return { telemetry: data.telemetry, mode: data.mode, source: data.source };
+    } catch (err) {
+      console.warn('Danian telemetry failed:', err);
+      return null;
+    }
+  }, [danianMode]);
+
+  const updateDanianMode = useCallback(async (nextMode) => {
+    const previous = danianMode;
+    const result = await scanDanianTelemetry(nextMode, true);
+    if (!result) {
+      setDanianMode(previous);
+      return false;
+    }
+    setDanianMode(nextMode);
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem('tethys_danian_mode', nextMode);
+      } catch {
+        /* ignore */
+      }
+    }
+    const nowIso = new Date().toISOString();
+    setPlayerProfile((prev) => ({
+      ...prev,
+      telemetry: {
+        ...(prev.telemetry || {}),
+        danianMode: nextMode,
+        updatedAt: nowIso
+      }
+    }));
+    return true;
+  }, [danianMode, scanDanianTelemetry]);
 
   useEffect(() => {
     let active = true;
@@ -802,6 +927,23 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
       if (timer) clearTimeout(timer);
     };
   }, []);
+
+  useEffect(() => {
+    let timer;
+
+    const pollDanian = async () => {
+      try {
+        await scanDanianTelemetry();
+      } finally {
+        timer = setTimeout(pollDanian, 1000 * 60 * 10);
+      }
+    };
+
+    pollDanian();
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [scanDanianTelemetry]);
 
   // --- 3. ACTIONS ---
 
@@ -1510,6 +1652,11 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     setAtmosphereTelemetry,
     scanAtmosphere,
     oracleLive,
+    danianTelemetry,
+    danianSource,
+    danianMode,
+    setDanianMode: updateDanianMode,
+    scanDanianTelemetry,
     worldState,
     markNodeHarvested,
     creatures,
