@@ -71,6 +71,7 @@ firebase-debug.log
 # misc
 .DS_Store
 *.pem
+.expo/
 
 # debug
 npm-debug.log*

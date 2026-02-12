@@ -12,7 +12,11 @@
     "typecheck": "tsc --noEmit",
     "doctor": "node scripts/doctor.mjs",
     "validate:world": "node scripts/validate-worldplot.mjs",
-    "ci": "npm run lint && npm run typecheck && npm run validate:world"
+    "ci": "npm run lint && npm run typecheck && npm run validate:world",
+    "mobile:dev": "npm --prefix apps/mobile run start",
+    "mobile:android": "npm --prefix apps/mobile run android",
+    "mobile:ios": "npm --prefix apps/mobile run ios",
+    "mobile:web": "npm --prefix apps/mobile run web"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
