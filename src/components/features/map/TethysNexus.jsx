@@ -17,10 +17,14 @@ export const MAP_FRAGMENTS = [
   { id: 'karst', label: 'Karst Drains', region: 'karst-drains', anchor: { x: 0.22, y: 0.3 } },
   { id: 'younger', label: 'Younger Woods', region: 'younger-woods', anchor: { x: 0.3, y: 0.22 }, showPin: false, clickable: false },
   { id: 'ironwoods', label: 'Ironwoods', region: 'ironwoods', anchor: { x: 0.62, y: 0.2 }, icon: '/img/icons/ironwood.svg' },
+  { id: 'ironwood-spires', label: 'Ironwood Spires', region: 'ironwood-spires', anchor: { x: 0.36, y: 0.78 }, icon: '/img/icons/sky-city.svg', showPin: false, clickable: false },
+  { id: 'mystic-woods', label: 'Mystic Woods', region: 'mystic-woods', anchor: { x: 0.54, y: 0.28 }, icon: '/img/icons/mystics.svg' },
+  { id: 'mt-cinder', label: 'Mt. Cinder', region: 'mt-cinder', anchor: { x: 0.82, y: 0.12 }, icon: '/img/icons/mount-shastea.svg' },
   { id: 'straits', label: 'Straits of Dier', region: 'straits-of-dier', anchor: { x: 0.43, y: 0.48 }, icon: '/img/icons/straits-of-dier.svg' },
   { id: 'pteros', label: 'Pteros Island', region: 'pteros', anchor: { x: 0.46, y: 0.56 }, icon: '/img/icons/pteros_island.svg' },
   { id: 'mammoth', label: 'Mammoth Island', region: 'mammoth-hand-island', anchor: { x: 0.72, y: 0.46 }, icon: '/img/icons/mammoth-hand-island.svg' },
   { id: 'thal', label: 'Thal Territory', region: 'thal-territory', anchor: { x: 0.74, y: 0.51 }, showPin: false, clickable: false, labelOffset: { x: 7, y: 7 } },
+  { id: 'amber-plains', label: 'Amber Plains', region: 'amber-plains', anchor: { x: 0.68, y: 0.72 }, icon: '/img/icons/nubian-sandbar.svg' },
   { id: 'tethys-sea', label: 'Tethys Sea', region: 'tethys-sea', anchor: { x: 0.53, y: 0.64 }, showPin: false, clickable: false },
   { id: 'rogue', label: 'Rogue Island', region: 'rogue-island', anchor: { x: 0.74, y: 0.73 }, showPin: false, clickable: false },
   { id: 'new-tethys', label: 'New Tethys', region: 'new-tethys', anchor: { x: 0.78, y: 0.9 }, showPin: false, clickable: false },
@@ -58,11 +62,23 @@ export default function TethysNexus({
   showStaffOverlay = false,
   mycorrhizalActive = false,
   sporeSaturation = 0,
-  foodWebActive = false
+  foodWebActive = false,
+  rootTunnelVisible = false,
+  weatherMistBoost = 0,
+  cloudIntensity = 0,
+  rumbleIntensity = 0,
+  stormFrontActive = false,
+  stormFrontIntensity = 0
 }) {
   const containerRef = useRef(null);
   const [initialTransform, setInitialTransform] = useState(null);
   const watcherIntensity = watcherIntensityFor(currentLocation);
+  const watcherBoost = watcherIntensity === 'near' ? 0.22 : watcherIntensity === 'mid' ? 0.12 : 0;
+  const watcherMistBoost = watcherIntensity === 'near' ? 0.06 : watcherIntensity === 'mid' ? 0.03 : 0;
+  const watcherStormBoost = watcherIntensity === 'near' ? 0.08 : watcherIntensity === 'mid' ? 0.04 : 0;
+  const mergedRumbleIntensity = Math.min(1, rumbleIntensity + watcherBoost);
+  const mergedMistBoost = weatherMistBoost + watcherMistBoost;
+  const mergedStormIntensity = Math.min(1, stormFrontIntensity + watcherStormBoost);
   const cfg = useMemo(
     () => ({ STILL_DELAY: 1800, STILL_FULL: 2600, MIN_SCALE: 0.9, MAX_SCALE: 2.4 }),
     []
@@ -71,7 +87,7 @@ export default function TethysNexus({
     cfg,
     mode: pathMode,
     watcherIntensity,
-    envPressure: 0,
+    envPressure: mergedRumbleIntensity,
     initialTransform
   });
   const [stillnessReady, setStillnessReady] = useState(false);
@@ -102,10 +118,11 @@ export default function TethysNexus({
 
   const scopedFragments = useMemo(() => {
     const scope = {
-      city: new Set(['sky-city', 'pteros', 'straits-of-dier', 'tethys-sea', 'cimmerian-mtns']),
+      city: new Set(['sky-city', 'ironwood-spires', 'pteros', 'straits-of-dier', 'tethys-sea', 'cimmerian-mtns']),
       mystic: new Set([
         'mystic-woods',
         'ironwoods',
+        'mt-cinder',
         'pteros',
         'straits-of-dier',
         'tethys-sea',
@@ -116,6 +133,8 @@ export default function TethysNexus({
       ]),
       wild: new Set([
         'ironwoods',
+        'mt-cinder',
+        'amber-plains',
         'mammoth-hand-island',
         'pteros',
         'straits-of-dier',
@@ -263,8 +282,12 @@ export default function TethysNexus({
           mode={pathMode}
           truthProfile={truthProfile}
           watcherIntensity={watcherIntensity}
-          envPressure={0}
+          envPressure={mergedRumbleIntensity}
           fogBoost={fogBoost}
+          weatherMistBoost={mergedMistBoost}
+          cloudIntensity={cloudIntensity}
+          stormFrontActive={stormFrontActive}
+          stormFrontIntensity={mergedStormIntensity}
           mycorrhizalActive={mycorrhizalActive}
           mycorrhizalPoints={mycorrhizalPoints}
           mycorrhizalVeins={mycorrhizalVeins}
@@ -281,6 +304,7 @@ export default function TethysNexus({
             foodWebActive={foodWebActive}
             foodWebAliases={foodWebAliases}
             analogHints={analogHints}
+            rootTunnelVisible={rootTunnelVisible}
             onTravel={onTravel}
             onInspect={onInspect}
           />

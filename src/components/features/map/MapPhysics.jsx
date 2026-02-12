@@ -188,7 +188,8 @@ export default function useMapPhysics({
       if (mode !== "city") {
         const base = 0.35 * k;
         const mysticBoost = mode === "mystic" ? 0.25 + stillnessRef.current * 0.55 : 0.15;
-        const amp = base * (0.35 + mysticBoost);
+        const envBoost = clamp(envPressure, 0, 1);
+        const amp = base * (0.35 + mysticBoost) * (1 + envBoost * 0.9);
         const t = now * 0.001;
         const x = Math.sin(t * 0.9 + 10.2) * amp + Math.sin(t * 2.1) * (amp * 0.35);
         const y = Math.cos(t * 0.8 + 2.7) * amp + Math.sin(t * 1.7) * (amp * 0.25);
@@ -222,7 +223,7 @@ export default function useMapPhysics({
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, watcherIntensity, STILL_DELAY, STILL_FULL]);
+  }, [mode, watcherIntensity, STILL_DELAY, STILL_FULL, envPressure]);
 
   return {
     tx: transform.x + tremor.x + drift.x,

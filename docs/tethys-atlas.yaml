@@ -557,6 +557,30 @@ map_index:
   namer: Shastea Ridge-Hand
   glyph: AL
   icon: /img/icons/ashfall-lanes.svg
+- node: Mystic Woods
+  spoken: Mystic Woods
+  sky_city_script: Root Veil
+  namer: Ravel-of-Roots
+  glyph: MW
+  icon: /img/icons/mystics.svg
+- node: Ironwood Spires
+  spoken: Ironwood Spires
+  sky_city_script: Crown Pillars
+  namer: Melden lineage
+  glyph: IS
+  icon: /img/icons/sky-city.svg
+- node: Mt. Cinder
+  spoken: Cinder Peak
+  sky_city_script: Ash Sister
+  namer: Shastea Ridge-Hand
+  glyph: MC
+  icon: /img/icons/mount-shastea.svg
+- node: Amber Plains
+  spoken: Amber Plains
+  sky_city_script: Thal Gold Run
+  namer: Thal Waykeeper
+  glyph: AP
+  icon: /img/icons/nubian-sandbar.svg
 - node: Pumice Drift
   spoken: Float Stone
   sky_city_script: Pumice Lane

@@ -25,7 +25,7 @@ const AudioContext = createContext<AudioContextValue | null>(null);
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null); // Null = Player hidden/inactive
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(0.04);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize Audio Object (Client Side Only)
@@ -41,6 +41,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         audioRef.current = null;
       }
     };
+  }, []);
+
+  // Boot low ambient bed (best effort; may be blocked by autoplay)
+  useEffect(() => {
+    const track = AUDIO_TRACKS.find((t) => t.id === 'intro_drone');
+    if (!track) return;
+    setCurrentTrack(track);
+    setIsPlaying(true);
+    setVolume(0.04);
   }, []);
 
   // Effect: Handle Track Switching

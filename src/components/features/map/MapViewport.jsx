@@ -24,6 +24,10 @@ export default function MapViewport({
   watcherIntensity,                         // NEW: optional ash texture (or reuse mist)
   envPressure = 0,
   fogBoost = 0,
+  weatherMistBoost = 0,
+  cloudIntensity = 0,
+  stormFrontActive = false,
+  stormFrontIntensity = 0
 }) {
 
   const { tx, ty, scale } = transform;
@@ -34,6 +38,44 @@ export default function MapViewport({
   const hasAsh = Boolean(ashUrl || mistUrl);
   const hasBackground = Boolean(backgroundUrl);
   const [backgroundReady, setBackgroundReady] = useState(false);
+  const [cloudSeed] = useState(() => ({
+    fast: 16 + Math.random() * 8,
+    slow: 70 + Math.random() * 40,
+    tilt: (Math.random() * 6 - 3).toFixed(2),
+    offsetX: Math.floor(Math.random() * 100),
+    offsetY: Math.floor(Math.random() * 100),
+    variant: Math.random() > 0.5 ? 'a' : 'b'
+  }));
+  const cloudBoost = Math.max(0, Math.min(1, cloudIntensity));
+  const frontDuration = Math.max(10, cloudSeed.fast - cloudBoost * 6);
+  const backDuration = Math.max(40, cloudSeed.slow - cloudBoost * 20);
+
+  const CLOUDS_BACK_A =
+    "radial-gradient(circle at 12% 28%, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.0) 58%)," +
+    "radial-gradient(circle at 46% 18%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.0) 54%)," +
+    "radial-gradient(circle at 78% 36%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.0) 52%)," +
+    "radial-gradient(circle at 30% 68%, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.0) 56%)";
+
+  const CLOUDS_FRONT_A =
+    "radial-gradient(circle at 18% 38%, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.0) 52%)," +
+    "radial-gradient(circle at 55% 26%, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.0) 50%)," +
+    "radial-gradient(circle at 82% 54%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.0) 48%)," +
+    "radial-gradient(circle at 40% 74%, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.0) 52%)";
+
+  const CLOUDS_BACK_B =
+    "radial-gradient(circle at 20% 16%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.0) 58%)," +
+    "radial-gradient(circle at 58% 22%, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.0) 54%)," +
+    "radial-gradient(circle at 84% 42%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.0) 52%)," +
+    "radial-gradient(circle at 36% 70%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.0) 56%)";
+
+  const CLOUDS_FRONT_B =
+    "radial-gradient(circle at 14% 34%, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.0) 52%)," +
+    "radial-gradient(circle at 52% 30%, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.0) 50%)," +
+    "radial-gradient(circle at 78% 58%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.0) 48%)," +
+    "radial-gradient(circle at 44% 76%, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.0) 52%)";
+
+  const CLOUDS_BACK = cloudSeed.variant === 'b' ? CLOUDS_BACK_B : CLOUDS_BACK_A;
+  const CLOUDS_FRONT = cloudSeed.variant === 'b' ? CLOUDS_FRONT_B : CLOUDS_FRONT_A;
 
   useEffect(() => {
     if (!hasBackground) return;
@@ -125,13 +167,83 @@ return (
           (truthProfile?.mist ?? 0.22) *
           (mode === "mystic" ? 1.15 : mode === "city" ? 0.6 : 1.0) -
           envPressure * 0.25 +
-          fogBoost,
+          fogBoost +
+          weatherMistBoost,
         WebkitMaskImage: buildFogMask(fogPoints),
         maskImage: buildFogMask(fogPoints),
         maskComposite: "intersect",
         WebkitMaskComposite: "destination-in"
       }}
     />
+  )}
+
+  {/* Storm front sweep */}
+  {stormFrontActive && (
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        opacity: Math.max(0.15, Math.min(0.75, stormFrontIntensity)),
+        mixBlendMode: "screen",
+        filter: "blur(10px)"
+      }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(120deg, rgba(255,255,255,0) 10%, rgba(200,220,255,0.32) 40%, rgba(255,255,255,0) 70%)",
+          backgroundSize: "220% 100%",
+          animation: "storm-front 14s linear infinite",
+          transform: "translate3d(0,0,0)"
+        }}
+      />
+    </div>
+  )}
+
+  {/* Cloud systems (background + fast foreground) */}
+  {cloudBoost > 0 && (
+    <>
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          opacity: 0.25 + cloudBoost * 0.35,
+          mixBlendMode: "screen",
+          filter: `blur(${10 + cloudBoost * 6}px)`,
+          transform: "translate3d(0,0,0)"
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: CLOUDS_BACK,
+            backgroundSize: "140% 140%",
+            backgroundPosition: `${cloudSeed.offsetX}% ${cloudSeed.offsetY}%`,
+            animation: `cloud-drift ${backDuration}s ease-in-out infinite`,
+            transform: `rotate(${cloudSeed.tilt}deg) scale(1.08)`
+          }}
+        />
+      </div>
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          opacity: 0.35 + cloudBoost * 0.45,
+          mixBlendMode: "screen",
+          filter: `blur(${6 + cloudBoost * 4}px)`,
+          transform: "translate3d(0,0,0)"
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: CLOUDS_FRONT,
+            backgroundSize: "160% 160%",
+            backgroundPosition: `${100 - cloudSeed.offsetX}% ${100 - cloudSeed.offsetY}%`,
+            animation: `cloud-rush ${frontDuration}s linear infinite`,
+            transform: `rotate(${Number(cloudSeed.tilt) * 0.6}deg) scale(1.12)`
+          }}
+        />
+      </div>
+    </>
   )}
 
 
@@ -273,6 +385,33 @@ return (
         }
         100% {
           stroke-dashoffset: -600;
+        }
+      }
+      @keyframes cloud-drift {
+        0% {
+          transform: translate3d(-4%, -2%, 0) scale(1.06);
+        }
+        50% {
+          transform: translate3d(3%, 1%, 0) scale(1.1);
+        }
+        100% {
+          transform: translate3d(-4%, -2%, 0) scale(1.06);
+        }
+      }
+      @keyframes cloud-rush {
+        0% {
+          transform: translate3d(-10%, 0%, 0) scale(1.12);
+        }
+        100% {
+          transform: translate3d(10%, 0%, 0) scale(1.12);
+        }
+      }
+      @keyframes storm-front {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
         }
       }
     `}</style>

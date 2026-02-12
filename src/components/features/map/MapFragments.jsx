@@ -16,6 +16,7 @@ export default function MapFragments({
   foodWebActive = false,
   foodWebAliases = {},
   analogHints = {},
+  rootTunnelVisible = false,
   onTravel,
   onInspect,
   onUnlock,
@@ -49,8 +50,39 @@ export default function MapFragments({
     );
   }, [stillnessReady, cambriaActive, lockedRegions, onUnlock, onFracture]);
 
+  const rootStart = fragmentsConfig.find((f) => f.region === 'ironwoods')?.anchor;
+  const rootEnd = fragmentsConfig.find((f) => f.region === 'mystic-woods')?.anchor;
+  const rootPath =
+    rootStart && rootEnd
+      ? `M ${rootStart.x * 100} ${rootStart.y * 100} Q ${((rootStart.x + rootEnd.x) / 2) * 100} ${
+          ((rootStart.y + rootEnd.y) / 2) * 100 + 3
+        } ${rootEnd.x * 100} ${rootEnd.y * 100}`
+      : null;
+
   return (
     <svg className="absolute inset-0" viewBox="0 0 100 100" role="presentation">
+      {rootTunnelVisible && rootPath ? (
+        <g opacity={0.7} className="pointer-events-none">
+          <path
+            d={rootPath}
+            fill="none"
+            stroke="#8a3c23"
+            strokeWidth="0.7"
+            strokeDasharray="2,2"
+            className="animate-pulse"
+          />
+          <text
+            x={((rootStart.x + rootEnd.x) / 2) * 100}
+            y={((rootStart.y + rootEnd.y) / 2) * 100 + 6}
+            fill="#8a3c23"
+            fontSize="2.2"
+            textAnchor="middle"
+            className="font-sky uppercase tracking-[0.2em]"
+          >
+            Root Tunnels
+          </text>
+        </g>
+      ) : null}
       {fragments.map((f) => {
         const isLocked = lockedRegions.includes(f.region);
         const isClickable = f.clickable !== false;

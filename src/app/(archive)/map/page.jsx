@@ -1,4 +1,4 @@
-// src/app/map/page.js
+// src/app/(archive)/map/page.jsx
 'use client';
 
 import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react';
@@ -107,6 +107,9 @@ export default function MapPage() {
     stats,
     playerProfile,
     unlockedNodes,
+    worldState,
+    atmosphereTelemetry,
+    oracleLive,
     bondEncounter,
     attemptBondEncounter,
     setPlayerProfile,
@@ -118,6 +121,51 @@ export default function MapPage() {
   const { playTrack } = useAudio();
   const [viewState, setViewState] = useState('loading'); // loading, egg, sigil, forge, map, scholar
   const [hoveredSigil, setHoveredSigil] = useState(null);
+  const hasRavelKnowledge = Boolean(
+    playerProfile?.history?.metRavel || (playerProfile?.staff?.stats?.kith ?? 0) > 20
+  );
+  const mapCondition = (worldState?.condition || atmosphereTelemetry?.condition || '').toLowerCase();
+  const mapWeatherProfile = useMemo(() => {
+    const base = (() => {
+      if (mapCondition === 'storm') {
+        return { mistBoost: 0.24, cloudIntensity: 0.8 };
+      }
+      if (mapCondition === 'rain') {
+        return { mistBoost: 0.18, cloudIntensity: 0.6 };
+      }
+      if (mapCondition === 'fog') {
+        return { mistBoost: 0.22, cloudIntensity: 0.65 };
+      }
+      return { mistBoost: 0.08, cloudIntensity: 0.35 };
+    })();
+
+    const regionMods = {
+      'the-weep': { mist: 0.16, cloud: 0.2, storm: 0.2 },
+      'the-ledge': { mist: 0.12, cloud: 0.15, storm: 0.25 },
+      'mystic-woods': { mist: 0.1, cloud: 0.1, storm: 0.05 },
+      ironwoods: { mist: 0.06, cloud: 0.08, storm: 0.05 },
+      'amber-plains': { mist: -0.04, cloud: -0.08, storm: -0.05 },
+      'mt-cinder': { mist: 0.08, cloud: 0.1, storm: 0.15 },
+      'sky-city': { mist: -0.06, cloud: -0.05, storm: 0.05 }
+    };
+    const mod = regionMods[currentLocation] || { mist: 0, cloud: 0, storm: 0 };
+
+    const threatRaw = Number(
+      oracleLive?.threat_level ?? worldState?.threat_level ?? atmosphereTelemetry?.threat_level
+    );
+    const threatLevel = Number.isFinite(threatRaw) ? Math.max(1, Math.min(5, threatRaw)) : null;
+    const rumbleIntensity = threatLevel ? 0.1 + ((threatLevel - 1) / 4) * 0.8 : 0.12;
+    const stormFrontActive = (mapCondition === 'storm') || (threatLevel ? threatLevel >= 4 : false);
+    const stormFrontIntensity = Math.min(0.9, 0.35 + (threatLevel ? (threatLevel - 1) * 0.12 : 0) + mod.storm);
+
+    return {
+      mistBoost: Math.max(0, base.mistBoost + mod.mist),
+      cloudIntensity: Math.max(0.15, base.cloudIntensity + mod.cloud),
+      rumbleIntensity,
+      stormFrontActive,
+      stormFrontIntensity
+    };
+  }, [mapCondition, currentLocation, oracleLive?.threat_level, worldState?.threat_level, atmosphereTelemetry?.threat_level]);
   const [selectedSigil, setSelectedSigil] = useState(null);
   const [pendingSigil, setPendingSigil] = useState(null);
   const [airlockOpen, setAirlockOpen] = useState(false);
@@ -926,6 +974,12 @@ export default function MapPage() {
                   unlockedNodes={unlockedNodes}
                   mapPresenceMs={mapPresenceMs}
                   showStaffOverlay={Boolean(equippedStaff)}
+                  rootTunnelVisible={hasRavelKnowledge}
+                  weatherMistBoost={mapWeatherProfile.mistBoost}
+                  cloudIntensity={mapWeatherProfile.cloudIntensity}
+                  rumbleIntensity={mapWeatherProfile.rumbleIntensity}
+                  stormFrontActive={mapWeatherProfile.stormFrontActive}
+                  stormFrontIntensity={mapWeatherProfile.stormFrontIntensity}
                   onInspect={(regionId) => setSubMapRegion(regionId)}
                   bondAmbientLevel={
                     bondEncounter?.state === 'active' &&

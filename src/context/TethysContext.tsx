@@ -53,9 +53,10 @@ const HAZARD_LOCATIONS = [
   'watcher-flats',
   'purgess',
   'cambria-ruins',
-  'iron-sands'
+  'iron-sands',
+  'mt-cinder'
 ];
-const ASH_LOCATIONS = ['watcher-volcano', 'watcher-flats', 'purgess', 'cambria-ruins'];
+const ASH_LOCATIONS = ['watcher-volcano', 'watcher-flats', 'purgess', 'cambria-ruins', 'mt-cinder'];
 const BOND_CHECK_MS = 1000 * 60 * 60 * 24;
 const BOND_BASE_CHANCE = 0.12;
 const BOND_MIN_MOVES = 2;
