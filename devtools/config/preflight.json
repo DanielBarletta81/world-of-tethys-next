@@ -1,0 +1,37 @@
+{
+  "name": "Tethys Preflight Check",
+  "env_required": [],
+  "env_optional": [
+    "GOOGLE_GENAI_API_KEY",
+    "OPENWEATHER_API_KEY",
+    "WP_GRAPHQL_ENDPOINT",
+    "WP_USER",
+    "WP_APP_PASS",
+    "FIREBASE_PROJECT_ID",
+    "FIREBASE_CLIENT_EMAIL",
+    "FIREBASE_PRIVATE_KEY",
+    "FIREBASE_SERVICE_ACCOUNT_JSON",
+    "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64",
+    "VR_METADATA_TOKEN",
+    "ADMIN_SECRET_KEY",
+    "CRON_SECRET"
+  ],
+  "env_groups": [
+    {
+      "label": "Firebase Admin (one of)",
+      "any_of": [
+        "FIREBASE_SERVICE_ACCOUNT_JSON",
+        "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64",
+        "FIREBASE_PROJECT_ID,FIREBASE_CLIENT_EMAIL,FIREBASE_PRIVATE_KEY"
+      ]
+    }
+  ],
+  "routes": [
+    { "path": "/api/oracle-live", "method": "GET", "expect": [200] },
+    { "path": "/api/telemetry/danian", "method": "GET", "expect": [200] },
+    { "path": "/api/tethys-intel", "method": "GET", "expect": [200] },
+    { "path": "/api/catalog", "method": "GET", "expect": [200] },
+    { "path": "/api/pteros/media", "method": "GET", "expect": [200] },
+    { "path": "/api/vr-metadata", "method": "POST", "expect": [201], "requires_auth": true }
+  ]
+}

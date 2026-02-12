@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tethys Preflight Check</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; background:#0c0a09; color:#e7e5e4; margin:0; padding:24px; }
+    h1,h2 { margin: 0 0 12px 0; }
+    .meta { color:#a8a29e; font-size:12px; margin-bottom:16px; }
+    .card { background:#141210; border:1px solid #272320; border-radius:8px; padding:12px; margin-bottom:12px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 8px; }
+    th, td { border: 1px solid #272320; padding: 6px 8px; font-size: 12px; text-align: left; }
+    th { background:#1c1917; color:#f8fafc; }
+    .ok { color:#34d399; }
+    .warn { color:#fbbf24; }
+    .bad { color:#f87171; }
+    .small { font-size: 11px; color:#a8a29e; }
+  </style>
+</head>
+<body>
+  <h1>Tethys Preflight Check</h1>
+  <div class="meta">Generated: 2026-02-11T03:30:42.416382Z</div>
+  <div class="card"><h2>Required Env Vars (0)</h2><div class="small">None detected.</div></div><div class="card"><h2>Optional Env Vars (13)</h2><table><thead><tr><th>Var</th><th>Status</th></tr></thead><tbody><tr><td>GOOGLE_GENAI_API_KEY</td><td>missing</td></tr><tr><td>OPENWEATHER_API_KEY</td><td>missing</td></tr><tr><td>WP_GRAPHQL_ENDPOINT</td><td>missing</td></tr><tr><td>WP_USER</td><td>missing</td></tr><tr><td>WP_APP_PASS</td><td>missing</td></tr><tr><td>FIREBASE_PROJECT_ID</td><td>missing</td></tr><tr><td>FIREBASE_CLIENT_EMAIL</td><td>missing</td></tr><tr><td>FIREBASE_PRIVATE_KEY</td><td>missing</td></tr><tr><td>FIREBASE_SERVICE_ACCOUNT_JSON</td><td>missing</td></tr><tr><td>FIREBASE_SERVICE_ACCOUNT_JSON_BASE64</td><td>missing</td></tr><tr><td>VR_METADATA_TOKEN</td><td>missing</td></tr><tr><td>ADMIN_SECRET_KEY</td><td>missing</td></tr><tr><td>CRON_SECRET</td><td>missing</td></tr></tbody></table></div><div class="card"><h2>Env Groups (1)</h2><table><thead><tr><th>Group</th><th>Status</th></tr></thead><tbody><tr><td>Firebase Admin (one of)</td><td>missing</td></tr></tbody></table></div><div class="card"><h2>Routes (6)</h2><table><thead><tr><th>Route</th><th>File</th><th>File OK</th><th>HTTP</th><th>Status</th></tr></thead><tbody><tr><td>/api/oracle-live</td><td>src/app/api/oracle-live/route.ts</td><td>ok</td><td>fail</td><td>404</td></tr><tr><td>/api/telemetry/danian</td><td>src/app/api/telemetry/danian/route.ts</td><td>ok</td><td>fail</td><td>404</td></tr><tr><td>/api/tethys-intel</td><td>src/app/api/tethys-intel/route.ts</td><td>ok</td><td>ok</td><td>200</td></tr><tr><td>/api/catalog</td><td>src/app/api/catalog/route.ts</td><td>ok</td><td>ok</td><td>200</td></tr><tr><td>/api/pteros/media</td><td>src/app/api/pteros/media/route.ts</td><td>ok</td><td>ok</td><td>200</td></tr><tr><td>/api/vr-metadata</td><td>src/app/api/vr-metadata/route.ts</td><td>ok</td><td>skipped</td><td>-</td></tr></tbody></table></div>
+</body>
+</html>

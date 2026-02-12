@@ -60,6 +60,14 @@ Fetch USGS + delta analog data and cache for offline use or API fallback.
 python devtools/telemetry_sync.py --out-json data/danian_real.json
 ```
 
+## 9) Preflight Check (API + env + routes)
+Verify required env vars, API route files, and optionally hit live endpoints.
+
+```
+python devtools/preflight_check.py
+python devtools/preflight_check.py --base-url http://localhost:3000 --out-html devtools/output/preflight.html
+```
+
 ## Notes
 - Outputs are static; no external deps.
 - HTML output is stored under `devtools/output/`.
