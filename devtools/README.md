@@ -68,6 +68,14 @@ python devtools/preflight_check.py
 python devtools/preflight_check.py --base-url http://localhost:3000 --out-html devtools/output/preflight.html
 ```
 
+## 10) Live Data Check (USGS + OpenWeather)
+Ping live upstream sources (Danian + Weep gauges, OpenWeather proxies) and optionally internal APIs.
+
+```
+python devtools/live_data_check.py --out-html devtools/output/live_data.html
+python devtools/live_data_check.py --base-url http://localhost:3000 --strict
+```
+
 ## Notes
 - Outputs are static; no external deps.
 - HTML output is stored under `devtools/output/`.
