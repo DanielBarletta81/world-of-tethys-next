@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
 export const runtime = 'nodejs';
 
 const USGS_ENDPOINT = 'https://waterservices.usgs.gov/nwis/iv/';
@@ -13,7 +11,7 @@ const USGS_SITES = DEFAULT_USGS_SITE.split(',')
 const PRIMARY_SITE = (process.env.DANIAN_PRIMARY_SITE || USGS_SITES[0] || '').trim();
 const DEFAULT_USGS_PARAMS = process.env.DANIAN_USGS_PARAMS || '00060,00010,63680,00095';
 const DEFAULT_MODE = process.env.DANIAN_MODE || 'auto'; // auto | usgs | cache | sim
-const SIM_PATH = fileURLToPath(new URL('../../../../../data/danian_sim.json', import.meta.url));
+const SIM_PATH = process.env.DANIAN_SIM_PATH || '';
 const CACHE_PATH = (() => {
   const override = process.env.DANIAN_CACHE_PATH;
   if (!override) return '/tmp/danian_real.json';
@@ -318,6 +316,7 @@ function buildTelemetry({
 
 async function loadSimTelemetry(mode: string) {
   try {
+    if (!SIM_PATH) return null;
     const data = await readJsonFile(SIM_PATH);
     const point = pickSimPoint(data?.series ?? []);
     if (!point) return null;
@@ -346,7 +345,7 @@ async function loadSimTelemetry(mode: string) {
       aiBrief: `Simulated Danian flow ${point.flow_m3s} m3/s.`
     };
 
-    return { ok: true, mode, source: { sim: 'data/danian_sim.json' }, telemetry };
+    return { ok: true, mode, source: { sim: SIM_PATH }, telemetry };
   } catch {
     return null;
   }
