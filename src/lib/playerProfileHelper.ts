@@ -1,4 +1,4 @@
-import { getFirebaseAdmin } from './firebaseAdmin.js';
+import { getFirebaseAdmin } from './firebaseAdmin';
 import { DEFAULT_PLAYER_PROFILE } from './player-defaults.js';
 
 /**

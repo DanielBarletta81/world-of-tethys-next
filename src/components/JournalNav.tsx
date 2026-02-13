@@ -16,7 +16,7 @@ export default function JournalNav({ className = '' }: { className?: string }) {
   const pathname = usePathname();
 
   return (
-    <nav className={clsx('flex flex-wrap gap-6', className)}>
+    <nav className={clsx('flex flex-wrap gap-4', className)}>
       {NAV_ITEMS.map((item) => {
         const active = pathname === item.href;
         return (
@@ -24,7 +24,7 @@ export default function JournalNav({ className = '' }: { className?: string }) {
             key={item.href}
             href={item.href}
             className={clsx(
-              'px-2 pb-2 text-xs tracking-[0.2em] uppercase border-b transition-colors duration-500',
+              'px-1 pb-2 text-[10px] tracking-[0.25em] uppercase border-b transition-colors duration-500',
               active
                 ? 'text-stone-200 border-stone-400'
                 : 'text-stone-500 border-transparent hover:text-stone-300 hover:border-stone-600'

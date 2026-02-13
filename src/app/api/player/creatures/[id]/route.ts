@@ -4,11 +4,11 @@ import { getFirebaseAdmin } from '@/lib/firebaseAdmin';
 
 export const runtime = 'nodejs';
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const decoded = await requireSession();
     const uid = decoded.uid;
-    const creatureId = params?.id;
+    const { id: creatureId } = await params;
     if (!creatureId) {
       return NextResponse.json({ error: 'Missing creature id' }, { status: 400 });
     }

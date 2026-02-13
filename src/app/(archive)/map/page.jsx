@@ -664,7 +664,7 @@ export default function MapPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-[#0c0a09] p-8 flex items-center justify-center">
-        <div className="text-amber-600 animate-pulse uppercase tracking-widest text-xs">
+        <div className="text-stone-400 animate-pulse uppercase tracking-widest text-xs">
           Verifying Identity...
         </div>
       </div>
@@ -752,7 +752,7 @@ export default function MapPage() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center py-12 text-stone-500"
             >
-              <div className="w-10 h-10 border-2 border-stone-800 border-t-amber-500 rounded-full animate-spin mb-4" />
+              <div className="w-10 h-10 border-2 border-stone-800 border-t-stone-500 rounded-full animate-spin mb-4" />
               <p className="text-sm uppercase tracking-[0.2em]">Syncing your gear...</p>
             </motion.div>
           )}
@@ -798,10 +798,10 @@ export default function MapPage() {
               <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-[#0c0a09]/70 to-[#0c0a09]" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 rounded-full border border-amber-500/20 blur-sm scale-150" />
+                  <div className="absolute inset-0 rounded-full border border-stone-500/20 blur-sm scale-150" />
                   <div className="absolute inset-0 rounded-full border border-stone-700/40 scale-125" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full border border-amber-500/40 bg-[#0c0a09] flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+                    <div className="w-12 h-12 rounded-full border border-stone-500/40 bg-[#0c0a09] flex items-center justify-center shadow-[0_0_20px_rgba(120,113,108,0.18)]">
                       <Image
                         src={cdn('/img/icons/pteros_island.svg')}
                         alt="Pteros Island"
@@ -825,8 +825,8 @@ export default function MapPage() {
                         aria-label={sigil.label}
                         className={`sigil-button sigil-${sigil.id} w-28 h-28 rounded-full border bg-[#0c0a09] flex items-center justify-center transition-colors ${
                           selectedSigil === sigil.id
-                            ? 'border-amber-500/80 shadow-[0_0_30px_rgba(245,158,11,0.25)]'
-                            : 'border-stone-700/60 hover:border-amber-500/60'
+                            ? 'border-stone-400/80 shadow-[0_0_30px_rgba(120,113,108,0.22)]'
+                            : 'border-stone-700/60 hover:border-stone-500/60'
                         }`}
                       >
                         <Image
@@ -861,8 +861,8 @@ export default function MapPage() {
 
               {pendingConfig && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
-                  <div className="max-w-md w-full mx-4 bg-[#0c0a09] border border-amber-700/40 rounded-xl p-6 space-y-4">
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-amber-500">
+                  <div className="max-w-md w-full mx-4 bg-[#0c0a09] border border-stone-700/50 rounded-xl p-6 space-y-4">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400">
                       Seal Selection
                     </p>
                     <h3 className="text-2xl font-serif text-white">
@@ -899,7 +899,7 @@ export default function MapPage() {
                           onSigilSelect(pendingConfig.id);
                           setPendingSigil(null);
                         }}
-                        className="px-4 py-2 border border-amber-600 text-amber-300 text-[10px] uppercase tracking-[0.2em] rounded hover:text-amber-200 hover:border-amber-400 transition-colors"
+                        className="px-4 py-2 border border-stone-600 text-stone-300 text-[10px] uppercase tracking-[0.2em] rounded hover:text-stone-200 hover:border-stone-400 transition-colors"
                       >
                         Confirm Seal
                       </button>
@@ -1020,7 +1020,7 @@ export default function MapPage() {
 
                 {/* Your Staff (Inventory Display) */}
                 <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
-                  <h3 className="text-amber-500 text-xs uppercase tracking-widest mb-4">Equipped Artifact</h3>
+                  <h3 className="text-stone-400 text-xs uppercase tracking-widest mb-4">Equipped Artifact</h3>
                   {equippedStaff ? (
                     <div>
                       <div className="mb-4">
@@ -1148,7 +1148,7 @@ export default function MapPage() {
                     onClick={() => setSubMapView('2d')}
                     className={`text-[10px] uppercase tracking-widest px-3 py-1 rounded border ${
                       subMapView === '2d'
-                        ? 'bg-amber-900/30 border-amber-600 text-amber-200'
+                        ? 'bg-stone-900/30 border-stone-600 text-stone-200'
                         : 'border-stone-700 text-stone-500'
                     }`}
                   >
@@ -1223,7 +1223,7 @@ export default function MapPage() {
                             <div
                               className="absolute inset-0"
                               style={{
-                                backgroundImage: `radial-gradient(circle at 18% 22%, rgba(248, 250, 252, 0.32), transparent 45%), radial-gradient(circle at 72% 64%, rgba(226, 232, 240, 0.24), transparent 46%), radial-gradient(circle at 48% 78%, rgba(251, 191, 36, 0.2), transparent 55%), linear-gradient(120deg, rgba(245, 158, 11, 0.08), rgba(120, 53, 15, 0.15))`,
+                                backgroundImage: `radial-gradient(circle at 18% 22%, rgba(248, 250, 252, 0.32), transparent 45%), radial-gradient(circle at 72% 64%, rgba(226, 232, 240, 0.24), transparent 46%), radial-gradient(circle at 48% 78%, rgba(148, 163, 184, 0.18), transparent 55%), linear-gradient(120deg, rgba(120, 113, 108, 0.08), rgba(41, 37, 36, 0.18))`,
                                 mixBlendMode: 'screen',
                                 opacity: 0.6
                               }}
@@ -1355,7 +1355,7 @@ export default function MapPage() {
                         }}
                       />
                       <div
-                        className="absolute border border-amber-300/70"
+                        className="absolute border border-stone-400/60"
                         style={{
                           left: `${Math.max(0, Math.min(1, 0.5 - subMapTransform.x / (subMapRef.current?.clientWidth * subMapTransform.scale || 1))) * 100 - (50 / (subMapTransform.scale || 1))}%`,
                           top: `${Math.max(0, Math.min(1, 0.5 - subMapTransform.y / (subMapRef.current?.clientHeight * subMapTransform.scale || 1))) * 100 - (50 / (subMapTransform.scale || 1))}%`,
@@ -1381,15 +1381,15 @@ export default function MapPage() {
         @keyframes sigil-spin-glow {
           0% {
             transform: rotate(0deg) scale(1);
-            filter: drop-shadow(0 0 0 rgba(245, 158, 11, 0));
+            filter: drop-shadow(0 0 0 rgba(120, 113, 108, 0));
           }
           50% {
             transform: rotate(12deg) scale(1.06);
-            filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.35));
+            filter: drop-shadow(0 0 12px rgba(120, 113, 108, 0.35));
           }
           100% {
             transform: rotate(0deg) scale(1.02);
-            filter: drop-shadow(0 0 18px rgba(245, 158, 11, 0.45));
+            filter: drop-shadow(0 0 18px rgba(120, 113, 108, 0.45));
           }
         }
         .sigil-animate {
