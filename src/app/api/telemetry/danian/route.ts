@@ -7,6 +7,9 @@ export const runtime = 'nodejs';
 
 const USGS_ENDPOINT = 'https://waterservices.usgs.gov/nwis/iv/';
 const DEFAULT_USGS_SITE = process.env.DANIAN_USGS_SITE || '09380000';
+const USGS_SITES = DEFAULT_USGS_SITE.split(',')
+  .map((site) => site.trim())
+  .filter(Boolean);
 const DEFAULT_USGS_PARAMS = process.env.DANIAN_USGS_PARAMS || '00060,00010,63680,00095';
 const DEFAULT_MODE = process.env.DANIAN_MODE || 'auto'; // auto | usgs | cache | sim
 const SIM_PATH = fileURLToPath(new URL('../../../../../data/danian_sim.json', import.meta.url));
@@ -34,6 +37,7 @@ type UsgsReading = {
 type UsgsSnapshot = {
   siteName: string | null;
   siteCode: string | null;
+  sites?: { id: string; name: string | null }[];
   readings: Record<string, UsgsReading>;
 };
 
@@ -54,15 +58,25 @@ function toNumber(value: any) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-async function fetchUsgs(site: string, params: string) {
-  const url = `${USGS_ENDPOINT}?format=json&sites=${encodeURIComponent(site)}&parameterCd=${encodeURIComponent(params)}&siteStatus=all`;
+function maxTime(a?: string, b?: string) {
+  if (!a) return b;
+  if (!b) return a;
+  return b > a ? b : a;
+}
+
+async function fetchUsgs(sites: string[], params: string) {
+  const siteList = sites.length ? sites : ['09380000'];
+  const url = `${USGS_ENDPOINT}?format=json&sites=${encodeURIComponent(siteList.join(','))}&parameterCd=${encodeURIComponent(
+    params
+  )}&siteStatus=all`;
   const res = await fetch(url, { next: { revalidate: 300 } });
   if (!res.ok) {
     throw new Error(`USGS upstream error ${res.status}`);
   }
   const json = await res.json();
   const series = json?.value?.timeSeries ?? [];
-  const readings: Record<string, UsgsReading> = {};
+  const readingsByCode: Record<string, { values: number[]; unit?: string; time?: string }> = {};
+  const siteMap = new Map<string, string | null>();
 
   for (const item of series) {
     const code = item?.variable?.variableCode?.[0]?.value;
@@ -70,16 +84,40 @@ async function fetchUsgs(site: string, params: string) {
     const values = item?.values?.[0]?.value ?? [];
     const latest = values[values.length - 1];
     if (!latest) continue;
-    readings[code] = {
-      value: Number(latest.value),
-      unit: item?.variable?.unit?.unitCode,
-      time: latest.dateTime
-    };
+    const val = toNumber(latest.value);
+    if (val == null) continue;
+    const unit = item?.variable?.unit?.unitCode;
+    const time = latest.dateTime;
+    if (!readingsByCode[code]) {
+      readingsByCode[code] = { values: [], unit, time };
+    }
+    readingsByCode[code].values.push(val);
+    if (!readingsByCode[code].unit && unit) readingsByCode[code].unit = unit;
+    readingsByCode[code].time = maxTime(readingsByCode[code].time, time);
+
+    const siteCode = item?.sourceInfo?.siteCode?.[0]?.value;
+    if (siteCode && !siteMap.has(siteCode)) {
+      siteMap.set(siteCode, item?.sourceInfo?.siteName ?? null);
+    }
   }
 
+  const readings: Record<string, UsgsReading> = {};
+  Object.entries(readingsByCode).forEach(([code, meta]) => {
+    if (!meta.values.length) return;
+    const avg = meta.values.reduce((sum, v) => sum + v, 0) / meta.values.length;
+    readings[code] = {
+      value: avg,
+      unit: meta.unit,
+      time: meta.time
+    };
+  });
+
+  const sitesInfo = Array.from(siteMap.entries()).map(([id, name]) => ({ id, name }));
+  const multi = sitesInfo.length > 1;
   return {
-    siteName: series[0]?.sourceInfo?.siteName ?? null,
-    siteCode: series[0]?.sourceInfo?.siteCode?.[0]?.value ?? site,
+    siteName: multi ? 'USGS Multi-site blend' : sitesInfo[0]?.name ?? null,
+    siteCode: multi ? sitesInfo.map((s) => s.id).join(',') : sitesInfo[0]?.id ?? siteList[0],
+    sites: sitesInfo,
     readings
   } as UsgsSnapshot;
 }
@@ -203,7 +241,7 @@ function buildTelemetry({
     ok: true,
     mode,
     source: {
-      usgs: usgs ? { site: usgs.siteCode, name: usgs.siteName } : null,
+      usgs: usgs ? { site: usgs.siteCode, name: usgs.siteName, sites: usgs.sites ?? null } : null,
       delta: {
         blend: deltaSignal,
         a: delta.a,
@@ -246,7 +284,7 @@ async function loadSimTelemetry(mode: string) {
       aiBrief: `Simulated Danian flow ${point.flow_m3s} m3/s.`
     };
 
-    return { ok: true, mode, source: { sim: DEFAULT_SIM_PATH }, telemetry };
+    return { ok: true, mode, source: { sim: 'data/danian_sim.json' }, telemetry };
   } catch {
     return null;
   }
@@ -256,7 +294,7 @@ async function loadCacheTelemetry(mode: string) {
   try {
     const data = await readJsonFile(CACHE_PATH);
     if (!data?.telemetry) return null;
-    return { ok: true, mode, source: { cache: DEFAULT_CACHE_PATH }, telemetry: data.telemetry };
+    return { ok: true, mode, source: { cache: CACHE_PATH }, telemetry: data.telemetry };
   } catch {
     return null;
   }
@@ -278,7 +316,7 @@ export async function GET(request: Request) {
 
   if (mode === 'usgs' || mode === 'auto') {
     try {
-      const usgs = await fetchUsgs(DEFAULT_USGS_SITE, DEFAULT_USGS_PARAMS);
+      const usgs = await fetchUsgs(USGS_SITES, DEFAULT_USGS_PARAMS);
       const [deltaA, deltaB] = await Promise.all([
         fetchOpenMeteo(DELTA_LAT_A, DELTA_LON_A),
         fetchOpenMeteo(DELTA_LAT_B, DELTA_LON_B)
