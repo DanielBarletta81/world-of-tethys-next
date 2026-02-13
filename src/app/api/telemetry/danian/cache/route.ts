@@ -4,7 +4,11 @@ import path from 'path';
 
 export const runtime = 'nodejs';
 
-const DEFAULT_CACHE_PATH = process.env.DANIAN_CACHE_PATH || 'data/danian_real.json';
+const CACHE_PATH = (() => {
+  const override = process.env.DANIAN_CACHE_PATH;
+  if (!override) return '/tmp/danian_real.json';
+  return path.isAbsolute(override) ? override : path.join('/tmp', override);
+})();
 
 function getBaseUrl(request: Request) {
   const host = request.headers.get('host') || process.env.VERCEL_URL;
@@ -14,10 +18,9 @@ function getBaseUrl(request: Request) {
 }
 
 async function writeCache(payload: any) {
-  const abs = path.resolve(process.cwd(), DEFAULT_CACHE_PATH);
-  await fs.mkdir(path.dirname(abs), { recursive: true });
-  await fs.writeFile(abs, JSON.stringify(payload, null, 2), 'utf-8');
-  return abs;
+  await fs.mkdir(path.dirname(CACHE_PATH), { recursive: true });
+  await fs.writeFile(CACHE_PATH, JSON.stringify(payload, null, 2), 'utf-8');
+  return CACHE_PATH;
 }
 
 export async function POST(request: Request) {
