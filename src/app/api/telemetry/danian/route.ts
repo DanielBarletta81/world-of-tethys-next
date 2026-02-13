@@ -89,6 +89,23 @@ function pickPrimarySite(
   return { site: primary?.id ?? null, used: 'none' as const, fallback: null };
 }
 
+function applyPrimarySelection(usgs: UsgsSnapshot | null) {
+  if (!usgs?.primary || !usgs.sites?.length || !usgs.siteReadings) return;
+  const usedId =
+    usgs.primary.used === 'fallback'
+      ? usgs.primary.fallback?.id
+      : usgs.primary.used === 'primary'
+        ? usgs.primary.site
+        : null;
+  if (!usedId) return;
+  const selected = usgs.siteReadings[usedId];
+  if (!selected) return;
+  const name = usgs.sites.find((s) => s.id === usedId)?.name ?? usgs.siteName;
+  usgs.readings = selected;
+  usgs.siteCode = usedId;
+  usgs.siteName = name ?? usgs.siteName;
+}
+
 function maxTime(a?: string, b?: string) {
   if (!a) return b;
   if (!b) return a;
@@ -263,9 +280,7 @@ function buildTelemetry({
       raw: {
         flow_cfs: flowCfs,
         flow_m3s: flowM3s,
-        primary_flow_cfs: usgs?.primary?.fallback
-          ? usgs?.siteReadings?.[usgs.primary.fallback.id]?.['00060']?.value ?? null
-          : usgs?.siteReadings?.[usgs?.primary?.site ?? '']?.['00060']?.value ?? null,
+        primary_flow_cfs: flowCfs,
         turbidity_ntu: turbidity,
         conductance_uScm: conductance,
         delta_index: Math.round(deltaIndex * 100) / 100
@@ -366,6 +381,7 @@ export async function GET(request: Request) {
       const usgs = await fetchUsgs(USGS_SITES, DEFAULT_USGS_PARAMS);
       if (usgs?.sites?.length) {
         usgs.primary = pickPrimarySite(usgs.sites, usgs.siteReadings, PRIMARY_SITE);
+        applyPrimarySelection(usgs);
       }
       const [deltaA, deltaB] = await Promise.all([
         fetchOpenMeteo(DELTA_LAT_A, DELTA_LON_A),
