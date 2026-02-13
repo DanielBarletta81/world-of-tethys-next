@@ -10,6 +10,7 @@ const DEFAULT_USGS_SITE = process.env.DANIAN_USGS_SITE || '09380000';
 const USGS_SITES = DEFAULT_USGS_SITE.split(',')
   .map((site) => site.trim())
   .filter(Boolean);
+const PRIMARY_SITE = (process.env.DANIAN_PRIMARY_SITE || USGS_SITES[0] || '').trim();
 const DEFAULT_USGS_PARAMS = process.env.DANIAN_USGS_PARAMS || '00060,00010,63680,00095';
 const DEFAULT_MODE = process.env.DANIAN_MODE || 'auto'; // auto | usgs | cache | sim
 const SIM_PATH = fileURLToPath(new URL('../../../../../data/danian_sim.json', import.meta.url));
@@ -38,6 +39,12 @@ type UsgsSnapshot = {
   siteName: string | null;
   siteCode: string | null;
   sites?: { id: string; name: string | null }[];
+  primary?: {
+    site: string | null;
+    used: 'primary' | 'fallback' | 'none';
+    fallback?: { id: string; name: string | null } | null;
+  };
+  siteReadings?: Record<string, Record<string, UsgsReading>>;
   readings: Record<string, UsgsReading>;
 };
 
@@ -56,6 +63,30 @@ function clamp(value: number, min: number, max: number) {
 function toNumber(value: any) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function pickPrimarySite(
+  sites: { id: string; name: string | null }[],
+  siteReadings: Record<string, Record<string, UsgsReading>> | undefined,
+  primaryId: string
+) {
+  const hasFlow = (id?: string | null) => {
+    if (!id) return false;
+    const flow = siteReadings?.[id]?.['00060']?.value;
+    return typeof flow === 'number' && Number.isFinite(flow) && flow > 0;
+  };
+
+  const primary = sites.find((s) => s.id === primaryId) || null;
+  if (primary && hasFlow(primary.id)) {
+    return { site: primary.id, used: 'primary' as const, fallback: null };
+  }
+
+  const fallback = sites.find((s) => hasFlow(s.id)) || null;
+  if (fallback) {
+    return { site: primary?.id ?? null, used: 'fallback' as const, fallback };
+  }
+
+  return { site: primary?.id ?? null, used: 'none' as const, fallback: null };
 }
 
 function maxTime(a?: string, b?: string) {
@@ -77,6 +108,7 @@ async function fetchUsgs(sites: string[], params: string) {
   const series = json?.value?.timeSeries ?? [];
   const readingsByCode: Record<string, { values: number[]; unit?: string; time?: string }> = {};
   const siteMap = new Map<string, string | null>();
+  const siteReadings: Record<string, Record<string, UsgsReading>> = {};
 
   for (const item of series) {
     const code = item?.variable?.variableCode?.[0]?.value;
@@ -99,6 +131,10 @@ async function fetchUsgs(sites: string[], params: string) {
     if (siteCode && !siteMap.has(siteCode)) {
       siteMap.set(siteCode, item?.sourceInfo?.siteName ?? null);
     }
+    if (siteCode) {
+      siteReadings[siteCode] = siteReadings[siteCode] || {};
+      siteReadings[siteCode][code] = { value: val, unit, time };
+    }
   }
 
   const readings: Record<string, UsgsReading> = {};
@@ -112,12 +148,13 @@ async function fetchUsgs(sites: string[], params: string) {
     };
   });
 
-  const sitesInfo = Array.from(siteMap.entries()).map(([id, name]) => ({ id, name }));
+  const sitesInfo = siteList.map((id) => ({ id, name: siteMap.get(id) ?? null }));
   const multi = sitesInfo.length > 1;
   return {
     siteName: multi ? 'USGS Multi-site blend' : sitesInfo[0]?.name ?? null,
     siteCode: multi ? sitesInfo.map((s) => s.id).join(',') : sitesInfo[0]?.id ?? siteList[0],
     sites: sitesInfo,
+    siteReadings,
     readings
   } as UsgsSnapshot;
 }
@@ -226,6 +263,9 @@ function buildTelemetry({
       raw: {
         flow_cfs: flowCfs,
         flow_m3s: flowM3s,
+        primary_flow_cfs: usgs?.primary?.fallback
+          ? usgs?.siteReadings?.[usgs.primary.fallback.id]?.['00060']?.value ?? null
+          : usgs?.siteReadings?.[usgs?.primary?.site ?? '']?.['00060']?.value ?? null,
         turbidity_ntu: turbidity,
         conductance_uScm: conductance,
         delta_index: Math.round(deltaIndex * 100) / 100
@@ -241,7 +281,14 @@ function buildTelemetry({
     ok: true,
     mode,
     source: {
-      usgs: usgs ? { site: usgs.siteCode, name: usgs.siteName, sites: usgs.sites ?? null } : null,
+      usgs: usgs
+        ? {
+            site: usgs.siteCode,
+            name: usgs.siteName,
+            sites: usgs.sites ?? null,
+            primary: usgs.primary ?? null
+          }
+        : null,
       delta: {
         blend: deltaSignal,
         a: delta.a,
@@ -317,6 +364,9 @@ export async function GET(request: Request) {
   if (mode === 'usgs' || mode === 'auto') {
     try {
       const usgs = await fetchUsgs(USGS_SITES, DEFAULT_USGS_PARAMS);
+      if (usgs?.sites?.length) {
+        usgs.primary = pickPrimarySite(usgs.sites, usgs.siteReadings, PRIMARY_SITE);
+      }
       const [deltaA, deltaB] = await Promise.all([
         fetchOpenMeteo(DELTA_LAT_A, DELTA_LON_A),
         fetchOpenMeteo(DELTA_LAT_B, DELTA_LON_B)
