@@ -74,6 +74,7 @@ Ping live upstream sources (Danian + Weep gauges, OpenWeather proxies) and optio
 ```
 python devtools/live_data_check.py --out-html devtools/output/live_data.html
 python devtools/live_data_check.py --base-url http://localhost:3000 --strict
+python devtools/live_data_check.py --primary-site 09380000
 ```
 
 ## Notes

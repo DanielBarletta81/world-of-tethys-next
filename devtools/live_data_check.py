@@ -162,6 +162,31 @@ def fetch_usgs(sites: List[str], params: List[str]) -> Dict[str, Any]:
   }
 
 
+def select_primary_fallback(summaries: List[Dict[str, Any]], primary: Optional[str]) -> Dict[str, Any]:
+  def has_flow(entry: Dict[str, Any]) -> bool:
+    value = entry.get("flow_cfs")
+    try:
+      return value is not None and str(value).strip() != "" and float(value) > 0
+    except (TypeError, ValueError):
+      return False
+
+  primary_entry = None
+  if primary:
+    for entry in summaries:
+      if entry.get("site") == primary:
+        primary_entry = entry
+        break
+
+  if primary_entry and has_flow(primary_entry):
+    return {"primary": primary_entry, "fallback": None, "used": "primary"}
+
+  for entry in summaries:
+    if has_flow(entry):
+      return {"primary": primary_entry, "fallback": entry, "used": "fallback"}
+
+  return {"primary": primary_entry, "fallback": None, "used": "none"}
+
+
 def fetch_openweather_city(api_key: str, city: str) -> Dict[str, Any]:
   if not api_key:
     return {"ok": False, "error": "Missing OPENWEATHER_API_KEY"}
@@ -211,6 +236,7 @@ def main() -> int:
   parser.add_argument("--pteros-city", default=None)
   parser.add_argument("--ledge-lat", type=float, default=None)
   parser.add_argument("--ledge-lon", type=float, default=None)
+  parser.add_argument("--primary-site", default=None)
   parser.add_argument("--strict", action="store_true")
   args = parser.parse_args()
 
@@ -222,6 +248,7 @@ def main() -> int:
   pteros_city = args.pteros_city or os.environ.get("PTEROS_CITY", DEFAULT_PTEROS_CITY)
   ledge_lat = args.ledge_lat or float(os.environ.get("LEDGE_LAT", DEFAULT_LEDGE_LAT))
   ledge_lon = args.ledge_lon or float(os.environ.get("LEDGE_LON", DEFAULT_LEDGE_LON))
+  primary_site = (args.primary_site or os.environ.get("DANIAN_PRIMARY_SITE") or (usgs_sites[0] if usgs_sites else "")).strip()
 
   api_key = os.environ.get("OPENWEATHER_API_KEY")
 
@@ -232,6 +259,7 @@ def main() -> int:
   weep_report = fetch_usgs([weep_site], ["00060"])
   pteros_report = fetch_openweather_city(api_key or "", pteros_city)
   ledge_report = fetch_openweather_coords(api_key or "", ledge_lat, ledge_lon)
+  primary_status = select_primary_fallback(usgs_report.get("sites") or [], primary_site)
 
   internal_checks = []
   if args.base_url:
@@ -296,6 +324,7 @@ def main() -> int:
     "<div class=\"card\">"
     "<h2>Danian USGS (Average)</h2>"
     f"<div class=\"small\">Sites: {', '.join(usgs_sites)} | Params: {', '.join(usgs_params)}</div>"
+    + f"<div class=\"small\">Primary: {primary_site or 'n/a'} | Used: {primary_status.get('used')}</div>"
     + render_table(["Site", "Name", "Flow (cfs)", "Temp", "Turbidity", "Conductance", "Time"], usgs_rows)
     + f"<div class=\"small\">Avg Flow (cfs): {usgs_report.get('avg_flow_cfs') or 'n/a'}</div>"
     + "</div>"
@@ -329,6 +358,8 @@ def main() -> int:
   else:
     print(f"{title} @ {ts}")
     print(f"USGS sites: {', '.join(usgs_sites)}")
+    if primary_site:
+      print(f"Primary site: {primary_site} | used: {primary_status.get('used')}")
     if usgs_report.get("avg_flow_cfs") is not None:
       print(f"Avg flow (cfs): {usgs_report['avg_flow_cfs']:.1f}")
     print(f"OpenWeather key: {'ok' if api_key else 'missing'}")
@@ -341,6 +372,11 @@ def main() -> int:
     payload = {
       "generatedAt": ts,
       "usgs": usgs_report,
+      "primary": {
+        "site": primary_site,
+        "used": primary_status.get("used"),
+        "fallback": primary_status.get("fallback"),
+      },
       "weep": weep_report,
       "openweather": {"pteros": pteros_report, "ledge": ledge_report},
       "internal": internal_checks,
