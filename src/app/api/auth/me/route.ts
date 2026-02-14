@@ -10,8 +10,7 @@ export async function GET() {
   const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (!sessionCookie) {
-    console.warn('[auth/me] missing session cookie');
-    const res = NextResponse.json({ user: null }, { status: 401 });
+    const res = NextResponse.json({ user: null }, { status: 200 });
     res.headers.set('Cache-Control', 'no-store, max-age=0');
     return res;
   }
@@ -27,7 +26,7 @@ export async function GET() {
     return res;
   } catch (error) {
     console.error('[auth/me] error', error);
-    const res = NextResponse.json({ user: null }, { status: 401 });
+    const res = NextResponse.json({ user: null }, { status: 200 });
     res.headers.set('Cache-Control', 'no-store, max-age=0');
     return res;
   }

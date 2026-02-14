@@ -33,10 +33,13 @@ export default function StudyPage() {
       <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{ backgroundImage: "url('https://world-of-tethys-site.s3.us-east-1.amazonaws.com/img/bg/sector-4-hero.png')" }}
+          style={{ backgroundImage: `url(${cdn('/img/bg/sector-4-hero.png')})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0c0a09] via-[#120d09]/90 to-[#0c0a09]" />
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
+        <div
+          className="absolute inset-0 opacity-20 mix-blend-overlay"
+          style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+        />
       </div>
 
       <div className="relative z-10 pt-6 px-4 md:px-8">

@@ -12,6 +12,7 @@ import { TethysProvider } from '../context/TethysContext';
 import { AudioProvider } from '../context/AudioContext';
 import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 import GlobalAtmosphere from '../components/GlobalAtmosphere';
+import AudioUnlockOverlay from '../components/AudioUnlockOverlay';
 import GuestUpgradeGate from '../components/GuestUpgradeGate';
 import IdleGrowthOverlay from '../components/IdleGrowthOverlay';
 import './globals.css';
@@ -108,6 +109,7 @@ export default function RootLayout({ children }) {
             <AudioProvider>
               <GlobalAtmosphere />
               <IdleGrowthOverlay />
+              <AudioUnlockOverlay />
               <div id="main-content" role="main" className="relative min-h-screen">
                 {children}
               </div>

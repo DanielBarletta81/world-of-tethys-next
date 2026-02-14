@@ -13,10 +13,12 @@ type AudioTrack = {
 type AudioContextValue = {
   currentTrack: AudioTrack | null;
   isPlaying: boolean;
+  requiresGesture: boolean;
   volume: number;
   setVolume: (v: number) => void;
   playTrack: (trackId: string) => void;
   togglePlay: () => void;
+  unlockAudio: () => Promise<void>;
   closePlayer: () => void;
 };
 
@@ -25,6 +27,7 @@ const AudioContext = createContext<AudioContextValue | null>(null);
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null); // Null = Player hidden/inactive
   const [isPlaying, setIsPlaying] = useState(false);
+  const [requiresGesture, setRequiresGesture] = useState(false);
   const [volume, setVolume] = useState(0.04);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -60,7 +63,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (audioRef.current.src !== currentTrack.src) {
         audioRef.current.src = currentTrack.src;
         audioRef.current.load();
-        if (isPlaying) audioRef.current.play().catch(e => console.log("Autoplay prevented:", e));
+        if (isPlaying) {
+          audioRef.current.play()
+            .then(() => setRequiresGesture(false))
+            .catch((e) => {
+              console.log('Autoplay prevented:', e);
+              setRequiresGesture(true);
+              setIsPlaying(false);
+            });
+        }
     }
   }, [currentTrack, isPlaying]);
 
@@ -69,7 +80,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (!audioRef.current || !currentTrack) return;
 
     if (isPlaying) {
-      audioRef.current.play().catch(e => console.log("Playback error:", e));
+      audioRef.current.play()
+        .then(() => setRequiresGesture(false))
+        .catch((e) => {
+          console.log('Playback error:', e);
+          setRequiresGesture(true);
+          setIsPlaying(false);
+        });
     } else {
       audioRef.current.pause();
     }
@@ -99,6 +116,23 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   const togglePlay = () => setIsPlaying(!isPlaying);
 
+  const unlockAudio = async () => {
+    const track = currentTrack || AUDIO_TRACKS.find((t) => t.id === 'intro_drone');
+    if (!track || !audioRef.current) return;
+    setCurrentTrack(track);
+    audioRef.current.src = track.src;
+    audioRef.current.load();
+    try {
+      await audioRef.current.play();
+      setIsPlaying(true);
+      setRequiresGesture(false);
+    } catch (e) {
+      console.log('Playback error:', e);
+      setRequiresGesture(true);
+      setIsPlaying(false);
+    }
+  };
+
   const closePlayer = () => {
     setIsPlaying(false);
     setCurrentTrack(null);
@@ -107,12 +141,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<AudioContextValue>(() => ({
     currentTrack,
     isPlaying,
+    requiresGesture,
     volume,
     setVolume,
     playTrack,
     togglePlay,
+    unlockAudio,
     closePlayer
-  }), [currentTrack, isPlaying, volume]);
+  }), [currentTrack, isPlaying, requiresGesture, volume]);
 
   return (
     <AudioContext.Provider value={value}>

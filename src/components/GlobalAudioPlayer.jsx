@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useAudio } from '../context/AuthContext'; // Correction: Import from AudioContext, fixed below
 import { useAudio as useGlobalAudio } from '../context/AudioContext'; 
 import { Play, Pause, X, Volume2, Radio } from 'lucide-react';
 
