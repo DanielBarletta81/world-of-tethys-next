@@ -85,6 +85,11 @@ export default function HerbariumArchive() {
               <p className="text-stone-400 text-sm leading-relaxed">
                 {activePlant.lore}
               </p>
+              {activePlant.bio ? (
+                <p className="mt-3 text-xs italic text-emerald-200/80">
+                  "{activePlant.bio}"
+                </p>
+              ) : null}
             </section>
           </motion.div>
         </AnimatePresence>

@@ -11,7 +11,7 @@ export default function LoreCard({ title, type, excerpt, seedId }) {
   const seed = resolveSeed(seedId);
   const finalTitle = title || seed?.name;
   const finalType = type || seed?.tag || 'Lore';
-  const finalExcerpt = excerpt || seed?.blurb || seed?.hook || seed?.trait;
+  const finalExcerpt = excerpt || seed?.bio || seed?.blurb || seed?.hook || seed?.trait;
 
   return (
     <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-all hover:border-tethys-gold/50">

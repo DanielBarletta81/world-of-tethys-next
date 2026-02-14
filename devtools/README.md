@@ -77,6 +77,14 @@ python devtools/live_data_check.py --base-url http://localhost:3000 --strict
 python devtools/live_data_check.py --primary-site 09380000
 ```
 
+## 11) CDN Audit (asset paths)
+Scan `cdn()` references and verify assets resolve at your CDN base.
+
+```
+python devtools/cdn_audit.py --out-html devtools/output/cdn_audit.html
+python devtools/cdn_audit.py --base https://world-of-tethys-site.s3.us-east-1.amazonaws.com
+```
+
 ## Notes
 - Outputs are static; no external deps.
 - HTML output is stored under `devtools/output/`.

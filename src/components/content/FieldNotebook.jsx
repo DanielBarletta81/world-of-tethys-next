@@ -123,6 +123,12 @@ export default function FieldNotebook({ bestiary = [] }) {
                     "{activeEntry.niche}"
                   </p>
                 </div>
+                {activeEntry.bio ? (
+                  <div className="bg-[#f5f1ea] p-3 rounded border border-[#cfc3b2]/40">
+                    <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#8c735a] mb-1">Field Whisper</h4>
+                    <p className="text-sm italic text-[#4b3f34]">"{activeEntry.bio}"</p>
+                  </div>
+                ) : null}
 
                 <div className="bg-[#d6cfc2]/30 p-4 rounded border border-[#b5a693]/30">
                   <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#5c4f43] mb-2 flex items-center gap-2">
