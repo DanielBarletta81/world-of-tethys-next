@@ -1,0 +1,2205 @@
+{
+  "version": "2026-01-25",
+  "sources": [
+    {
+      "id": "notes_12_17_25",
+      "path": "/Users/dbarletta_mb_pro/Desktop/Tethysia /Trilogy /Book 1a/Book 1a rough/Book1 Dec. Notes/12_17_25_Notes.docx",
+      "status": "ingested"
+    },
+    {
+      "id": "battle_txt",
+      "path": "/Users/dbarletta_mb_pro/Desktop/Tethysia /Trilogy /Book 1a/Book 1a rough/Battle.txt",
+      "status": "ingested"
+    },
+    {
+      "id": "eyrie_charter_pdf",
+      "path": "/Users/dbarletta_mb_pro/Desktop/Tethysia /Trilogy /Book 1a/Book 1a rough/Eyrie_Charter_World_of_Tethys.pdf",
+      "status": "ingested_ocr"
+    },
+    {
+      "id": "skycity_glossary_pdf",
+      "path": "/Users/dbarletta_mb_pro/Desktop/Tethysia /Trilogy /Book 1a/SkyCity_Glossary_Quick1p_v2.pdf",
+      "status": "ingested_ocr"
+    },
+    {
+      "id": "ch1_tweaks_rtf",
+      "path": "/Users/dbarletta_mb_pro/Desktop/Tethysia /Trilogy /Book 1a/Ch 1 Tweaks .rtf",
+      "status": "ingested"
+    },
+    {
+      "id": "meso_tethys_food_web_pdf",
+      "path": "/Users/dbarletta_mb_pro/Downloads/Building a Mesozoic Tethys Food Web.pdf",
+      "status": "ingested"
+    },
+    {
+      "id": "tethyan_biomes_evolution_pdf",
+      "path": "/Users/dbarletta_mb_pro/Desktop/Tethyan Worldbuilding_ Biomes and Evolution.pdf",
+      "status": "ingested"
+    },
+    {
+      "id": "ancient_plant_fungal_medicine_pdf",
+      "path": "/Users/dbarletta_mb_pro/Desktop/Ancient Plant and Fungal Medicine Research.pdf",
+      "status": "ingested"
+    }
+  ],
+  "loreSeeds": [
+    {
+      "id": "weep_public_notice_exile",
+      "cluster": "weep-exile",
+      "title": "Public Notice: Exile Option",
+      "type": "signal",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "signals",
+        "archive"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day",
+          "dusk"
+        ],
+        "factions": [
+          "sky-city"
+        ],
+        "stillnessMin": 0.0
+      },
+      "tags": [
+        "ledger",
+        "council",
+        "exile",
+        "weep"
+      ],
+      "text": "The council offers a clean record: stand and be thrown, or step and let the water judge. Exile keeps the ledger tidy; retrieval is unnecessary once the Stakes take.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "weep_crowd_chant",
+      "cluster": "weep-exile",
+      "title": "Crowd Voice: The Stakes",
+      "type": "rumor",
+      "regions": [
+        "sky-city",
+        "lower-tiers"
+      ],
+      "ui": [
+        "map",
+        "signals"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day",
+          "dusk"
+        ],
+        "stillnessMin": 0.2
+      },
+      "tags": [
+        "crowd",
+        "weep",
+        "stakes"
+      ],
+      "text": "The crowd doesn’t debate the verdict. It chants the landing: Stakes, Stakes. Water will strip him clean.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "weep_melden_voice",
+      "cluster": "weep-exile",
+      "title": "Melden’s Caution",
+      "type": "field_note",
+      "regions": [
+        "sky-city",
+        "weep-outflow"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "stillnessMin": 0.4
+      },
+      "tags": [
+        "melden",
+        "weep",
+        "physics"
+      ],
+      "text": "He told Igzier: never call anything pure if you want it to stay that way. Timing is not mercy; it is the only chance.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "weep_physics_surge",
+      "cluster": "weep-exile",
+      "title": "Weep Physics: Secondary Surge",
+      "type": "field_note",
+      "regions": [
+        "weep-outflow"
+      ],
+      "ui": [
+        "map",
+        "holoterrain"
+      ],
+      "conditions": {
+        "tideState": [
+          "surge",
+          "turning"
+        ],
+        "stillnessMin": 0.5
+      },
+      "tags": [
+        "weep",
+        "surge",
+        "trajectory"
+      ],
+      "text": "There is a second push in the Weep. Miss it and the cliff keeps you. Catch it and the sea gets its say.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "weep_stakes_warning",
+      "cluster": "weep-exile",
+      "title": "The Stakes",
+      "type": "warning",
+      "regions": [
+        "weep-outflow"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day"
+        ],
+        "weather": [
+          "clear",
+          "wind"
+        ]
+      },
+      "tags": [
+        "stakes",
+        "basalt",
+        "execution"
+      ],
+      "text": "Black basalt teeth break the surf in rings. The first row is the city’s sentence; the second is the sea’s.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "weep_survivor_whisper",
+      "cluster": "weep-exile",
+      "title": "Whisper: Survivors",
+      "type": "rumor",
+      "regions": [
+        "lower-tiers",
+        "weep-outflow"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "night",
+          "dusk"
+        ],
+        "stillnessMin": 0.6
+      },
+      "tags": [
+        "whisper",
+        "survivor",
+        "exile"
+      ],
+      "text": "They say three cleared the Weep and never returned to the Hall. The ledger calls that myth. The water does not.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "weep_bond_pull",
+      "cluster": "weep-exile",
+      "title": "Bond-Sickness",
+      "type": "signal",
+      "regions": [
+        "weep-outflow",
+        "pteros"
+      ],
+      "ui": [
+        "map",
+        "holoterrain"
+      ],
+      "conditions": {
+        "predatorRisk": [
+          "aerial"
+        ],
+        "stillnessMin": 0.3
+      },
+      "tags": [
+        "stryker",
+        "bond",
+        "aerial"
+      ],
+      "text": "A caged Stryker above the terraces is a live wire in the wind. The bond-pull blurs edges and tugs the body off center.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "skycity_ledger_circle",
+      "cluster": "ledger-myth",
+      "title": "Ledger Logic: The Circle",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive",
+        "signals"
+      ],
+      "conditions": {
+        "factions": [
+          "sky-city"
+        ]
+      },
+      "tags": [
+        "ledger",
+        "exile",
+        "doctrine"
+      ],
+      "text": "Quick leaves a body. Exile leaves a circle. When a reasonable time passes, the accounts balance.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "raceway_black_tide",
+      "cluster": "black-tide",
+      "title": "Raceways: The Fish Know",
+      "type": "warning",
+      "regions": [
+        "sky-city",
+        "lower-tiers"
+      ],
+      "ui": [
+        "map",
+        "signals"
+      ],
+      "conditions": {
+        "anoxicEvent": true,
+        "weather": [
+          "still",
+          "humid"
+        ],
+        "timeOfDay": [
+          "day",
+          "dawn"
+        ]
+      },
+      "tags": [
+        "black-tide",
+        "anoxic",
+        "waterworks"
+      ],
+      "text": "Feeder fish roll belly-up in the raceways when the channels go off-key. Watch the fish; they know before we do.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "black_tide_smell",
+      "cluster": "black-tide",
+      "title": "Rot in the Breath",
+      "type": "field_note",
+      "regions": [
+        "lower-tiers"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "anoxicEvent": true,
+        "timeOfDay": [
+          "night",
+          "dusk"
+        ]
+      },
+      "tags": [
+        "anoxic",
+        "sulfur",
+        "vents"
+      ],
+      "text": "When the vents breathe wrong, the city smells like rot. Boil the water if you can. If you can’t, stillness buys time.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "karys_greenhouse_memory",
+      "cluster": "black-tide",
+      "title": "Greenhouse Note",
+      "type": "memory",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "anoxicEvent": true,
+        "timeOfDay": [
+          "day"
+        ]
+      },
+      "tags": [
+        "karys",
+        "greenhouse",
+        "water"
+      ],
+      "text": "The misters tick the leaves, but the water runs wrong. Three fish float near the surface, gills hammering. The city will call it an anomaly.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "stillness_gate_protocol",
+      "cluster": "stillness-gate",
+      "title": "Stillness Gate",
+      "type": "protocol",
+      "regions": [
+        "mystic-woods",
+        "karst-drains"
+      ],
+      "ui": [
+        "map",
+        "mystics"
+      ],
+      "conditions": {
+        "stillnessMin": 0.7
+      },
+      "tags": [
+        "stillness",
+        "oracle",
+        "ravel"
+      ],
+      "text": "Ravel’s rule: timing is a gate. If the hands still shake, the cure binds the poison in place. Wait until the body quits arguing.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "weaver_philosophy_fragment",
+      "cluster": "mystics-ravel",
+      "title": "Ravel: The Quiet Trade",
+      "type": "fragment",
+      "regions": [
+        "mystic-woods"
+      ],
+      "ui": [
+        "mystics"
+      ],
+      "conditions": {
+        "sporeSaturationMin": 0.6
+      },
+      "tags": [
+        "ravel",
+        "mystics",
+        "philosophy"
+      ],
+      "text": "He says the forest doesn’t cure; it answers. You trade certainty for survival and call it wisdom.",
+      "source": "notes_12_17_25"
+    },
+    {
+      "id": "borts_hope_bridge",
+      "cluster": "borts-hope",
+      "title": "Bort’s Hope",
+      "type": "field_note",
+      "regions": [
+        "marsh-edge"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "fog",
+          "wind"
+        ],
+        "timeOfDay": [
+          "dawn"
+        ]
+      },
+      "tags": [
+        "bridge",
+        "battle",
+        "marsh"
+      ],
+      "text": "Three warped spans of lashed timber rise out of teal mist. Lanterns gutter amber in the wind; the shallows decide the year.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "eel_rider_ambush",
+      "cluster": "borts-hope",
+      "title": "Reedbed Ambush",
+      "type": "tactic",
+      "regions": [
+        "silurian-fringe",
+        "marsh-edge"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "tideState": [
+          "turning"
+        ],
+        "predatorRisk": [
+          "ambush"
+        ]
+      },
+      "tags": [
+        "eel-riders",
+        "reedbed",
+        "ambush"
+      ],
+      "text": "Eel-riders hide left in the reedbed. False pennants pull them shallow; spears wait below the cattail line.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "goreline_anchor",
+      "cluster": "borts-hope",
+      "title": "Goreline Wedge",
+      "type": "tactic",
+      "regions": [
+        "marsh-edge"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "tideState": [
+          "turning",
+          "surge"
+        ]
+      },
+      "tags": [
+        "triceratops",
+        "anchor",
+        "wedge"
+      ],
+      "text": "Seven triceratops form a wedge and do not charge to break. They charge to anchor. Push, hold, breathe.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "quills_sunburst",
+      "cluster": "borts-hope",
+      "title": "Quills Sunburst",
+      "type": "tactic",
+      "regions": [
+        "marsh-edge"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "predatorRisk": [
+          "ground"
+        ],
+        "weather": [
+          "fog"
+        ]
+      },
+      "tags": [
+        "stegosaur",
+        "thresh",
+        "formation"
+      ],
+      "text": "Stegosaur handlers space the Quills like a moving hedge. When they turn, the tail-spikes bloom into a threshing sunburst.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "thunderguard_line",
+      "cluster": "borts-hope",
+      "title": "Thunderguard",
+      "type": "tactic",
+      "regions": [
+        "marsh-edge"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "tideState": [
+          "turning"
+        ],
+        "weather": [
+          "wind"
+        ]
+      },
+      "tags": [
+        "mammoth",
+        "raft",
+        "lines"
+      ],
+      "text": "Three mammoths drag a log raft studded with stakes. Sinew lines turn the undercurrent into a net.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "tide_turn_decides",
+      "cluster": "borts-hope",
+      "title": "The River Decides",
+      "type": "observation",
+      "regions": [
+        "marsh-edge",
+        "silurian-fringe"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "tideState": [
+          "turning"
+        ]
+      },
+      "tags": [
+        "tide",
+        "river",
+        "timing"
+      ],
+      "text": "When the tide turns hard, the flats shift sideways. That hour is why the bridge holds.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "stryker_bank_right",
+      "cluster": "borts-hope",
+      "title": "Bank Right",
+      "type": "signal",
+      "regions": [
+        "silurian-fringe",
+        "pteros"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "predatorRisk": [
+          "aerial"
+        ],
+        "weather": [
+          "fog",
+          "wind"
+        ]
+      },
+      "tags": [
+        "stryker",
+        "signal",
+        "aerial"
+      ],
+      "text": "Stryker stoops out of cloud like a flung spear. Signal: bank right, no repeat.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "plesiosaur_war_mount",
+      "cluster": "borts-hope",
+      "title": "Iron-Mouth",
+      "type": "observation",
+      "regions": [
+        "lower-reefs",
+        "tethys-estuary"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "predatorRisk": [
+          "marine"
+        ],
+        "tideState": [
+          "surge",
+          "slack"
+        ]
+      },
+      "tags": [
+        "plesiosaur",
+        "war-mount",
+        "marine"
+      ],
+      "text": "A broad-skulled plesiosaur rides the shallows with a handler in bone rings. When it rises, the water humps like a living hill.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "pitch_pots_fog",
+      "cluster": "borts-hope",
+      "title": "Smoke Curtain",
+      "type": "tactic",
+      "regions": [
+        "marsh-edge"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "fog",
+          "wind"
+        ]
+      },
+      "tags": [
+        "smoke",
+        "bridge",
+        "cover"
+      ],
+      "text": "Pitch-pots burst on the bridge and turn the head into a silhouette theater. In that curtain, hesitation wins more than steel.",
+      "source": "battle_txt"
+    },
+    {
+      "id": "equilibrium_doctrine",
+      "cluster": "sky-city-equilibrium",
+      "title": "Doctrine of Equilibrium",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "signals",
+        "archive"
+      ],
+      "conditions": {
+        "factions": [
+          "sky-city"
+        ]
+      },
+      "tags": [
+        "equilibrium",
+        "doctrine",
+        "cycle"
+      ],
+      "text": "Sky City calls itself the keeper of the cycle. A passing is paired to a birth; a reassignment to a return. It is administrative theater that pretends balance.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "equilibrium_threads",
+      "cluster": "sky-city-equilibrium",
+      "title": "Threads for the Cycle",
+      "type": "custom",
+      "regions": [
+        "sky-city",
+        "lower-tiers"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day",
+          "dusk"
+        ]
+      },
+      "tags": [
+        "threads",
+        "ritual",
+        "cycle"
+      ],
+      "text": "A black thread for a passing. A white thread for a naming. Midwives and mourners cross on purpose and call it the city’s mercy.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "triumvirate_roles",
+      "cluster": "sky-city-equilibrium",
+      "title": "The Three Chairs",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {
+        "factions": [
+          "sky-city"
+        ]
+      },
+      "tags": [
+        "triumvirate",
+        "council"
+      ],
+      "text": "Three chairs: the Minister of Selection, the Recorder of Measures, and the Prefect of Quiet-Men. Procedure sits where light falls fullest.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "equilibrium_plaza_exchange",
+      "cluster": "sky-city-equilibrium",
+      "title": "Plaza Exchange",
+      "type": "memory",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "map",
+        "signals"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day"
+        ]
+      },
+      "tags": [
+        "plaza",
+        "ritual",
+        "threads"
+      ],
+      "text": "Two lines meet and part: a black cloth for a passing, a white swaddle for a naming. They nod and keep walking. The city takes notes and calls it policy.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "karys_wrong_door",
+      "cluster": "sky-city-equilibrium",
+      "title": "Karys: The Wrong Door",
+      "type": "memory",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "stillnessMin": 0.4
+      },
+      "tags": [
+        "karys",
+        "exile",
+        "choice"
+      ],
+      "text": "Don’t let them choose your ending. If a door must close, make sure it’s the wrong one.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "giver_never_takes",
+      "cluster": "sky-city-belief",
+      "title": "Giver of Light",
+      "type": "belief",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "map",
+        "signals"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "dawn",
+          "day"
+        ]
+      },
+      "tags": [
+        "belief",
+        "ritual",
+        "light"
+      ],
+      "text": "The Giver never takes. Keep a small light at dawn; palms east in thanks.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "honest_seam",
+      "cluster": "sky-city-navigation",
+      "title": "Honest Seam",
+      "type": "protocol",
+      "regions": [
+        "sky-city",
+        "tethys-estuary"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "wind",
+          "fog"
+        ]
+      },
+      "tags": [
+        "navigation",
+        "current"
+      ],
+      "text": "The brief, stable lane between hostile currents. Ride it, don’t trust it.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "wind_stairs",
+      "cluster": "sky-city-navigation",
+      "title": "Wind Stairs",
+      "type": "protocol",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "wind"
+        ]
+      },
+      "tags": [
+        "wind",
+        "gyre",
+        "flight"
+      ],
+      "text": "Layered lifts and circular updrafts along cliffs. Flyers climb the stairs.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "telitales_signal",
+      "cluster": "sky-city-navigation",
+      "title": "Telitales",
+      "type": "signal",
+      "regions": [
+        "sky-city",
+        "tethys-estuary"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "wind"
+        ]
+      },
+      "tags": [
+        "prow",
+        "signal"
+      ],
+      "text": "Two narrow blushcloth ribbons on the prow. If they snap straight up or reverse, drop to the seam.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "wing_tilt_signal",
+      "cluster": "sky-city-navigation",
+      "title": "Wing Tilt Signal",
+      "type": "signal",
+      "regions": [
+        "pteros",
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "predatorRisk": [
+          "aerial"
+        ]
+      },
+      "tags": [
+        "stryker",
+        "flight"
+      ],
+      "text": "Two quick wing tilts mean bad air ahead. Drop to the seam.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "avogadro_scale",
+      "cluster": "sky-city-measures",
+      "title": "Avogadro Scale",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {},
+      "tags": [
+        "measure",
+        "temperature"
+      ],
+      "text": "0°A is fresh water freezing; 100°A is boiling. Spore-fog risk rises above 22°A after storms.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "spore_fog_warning",
+      "cluster": "sky-city-hazards",
+      "title": "Spore-Fog",
+      "type": "warning",
+      "regions": [
+        "mystic-woods",
+        "lower-tiers"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "fog",
+          "storm"
+        ]
+      },
+      "tags": [
+        "spore",
+        "hazard"
+      ],
+      "text": "Smells like wet pottery. Close your mouth and stay low.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "night_lash",
+      "cluster": "sky-city-hazards",
+      "title": "Night-Lash",
+      "type": "warning",
+      "regions": [
+        "mystic-woods"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {},
+      "tags": [
+        "vine",
+        "hazard"
+      ],
+      "text": "Barbed micro-hooks that leave a persistent night-scar.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "unledgered_pact",
+      "cluster": "sky-city-law",
+      "title": "Unledgered Pact",
+      "type": "belief",
+      "regions": [
+        "lower-tiers",
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "stillnessMin": 0.3
+      },
+      "tags": [
+        "oath",
+        "counter-law"
+      ],
+      "text": "Whisper-oath: “No one belongs to a ledger.” Two knuckles tapped over the sternum.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "null_set_mark",
+      "cluster": "sky-city-law",
+      "title": "Null-Set",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {
+        "factions": [
+          "sky-city"
+        ]
+      },
+      "tags": [
+        "erasure",
+        "ledger"
+      ],
+      "text": "The city’s tidy erasure mark. Names deleted from ledgers.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "translation_tablets",
+      "cluster": "sky-city-archives",
+      "title": "Translation Tablets",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {},
+      "tags": [
+        "harmonics",
+        "archive"
+      ],
+      "text": "Stone and shell matrices encoding pitch into script. Dangerous to own.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "star_lattice",
+      "cluster": "sky-city-navigation",
+      "title": "Star-Lattice",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {},
+      "tags": [
+        "navigation",
+        "instrument"
+      ],
+      "text": "A brass-bone instrument for bearings under canopy, aligned to the Meridian.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "eyrie_neutral_waystation",
+      "cluster": "eyrie-charter",
+      "title": "Eyrie Charter",
+      "type": "record",
+      "regions": [
+        "pteros",
+        "sky-city"
+      ],
+      "ui": [
+        "map",
+        "signals"
+      ],
+      "conditions": {},
+      "tags": [
+        "eyrie",
+        "pteroswift",
+        "neutral"
+      ],
+      "text": "Eyries are neutral waystations that imprint, feed, rest, and route homing raptors between peoples of Tethys, regardless of faction.",
+      "source": "eyrie_charter_pdf"
+    },
+    {
+      "id": "eyrie_safe_conduct",
+      "cluster": "eyrie-charter",
+      "title": "Eyrie Safe-Conduct",
+      "type": "protocol",
+      "regions": [
+        "pteros",
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {},
+      "tags": [
+        "safe-conduct",
+        "neutral"
+      ],
+      "text": "Approach an Eyrie unarmed and safe-conduct is granted within the marked bounds. No levy or seizure applies under Eyrie seal.",
+      "source": "eyrie_charter_pdf"
+    },
+    {
+      "id": "eyrie_mail_classes",
+      "cluster": "eyrie-charter",
+      "title": "Reed-Bone Tubes",
+      "type": "record",
+      "regions": [
+        "pteros",
+        "sky-city"
+      ],
+      "ui": [
+        "map",
+        "signals"
+      ],
+      "conditions": {},
+      "tags": [
+        "messages",
+        "seal"
+      ],
+      "text": "Messages travel in reed-bone tubes, resin-sealed and horn-stamped with the Eyrie scar. Orchid pigment marks the route and day.",
+      "source": "eyrie_charter_pdf"
+    },
+    {
+      "id": "eyrie_prohibitions",
+      "cluster": "eyrie-charter",
+      "title": "Eyrie Prohibitions",
+      "type": "warning",
+      "regions": [
+        "pteros",
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {},
+      "tags": [
+        "prohibition",
+        "neutral"
+      ],
+      "text": "It is forbidden to conscript eyries for war, weaponize payloads, tamper with seals, or employ tones within the bounds except in extremis by Silurian order.",
+      "source": "eyrie_charter_pdf"
+    },
+    {
+      "id": "cycle_slip_notice",
+      "cluster": "early-scene-accounts",
+      "title": "Cycle Slip Notice",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "signals",
+        "archive"
+      ],
+      "conditions": {
+        "factions": [
+          "sky-city"
+        ]
+      },
+      "tags": [
+        "equilibrium",
+        "notice"
+      ],
+      "text": "Cycles slipped in the east precinct. Reassignments will correct the imbalance without spectacle.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "quiet_conclusion_offer",
+      "cluster": "early-scene-accounts",
+      "title": "Quiet Conclusion",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {
+        "factions": [
+          "sky-city"
+        ]
+      },
+      "tags": [
+        "equilibrium",
+        "exile",
+        "procedure"
+      ],
+      "text": "A vial will be offered in the tool room. Mercy is procedural if accepted. If refused, the water will balance the record.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "lower_tier_cycle_saying",
+      "cluster": "early-scene-accounts",
+      "title": "Door Opens, Door Closes",
+      "type": "rumor",
+      "regions": [
+        "lower-tiers",
+        "sky-city"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day",
+          "dusk"
+        ]
+      },
+      "tags": [
+        "folklore",
+        "cycle"
+      ],
+      "text": "A door closes; a door opens. It’s not policy. It’s how people survive the day.",
+      "source": "ch1_tweaks_rtf"
+    },
+    {
+      "id": "eradicationists",
+      "cluster": "sky-city-law",
+      "title": "Eradicationists",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {},
+      "tags": [
+        "law",
+        "silent-hunts"
+      ],
+      "text": "Quiet removals without trial. The Silent Hunts leave clean numbers.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "matsu_measure",
+      "cluster": "sky-city-measures",
+      "title": "Matsu",
+      "type": "record",
+      "regions": [
+        "sky-city"
+      ],
+      "ui": [
+        "archive"
+      ],
+      "conditions": {},
+      "tags": [
+        "measure",
+        "navigation"
+      ],
+      "text": "A vertical unit based on the Matsu tree. Common bearings reference the Meridian line.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "honest_seam_drift_turn",
+      "cluster": "sky-city-navigation",
+      "title": "Drift Turn",
+      "type": "protocol",
+      "regions": [
+        "tethys-estuary",
+        "pontide_channel"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "wind"
+        ]
+      },
+      "tags": [
+        "navigation",
+        "seam"
+      ],
+      "text": "Bow right, hips left, weight forward. Ignore the clear lane; stay with the seam.",
+      "source": "skycity_glossary_pdf"
+    },
+    {
+      "id": "sulfidic_archipelago",
+      "cluster": "tethys-food-web",
+      "title": "Sulfidic Archipelago",
+      "type": "foodweb",
+      "regions": [
+        "tethys-sea",
+        "shadow_basin",
+        "ionian_deep"
+      ],
+      "ui": [
+        "map",
+        "science"
+      ],
+      "conditions": {
+        "anoxicEvent": true
+      },
+      "tags": [
+        "sulfide",
+        "anoxic",
+        "foodweb"
+      ],
+      "text": "Aptian–Albian shallow basins formed a sulfur-driven food web: toxic to most aerobes, but explosively productive for adapted lineages.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "photic_zone_euxinia",
+      "cluster": "tethys-food-web",
+      "title": "Photic Zone Euxinia",
+      "type": "hazard",
+      "regions": [
+        "shadow_basin",
+        "ionian_deep"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "anoxicEvent": true
+      },
+      "tags": [
+        "euxinia",
+        "sulfide",
+        "black-tide"
+      ],
+      "text": "Hydrogen sulfide rose into the lighted zone, creating a lethal curtain for most life and a niche for sulfur bacteria.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "shallow_vent_hybrid",
+      "cluster": "tethys-food-web",
+      "title": "Shallow Vent Hybrid",
+      "type": "foodweb",
+      "regions": [
+        "apulian_rise",
+        "kohistan_firechain"
+      ],
+      "ui": [
+        "map",
+        "science"
+      ],
+      "conditions": {
+        "weather": [
+          "ash",
+          "storm"
+        ]
+      },
+      "tags": [
+        "vent",
+        "chemosynthetic"
+      ],
+      "text": "Shallow volcanic vents created hybrid systems where chemotrophs and phototrophs co-occurred, feeding a split food web.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "microbial_mats_engine",
+      "cluster": "tethys-food-web",
+      "title": "Microbial Mat Engine",
+      "type": "foodweb",
+      "regions": [
+        "shadow_basin",
+        "ionian_deep",
+        "tethys-estuary"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "anoxicEvent": true
+      },
+      "tags": [
+        "microbial",
+        "sulfur"
+      ],
+      "text": "Sulfide-oxidizing mats covered the seafloor where bioturbation failed; this was the base fuel of the sulfur web.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "zooplankton_bridge",
+      "cluster": "tethys-food-web",
+      "title": "Zooplankton Bridge",
+      "type": "foodweb",
+      "regions": [
+        "tethys-sea",
+        "shadow_basin"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "anoxicEvent": true
+      },
+      "tags": [
+        "zooplankton",
+        "bridge"
+      ],
+      "text": "When phytoplankton crashed under sulfide, zooplankton shifted to grazing bacterial mats and vent detritus.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "kuphus_reef",
+      "cluster": "tethys-food-web",
+      "title": "Kuphus Reefs",
+      "type": "analog",
+      "regions": [
+        "frenel_thickets",
+        "tethys-estuary"
+      ],
+      "ui": [
+        "map",
+        "science"
+      ],
+      "conditions": {
+        "anoxicEvent": true
+      },
+      "tags": [
+        "bivalve",
+        "tubeworm",
+        "sulfide"
+      ],
+      "text": "Giant shipworm-bivalves formed tubeworm-like reefs in sulfidic muds, anchoring a benthic guild that fed on sulfur symbionts.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "kuphus_crab_scavengers",
+      "cluster": "tethys-food-web",
+      "title": "Mudflat Scavengers",
+      "type": "analog",
+      "regions": [
+        "frenel_thickets",
+        "marsh-edge"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "humid",
+          "fog"
+        ]
+      },
+      "tags": [
+        "crab",
+        "scavenger"
+      ],
+      "text": "Necrocarcinid crabs patrolled mangrove mudflats, scavenging Frenelopsis litter and cracking smaller tube shells.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "shell_crushers",
+      "cluster": "tethys-food-web",
+      "title": "Shell Crushers",
+      "type": "analog",
+      "regions": [
+        "tethys-sea",
+        "lower-reefs"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "tideState": [
+          "surge",
+          "slack"
+        ]
+      },
+      "tags": [
+        "shark",
+        "durophagy"
+      ],
+      "text": "Crushing predators targeted heavy-shelled clams and exposed tube mouths; the food web favored armored prey and durophagous hunters.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "spinosaurid_tide_hunters",
+      "cluster": "tethys-food-web",
+      "title": "Tide Hunters",
+      "type": "analog",
+      "regions": [
+        "tethys-estuary",
+        "silurian-fringe"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "tideState": [
+          "turning",
+          "surge"
+        ]
+      },
+      "tags": [
+        "spinosaurid",
+        "apex"
+      ],
+      "text": "Large semi-aquatic predators hunted fish at the margins and pried soft bodies from tube reefs when the tide slackened.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "foodweb_shift_anoxic",
+      "cluster": "tethys-food-web",
+      "title": "Anoxic Shift",
+      "type": "foodweb",
+      "regions": [
+        "shadow_basin",
+        "ionian_deep"
+      ],
+      "ui": [
+        "science"
+      ],
+      "conditions": {
+        "anoxicEvent": true
+      },
+      "tags": [
+        "oae",
+        "shift"
+      ],
+      "text": "During anoxic pulses, the plankton web collapses and chemosynthetic guilds expand; survival concentrates in sulfur refugia.",
+      "source": "meso_tethys_food_web_pdf"
+    },
+    {
+      "id": "ironwood_analog_wealden",
+      "cluster": "tethys-biomes",
+      "title": "Ironwood Analog",
+      "type": "biome",
+      "regions": [
+        "ironwoods"
+      ],
+      "ui": [
+        "map",
+        "science"
+      ],
+      "conditions": {},
+      "tags": [
+        "ironwood",
+        "forest",
+        "analog"
+      ],
+      "text": "Ironwood maps to Araucarian megaforests of the Wealden Group and Patagonian fossil forests—dense, fire‑adapted conifers with resinous, decay‑resistant wood.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "gargantua_analog_kohistan",
+      "cluster": "tethys-biomes",
+      "title": "Gargantua Analog",
+      "type": "biome",
+      "regions": [
+        "kohistan_firechain",
+        "watcher-volcano"
+      ],
+      "ui": [
+        "map",
+        "science"
+      ],
+      "conditions": {},
+      "tags": [
+        "gargantua",
+        "volcanic",
+        "analog"
+      ],
+      "text": "Gargantua aligns with the Kohistan–Ladakh intra‑oceanic arc: steep volcanic islands, silicic domes, and collapse‑driven pyroclastic flows.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "rookery_analog_apulia",
+      "cluster": "tethys-biomes",
+      "title": "Rookery Analog",
+      "type": "biome",
+      "regions": [
+        "pteros",
+        "lower-reefs"
+      ],
+      "ui": [
+        "map",
+        "science"
+      ],
+      "conditions": {},
+      "tags": [
+        "rookery",
+        "carbonate",
+        "analog"
+      ],
+      "text": "The Rookery matches Apulia–Hațeg carbonate platforms: shallow shelves ideal for pterosaur nesting and reef‑edge hunting.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "hypercanes_warning",
+      "cluster": "tethys-hazards",
+      "title": "Hypercane Risk",
+      "type": "hazard",
+      "regions": [
+        "tethys-sea",
+        "pteros"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "storm"
+        ]
+      },
+      "tags": [
+        "storm",
+        "heat"
+      ],
+      "text": "Sea‑surface heat in the Tethys supports hypercane‑scale storms; the margin becomes untrustworthy when pressure climbs.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "sky_city_lineage_canopy",
+      "cluster": "tethys-lineages",
+      "title": "Sky City Lineage",
+      "type": "lineage",
+      "regions": [
+        "sky-city",
+        "ironwoods"
+      ],
+      "ui": [
+        "science",
+        "mystics"
+      ],
+      "conditions": {},
+      "tags": [
+        "sky-city",
+        "arboreal"
+      ],
+      "text": "Sky City lineages adapt to canopy life: elongated forearms, tendon‑locking grips, and enlarged vestibular canals for balance on high, swaying boughs.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "sky_city_echolocation",
+      "cluster": "tethys-lineages",
+      "title": "Canopy Echolocation",
+      "type": "lineage",
+      "regions": [
+        "sky-city",
+        "ironwoods"
+      ],
+      "ui": [
+        "science"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "night",
+          "dusk"
+        ]
+      },
+      "tags": [
+        "echolocation",
+        "sound"
+      ],
+      "text": "Dense canopy and crepuscular pressure select for echolocation: tongue‑click sonar, vaulted palates, and fixed vocal‑motor precision.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "thal_lineage_hypoxia",
+      "cluster": "tethys-lineages",
+      "title": "Thal Lineage",
+      "type": "lineage",
+      "regions": [
+        "kohistan_firechain",
+        "watcher-mountain"
+      ],
+      "ui": [
+        "science"
+      ],
+      "conditions": {},
+      "tags": [
+        "thal",
+        "hypoxia"
+      ],
+      "text": "Thals evolve for arc heights: EPAS1‑like hypoxia tolerance, barrel chests, and enlarged nasal cavities to survive thin volcanic air.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "gargantua_ash_breath",
+      "cluster": "tethys-hazards",
+      "title": "Ash Breath",
+      "type": "hazard",
+      "regions": [
+        "kohistan_firechain",
+        "watcher-volcano"
+      ],
+      "ui": [
+        "map"
+      ],
+      "conditions": {
+        "weather": [
+          "ash",
+          "storm"
+        ]
+      },
+      "tags": [
+        "ash",
+        "respiratory"
+      ],
+      "text": "Silicic dome collapse produces ash‑choked air that scars lungs over time; masks are survival tech, not ritual.",
+      "source": "tethyan_biomes_evolution_pdf"
+    },
+    {
+      "id": "root_whisperer_arms_race",
+      "cluster": "tethys-medicine",
+      "title": "Chemical Arms Race",
+      "type": "medicine",
+      "regions": [
+        "mystic-woods",
+        "ironwoods"
+      ],
+      "ui": [
+        "mystics",
+        "science",
+        "map"
+      ],
+      "conditions": {},
+      "tags": [
+        "medicine",
+        "fungal",
+        "botanical"
+      ],
+      "text": "Aptian–Albian forests were chemical battlegrounds; plants and fungi escalated toxins and antidotes under heavy herbivore pressure.",
+      "source": "ancient_plant_fungal_medicine_pdf"
+    },
+    {
+      "id": "ergot_progenitor",
+      "cluster": "tethys-medicine",
+      "title": "Ergot Progenitor",
+      "type": "medicine",
+      "regions": [
+        "ironwoods",
+        "mystic-woods"
+      ],
+      "ui": [
+        "mystics",
+        "science"
+      ],
+      "conditions": {},
+      "tags": [
+        "ergot",
+        "hemostasis"
+      ],
+      "text": "Palaeoclaviceps parasiticus infected early grasses by 110–97 Ma. Alkaloids were potent and dangerous, but could stop hemorrhage when processed.",
+      "source": "ancient_plant_fungal_medicine_pdf"
+    },
+    {
+      "id": "ash_alkaline_processing",
+      "cluster": "tethys-medicine",
+      "title": "Ash‑Lye Processing",
+      "type": "protocol",
+      "regions": [
+        "mystic-woods",
+        "ironwoods"
+      ],
+      "ui": [
+        "mystics"
+      ],
+      "conditions": {
+        "stillnessMin": 0.4
+      },
+      "tags": [
+        "processing",
+        "ash",
+        "alkaline"
+      ],
+      "text": "Wood‑ash alkaline hydrolysis can tame ergot toxicity—fire‑dust water turns a killer into a hemostat.",
+      "source": "ancient_plant_fungal_medicine_pdf"
+    },
+    {
+      "id": "ganoderma_polypores",
+      "cluster": "tethys-medicine",
+      "title": "Stone‑Shelf Polypores",
+      "type": "medicine",
+      "regions": [
+        "ironwoods",
+        "mystic-woods"
+      ],
+      "ui": [
+        "mystics",
+        "science"
+      ],
+      "conditions": {},
+      "tags": [
+        "ganoderma",
+        "immunity"
+      ],
+      "text": "Ancient polypores (Ganoderma lineage) provided bitter triterpenes and beta‑glucans; decoctions supported immune resilience.",
+      "source": "ancient_plant_fungal_medicine_pdf"
+    },
+    {
+      "id": "ambrosia_antibiotic",
+      "cluster": "tethys-medicine",
+      "title": "Ambrosia Galleries",
+      "type": "medicine",
+      "regions": [
+        "ironwoods"
+      ],
+      "ui": [
+        "mystics",
+        "map"
+      ],
+      "conditions": {},
+      "tags": [
+        "ambrosia",
+        "antibiotic"
+      ],
+      "text": "Beetle‑farmed ambrosia fungi produced antibacterial mats; harvested as topical wound paste and emergency nutrient.",
+      "source": "ancient_plant_fungal_medicine_pdf"
+    },
+    {
+      "id": "psilocybin_gene_cluster",
+      "cluster": "tethys-medicine",
+      "title": "Visionary Pathways",
+      "type": "medicine",
+      "regions": [
+        "mystic-woods"
+      ],
+      "ui": [
+        "mystics"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "night"
+        ]
+      },
+      "tags": [
+        "vision",
+        "psychoactive"
+      ],
+      "text": "Psilocybin gene clusters likely predate the modern genus; visionary compounds exist, but lineages are unstable and risky.",
+      "source": "ancient_plant_fungal_medicine_pdf"
+    },
+    {
+      "id": "mangroves_mesozoic_microbiome",
+      "cluster": "tethys-biomes",
+      "title": "Mangroves of the Mesozoic",
+      "type": "microbiome",
+      "regions": [
+        "ironwoods",
+        "frenel_thickets",
+        "marsh-edge"
+      ],
+      "ui": [
+        "map",
+        "science",
+        "mystics"
+      ],
+      "conditions": {},
+      "tags": [
+        "cheirolepidiaceae",
+        "mangrove",
+        "understory"
+      ],
+      "text": "Cheirolepidiaceae conifers formed dense, salt‑tolerant mangrove analogs in intertidal mudflats. Classopollis pollen marks warm, saline coasts; thick cuticles and sunken stomata made the understory a xeromorphic shield and resource base.",
+      "source": "tethyan_biomes_evolution_pdf"
+    }
+  ],
+  "audioClips": [
+    {
+      "id": "listenroom_pulse_low",
+      "title": "Listening Room: Pulse Down",
+      "file": "/audio/listening-room/pulse_down.ogg",
+      "regions": [
+        "sky-city"
+      ],
+      "tags": [
+        "listening-room",
+        "biolume",
+        "caves"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "night"
+        ],
+        "sporeSaturationMin": 0.6
+      }
+    },
+    {
+      "id": "weep_throat_surge",
+      "title": "Weep Throat: Secondary Surge",
+      "file": "/audio/map/weep_throat_secondary_surge.ogg",
+      "regions": [
+        "weep-outflow"
+      ],
+      "tags": [
+        "weep",
+        "surge",
+        "water"
+      ],
+      "conditions": {
+        "tideState": [
+          "surge",
+          "turning"
+        ]
+      }
+    },
+    {
+      "id": "stakes_shadow",
+      "title": "Stakes Shadow",
+      "file": "/audio/map/stakes_shadow.ogg",
+      "regions": [
+        "weep-outflow"
+      ],
+      "tags": [
+        "stakes",
+        "basalt",
+        "echo"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day",
+          "dusk"
+        ]
+      }
+    },
+    {
+      "id": "raceways_black_tide",
+      "title": "Raceways: Black Tide",
+      "file": "/audio/map/raceways_black_tide.ogg",
+      "regions": [
+        "lower-tiers",
+        "sky-city"
+      ],
+      "tags": [
+        "anoxic",
+        "sulfur",
+        "waterworks"
+      ],
+      "conditions": {
+        "anoxicEvent": true
+      }
+    },
+    {
+      "id": "frenel_thickets_pollen",
+      "title": "Frenel Thickets: Pollen Drift",
+      "file": "/audio/map/frenel_pollen_drift.ogg",
+      "regions": [
+        "frenel_thickets"
+      ],
+      "tags": [
+        "pollen",
+        "undergrowth"
+      ],
+      "conditions": {
+        "weather": [
+          "wind",
+          "dry"
+        ]
+      }
+    },
+    {
+      "id": "kohistan_ash_curtain",
+      "title": "Kohistan Firechain: Ash Curtain",
+      "file": "/audio/map/kohistan_ash_curtain.ogg",
+      "regions": [
+        "kohistan_firechain"
+      ],
+      "tags": [
+        "volcanic",
+        "ash"
+      ],
+      "conditions": {
+        "weather": [
+          "ash",
+          "wind"
+        ]
+      }
+    },
+    {
+      "id": "apulian_tideglass",
+      "title": "Apulian Rise: Tideglass",
+      "file": "/audio/map/apulian_tideglass.ogg",
+      "regions": [
+        "apulian_rise"
+      ],
+      "tags": [
+        "tideglass",
+        "clarity"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "day"
+        ],
+        "visibilityMin": 8000
+      }
+    },
+    {
+      "id": "pontide_bore",
+      "title": "Pontide Channel: Bore",
+      "file": "/audio/map/pontide_channel_bore.ogg",
+      "regions": [
+        "pontide_channel"
+      ],
+      "tags": [
+        "current",
+        "bore"
+      ],
+      "conditions": {
+        "tideState": [
+          "surge"
+        ]
+      }
+    },
+    {
+      "id": "shadow_basin_anoxic_breath",
+      "title": "Shadow Basin: Anoxic Breath",
+      "file": "/audio/map/shadow_basin_anoxic_breath.ogg",
+      "regions": [
+        "shadow_basin"
+      ],
+      "tags": [
+        "anoxic",
+        "black-tide"
+      ],
+      "conditions": {
+        "anoxicEvent": true,
+        "timeOfDay": [
+          "night"
+        ]
+      }
+    },
+    {
+      "id": "pteros_island_wind_shear",
+      "title": "Pteros Island: Wind Shear",
+      "file": "/audio/map/pteros_wind_shear.ogg",
+      "regions": [
+        "pteros"
+      ],
+      "tags": [
+        "wind",
+        "aerial"
+      ],
+      "conditions": {
+        "predatorRisk": [
+          "aerial"
+        ],
+        "weather": [
+          "wind",
+          "storm"
+        ]
+      }
+    },
+    {
+      "id": "stryker_bank_right_audio",
+      "title": "Stryker: Bank Right",
+      "file": "/audio/map/stryker_bank_right.ogg",
+      "regions": [
+        "pteros",
+        "silurian-fringe"
+      ],
+      "tags": [
+        "stryker",
+        "predator"
+      ],
+      "conditions": {
+        "predatorRisk": [
+          "aerial"
+        ]
+      }
+    },
+    {
+      "id": "sisteronia_seedfire",
+      "title": "Seedfire Night: Sisteronia",
+      "file": "/audio/map/sisteronia_seedfire.ogg",
+      "regions": [
+        "tethys-sea",
+        "ionian_deep"
+      ],
+      "tags": [
+        "seedfire",
+        "marine",
+        "predator"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "night"
+        ],
+        "predatorRisk": [
+          "marine"
+        ]
+      }
+    },
+    {
+      "id": "mystic_woods_choir_haze",
+      "title": "Mystic Woods: Choir Haze",
+      "file": "/audio/map/mystic_woods_choir_haze.ogg",
+      "regions": [
+        "mystic-woods"
+      ],
+      "tags": [
+        "spores",
+        "choir"
+      ],
+      "conditions": {
+        "sporeSaturationMin": 0.6
+      }
+    },
+    {
+      "id": "karst_drain_lantern_notch",
+      "title": "Karst Drains: Lantern Notch",
+      "file": "/audio/map/karst_lantern_notch.ogg",
+      "regions": [
+        "karst-drains"
+      ],
+      "tags": [
+        "karst",
+        "drain",
+        "lantern"
+      ],
+      "conditions": {
+        "timeOfDay": [
+          "night"
+        ],
+        "stillnessMin": 0.6
+      }
+    },
+    {
+      "id": "borts_hope_bridge_fog",
+      "title": "Bort’s Hope: Fog Bridge",
+      "file": "/audio/map/borts_hope_fog_bridge.ogg",
+      "regions": [
+        "marsh-edge"
+      ],
+      "tags": [
+        "fog",
+        "bridge"
+      ],
+      "conditions": {
+        "weather": [
+          "fog"
+        ]
+      }
+    },
+    {
+      "id": "silurian_flats_eeldrum",
+      "title": "Silurian Flats: Eel Drum",
+      "file": "/audio/map/silurian_eel_drum.ogg",
+      "regions": [
+        "silurian-fringe"
+      ],
+      "tags": [
+        "drums",
+        "eel"
+      ],
+      "conditions": {
+        "tideState": [
+          "turning"
+        ],
+        "predatorRisk": [
+          "ambush"
+        ]
+      }
+    }
+  ],
+  "organismAnalogs": [
+    {
+      "id": "ironwood_araucaria",
+      "tethys": "Ironwood Canopy Giants",
+      "realWorld": "Araucaria / Agathis (Araucariaceae)",
+      "note": "Resinous, decay‑resistant megaforests; fire‑adapted bark and dense wood.",
+      "regions": [
+        "ironwoods"
+      ]
+    },
+    {
+      "id": "ironwood_cheirolepidiaceae",
+      "tethys": "Frenel Thickets",
+      "realWorld": "Cheirolepidiaceae (Frenelopsis / Pseudofrenelopsis)",
+      "note": "Mangrove‑like conifers tolerant of salinity; dense intertidal thickets.",
+      "regions": [
+        "frenel_thickets",
+        "ironwoods"
+      ]
+    },
+    {
+      "id": "classopollis_pollen",
+      "tethys": "Pollen Scum",
+      "realWorld": "Classopollis pollen",
+      "note": "Proxy for warm, saline coastal environments; thick cuticles and sunken stomata indicate xeromorphs.",
+      "regions": [
+        "frenel_thickets",
+        "marsh-edge"
+      ]
+    },
+    {
+      "id": "gargantua_arc",
+      "tethys": "Gargantua Arc",
+      "realWorld": "Kohistan–Ladakh Intra‑Oceanic Arc",
+      "note": "Stratovolcano chain with silicic domes and collapse hazards.",
+      "regions": [
+        "kohistan_firechain",
+        "watcher-volcano"
+      ]
+    },
+    {
+      "id": "rookery_platforms",
+      "tethys": "Rookery Shelves",
+      "realWorld": "Apulia–Hațeg carbonate platforms",
+      "note": "Shallow shelves favoring nesting rookeries and reef‑edge hunting.",
+      "regions": [
+        "pteros",
+        "lower-reefs"
+      ]
+    },
+    {
+      "id": "palaeoclaviceps_parasiticus",
+      "tethys": "Black-Grain Ash Wash",
+      "realWorld": "Palaeoclaviceps parasiticus (ergot ancestor)",
+      "note": "Ergot alkaloid lineage on early grasses; potent hemostasis if processed.",
+      "regions": [
+        "ironwoods",
+        "mystic-woods"
+      ]
+    },
+    {
+      "id": "ganoderma_lineage",
+      "tethys": "Stone‑Shelf Resin",
+      "realWorld": "Ganoderma (polypore lineage)",
+      "note": "Triterpenes and beta‑glucans; immune modulation and anti‑inflammation.",
+      "regions": [
+        "ironwoods",
+        "mystic-woods"
+      ]
+    },
+    {
+      "id": "ambrosia_fungi",
+      "tethys": "Beetle‑Bread Paste",
+      "realWorld": "Raffaelea / Ambrosiella (ambrosia fungi)",
+      "note": "Antibacterial mats cultivated by beetles; topical wound paste.",
+      "regions": [
+        "ironwoods"
+      ]
+    },
+    {
+      "id": "nymphaeales_lotus",
+      "tethys": "Dream‑Lotus Pull",
+      "realWorld": "Nymphaeales (basal angiosperms)",
+      "note": "Alkaloid‑bearing water lilies; emetic/sedative applications.",
+      "regions": [
+        "marsh-edge",
+        "tethys-estuary"
+      ]
+    }
+  ]
+}
