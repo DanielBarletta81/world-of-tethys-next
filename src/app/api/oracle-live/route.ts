@@ -80,16 +80,17 @@ async function getWeather() {
 
 async function getLoreTerms() {
   const data = await graphqlFetch(
-    `query OracleContext {
-      archiveEntries(first: 3, where: { orderby: { field: RAND } }) {
+    `query OracleContext($first: Int!) {
+      archiveEntries(first: $first, where: { orderby: { field: DATE, order: DESC } }) {
         nodes {
           title
-          tethysData { threatLevel }
         }
       }
-    }`
+    }`,
+    { first: 12 }
   );
-  return data?.archiveEntries?.nodes ?? [];
+  const nodes = data?.archiveEntries?.nodes ?? [];
+  return nodes.sort(() => 0.5 - Math.random()).slice(0, 3);
 }
 
 function parseUsgsValue(series: any[], siteId: string, code: string) {
