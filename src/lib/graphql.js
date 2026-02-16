@@ -1,19 +1,20 @@
 import 'server-only';
 import fetch from 'cross-fetch';
 
-const endpoint = process.env.WP_GRAPHQL_ENDPOINT;
+const tethysBase = process.env.TETHYS_API_BASE || process.env.NEXT_PUBLIC_TETHYS_API_BASE;
+const endpoint = tethysBase ? `${tethysBase.replace(/\/$/, '')}/graphql` : process.env.WP_GRAPHQL_ENDPOINT;
 const wpUser = process.env.WP_USER;
 const wpAppPass = process.env.WP_APP_PASS;
 
 if (!endpoint) {
-  throw new Error('Missing WP_GRAPHQL_ENDPOINT environment variable.');
+  throw new Error('Missing TETHYS_API_BASE or WP_GRAPHQL_ENDPOINT environment variable.');
 }
 
 export async function graphqlFetch(query, variables = {}) {
   const headers = { 'Content-Type': 'application/json' };
 
-  // Use Basic Auth (App Password) - Same as your REST API
-  if (wpUser && wpAppPass) {
+  // Use Basic Auth only when talking directly to WPGraphQL
+  if (!tethysBase && wpUser && wpAppPass) {
     const auth = Buffer.from(`${wpUser}:${wpAppPass}`).toString('base64');
     headers['Authorization'] = `Basic ${auth}`;
   }
@@ -48,7 +49,7 @@ export async function graphqlFetch(query, variables = {}) {
 export async function graphqlFetchWithErrors(query, variables = {}) {
   const headers = { 'Content-Type': 'application/json' };
 
-  if (wpUser && wpAppPass) {
+  if (!tethysBase && wpUser && wpAppPass) {
     const auth = Buffer.from(`${wpUser}:${wpAppPass}`).toString('base64');
     headers['Authorization'] = `Basic ${auth}`;
   }
