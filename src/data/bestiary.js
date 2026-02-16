@@ -13,6 +13,7 @@ export const BESTIARY = [
         science: 'Larger than T. rex, lighter build, serrated slicing teeth; fossils across North Africa along the Tethys shore.',
         realWorldAnalog: 'Carcharodontosaurus (Carcharodontosauridae)',
         bio: 'If it enters the estuary, everything goes silent.',
+        background: cdn('/img/bg/magma-forge-hero.png'),
         image: cdn('/img/creatures/carcharodontosaurus.png')
       },
       {
@@ -22,6 +23,7 @@ export const BESTIARY = [
         science: 'Long snout, conical teeth, massive claws, semi-aquatic; lived in Niger deltas feeding the Tethys.',
         realWorldAnalog: 'Suchomimus (Spinosauridae)',
         bio: 'River teeth that never leave the shallows.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/suchomimus.png')
       }
     ]
@@ -37,6 +39,7 @@ export const BESTIARY = [
         science: '60+ tons, absurdly long neck with air sacs; kin to Tethys titanosaurs like Paralititan.',
         realWorldAnalog: 'Sauroposeidon (Titanosauriformes)',
         bio: 'The skyline moves and the birds avoid it.',
+        background: cdn('/img/bg/parchment-map-table.png'),
         image: cdn('/img/creatures/sauroposeidon.png')
       },
       {
@@ -46,6 +49,7 @@ export const BESTIARY = [
         science: 'Short neck, hundreds of dental batteries; a “Mesozoic cow” from Tethys-adjacent floodplains.',
         realWorldAnalog: 'Nigersaurus (Rebbachisauridae)',
         bio: 'A mouth made to erase fields.',
+        background: cdn('/img/bg/forest-2107470.jpg'),
         image: cdn('/img/creatures/nigersaurus.png')
       }
     ]
@@ -61,6 +65,7 @@ export const BESTIARY = [
         science: 'Huge colorful crests; agile flyers and fruit eaters that dominated Aptian skies.',
         realWorldAnalog: 'Tapejara (Tapejaridae)',
         bio: 'Carries news and venom in the same breath.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/tapejara.png')
       },
       {
@@ -70,6 +75,7 @@ export const BESTIARY = [
         science: '27 ft wingspan marine hunter; prowled the Tethys sea lanes.',
         realWorldAnalog: 'Tropeognathus (Ornithocheiridae)',
         bio: 'Shadow blade with a fish-hook jaw.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/tropeognathus.png')
       }
     ]
@@ -85,6 +91,7 @@ export const BESTIARY = [
         science: 'Short neck, massive skull; fossils in Australia tied to Tethys sea corridors.',
         realWorldAnalog: 'Kronosaurus (Pliosauridae)',
         bio: 'Deep water that learned to bite.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/kronosaurus.png')
       },
       {
@@ -94,6 +101,7 @@ export const BESTIARY = [
         science: '15 ft shell proto-Archelons surfacing in warm Cretaceous seas.',
         realWorldAnalog: 'Protostegidae (early sea turtles)',
         bio: 'A city raft that never beaches.',
+        background: cdn('/img/bg/parchment-map-table.png'),
         image: cdn('/img/creatures/protostegid.png')
       }
     ]
@@ -110,6 +118,7 @@ export const BESTIARY = [
         science: 'Giant shipworm-bivalve adapted to sulfidic muds; hosts sulfur-oxidizing symbionts.',
         realWorldAnalog: 'Kuphus polythalamia',
         bio: 'Stone tube, sulfur breath, patient hunger.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/kuphus_tube.png')
       },
       {
@@ -120,6 +129,7 @@ export const BESTIARY = [
         science: 'Mangrove-dwelling crabs associated with Cretaceous coastal ecosystems.',
         realWorldAnalog: 'Necrocarcinidae',
         bio: 'Mud hyenas waiting for resin cracks.',
+        background: cdn('/img/bg/forest-2107470.jpg'),
         image: cdn('/img/creatures/necrocarcinid_crab.png')
       },
       {
@@ -130,6 +140,7 @@ export const BESTIARY = [
         science: 'Cretaceous shark with crushing teeth, convergent with shell‑crushing reptiles.',
         realWorldAnalog: 'Ptychodus',
         bio: 'Crunch heard before the wave.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/ptychodus.png')
       },
       {
@@ -140,6 +151,7 @@ export const BESTIARY = [
         science: 'Semi‑aquatic spinosaurids hunted fish along the Tethys margins.',
         realWorldAnalog: 'Spinosauridae',
         bio: 'Edge of tide, edge of fight.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/spinosaurid_tide_hunter.png')
       }
     ]
@@ -155,6 +167,7 @@ export const BESTIARY = [
         science: 'Living fossils armored with bony scutes; electro-sensitive barbels patrol the mud for centuries-old migrations.',
         realWorldAnalog: 'Acipenseridae (sturgeons)',
         bio: 'Armor that remembers old rivers.',
+        background: cdn('/img/bg/parchment-map-table.png'),
         image: cdn('/img/creatures/ironback_sturgeon.png')
       },
       {
@@ -164,6 +177,7 @@ export const BESTIARY = [
         science: 'Ancient sharks with dual tooth sets and head spines; opportunists that survived the Permian wipeout.',
         realWorldAnalog: 'Hybodontiformes (hybodont sharks)',
         bio: 'Scavenger with ancient teeth.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/silt_hunter.png')
       },
       {
@@ -173,6 +187,7 @@ export const BESTIARY = [
         science: 'Protostegid analogs with fenestrated shells to save weight; early sea turtles like Santanachelys.',
         realWorldAnalog: 'Protostegidae / Santanachelys',
         bio: 'Carries maps carved in salt.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/void_shell.png')
       },
       {
@@ -182,6 +197,7 @@ export const BESTIARY = [
         science: 'Sediment-hiding rays with acute electroreception; flattened bodies optimized for ambush.',
         realWorldAnalog: 'Batoidea (skates & rays)',
         bio: 'Lies under the silt like a trap.',
+        background: cdn('/img/bg/obsidian-coast-4k.jpg'),
         image: cdn('/img/creatures/mud_wing.png')
       }
     ]

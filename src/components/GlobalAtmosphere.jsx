@@ -1,8 +1,9 @@
 // src/components/GlobalAtmosphere.jsx
 'use client';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTethys } from '@/context/TethysContext';
 import cdn from '@/lib/cdn';
 
 // Map your routes to high-quality scenic backgrounds
@@ -16,9 +17,18 @@ const SCENES = {
   '/map': cdn('/img/bg/parchment-map-table.png'),  // Top-down wooden table feel
 };
 
+const getTimeOfDay = () => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 11) return 'dawn';
+  if (hour >= 11 && hour < 17) return 'day';
+  if (hour >= 17 && hour < 20) return 'dusk';
+  return 'night';
+};
+
 export default function GlobalAtmosphere() {
   const pathname = usePathname();
   const isMystic = pathname?.startsWith('/mystics');
+  const { worldState, atmosphereTelemetry, oracleLive } = useTethys();
 
   const theme = (() => {
     if (!pathname) return 'coast';
@@ -29,15 +39,62 @@ export default function GlobalAtmosphere() {
     return 'coast';
   })();
 
+  const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay);
+
+  useEffect(() => {
+    const tick = () => setTimeOfDay(getTimeOfDay());
+    const id = setInterval(tick, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const condition = useMemo(() => {
+    const raw = worldState?.condition || atmosphereTelemetry?.condition || '';
+    return String(raw || '').toLowerCase();
+  }, [worldState?.condition, atmosphereTelemetry?.condition]);
+
+  const threatLevel = useMemo(() => {
+    const raw = oracleLive?.threat_level ?? worldState?.threat_level ?? atmosphereTelemetry?.threat_level;
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? Math.max(1, Math.min(5, parsed)) : 1;
+  }, [oracleLive?.threat_level, worldState?.threat_level, atmosphereTelemetry?.threat_level]);
+
+  const veil = useMemo(() => {
+    const timeFactor = {
+      dawn: 0.05,
+      day: 0.03,
+      dusk: 0.06,
+      night: 0.08
+    }[timeOfDay] ?? 0.04;
+
+    const weatherFactor = condition === 'storm'
+      ? 0.14
+      : condition === 'rain'
+        ? 0.11
+        : condition === 'fog'
+          ? 0.12
+          : 0.08;
+
+    const watcherFactor = (threatLevel - 1) / 4;
+
+    const noiseOpacity = Math.min(0.2, 0.05 + timeFactor + watcherFactor * 0.05);
+    const fogOpacity = Math.min(0.32, 0.08 + weatherFactor + watcherFactor * 0.12);
+    const veilOpacity = Math.min(0.55, 0.26 + timeFactor + watcherFactor * 0.16);
+
+    return { noiseOpacity, fogOpacity, veilOpacity };
+  }, [timeOfDay, condition, threatLevel]);
+
   useEffect(() => {
     if (typeof document === 'undefined') return;
     document.body.classList.toggle('mystic-path', Boolean(isMystic));
     document.body.dataset.tethysTheme = theme;
+    document.documentElement.style.setProperty('--tethys-noise-opacity', String(veil.noiseOpacity));
+    document.documentElement.style.setProperty('--tethys-fog-opacity', String(veil.fogOpacity));
+    document.documentElement.style.setProperty('--tethys-veil-opacity', String(veil.veilOpacity));
     return () => {
       document.body.classList.remove('mystic-path');
       delete document.body.dataset.tethysTheme;
     };
-  }, [isMystic, theme]);
+  }, [isMystic, theme, veil.noiseOpacity, veil.fogOpacity, veil.veilOpacity]);
   
   // Default to the main coast if route not found
   const activeBg = SCENES[pathname] || SCENES['/'];
@@ -48,13 +105,18 @@ export default function GlobalAtmosphere() {
         <motion.div
           key={pathname}
           initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 0.4, scale: 1 }} // Low opacity to blend with your dark UI
+          animate={{ opacity: 0.35, scale: 1 }} // Low opacity to blend with your dark UI
           exit={{ opacity: 0 }}
           transition={{ duration: 2.5, ease: "easeInOut" }}
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${activeBg})` }}
         />
       </AnimatePresence>
+
+      <div
+        className="absolute inset-0 bg-black"
+        style={{ opacity: 'var(--tethys-veil-opacity, 0.35)' }}
+      />
 
       {/* THE "111 MYA" FILTER STACK */}
       
@@ -63,15 +125,21 @@ export default function GlobalAtmosphere() {
 
       {/* 2. Ash/Grain: Makes it feel like an old film or dusty air */}
       <div
-        className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none"
-        style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
+        className="absolute inset-0 mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: `url(${cdn('/noise.svg')})`,
+          opacity: 'var(--tethys-noise-opacity, 0.1)'
+        }}
       />
 
       {/* 3. Color Grade: Unifies disparate images into your "Magma" palette */}
       <div className="absolute inset-0 bg-gradient-to-b from-orange-900/10 via-transparent to-cyan-900/20 mix-blend-color" />
       
       {/* 4. The "Weep" Mist (Optional: Subtle moving fog at bottom) */}
-      <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80" />
+      <div
+        className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/50 to-transparent"
+        style={{ opacity: 'var(--tethys-fog-opacity, 0.14)' }}
+      />
 
       {/* 5. Tethys ambient layers (theme-driven, CSS-controlled) */}
       <div className="tethys-layer tethys-layer--torch" />

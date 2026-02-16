@@ -1,3 +1,5 @@
+import cdn from '../lib/cdn.js';
+
 export const HERBARIUM_REGISTRY = {
   'frenelopsis-thicket': {
     id: 'BOT-001',
@@ -10,6 +12,7 @@ export const HERBARIUM_REGISTRY = {
       defense: 'Resinous biomass (fire-adapted)'
     },
     bio: 'Salt-breath stems; the shoreline keeps their memory.',
+    background: cdn('/img/bg/forest-2107470.jpg'),
     lore: 'Thrived in tidal flats. Produced massive Classopollis pollen scums.',
     material: 'Frenel Branch',
     survivalRole: 'Coastal stabilizer / aerial cover'
@@ -25,6 +28,7 @@ export const HERBARIUM_REGISTRY = {
       oxygen: 'Local aeration plumes'
     },
     bio: 'Stone that is still alive. The wall remembers the tide.',
+    background: cdn('/img/bg/obsidian-coast-4k.jpg'),
     lore: "The foundation of Cambria's walls. Binds sediment into wave-resistant frameworks.",
     material: 'Bio-Cement',
     survivalRole: 'Fortification material'
@@ -40,6 +44,7 @@ export const HERBARIUM_REGISTRY = {
       clarity: 'Tideglass day indicator'
     },
     bio: 'Light that warns, then blinds.',
+    background: cdn('/img/bg/obsidian-coast-4k.jpg'),
     lore: 'Glows neon blue when disturbed by plesiosaur movement.',
     material: 'Biolume Resin',
     survivalRole: 'Stealth / early warning'

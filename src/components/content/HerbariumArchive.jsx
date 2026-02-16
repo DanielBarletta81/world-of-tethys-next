@@ -4,14 +4,22 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Leaf, Info, Shield, Beaker } from 'lucide-react';
 import { HERBARIUM_REGISTRY } from '@/data/herbarium-registry';
+import { cdn } from '@/lib/cdn';
 
 export default function HerbariumArchive() {
   const keys = Object.keys(HERBARIUM_REGISTRY);
   const [selectedId, setSelectedId] = useState(keys[0]);
   const activePlant = HERBARIUM_REGISTRY[selectedId];
 
+  const background = activePlant?.background || cdn('/img/bg/forest-2107470.jpg');
+
   return (
-    <div className="flex flex-col lg:flex-row gap-8 bg-[#050403] border border-stone-800 p-8 rounded-sm font-serif">
+    <div className="relative flex flex-col lg:flex-row gap-8 bg-[#050403] border border-stone-800 p-8 rounded-sm font-serif overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-cover bg-center opacity-[0.15]" style={{ backgroundImage: `url(${background})` }} />
+        <div className="absolute inset-0 mix-blend-overlay" style={{ backgroundImage: `url(${cdn('/noise.svg')})`, opacity: 'var(--tethys-noise-opacity, 0.1)' }} />
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.06), transparent 60%)', opacity: 'var(--tethys-fog-opacity, 0.14)' }} />
+      </div>
       <aside className="w-full lg:w-64 space-y-2">
         <h3 className="text-[10px] uppercase tracking-[0.4em] text-stone-500 mb-6 font-mono">
           Botanical Index // 111-Ma

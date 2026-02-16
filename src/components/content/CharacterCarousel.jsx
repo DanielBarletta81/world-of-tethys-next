@@ -114,12 +114,26 @@ export default function CharacterCarousel({ characters }) {
             {char.background && (
               <>
                 <div
-                  className="absolute inset-0 bg-cover bg-center opacity-25"
+                  className="absolute inset-0 bg-cover bg-center opacity-20"
                   style={{ backgroundImage: `url(${char.background})` }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/85" />
               </>
             )}
+            <div
+              className="absolute inset-0 pointer-events-none mix-blend-overlay"
+              style={{
+                backgroundImage: `url(${cdn('/noise.svg')})`,
+                opacity: 'var(--tethys-noise-opacity, 0.1)'
+              }}
+            />
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), transparent 60%)',
+                opacity: 'var(--tethys-fog-opacity, 0.14)'
+              }}
+            />
 
             <div className="relative z-10 flex flex-col h-full">
               <div className="relative h-56 w-full overflow-hidden">

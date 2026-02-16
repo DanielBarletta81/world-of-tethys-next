@@ -39,10 +39,15 @@ export default function FieldNotebook({ bestiary = [] }) {
     );
   }
 
+  const background = activeEntry.background || cdn('/img/bg/parchment-map-table.png');
+
   return (
     <div className="relative w-full max-w-6xl mx-auto aspect-[16/10] md:aspect-[2/1] bg-[#e3dcd2] rounded-r-2xl rounded-l-md shadow-2xl flex flex-col md:flex-row overflow-hidden border-r-8 border-b-8 border-[#2a231d]">
       <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-cover bg-center opacity-[0.15]" style={{ backgroundImage: `url(${background})` }} />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60" />
+        <div className="absolute inset-0 mix-blend-overlay" style={{ backgroundImage: `url(${cdn('/noise.svg')})`, opacity: 'var(--tethys-noise-opacity, 0.1)' }} />
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.06), transparent 60%)', opacity: 'var(--tethys-fog-opacity, 0.14)' }} />
         <div className="absolute top-10 right-20 w-32 h-32 bg-[#8c735a] rounded-full opacity-10 blur-xl mix-blend-multiply" />
         <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-16 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#b5a693]/40 to-transparent" />
       </div>
