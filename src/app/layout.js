@@ -1,12 +1,4 @@
-import {
-  IM_Fell_English,
-  JetBrains_Mono,
-  Nanum_Pen_Script,
-  Space_Grotesk,
-  Spectral,
-  Cinzel_Decorative,
-  Uncial_Antiqua,
-} from 'next/font/google';
+import localFont from 'next/font/local';
 import { AuthProvider } from '../context/AuthContext';
 import { TethysProvider } from '../context/TethysContext';
 import { AudioProvider } from '../context/AudioContext';
@@ -20,50 +12,67 @@ import Footer from '@/components/layout/Footer';
 import cdn from '@/lib/cdn';
 import Link from 'next/link';
 
-const skySans = Space_Grotesk({
-  subsets: ['latin'],
+const skySans = localFont({
+  src: [
+    { path: '../../public/fonts/space-grotesk/space-grotesk-300.ttf', weight: '300', style: 'normal' },
+    { path: '../../public/fonts/space-grotesk/space-grotesk-400.ttf', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/space-grotesk/space-grotesk-500.ttf', weight: '500', style: 'normal' },
+    { path: '../../public/fonts/space-grotesk/space-grotesk-600.ttf', weight: '600', style: 'normal' },
+    { path: '../../public/fonts/space-grotesk/space-grotesk-700.ttf', weight: '700', style: 'normal' },
+  ],
   variable: '--font-sky',
   display: 'swap',
 });
 
-const naturalist = Spectral({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+const naturalist = localFont({
+  src: [
+    { path: '../../public/fonts/spectral/spectral-400.ttf', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/spectral/spectral-500.ttf', weight: '500', style: 'normal' },
+    { path: '../../public/fonts/spectral/spectral-600.ttf', weight: '600', style: 'normal' },
+    { path: '../../public/fonts/spectral/spectral-700.ttf', weight: '700', style: 'normal' },
+  ],
   variable: '--font-naturalist',
   display: 'swap',
 });
 
-const volcanic = Cinzel_Decorative({
-  subsets: ['latin'],
-  weight: ['400', '700'],
+const volcanic = localFont({
+  src: [
+    { path: '../../public/fonts/cinzel-decorative/cinzel-decorative-400.ttf', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/cinzel-decorative/cinzel-decorative-700.ttf', weight: '700', style: 'normal' },
+  ],
   variable: '--font-volcanic',
   display: 'swap',
 });
 
-const fieldNotes = IM_Fell_English({
-  subsets: ['latin'],
-  weight: ['400'],
+const fieldNotes = localFont({
+  src: [
+    { path: '../../public/fonts/im-fell-english/im-fell-english-400.ttf', weight: '400', style: 'normal' },
+  ],
   variable: '--font-field',
   display: 'swap',
 });
 
-const mystic = Uncial_Antiqua({
-  subsets: ['latin'],
-  weight: ['400'],
+const mystic = localFont({
+  src: [
+    { path: '../../public/fonts/uncial-antiqua/uncial-antiqua-400.ttf', weight: '400', style: 'normal' },
+  ],
   variable: '--font-mystic',
   display: 'swap',
 });
 
-const mono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '600'],
+const mono = localFont({
+  src: [
+    { path: '../../public/fonts/jetbrains-mono/jetbrains-mono-400.ttf', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/jetbrains-mono/jetbrains-mono-600.ttf', weight: '600', style: 'normal' },
+  ],
   variable: '--font-mono',
   display: 'swap',
 });
 
-const handwriting = Nanum_Pen_Script({
-  subsets: ['latin'],
-  weight: ['400'],
+const handwriting = localFont({
+  src: [
+    { path: '../../public/fonts/nanum-pen-script/nanum-pen-script-400.ttf', weight: '400', style: 'normal' },
+  ],
   variable: '--font-hand',
   display: 'swap',
 });
