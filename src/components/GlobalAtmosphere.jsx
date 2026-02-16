@@ -17,6 +17,37 @@ const SCENES = {
   '/map': cdn('/img/bg/parchment-map-table.png'),  // Top-down wooden table feel
 };
 
+const OVERLAY_PLATES = [
+  {
+    id: 'obsidian',
+    src: cdn('/img/bg/obsidian-coast-4k.jpg'),
+    label: 'Obsidian Coast',
+    meta: 'Archive Plate • Tethys Rim'
+  },
+  {
+    id: 'magma',
+    src: cdn('/img/bg/magma-forge-hero.jpg'),
+    label: 'Magma Forge',
+    meta: 'Watcher Proximity • Volcanic Shelf'
+  },
+  {
+    id: 'parchment',
+    src: cdn('/img/bg/parchment-map-table.png'),
+    label: 'Survey Plates',
+    meta: 'Cartographic Index • Field Memory'
+  },
+  {
+    id: 'laboratory',
+    src: cdn('/img/bg/laboratory-6515519.jpg'),
+    label: 'Sky Vault',
+    meta: 'Specimen Storage • Glass Tiers'
+  }
+];
+
+const OVERLAY_INTERVAL_MS = 20 * 60 * 1000; // 20 minutes
+const OVERLAY_FADE_SECONDS = 1200; // 20 minutes
+const OVERLAY_INFO_FADE_SECONDS = 240; // 4 minutes
+
 const getTimeOfDay = () => {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 11) return 'dawn';
@@ -40,10 +71,20 @@ export default function GlobalAtmosphere() {
   })();
 
   const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay);
+  const [overlayIndex, setOverlayIndex] = useState(() =>
+    Math.floor(Date.now() / OVERLAY_INTERVAL_MS) % OVERLAY_PLATES.length
+  );
 
   useEffect(() => {
     const tick = () => setTimeOfDay(getTimeOfDay());
     const id = setInterval(tick, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setOverlayIndex((prev) => (prev + 1) % OVERLAY_PLATES.length);
+    }, OVERLAY_INTERVAL_MS);
     return () => clearInterval(id);
   }, []);
 
@@ -98,6 +139,7 @@ export default function GlobalAtmosphere() {
   
   // Default to the main coast if route not found
   const activeBg = SCENES[pathname] || SCENES['/'];
+  const overlay = OVERLAY_PLATES[overlayIndex % OVERLAY_PLATES.length];
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-black">
@@ -111,6 +153,32 @@ export default function GlobalAtmosphere() {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${activeBg})` }}
         />
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`overlay-${overlay?.id}`}
+          initial={{ opacity: 0, filter: 'blur(10px) saturate(1.1)' }}
+          animate={{ opacity: 0.14, filter: 'blur(0px) saturate(1.05)' }}
+          exit={{ opacity: 0, filter: 'blur(10px) saturate(1.1)' }}
+          transition={{ duration: OVERLAY_FADE_SECONDS, ease: 'easeInOut' }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${overlay?.src})` }}
+        />
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`overlay-info-${overlay?.id}`}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 0.45, y: 0 }}
+          exit={{ opacity: 0, y: 6 }}
+          transition={{ duration: OVERLAY_INFO_FADE_SECONDS, ease: 'easeInOut' }}
+          className="absolute bottom-6 left-6 z-[2] pointer-events-none text-[10px] uppercase tracking-[0.35em] text-stone-300/80 font-mono"
+        >
+          <div>{overlay?.label}</div>
+          <div className="text-[9px] tracking-[0.3em] text-stone-400/70">{overlay?.meta}</div>
+        </motion.div>
       </AnimatePresence>
 
       <div
