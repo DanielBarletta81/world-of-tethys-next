@@ -150,7 +150,7 @@ export default function GlobalAtmosphere() {
           animate={{ opacity: 0.35, scale: 1 }} // Low opacity to blend with your dark UI
           exit={{ opacity: 0 }}
           transition={{ duration: 2.5, ease: "easeInOut" }}
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat tethys-parallax tethys-parallax--slow"
           style={{ backgroundImage: `url(${activeBg})` }}
         />
       </AnimatePresence>
@@ -162,7 +162,7 @@ export default function GlobalAtmosphere() {
           animate={{ opacity: 0.14, filter: 'blur(0px) saturate(1.05)' }}
           exit={{ opacity: 0, filter: 'blur(10px) saturate(1.1)' }}
           transition={{ duration: OVERLAY_FADE_SECONDS, ease: 'easeInOut' }}
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat tethys-parallax tethys-parallax--fast"
           style={{ backgroundImage: `url(${overlay?.src})` }}
         />
       </AnimatePresence>
@@ -190,6 +190,8 @@ export default function GlobalAtmosphere() {
       
       {/* 1. Vignette: Darkens corners to focus eyes on center content */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0c0a09_90%)]" />
+      {/* Corner mask: deeper edge falloff for archival feel */}
+      <div className="absolute inset-0 tethys-corner-mask" />
 
       {/* 2. Ash/Grain: Makes it feel like an old film or dusty air */}
       <div
