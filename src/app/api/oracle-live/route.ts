@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-import { graphqlFetch } from '@/lib/graphql';
+import { graphqlFetchWithErrors } from '@/lib/graphql';
 
 export const runtime = 'nodejs';
 
@@ -79,17 +79,30 @@ async function getWeather() {
 }
 
 async function getLoreTerms() {
-  const data = await graphqlFetch(
+  const primary = await graphqlFetchWithErrors(
     `query OracleContext($first: Int!) {
       archiveEntries(first: $first, where: { orderby: { field: DATE, order: DESC } }) {
-        nodes {
-          title
-        }
+        nodes { title }
       }
     }`,
     { first: 12 }
   );
-  const nodes = data?.archiveEntries?.nodes ?? [];
+
+  let nodes = primary?.data?.archiveEntries?.nodes ?? [];
+
+  if (!nodes.length || primary?.errors?.length) {
+    const fallback = await graphqlFetchWithErrors(
+      `query OracleFallback($first: Int!) {
+        posts(first: $first, where: { orderby: { field: DATE, order: DESC } }) {
+          nodes { title }
+        }
+      }`,
+      { first: 12 }
+    );
+    nodes = fallback?.data?.posts?.nodes ?? [];
+  }
+
+  if (!nodes.length) return [];
   return nodes.sort(() => 0.5 - Math.random()).slice(0, 3);
 }
 
