@@ -5,7 +5,6 @@ import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useTethys } from '@/context/TethysContext';
@@ -31,17 +30,6 @@ import { SKY_CITY_VARIABLE_AGENTS } from '@/data/skycity-variable-agents';
 import { IRONWOOD_COUNTER_DOCS } from '@/data/ironwood-counter-docs';
 import { selectLoreSeeds, getDefaultLoreContext } from '@/lib/lore-seed-runtime';
 
-const HoloTerrain = dynamic(
-  () => import('@/components/features/vr/HoloTerrain'),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-96 flex items-center justify-center text-emerald-500 font-mono text-xs">
-        INITIALIZING LIDAR...
-      </div>
-    )
-  }
-);
 
 const PATH_CONFIG = [
   {
@@ -120,6 +108,7 @@ export default function MapPage() {
   const { user, loading: authLoading } = useAuth();
   const { playTrack } = useAudio();
   const [viewState, setViewState] = useState('loading'); // loading, egg, sigil, forge, map, scholar
+  const [mapHovered, setMapHovered] = useState(false);
   const [hoveredSigil, setHoveredSigil] = useState(null);
   const hasRavelKnowledge = Boolean(
     playerProfile?.history?.metRavel || (playerProfile?.staff?.stats?.kith ?? 0) > 20
@@ -173,7 +162,6 @@ export default function MapPage() {
   const [stillnessLevel, setStillnessLevel] = useState(0);
   const [mapPresenceMs, setMapPresenceMs] = useState(0);
   const [subMapRegion, setSubMapRegion] = useState(null);
-  const [subMapView, setSubMapView] = useState('2d');
   const [subMapTransform, setSubMapTransform] = useState({ x: 0, y: 0, scale: 1.1 });
   const [satchelOpen, setSatchelOpen] = useState(false);
   const [sporeSatchelOpen, setSporeSatchelOpen] = useState(false);
@@ -680,6 +668,9 @@ export default function MapPage() {
   }
 
   const ghostedUi = viewState === 'map';
+  const mapFocusActive = ghostedUi && mapHovered;
+  const mapUiFrost = mapFocusActive ? 'opacity-45' : ghostedUi ? 'opacity-70 hover:opacity-100' : '';
+  const mapSideOpacity = mapFocusActive ? 'opacity-40' : ghostedUi ? 'opacity-70 hover:opacity-100' : '';
 
   return (
     <div className="min-h-screen bg-[#0c0a09] text-stone-200 font-mono">
@@ -692,27 +683,21 @@ export default function MapPage() {
 
       <main role="main" id="main-content" className="p-6 pt-32 relative overflow-hidden">
         <PrimaryNav
-          className={`max-w-7xl mx-auto px-4 md:px-6 mb-4 transition-opacity ${
-            ghostedUi ? 'opacity-70 hover:opacity-100' : ''
-          }`}
+          className={`max-w-7xl mx-auto px-4 md:px-6 mb-4 transition-opacity ${mapUiFrost}`}
         />
         <BreadcrumbTrail
           trail={MAP_BREADCRUMB}
-          className={`max-w-7xl mx-auto px-4 md:px-6 mb-6 transition-opacity ${
-            ghostedUi ? 'opacity-60 hover:opacity-100' : ''
-          }`}
+          className={`max-w-7xl mx-auto px-4 md:px-6 mb-6 transition-opacity ${mapUiFrost}`}
         />
         {viewState === 'map' && (
-          <div className={ghostedUi ? 'opacity-70 hover:opacity-100 transition-opacity' : ''}>
+          <div className={mapUiFrost ? `${mapUiFrost} transition-opacity` : ''}>
             <StatusBar />
           </div>
         )}
         {/* HEADER */}
         <header
           role="banner"
-          className={`max-w-7xl mx-auto mb-8 flex flex-wrap items-end justify-between gap-4 relative z-10 transition-opacity ${
-            ghostedUi ? 'opacity-70 hover:opacity-100' : ''
-          }`}
+          className={`max-w-7xl mx-auto mb-8 flex flex-wrap items-end justify-between gap-4 relative z-10 transition-opacity ${mapUiFrost}`}
         >
         <Link href="/?skipIntro=1" className="text-xs text-stone-500 hover:text-white uppercase tracking-widest flex items-center gap-2 mb-4 transition-colors">
           <ArrowLeft size={14} />
@@ -729,6 +714,17 @@ export default function MapPage() {
               </p>
             )}
           </div>
+          {viewState === 'map' && (
+            <div
+              className={`h-fit px-3 py-2 border rounded-sm text-[9px] uppercase tracking-[0.3em] transition-all duration-500 ${
+                mapHovered
+                  ? 'border-stone-400/80 text-stone-200 bg-black/40'
+                  : 'border-stone-700/60 text-stone-500 bg-black/20'
+              }`}
+            >
+              Map focus {mapHovered ? 'active' : 'idle'}
+            </div>
+          )}
           {viewState !== 'map' && (
             <div className="flex gap-2">
               <StepIndicator label="Incubate" active={viewState === 'egg'} completed={viewState !== 'egg'} />
@@ -944,7 +940,27 @@ export default function MapPage() {
               animate={{ opacity: 1 }}
               className="grid grid-cols-1 lg:grid-cols-3 gap-8"
             >
-              <div className="lg:col-span-2 relative">
+              <div
+                className={`lg:col-span-2 relative rounded-2xl border border-stone-800/60 bg-black/20 transition-all duration-700 cursor-crosshair ${
+                  mapHovered
+                    ? 'border-stone-500/80 shadow-[0_0_40px_rgba(148,163,184,0.25)]'
+                    : 'shadow-[0_0_0_rgba(0,0,0,0)]'
+                }`}
+                onMouseEnter={() => setMapHovered(true)}
+                onMouseLeave={() => setMapHovered(false)}
+              >
+                <div
+                  className={`pointer-events-none absolute inset-0 rounded-2xl border border-stone-600/20 transition-opacity duration-700 z-20 ${
+                    mapHovered ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+                <div
+                  className={`pointer-events-none absolute top-6 right-6 text-[10px] uppercase tracking-[0.35em] text-stone-300/80 transition-opacity duration-700 z-30 ${
+                    mapHovered ? 'opacity-100' : 'opacity-0'
+                  }`}
+                >
+                  Map interface active
+                </div>
                 <LoreRevealPanel
                   mycorrhizalActive={mycorrhizalActive}
                   onMycorrhizalChange={setMycorrhizalActive}
@@ -1012,7 +1028,7 @@ export default function MapPage() {
                 </AnimatePresence>
               </div>
               
-              <div className={`space-y-6 transition-opacity ${ghostedUi ? 'opacity-70 hover:opacity-100' : ''}`}>
+              <div className={`space-y-6 transition-opacity ${mapSideOpacity}`}>
                 {/* Weather Oracle */}
                 <RavelWeatherOracle focus="pteros" className="mb-6" />
                 
@@ -1090,13 +1106,6 @@ export default function MapPage() {
                   </div>
                 )}
 
-                <div className="bg-[#11100f] p-6 border border-stone-800 rounded-lg">
-                  <h3 className="text-emerald-400 text-xs uppercase tracking-widest mb-4">
-                    Terrain Scan
-                  </h3>
-                  <HoloTerrain />
-                </div>
-
                 {/* Quick Nav */}
                 <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
                   <h3 className="text-cyan-500 text-xs uppercase tracking-widest mb-4">System Access</h3>
@@ -1143,28 +1152,9 @@ export default function MapPage() {
                   <h2 className="text-2xl font-serif text-stone-100">{subMapConfig.label || subMapConfig.id}</h2>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSubMapView('2d')}
-                    className={`text-[10px] uppercase tracking-widest px-3 py-1 rounded border ${
-                      subMapView === '2d'
-                        ? 'bg-stone-900/30 border-stone-600 text-stone-200'
-                        : 'border-stone-700 text-stone-500'
-                    }`}
-                  >
+                  <span className="text-[10px] uppercase tracking-widest px-3 py-1 rounded border bg-stone-900/30 border-stone-600 text-stone-200">
                     Chart
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSubMapView('3d')}
-                    className={`text-[10px] uppercase tracking-widest px-3 py-1 rounded border ${
-                      subMapView === '3d'
-                        ? 'bg-emerald-900/30 border-emerald-500 text-emerald-200'
-                        : 'border-stone-700 text-stone-500'
-                    }`}
-                  >
-                    Holo-Scan
-                  </button>
+                  </span>
                   <button
                     type="button"
                     onClick={() => setFoodWebActive((prev) => !prev)}
@@ -1186,190 +1176,182 @@ export default function MapPage() {
                 </div>
               </div>
               <div className="relative">
-                {subMapView === '2d' ? (
-                  <>
+                <div
+                  className="h-[60vh] w-full bg-[#050403] overflow-hidden"
+                  ref={subMapRef}
+                  onPointerDown={handleSubMapPointerDown}
+                  onPointerMove={handleSubMapPointerMove}
+                  onPointerUp={handleSubMapPointerUp}
+                  onPointerLeave={handleSubMapPointerUp}
+                  onWheel={handleSubMapWheel}
+                >
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      transform: `translate3d(${subMapTransform.x}px, ${subMapTransform.y}px, 0) scale(${subMapTransform.scale})`,
+                      transformOrigin: 'center',
+                      transition: subMapStateRef.current.isDragging ? 'none' : 'transform 80ms linear'
+                    }}
+                  >
                     <div
-                      className="h-[60vh] w-full bg-[#050403] overflow-hidden"
-                      ref={subMapRef}
-                      onPointerDown={handleSubMapPointerDown}
-                      onPointerMove={handleSubMapPointerMove}
-                      onPointerUp={handleSubMapPointerUp}
-                      onPointerLeave={handleSubMapPointerUp}
-                      onWheel={handleSubMapWheel}
-                    >
-                      <div
-                        className="absolute inset-0"
-                        style={{
-                          transform: `translate3d(${subMapTransform.x}px, ${subMapTransform.y}px, 0) scale(${subMapTransform.scale})`,
-                          transformOrigin: 'center',
-                          transition: subMapStateRef.current.isDragging ? 'none' : 'transform 80ms linear'
-                        }}
-                      >
+                      className="absolute inset-0"
+                      style={{
+                        backgroundImage: showKarstOverlay
+                          ? 'radial-gradient(circle at 30% 40%, rgba(16,185,129,0.2), transparent 55%), radial-gradient(circle at 70% 60%, rgba(34,197,94,0.15), transparent 60%), linear-gradient(180deg, #050403 0%, #0b0a09 70%)'
+                          : `url(${atlasUrl})`,
+                        backgroundSize: showKarstOverlay ? 'cover' : '240%',
+                        backgroundPosition: showKarstOverlay
+                          ? 'center'
+                          : `${(subMapConfig.anchor?.x ?? 0.5) * 100}% ${(subMapConfig.anchor?.y ?? 0.5) * 100}%`,
+                        filter: subMapConfig.isLocked ? 'grayscale(1) brightness(0.5)' : 'none'
+                      }}
+                    />
+                    {showPermianOverlay && (
+                      <>
                         <div
                           className="absolute inset-0"
                           style={{
-                            backgroundImage: showKarstOverlay
-                              ? 'radial-gradient(circle at 30% 40%, rgba(16,185,129,0.2), transparent 55%), radial-gradient(circle at 70% 60%, rgba(34,197,94,0.15), transparent 60%), linear-gradient(180deg, #050403 0%, #0b0a09 70%)'
-                              : `url(${atlasUrl})`,
-                            backgroundSize: showKarstOverlay ? 'cover' : '240%',
-                            backgroundPosition: showKarstOverlay
-                              ? 'center'
-                              : `${(subMapConfig.anchor?.x ?? 0.5) * 100}% ${(subMapConfig.anchor?.y ?? 0.5) * 100}%`,
-                            filter: subMapConfig.isLocked ? 'grayscale(1) brightness(0.5)' : 'none'
+                            backgroundImage: `radial-gradient(circle at 18% 22%, rgba(248, 250, 252, 0.32), transparent 45%), radial-gradient(circle at 72% 64%, rgba(226, 232, 240, 0.24), transparent 46%), radial-gradient(circle at 48% 78%, rgba(148, 163, 184, 0.18), transparent 55%), linear-gradient(120deg, rgba(120, 113, 108, 0.08), rgba(41, 37, 36, 0.18))`,
+                            mixBlendMode: 'screen',
+                            opacity: 0.6
                           }}
                         />
-                        {showPermianOverlay && (
-                          <>
-                            <div
-                              className="absolute inset-0"
-                              style={{
-                                backgroundImage: `radial-gradient(circle at 18% 22%, rgba(248, 250, 252, 0.32), transparent 45%), radial-gradient(circle at 72% 64%, rgba(226, 232, 240, 0.24), transparent 46%), radial-gradient(circle at 48% 78%, rgba(148, 163, 184, 0.18), transparent 55%), linear-gradient(120deg, rgba(120, 113, 108, 0.08), rgba(41, 37, 36, 0.18))`,
-                                mixBlendMode: 'screen',
-                                opacity: 0.6
-                              }}
-                            />
-                            <div
-                              className="absolute inset-0"
-                              style={{
-                                backgroundImage: `url(${cdn('/noise.svg')})`,
-                                mixBlendMode: 'soft-light',
-                                opacity: 0.35
-                              }}
-                            />
-                          </>
-                        )}
-                        {foodWebActive && (
-                          <div
-                            className="absolute inset-0"
-                            style={{
-                              backgroundImage:
-                                'radial-gradient(circle at 20% 30%, rgba(34, 211, 238, 0.2), transparent 45%), radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.16), transparent 50%), linear-gradient(120deg, rgba(6, 182, 212, 0.08), rgba(2, 132, 199, 0.05))',
-                              mixBlendMode: 'screen',
-                              opacity: 0.7
-                            }}
-                          />
-                        )}
-                        {showKarstOverlay && (
-                          <div
-                            className="absolute inset-0"
-                            style={{
-                              backgroundImage: `radial-gradient(circle at 45% 50%, rgba(34,197,94,0.35), transparent 55%), url(${cdn('/noise.svg')})`,
-                              mixBlendMode: 'screen',
-                              opacity: 0.4
-                            }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
-                    <div className="absolute bottom-6 left-6 max-w-md rounded-xl border border-stone-800 bg-black/60 px-4 py-3 text-xs text-stone-300">
-                      <p className="uppercase tracking-[0.25em] text-[10px] text-stone-500">Status</p>
-                      <p className="mt-1">
-                        {subMapConfig.isLocked
-                          ? 'The detail layer is sealed. The archive resists your sight.'
-                          : showKarstOverlay
-                            ? 'Karst conduits detected. Spore density rising.'
-                            : 'Detail layer active. Scroll to deepen the reveal.'}
-                      </p>
-                      {showLowerTierAlert && (
-                        <div className="mt-3 border border-rose-900/50 bg-rose-950/20 px-3 py-2 text-[10px] uppercase tracking-[0.25em] text-rose-300">
-                          STATUS: CRITICAL. Melden-Node Offline.
-                        </div>
-                      )}
-                      {showTraderRouteNote && (
-                        <div className="mt-3 text-[10px] text-stone-400 italic">
-                          Wind-cut ledges ahead. Cambrian exhausts bruise the air.
-                        </div>
-                      )}
-                      {foodWebActive && (
-                        <div className="mt-3 space-y-2 text-[10px] text-cyan-200/80">
-                          <div className="uppercase tracking-[0.25em] text-cyan-300 text-[9px]">
-                            Food Web Overlay
-                          </div>
-                          {subMapFoodSeeds.length ? (
-                            subMapFoodSeeds.map((seed) => (
-                              <div key={seed.id} className="text-stone-300">
-                                {seed.text}
-                              </div>
-                            ))
-                          ) : (
-                            <div className="text-stone-500">
-                              No sulfur web signals in this basin.
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      {showSkyCityExcerpts && (
-                        <details className="mt-3 text-[10px] text-stone-400">
-                          <summary className="cursor-pointer uppercase tracking-[0.25em] text-stone-500">
-                            Variable Agents (Withdrawn)
-                          </summary>
-                          <div className="mt-2 space-y-2">
-                            {SKY_CITY_VARIABLE_AGENTS.map((entry) => (
-                              <div key={entry.title}>
-                                <div className="text-[9px] uppercase tracking-[0.2em] text-stone-500">
-                                  {entry.title}
-                                </div>
-                                <div className="mt-1 text-[10px] text-stone-400 italic">
-                                  {entry.lines.join(' ')}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </details>
-                      )}
-                      {showIronwoodExcerpts && (
-                        <details className="mt-3 text-[10px] text-stone-400">
-                          <summary className="cursor-pointer uppercase tracking-[0.25em] text-stone-500">
-                            Ironwood Counter-Notes
-                          </summary>
-                          <div className="mt-2 space-y-2">
-                            {IRONWOOD_COUNTER_DOCS.map((entry) => (
-                              <div key={entry.title}>
-                                <div className="text-[9px] uppercase tracking-[0.2em] text-stone-500">
-                                  {entry.title}
-                                </div>
-                                <div className="mt-1 text-[10px] text-stone-400 italic">
-                                  {entry.lines.join(' ')}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </details>
-                      )}
-                    </div>
-                    {!subMapConfig.isLocked && (
-                      <div className="absolute top-5 right-6 text-[10px] uppercase tracking-[0.3em] text-stone-500">
-                        Drag to pan
-                      </div>
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            backgroundImage: `url(${cdn('/noise.svg')})`,
+                            mixBlendMode: 'soft-light',
+                            opacity: 0.35
+                          }}
+                        />
+                      </>
                     )}
-                    <div className="absolute bottom-6 right-6 h-28 w-28 rounded-xl border border-stone-800 bg-black/50 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.4)]">
+                    {foodWebActive && (
                       <div
                         className="absolute inset-0"
                         style={{
-                          backgroundImage: `url(${atlasUrl})`,
-                          backgroundSize: '240%',
-                          backgroundPosition: `${(subMapConfig.anchor?.x ?? 0.5) * 100}% ${(subMapConfig.anchor?.y ?? 0.5) * 100}%`,
-                          opacity: 0.6,
-                          filter: 'grayscale(0.5)'
+                          backgroundImage:
+                            'radial-gradient(circle at 20% 30%, rgba(34, 211, 238, 0.2), transparent 45%), radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.16), transparent 50%), linear-gradient(120deg, rgba(6, 182, 212, 0.08), rgba(2, 132, 199, 0.05))',
+                          mixBlendMode: 'screen',
+                          opacity: 0.7
                         }}
                       />
+                    )}
+                    {showKarstOverlay && (
                       <div
-                        className="absolute border border-stone-400/60"
+                        className="absolute inset-0"
                         style={{
-                          left: `${Math.max(0, Math.min(1, 0.5 - subMapTransform.x / (subMapRef.current?.clientWidth * subMapTransform.scale || 1))) * 100 - (50 / (subMapTransform.scale || 1))}%`,
-                          top: `${Math.max(0, Math.min(1, 0.5 - subMapTransform.y / (subMapRef.current?.clientHeight * subMapTransform.scale || 1))) * 100 - (50 / (subMapTransform.scale || 1))}%`,
-                          width: `${100 / (subMapTransform.scale || 1)}%`,
-                          height: `${100 / (subMapTransform.scale || 1)}%`
+                          backgroundImage: `radial-gradient(circle at 45% 50%, rgba(34,197,94,0.35), transparent 55%), url(${cdn('/noise.svg')})`,
+                          mixBlendMode: 'screen',
+                          opacity: 0.4
                         }}
                       />
+                    )}
+                  </div>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
+                <div className="absolute bottom-6 left-6 max-w-md rounded-xl border border-stone-800 bg-black/60 px-4 py-3 text-xs text-stone-300">
+                  <p className="uppercase tracking-[0.25em] text-[10px] text-stone-500">Status</p>
+                  <p className="mt-1">
+                    {subMapConfig.isLocked
+                      ? 'The detail layer is sealed. The archive resists your sight.'
+                      : showKarstOverlay
+                        ? 'Karst conduits detected. Spore density rising.'
+                        : 'Detail layer active. Scroll to deepen the reveal.'}
+                  </p>
+                  {showLowerTierAlert && (
+                    <div className="mt-3 border border-rose-900/50 bg-rose-950/20 px-3 py-2 text-[10px] uppercase tracking-[0.25em] text-rose-300">
+                      STATUS: CRITICAL. Melden-Node Offline.
                     </div>
-                  </>
-                ) : (
-                  <div className="h-[60vh] w-full bg-black">
-                    <HoloTerrain regionId={subMapConfig.region} />
+                  )}
+                  {showTraderRouteNote && (
+                    <div className="mt-3 text-[10px] text-stone-400 italic">
+                      Wind-cut ledges ahead. Cambrian exhausts bruise the air.
+                    </div>
+                  )}
+                  {foodWebActive && (
+                    <div className="mt-3 space-y-2 text-[10px] text-cyan-200/80">
+                      <div className="uppercase tracking-[0.25em] text-cyan-300 text-[9px]">
+                        Food Web Overlay
+                      </div>
+                      {subMapFoodSeeds.length ? (
+                        subMapFoodSeeds.map((seed) => (
+                          <div key={seed.id} className="text-stone-300">
+                            {seed.text}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-stone-500">
+                          No sulfur web signals in this basin.
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {showSkyCityExcerpts && (
+                    <details className="mt-3 text-[10px] text-stone-400">
+                      <summary className="cursor-pointer uppercase tracking-[0.25em] text-stone-500">
+                        Variable Agents (Withdrawn)
+                      </summary>
+                      <div className="mt-2 space-y-2">
+                        {SKY_CITY_VARIABLE_AGENTS.map((entry) => (
+                          <div key={entry.title}>
+                            <div className="text-[9px] uppercase tracking-[0.2em] text-stone-500">
+                              {entry.title}
+                            </div>
+                            <div className="mt-1 text-[10px] text-stone-400 italic">
+                              {entry.lines.join(' ')}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                  {showIronwoodExcerpts && (
+                    <details className="mt-3 text-[10px] text-stone-400">
+                      <summary className="cursor-pointer uppercase tracking-[0.25em] text-stone-500">
+                        Ironwood Counter-Notes
+                      </summary>
+                      <div className="mt-2 space-y-2">
+                        {IRONWOOD_COUNTER_DOCS.map((entry) => (
+                          <div key={entry.title}>
+                            <div className="text-[9px] uppercase tracking-[0.2em] text-stone-500">
+                              {entry.title}
+                            </div>
+                            <div className="mt-1 text-[10px] text-stone-400 italic">
+                              {entry.lines.join(' ')}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </div>
+                {!subMapConfig.isLocked && (
+                  <div className="absolute top-5 right-6 text-[10px] uppercase tracking-[0.3em] text-stone-500">
+                    Drag to pan
                   </div>
                 )}
+                <div className="absolute bottom-6 right-6 h-28 w-28 rounded-xl border border-stone-800 bg-black/50 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.4)]">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `url(${atlasUrl})`,
+                      backgroundSize: '240%',
+                      backgroundPosition: `${(subMapConfig.anchor?.x ?? 0.5) * 100}% ${(subMapConfig.anchor?.y ?? 0.5) * 100}%`,
+                      opacity: 0.6,
+                      filter: 'grayscale(0.5)'
+                    }}
+                  />
+                  <div
+                    className="absolute border border-stone-400/60"
+                    style={{
+                      left: `${Math.max(0, Math.min(1, 0.5 - subMapTransform.x / (subMapRef.current?.clientWidth * subMapTransform.scale || 1))) * 100 - (50 / (subMapTransform.scale || 1))}%`,
+                      top: `${Math.max(0, Math.min(1, 0.5 - subMapTransform.y / (subMapRef.current?.clientHeight * subMapTransform.scale || 1))) * 100 - (50 / (subMapTransform.scale || 1))}%`,
+                      width: `${100 / (subMapTransform.scale || 1)}%`,
+                      height: `${100 / (subMapTransform.scale || 1)}%`
+                    }}
+                  />
+                </div>
               </div>
             </motion.div>
           </motion.div>

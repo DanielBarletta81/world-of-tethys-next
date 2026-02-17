@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import cdn from '@/lib/cdn';
 import DeepTimeScene from '@/components/DeepTimeScene';
+import HomeBookBanner from '@/components/content/HomeBookBanner';
 
 export default function Home() {
   const router = useRouter();
@@ -46,6 +47,7 @@ export default function Home() {
             Record queued
           </p>
         ) : null}
+        <HomeBookBanner />
       </main>
     </div>
   );

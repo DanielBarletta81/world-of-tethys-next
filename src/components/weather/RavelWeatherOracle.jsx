@@ -48,6 +48,9 @@ export default function RavelWeatherOracle({ focus = 'pteros', className = '' })
   const focusedReport = data?.reports?.find(r => r.id === focus);
   const survivability = focusedReport ? calculateSurvivability(focusedReport.weather) : null;
   const colors = survivability ? getSurvivabilityColors(survivability.level) : {};
+  const missingWeatherKey = data?.reports?.some(
+    (report) => report?.weather?.error && report.weather.error.includes('OPENWEATHER_API_KEY')
+  );
 
   return (
     <div className={`relative bg-[#0a0808] border border-purple-900/30 rounded-xl shadow-2xl overflow-hidden ${className}`}>
@@ -98,6 +101,19 @@ export default function RavelWeatherOracle({ focus = 'pteros', className = '' })
           </div>
         ) : data ? (
           <>
+            {missingWeatherKey && (
+              <div className="flex items-start gap-3 p-4 bg-amber-900/10 border border-amber-700/40 rounded text-amber-200 text-xs">
+                <AlertTriangle size={16} />
+                <div>
+                  <div className="uppercase tracking-[0.2em] text-[10px] text-amber-200/80">
+                    Weather key missing
+                  </div>
+                  <div className="mt-1 text-stone-300">
+                    Set <span className="text-amber-200">OPENWEATHER_API_KEY</span> in your Vercel env (Production + Preview) to restore live signals.
+                  </div>
+                </div>
+              </div>
+            )}
             {/* Survivability Meter */}
             {survivability && (
               <div className={`p-4 border rounded-lg ${colors.bg} ${colors.border} ${colors.glow} transition-all duration-500`}>

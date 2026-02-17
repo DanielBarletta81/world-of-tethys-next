@@ -123,7 +123,7 @@ export default function MapFragments({
           <g
             key={f.id}
             transform={`translate(${f.pos.x * 100} ${f.pos.y * 100})`}
-            className={isClickable ? 'cursor-pointer' : 'cursor-default'}
+            className={isClickable ? 'cursor-pointer map-fragment' : 'cursor-default'}
             onClick={handleClick}
           >
             {tooltipText ? <title>{tooltipText}</title> : null}
@@ -164,6 +164,17 @@ export default function MapFragments({
           </g>
         );
       })}
+      <style jsx>{`
+        .map-fragment {
+          transition: transform 240ms ease, filter 240ms ease, opacity 240ms ease;
+          transform-box: fill-box;
+          transform-origin: center;
+        }
+        .map-fragment:hover {
+          transform: scale(1.06);
+          filter: drop-shadow(0 0 6px rgba(226, 232, 240, 0.4));
+        }
+      `}</style>
     </svg>
   );
 }
