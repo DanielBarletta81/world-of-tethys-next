@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
+import { buildRateLimitHeaders, getClientIp, rateLimit } from '@/lib/ratelimit';
+import { getVertexClient } from '@/lib/genai';
 
 const WEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
-const GENAI_API_KEY = process.env.GOOGLE_GENAI_API_KEY;
 const MODEL = 'gemini-2.5-flash';
 
 // Proxy outposts that mirror Tethys regions
@@ -121,7 +121,14 @@ Treat Pteros via Crato/Araripe (Fortaleza feed) and Shastea via Mount Shasta alp
 `;
 }
 
-export async function GET(request) {
+export async function GET(request: Request) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`tethys-intel:${ip}`, 20, 60_000);
+  const rlHeaders = buildRateLimitHeaders(rl);
+  if (!rl.ok) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429, headers: rlHeaders });
+  }
+
   const { searchParams } = new URL(request.url);
   const focus = searchParams.get('focus');
   const includeAi = searchParams.get('ai') !== 'false';
@@ -140,25 +147,31 @@ export async function GET(request) {
   );
 
   // If Gemini key is missing or disabled, return weather-only
-  if (!includeAi || !GENAI_API_KEY) {
-    return NextResponse.json({ reports, aiSummary: null, aiEnabled: false });
+  const ai = includeAi ? getVertexClient() : null;
+  if (!ai) {
+    const response = NextResponse.json({ reports, aiSummary: null, aiEnabled: false });
+    Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+    return response;
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey: GENAI_API_KEY });
     const prompt = buildPrompt(reports, focus);
     const result = await ai.models.generateContent({ model: MODEL, contents: prompt });
     const aiText = result?.text ?? null;
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       reports,
       aiSummary: aiText,
       aiEnabled: true,
       model: MODEL
     });
+    Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+    return response;
   } catch (err) {
     console.error('Gemini relay error', err);
-    return NextResponse.json({ reports, aiSummary: null, aiEnabled: false, error: 'Gemini relay failed' }, { status: 200 });
+    const response = NextResponse.json({ reports, aiSummary: null, aiEnabled: false, error: 'Gemini relay failed' }, { status: 200 });
+    Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+    return response;
   }
 }
 // World of Tethys || D.C. Barletta

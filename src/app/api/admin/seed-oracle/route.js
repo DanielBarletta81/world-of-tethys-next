@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
 import { getFirebaseAdmin } from '@/lib/firebaseAdmin';
+import { getVertexClient } from '@/lib/genai';
 
-const GENAI_API_KEY = process.env.GOOGLE_GENAI_API_KEY;
 const MODEL = 'gemini-2.5-flash';
 
 export async function POST(req) {
@@ -20,12 +19,11 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!GENAI_API_KEY) {
-    return NextResponse.json({ error: 'Missing GOOGLE_GENAI_API_KEY' }, { status: 500 });
-  }
-
   try {
-    const ai = new GoogleGenAI({ apiKey: GENAI_API_KEY });
+    const ai = getVertexClient();
+    if (!ai) {
+      return NextResponse.json({ error: 'Missing Vertex AI configuration' }, { status: 500 });
+    }
     const prompt = `
 Generate 6 cryptic, short "whispers" from a fungal hivemind 111 million years ago.
 Themes: Tides, Magma, Evolution, Rot, The Watcher (Volcano).

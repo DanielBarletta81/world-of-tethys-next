@@ -29,6 +29,7 @@ import RavelToolkit from '@/components/content/RavelToolkit';
 import { SKY_CITY_VARIABLE_AGENTS } from '@/data/skycity-variable-agents';
 import { IRONWOOD_COUNTER_DOCS } from '@/data/ironwood-counter-docs';
 import { selectLoreSeeds, getDefaultLoreContext } from '@/lib/lore-seed-runtime';
+import { logMapInteraction } from '@/lib/playerApi';
 
 
 const PATH_CONFIG = [
@@ -184,6 +185,8 @@ export default function MapPage() {
   const lastStillnessAtRef = useRef(0);
   const bondAttemptRef = useRef(null);
   const presenceCarryRef = useRef(0);
+  const mapLogRef = useRef({ key: '', at: 0 });
+  const mapOpenLoggedRef = useRef(false);
   const router = useRouter();
   const satchelStorageKey = useMemo(() => {
     const userKey = user?.uid || user?.id || 'guest';
@@ -204,6 +207,28 @@ export default function MapPage() {
     const statuses = playerProfile?.survivorship?.statuses || [];
     return statuses.slice(-2);
   }, [playerProfile?.survivorship?.statuses]);
+
+  const recordMapInteraction = useCallback(
+    async (action, locationId) => {
+      if (!user || authLoading) return;
+      if (!action || !locationId) return;
+      const now = Date.now();
+      const key = `${action}:${locationId}`;
+      if (mapLogRef.current.key === key && now - mapLogRef.current.at < 3000) return;
+      mapLogRef.current = { key, at: now };
+      try {
+        await logMapInteraction({
+          action,
+          locationId,
+          worldYear: worldState?.worldYear,
+          cyclePhase: worldState?.cyclePhase
+        });
+      } catch (error) {
+        console.warn('Map interaction log failed', error);
+      }
+    },
+    [authLoading, user, worldState?.worldYear, worldState?.cyclePhase]
+  );
 
   const loreContext = useMemo(
     () =>
@@ -243,6 +268,12 @@ export default function MapPage() {
       setAirlockOpen(true);
     }
   }, [authLoading, user]);
+
+  useEffect(() => {
+    if (viewState !== 'map') {
+      mapOpenLoggedRef.current = false;
+    }
+  }, [viewState]);
 
   // 1. Determine Initial State based on User Progress
   useEffect(() => {
@@ -292,6 +323,9 @@ export default function MapPage() {
 
   useEffect(() => {
     if (viewState !== 'map') return;
+    if (mapOpenLoggedRef.current) return;
+    mapOpenLoggedRef.current = true;
+    recordMapInteraction('map_open', 'atlas');
     const timer = setInterval(() => {
       applyPlayerAction({
         id: 'map_retention',
@@ -304,7 +338,7 @@ export default function MapPage() {
       });
     }, 90000);
     return () => clearInterval(timer);
-  }, [viewState, applyPlayerAction, currentLocation]);
+  }, [viewState, applyPlayerAction, recordMapInteraction]);
 
   useEffect(() => {
     const storedUi = playerProfile?.ui?.map?.satchelOpen;
@@ -460,11 +494,12 @@ export default function MapPage() {
         setLockNotice({ regionId, message, at: Date.now() });
         return;
       }
+      recordMapInteraction('node_travel', regionId);
       if (regionId === 'pteros') {
         router.push('/pteros');
       }
     },
-    [router, travelTo, hasOnboarded, equippedStaff, playerProfile?.staff?.activeStaffId]
+    [router, travelTo, hasOnboarded, equippedStaff, playerProfile?.staff?.activeStaffId, recordMapInteraction]
   );
 
   useEffect(() => {
@@ -534,6 +569,11 @@ export default function MapPage() {
       isLocked: forcedLock || lockedRegions.includes(subMapRegion)
     };
   }, [lockedRegions, subMapRegion]);
+  const subMapSatellite = subMapConfig?.satellite?.url ? cdn(subMapConfig.satellite.url) : null;
+  const subMapSatelliteOpacity = subMapConfig?.satellite?.opacity ?? 0.6;
+  const subMapSatelliteBlend = subMapConfig?.satellite?.blend ?? 'soft-light';
+  const subMapSatelliteSize = subMapConfig?.satellite?.size ?? 'cover';
+  const subMapSatellitePosition = subMapConfig?.satellite?.position ?? '50% 50%';
   const showPermianOverlay = subMapConfig?.region === 'permian-desert';
   const showKarstOverlay = subMapConfig?.region === 'karst-drains';
   const showSkyCityExcerpts = subMapConfig?.region === 'sky-city';
@@ -996,7 +1036,11 @@ export default function MapPage() {
                   rumbleIntensity={mapWeatherProfile.rumbleIntensity}
                   stormFrontActive={mapWeatherProfile.stormFrontActive}
                   stormFrontIntensity={mapWeatherProfile.stormFrontIntensity}
-                  onInspect={(regionId) => setSubMapRegion(regionId)}
+                  onInspect={(regionId) => {
+                    if (!regionId) return;
+                    setSubMapRegion(regionId);
+                    recordMapInteraction('node_focus', regionId);
+                  }}
                   bondAmbientLevel={
                     bondEncounter?.state === 'active' &&
                     bondEncounter.regionId === currentLocation
@@ -1206,6 +1250,19 @@ export default function MapPage() {
                         filter: subMapConfig.isLocked ? 'grayscale(1) brightness(0.5)' : 'none'
                       }}
                     />
+                    {subMapSatellite && (
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          backgroundImage: `url(${subMapSatellite})`,
+                          backgroundSize: subMapSatelliteSize,
+                          backgroundPosition: subMapSatellitePosition,
+                          opacity: subMapSatelliteOpacity,
+                          mixBlendMode: subMapSatelliteBlend,
+                          filter: 'saturate(0.85) contrast(1.05)'
+                        }}
+                      />
+                    )}
                     {showPermianOverlay && (
                       <>
                         <div

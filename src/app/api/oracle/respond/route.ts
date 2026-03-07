@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { graphqlFetch } from '@/lib/graphql';
 import { buildOracleResponse, OracleFacts, OracleTerm } from '@/lib/oracle/oracleService';
+import { buildRateLimitHeaders, getClientIp, rateLimit } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 
@@ -39,6 +40,13 @@ async function fetchOracleTerms(tags: string[] = []) {
 }
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  const rl = rateLimit(`oracle-respond:${ip}`, 15, 60_000);
+  const rlHeaders = buildRateLimitHeaders(rl);
+  if (!rl.ok) {
+    return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429, headers: rlHeaders });
+  }
+
   try {
     const body = await req.json();
     const { city, lat, lon, tags = [] } = body || {};
@@ -56,9 +64,13 @@ export async function POST(req: Request) {
 
     const oracle = await buildOracleResponse({ terms, facts });
 
-    return NextResponse.json({ ok: true, oracle });
+    const response = NextResponse.json({ ok: true, oracle });
+    Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+    return response;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Oracle failed';
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    const response = NextResponse.json({ ok: false, error: message }, { status: 500 });
+    Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+    return response;
   }
 }

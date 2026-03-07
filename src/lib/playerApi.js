@@ -39,6 +39,13 @@ export async function logPlayerDaily(entry) {
   });
 }
 
+export async function logMapInteraction(entry) {
+  return bffFetch('/api/archive/map-interaction', {
+    method: 'POST',
+    body: JSON.stringify(entry)
+  });
+}
+
 export async function upsertPlayerCreature(creature) {
   return bffFetch('/api/player/creatures', {
     method: 'POST',

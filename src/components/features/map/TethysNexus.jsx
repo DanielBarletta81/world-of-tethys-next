@@ -1,321 +1,581 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import useMapPhysics from '@/components/features/map/MapPhysics';
-import MapViewport from '@/components/features/map/MapViewport';
-import MapFragments from '@/components/features/map/MapFragments';
-import cdn from '@/lib/cdn';
+import { cdn } from '@/lib/cdn';
 import StaffVisualizer from '@/components/StaffVisualizer';
-import { TETHYS_FOOD_WEB_ANALOGS } from '@/data/tethys-food-web';
-import { getOrganismAnalogs } from '@/lib/lore-seed-runtime';
+
+const SUBMAP_SATELLITE_BASE = process.env.NEXT_PUBLIC_TETHYS_SUBMAP_SATELLITE_BASE || '';
+const submapSatellite = (slug, options = {}) => {
+  if (!SUBMAP_SATELLITE_BASE) return null;
+  const base = SUBMAP_SATELLITE_BASE.endsWith('/')
+    ? SUBMAP_SATELLITE_BASE.slice(0, -1)
+    : SUBMAP_SATELLITE_BASE;
+  return {
+    url: `${base}/${slug}.jpg`,
+    opacity: 0.58,
+    blend: 'soft-light',
+    size: '240%',
+    position: '50% 50%',
+    ...options
+  };
+};
 
 export const MAP_FRAGMENTS = [
-  { id: 'skycity', label: 'Sky City', region: 'sky-city', anchor: { x: 0.26, y: 0.84 }, icon: '/img/icons/sky-city.svg' },
-  { id: 'cimmerian', label: 'Cimmerian Mtns', region: 'cimmerian-mtns', anchor: { x: 0.16, y: 0.73 }, showPin: false, clickable: false },
-  { id: 'denisova', label: 'Denisova', region: 'denisova', anchor: { x: 0.28, y: 0.56 }, showPin: false, clickable: false },
-  { id: 'siluria', label: 'Siluria', region: 'siluria', anchor: { x: 0.18, y: 0.44 }, icon: '/img/icons/silurian.svg', clickable: false },
-  { id: 'karst', label: 'Karst Drains', region: 'karst-drains', anchor: { x: 0.22, y: 0.3 } },
-  { id: 'younger', label: 'Younger Woods', region: 'younger-woods', anchor: { x: 0.3, y: 0.22 }, showPin: false, clickable: false },
-  { id: 'ironwoods', label: 'Ironwoods', region: 'ironwoods', anchor: { x: 0.62, y: 0.2 }, icon: '/img/icons/ironwood.svg' },
-  { id: 'ironwood-spires', label: 'Ironwood Spires', region: 'ironwood-spires', anchor: { x: 0.36, y: 0.78 }, icon: '/img/icons/sky-city.svg', showPin: false, clickable: false },
-  { id: 'mystic-woods', label: 'Mystic Woods', region: 'mystic-woods', anchor: { x: 0.54, y: 0.28 }, icon: '/img/icons/mystics.svg' },
-  { id: 'mt-cinder', label: 'Mt. Cinder', region: 'mt-cinder', anchor: { x: 0.82, y: 0.12 }, icon: '/img/icons/mount-shastea.svg' },
-  { id: 'straits', label: 'Straits of Dier', region: 'straits-of-dier', anchor: { x: 0.43, y: 0.48 }, icon: '/img/icons/straits-of-dier.svg' },
-  { id: 'pteros', label: 'Pteros Island', region: 'pteros', anchor: { x: 0.46, y: 0.56 }, icon: '/img/icons/pteros_island.svg' },
-  { id: 'mammoth', label: 'Mammoth Island', region: 'mammoth-hand-island', anchor: { x: 0.72, y: 0.46 }, icon: '/img/icons/mammoth-hand-island.svg' },
-  { id: 'thal', label: 'Thal Territory', region: 'thal-territory', anchor: { x: 0.74, y: 0.51 }, showPin: false, clickable: false, labelOffset: { x: 7, y: 7 } },
-  { id: 'amber-plains', label: 'Amber Plains', region: 'amber-plains', anchor: { x: 0.68, y: 0.72 }, icon: '/img/icons/nubian-sandbar.svg' },
-  { id: 'tethys-sea', label: 'Tethys Sea', region: 'tethys-sea', anchor: { x: 0.53, y: 0.64 }, showPin: false, clickable: false },
-  { id: 'rogue', label: 'Rogue Island', region: 'rogue-island', anchor: { x: 0.74, y: 0.73 }, showPin: false, clickable: false },
-  { id: 'new-tethys', label: 'New Tethys', region: 'new-tethys', anchor: { x: 0.78, y: 0.9 }, showPin: false, clickable: false },
-  { id: 'permian-desert', label: 'Permian Desert', region: 'permian-desert', anchor: { x: 0.9, y: 0.9 } }
+  { id: 'skycity', label: 'Sky City', region: 'sky-city', anchor: { x: 0.26, y: 0.84 }, icon: '/img/icons/sky-city.svg', coords: { lat: -16.5, lng: -68.15 }, extent: 2.8, satellite: submapSatellite('sky-city', { opacity: 0.46 }) },
+  { id: 'cimmerian', label: 'Cimmerian Mtns', region: 'cimmerian-mtns', anchor: { x: 0.16, y: 0.73 }, showPin: false, clickable: false, coords: { lat: -19.5, lng: -69.4 }, extent: 3.4 },
+  { id: 'denisova', label: 'Denisova', region: 'denisova', anchor: { x: 0.28, y: 0.56 }, showPin: false, clickable: false, coords: { lat: 51.4, lng: 84.7 }, extent: 3.2 },
+  { id: 'siluria', label: 'Siluria', region: 'siluria', anchor: { x: 0.18, y: 0.44 }, icon: '/img/icons/silurian.svg', clickable: false, coords: { lat: 30.4, lng: 34.9 }, extent: 4.0 },
+  { id: 'karst', label: 'Karst Drains', region: 'karst-drains', anchor: { x: 0.22, y: 0.3 }, coords: { lat: 25.2, lng: 110.3 }, extent: 3.2, satellite: submapSatellite('karst-drains', { opacity: 0.5 }) },
+  { id: 'younger', label: 'Younger Woods', region: 'younger-woods', anchor: { x: 0.3, y: 0.22 }, showPin: false, clickable: false, coords: { lat: 47.2, lng: -122.5 }, extent: 2.8 },
+  { id: 'ironwoods', label: 'Ironwoods', region: 'ironwoods', anchor: { x: 0.62, y: 0.2 }, icon: '/img/icons/ironwood.svg', coords: { lat: 45.5, lng: -122.7 }, extent: 2.8, satellite: submapSatellite('ironwoods', { opacity: 0.5 }) },
+  { id: 'ironwood-spires', label: 'Ironwood Spires', region: 'ironwood-spires', anchor: { x: 0.36, y: 0.78 }, icon: '/img/icons/sky-city.svg', showPin: false, clickable: false, coords: { lat: 44.2, lng: -121.7 }, extent: 2.4 },
+  { id: 'mystic-woods', label: 'Mystic Woods', region: 'mystic-woods', anchor: { x: 0.54, y: 0.28 }, icon: '/img/icons/mystics.svg', coords: { lat: 3.1, lng: 101.7 }, extent: 3.4, satellite: submapSatellite('mystic-woods', { opacity: 0.55 }) },
+  { id: 'mt-cinder', label: 'Mt. Cinder', region: 'mt-cinder', anchor: { x: 0.82, y: 0.12 }, icon: '/img/icons/mount-shastea.svg', coords: { lat: 37.7, lng: 15.0 }, extent: 2.4, satellite: submapSatellite('mt-cinder', { opacity: 0.62, blend: 'screen', position: '52% 48%' }) },
+  { id: 'straits', label: 'Straits of Dier', region: 'straits-of-dier', anchor: { x: 0.43, y: 0.48 }, icon: '/img/icons/straits-of-dier.svg', coords: { lat: 41.6, lng: -71.2 }, extent: 2.6, satellite: submapSatellite('straits-of-dier', { opacity: 0.52 }) },
+  { id: 'pteros', label: 'Pteros Island', region: 'pteros', anchor: { x: 0.46, y: 0.56 }, icon: '/img/icons/pteros_island.svg', coords: { lat: -3.7, lng: -38.5 }, extent: 2.6, satellite: submapSatellite('pteros', { opacity: 0.56 }) },
+  { id: 'mammoth', label: 'Mammoth Island', region: 'mammoth-hand-island', anchor: { x: 0.72, y: 0.46 }, icon: '/img/icons/mammoth-hand-island.svg', coords: { lat: 61.2, lng: -149.9 }, extent: 4.2, satellite: submapSatellite('mammoth-hand-island', { opacity: 0.5 }) },
+  { id: 'thal', label: 'Thal Territory', region: 'thal-territory', anchor: { x: 0.74, y: 0.51 }, showPin: false, clickable: false, labelOffset: { x: 7, y: 7 }, coords: { lat: -2.3, lng: 34.8 }, extent: 4.6, satellite: submapSatellite('thal-territory', { opacity: 0.48 }) },
+  { id: 'amber-plains', label: 'Amber Plains', region: 'amber-plains', anchor: { x: 0.68, y: 0.72 }, icon: '/img/icons/nubian-sandbar.svg', coords: { lat: -1.4, lng: 35.2 }, extent: 4.2, satellite: submapSatellite('amber-plains', { opacity: 0.52, blend: 'soft-light' }) },
+  { id: 'tethys-sea', label: 'Tethys Sea', region: 'tethys-sea', anchor: { x: 0.53, y: 0.64 }, showPin: false, clickable: false, coords: { lat: 34.5, lng: 18.5 }, extent: 6.5, satellite: submapSatellite('tethys-sea', { opacity: 0.45, blend: 'screen' }) },
+  { id: 'rogue', label: 'Rogue Island', region: 'rogue-island', anchor: { x: 0.74, y: 0.73 }, showPin: false, clickable: false, coords: { lat: -4.6, lng: 55.5 }, extent: 3.8, satellite: submapSatellite('rogue-island', { opacity: 0.5 }) },
+  { id: 'new-tethys', label: 'New Tethys', region: 'new-tethys', anchor: { x: 0.78, y: 0.9 }, showPin: false, clickable: false, coords: { lat: -14.6, lng: 78.2 }, extent: 6.2, satellite: submapSatellite('new-tethys', { opacity: 0.48 }) },
+  { id: 'permian-desert', label: 'Permian Desert', region: 'permian-desert', anchor: { x: 0.9, y: 0.9 }, coords: { lat: -23.4, lng: -69.3 }, extent: 4.8, satellite: submapSatellite('permian-desert', { opacity: 0.5, blend: 'soft-light' }) }
 ];
 
-const PTEROS_FOCUS = { x: 0.46, y: 0.56, scale: 1.6 };
-
-const MAP_FALLBACK = {
-  atlas: '/img/map/tethys-atlas-canon.png',
-  relief: '/img/map/tethys-relief-ghost.png',
-  mist: '/img/map/tethys-mist-noise.png',
-  ember: '/img/map/tethys-ember-scar.png',
-  ash: '/img/map/tethys-mist-noise.png'
-};
+const DEFAULT_VIEW = { center: [18, 18], zoom: 2.1 };
+const OSM_FALLBACK = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const STYLE_MODE = (process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_MODE || 'volcanic').toLowerCase();
+const BACKDROP_URL = process.env.NEXT_PUBLIC_TETHYS_WORLD_BACKDROP_URL || '';
+const BACKDROP_OPACITY = Number(process.env.NEXT_PUBLIC_TETHYS_WORLD_BACKDROP_OPACITY || 0.35);
+const BACKDROP_MAX_ZOOM = Number(process.env.NEXT_PUBLIC_TETHYS_WORLD_BACKDROP_MAX_ZOOM || 2.4);
 
 function watcherIntensityFor(regionId) {
   if (!regionId) return 'far';
-  if (['watcher-volcano', 'watcher-flats', 'purgess', 'the-ledge'].includes(regionId)) return 'near';
-  if (['mystic-woods', 'sky-city', 'cambria-ruins'].includes(regionId)) return 'mid';
+  if (['mt-cinder', 'watcher-volcano', 'watcher-flats', 'purgess', 'the-ledge'].includes(regionId)) return 'near';
+  if (['mystic-woods', 'sky-city', 'cambria-ruins', 'ironwoods'].includes(regionId)) return 'mid';
   return 'far';
 }
 
+function buildRasterStyle(tileUrl, attribution, mode) {
+  const paint = { 'raster-opacity': 1 };
+  if (mode === 'volcanic') {
+    paint['raster-saturation'] = -0.35;
+    paint['raster-contrast'] = 0.12;
+    paint['raster-brightness-min'] = 0.12;
+    paint['raster-brightness-max'] = 0.8;
+    paint['raster-hue-rotate'] = 18;
+  }
+  return {
+    version: 8,
+    sources: {
+      base: {
+        type: 'raster',
+        tiles: [tileUrl],
+        tileSize: 256,
+        attribution
+      }
+    },
+    layers: [
+      {
+        id: 'base-raster',
+        type: 'raster',
+        source: 'base',
+        paint
+      }
+    ]
+  };
+}
+
 export default function TethysNexus({
-  onStillnessChange,
   currentLocation = 'pteros',
-  pathMode = 'wild',
   lockedRegions = [],
   unlockedNodes = [],
-  mapPresenceMs = 0,
-  weatherUnlocked = false,
   onTravel,
   onInspect,
+  onStillnessChange,
   equippedStaff = null,
   showStaffOverlay = false,
-  mycorrhizalActive = false,
-  sporeSaturation = 0,
-  foodWebActive = false,
-  rootTunnelVisible = false,
   weatherMistBoost = 0,
   cloudIntensity = 0,
   rumbleIntensity = 0,
   stormFrontActive = false,
-  stormFrontIntensity = 0
+  stormFrontIntensity = 0,
+  mycorrhizalActive = false,
+  sporeSaturation = 0,
+  foodWebActive = false
 }) {
-  const containerRef = useRef(null);
-  const [initialTransform, setInitialTransform] = useState(null);
-  const watcherIntensity = watcherIntensityFor(currentLocation);
-  const watcherBoost = watcherIntensity === 'near' ? 0.22 : watcherIntensity === 'mid' ? 0.12 : 0;
-  const watcherMistBoost = watcherIntensity === 'near' ? 0.06 : watcherIntensity === 'mid' ? 0.03 : 0;
-  const watcherStormBoost = watcherIntensity === 'near' ? 0.08 : watcherIntensity === 'mid' ? 0.04 : 0;
-  const mergedRumbleIntensity = Math.min(1, rumbleIntensity + watcherBoost);
-  const mergedMistBoost = weatherMistBoost + watcherMistBoost;
-  const mergedStormIntensity = Math.min(1, stormFrontIntensity + watcherStormBoost);
-  const cfg = useMemo(
-    () => ({ STILL_DELAY: 1800, STILL_FULL: 2600, MIN_SCALE: 0.9, MAX_SCALE: 2.4 }),
-    []
+  const mapRef = useRef(null);
+  const mapContainerRef = useRef(null);
+  const [mapReady, setMapReady] = useState(false);
+  const [stillnessLevel, setStillnessLevel] = useState(0);
+  const lastInputRef = useRef(Date.now());
+  const stillnessRef = useRef(0);
+  const satelliteConfigured = Boolean(
+    process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_URL || process.env.NEXT_PUBLIC_TETHYS_SATELLITE_TILES
   );
-  const physics = useMapPhysics({
-    cfg,
-    mode: pathMode,
-    watcherIntensity,
-    envPressure: mergedRumbleIntensity,
-    initialTransform
-  });
-  const [stillnessReady, setStillnessReady] = useState(false);
 
-  useEffect(() => {
-    onStillnessChange?.(physics.stillnessLevel);
-    setStillnessReady(physics.stillnessLevel >= 0.8);
-  }, [physics.stillnessLevel, onStillnessChange]);
+  const mapStyle = useMemo(() => {
+    const styleUrl = process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_URL;
+    if (styleUrl) return styleUrl;
 
-  const mapCdnBase = process.env.NEXT_PUBLIC_MAP_CDN_BASE || '';
-  const mapAssets = mapCdnBase
-    ? {
-        atlas: `${mapCdnBase.replace(/\/$/, '')}${MAP_FALLBACK.atlas}`,
-        relief: `${mapCdnBase.replace(/\/$/, '')}${MAP_FALLBACK.relief}`,
-        mist: `${mapCdnBase.replace(/\/$/, '')}${MAP_FALLBACK.mist}`,
-        ember: `${mapCdnBase.replace(/\/$/, '')}${MAP_FALLBACK.ember}`,
-        ash: `${mapCdnBase.replace(/\/$/, '')}${MAP_FALLBACK.ash}`
-      }
-    : MAP_FALLBACK;
+    const tileUrl = process.env.NEXT_PUBLIC_TETHYS_SATELLITE_TILES || OSM_FALLBACK;
+    const attribution = process.env.NEXT_PUBLIC_TETHYS_SATELLITE_ATTRIBUTION
+      || (tileUrl.includes('openstreetmap') ? '© OpenStreetMap contributors' : '');
 
-  const fogBoost = (pathMode === 'city' ? 0.04 : 0.08) + (weatherUnlocked ? 0 : 0.12);
-  const truthProfile = useMemo(() => {
-    const lockedBoost = weatherUnlocked ? 0 : 0.18;
-    if (pathMode === 'mystic') return { relief: 0.55, mist: 0.35 + lockedBoost, ember: 0.55, ash: 0.45 };
-    if (pathMode === 'city') return { relief: 0.18, mist: 0.12 + lockedBoost, ember: 0.25, ash: 0.15 };
-    return { relief: 0.28, mist: 0.22 + lockedBoost, ember: 0.45, ash: 0.25 };
-  }, [pathMode, weatherUnlocked]);
+    return buildRasterStyle(tileUrl, attribution, STYLE_MODE);
+  }, []);
 
-  const scopedFragments = useMemo(() => {
-    const scope = {
-      city: new Set(['sky-city', 'ironwood-spires', 'pteros', 'straits-of-dier', 'tethys-sea', 'cimmerian-mtns']),
-      mystic: new Set([
-        'mystic-woods',
-        'ironwoods',
-        'mt-cinder',
-        'pteros',
-        'straits-of-dier',
-        'tethys-sea',
-        'mammoth-hand-island',
-        'siluria',
-        'denisova',
-        'permian-desert'
-      ]),
-      wild: new Set([
-        'ironwoods',
-        'mt-cinder',
-        'amber-plains',
-        'mammoth-hand-island',
-        'pteros',
-        'straits-of-dier',
-        'tethys-sea',
-        'rogue-island',
-        'new-tethys',
-        'permian-desert'
-      ])
+  const regionPoints = useMemo(() => {
+    return {
+      type: 'FeatureCollection',
+      features: MAP_FRAGMENTS.filter((f) => f.coords).map((f) => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [f.coords.lng, f.coords.lat]
+        },
+        properties: {
+          id: f.id,
+          label: f.label,
+          region: f.region,
+          clickable: f.clickable !== false ? 1 : 0,
+          locked: lockedRegions.includes(f.region) ? 1 : 0,
+          current: f.region === currentLocation ? 1 : 0
+        }
+      }))
     };
-    const allowed = scope[pathMode] || scope.wild;
-    return MAP_FRAGMENTS.filter((f) => allowed.has(f.region) || f.region === currentLocation);
-  }, [currentLocation, pathMode]);
+  }, [currentLocation, lockedRegions]);
 
-  const mycorrhizalPoints = useMemo(() => {
-    if (!mycorrhizalActive) return [];
-    const base = Math.max(0.1, Math.min(1, sporeSaturation || 0));
-    return scopedFragments.map((fragment) => {
-      const isCurrent = fragment.region === currentLocation;
-      const isUnlocked = unlockedNodes.includes(fragment.region);
-      const intensityBoost = isCurrent ? 0.25 : isUnlocked ? 0.15 : 0;
-      const radius = 0.12 + base * 0.18 + intensityBoost * 0.1;
-      return {
-        x: fragment.anchor?.x ?? 0.5,
-        y: fragment.anchor?.y ?? 0.5,
-        r: Math.min(0.3, radius),
-        intensity: Math.min(1, base + intensityBoost)
-      };
-    });
-  }, [mycorrhizalActive, sporeSaturation, scopedFragments, currentLocation, unlockedNodes]);
-
-  const mycorrhizalVeins = useMemo(() => {
-    if (!mycorrhizalActive) return [];
-    const intensity = Math.max(0.2, Math.min(1, sporeSaturation || 0));
-    return [
-      { d: 'M 120 220 Q 220 120 320 260 T 540 280', speed: 6 - intensity * 2 },
-      { d: 'M 80 420 C 200 520 320 340 520 420', speed: 7 - intensity * 2.4 },
-      { d: 'M 360 80 Q 420 240 300 460', speed: 5.5 - intensity * 1.6 }
-    ];
-  }, [mycorrhizalActive, sporeSaturation]);
-
-  const foodWebHints = useMemo(() => {
-    if (!foodWebActive) return {};
-    return TETHYS_FOOD_WEB_ANALOGS.reduce((acc, node) => {
-      node.regions.forEach((region) => {
-        if (!acc[region]) acc[region] = [];
-        acc[region].push({
-          id: node.id,
-          tethys: node.tethys,
-          creatureId: node.creatureId,
-          role: node.role
-        });
-      });
-      return acc;
-    }, {});
-  }, [foodWebActive]);
-
-  const organismAnalogs = useMemo(() => getOrganismAnalogs(), []);
-  const analogHints = useMemo(() => {
-    if (!organismAnalogs.length) return {};
-    return organismAnalogs.reduce((acc, analog) => {
-      (analog.regions || []).forEach((region) => {
-        if (!acc[region]) acc[region] = [];
-        acc[region].push({
-          id: analog.id,
-          tethys: analog.tethys,
-          realWorld: analog.realWorld
-        });
-      });
-      return acc;
-    }, {});
-  }, [organismAnalogs]);
-
-  const foodWebAliases = useMemo(
-    () => ({
-      pteros: 'tethys-estuary',
-      'straits-of-dier': 'tethys-estuary',
-      ironwoods: 'frenel_thickets',
-      'karst-drains': 'shadow_basin',
-      'mammoth-hand-island': 'lower-reefs'
-    }),
-    []
-  );
-
-  const labelIds = useMemo(() => {
-    if (!scopedFragments.length) return [];
-    const byRegion = new Map(scopedFragments.map((f) => [f.region, f]));
-    const focus = byRegion.get(currentLocation)?.anchor || { x: 0.5, y: 0.5 };
-    const timeTier = Math.min(2, Math.floor(mapPresenceMs / 120000));
-    const exploreTier = Math.min(2, Math.floor((unlockedNodes?.length || 0) / 2));
-    const labelLimit = Math.min(4, Math.max(3, 2 + timeTier + exploreTier));
-
-    return scopedFragments
-      .filter((f) => f.label)
-      .map((f) => {
-        const dx = f.anchor.x - focus.x;
-        const dy = f.anchor.y - focus.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const proximityScore = 1 - Math.min(dist, 1);
-        const unlockedBoost = unlockedNodes.includes(f.region) ? 0.6 : 0;
-        const lockPenalty = lockedRegions.includes(f.region) ? -0.3 : 0;
-        const currentBoost = f.region === currentLocation ? 0.8 : 0;
-        return { id: f.id, score: proximityScore + unlockedBoost + lockPenalty + currentBoost };
+  const regionAreas = useMemo(() => {
+    return {
+      type: 'FeatureCollection',
+      features: MAP_FRAGMENTS.filter((f) => f.coords && f.extent).map((f) => {
+        const span = f.extent || 2.5;
+        const minLng = f.coords.lng - span;
+        const maxLng = f.coords.lng + span;
+        const minLat = f.coords.lat - span;
+        const maxLat = f.coords.lat + span;
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[
+              [minLng, minLat],
+              [maxLng, minLat],
+              [maxLng, maxLat],
+              [minLng, maxLat],
+              [minLng, minLat]
+            ]]
+          },
+          properties: {
+            id: f.id,
+            label: f.label,
+            region: f.region,
+            locked: lockedRegions.includes(f.region) ? 1 : 0,
+            current: f.region === currentLocation ? 1 : 0
+          }
+        };
       })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, labelLimit)
-      .map((entry) => entry.id);
-  }, [currentLocation, lockedRegions, mapPresenceMs, scopedFragments, unlockedNodes]);
+    };
+  }, [currentLocation, lockedRegions]);
 
   useEffect(() => {
-    if (initialTransform || !containerRef.current) return;
-    const { clientWidth, clientHeight } = containerRef.current;
-    if (!clientWidth || !clientHeight) return;
-    const scale = PTEROS_FOCUS.scale;
-    const x = (0.5 - PTEROS_FOCUS.x) * clientWidth * scale;
-    const y = (0.5 - PTEROS_FOCUS.y) * clientHeight * scale;
-    setInitialTransform({ x, y, scale });
-  }, [initialTransform]);
+    let isMounted = true;
+
+    if (!mapContainerRef.current || mapRef.current) return undefined;
+
+    (async () => {
+      const maplibregl = (await import('maplibre-gl')).default;
+      if (!mapContainerRef.current || !isMounted) return;
+
+      const map = new maplibregl.Map({
+        container: mapContainerRef.current,
+        style: mapStyle,
+        center: DEFAULT_VIEW.center,
+        zoom: DEFAULT_VIEW.zoom,
+        minZoom: 1.2,
+        maxZoom: 9.5,
+        attributionControl: false,
+        dragRotate: false,
+        pitchWithRotate: false
+      });
+
+      mapRef.current = map;
+
+      map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
+      map.addControl(new maplibregl.ScaleControl({ maxWidth: 140, unit: 'metric' }), 'bottom-left');
+      map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+
+      const markInput = () => {
+        lastInputRef.current = Date.now();
+      };
+
+      map.on('dragstart', markInput);
+      map.on('zoomstart', markInput);
+      map.on('pitchstart', markInput);
+      map.on('rotate', markInput);
+      map.on('movestart', markInput);
+
+      map.on('load', () => {
+        if (!mapRef.current) return;
+
+        if (BACKDROP_URL) {
+          map.addSource('tethys-backdrop', {
+            type: 'image',
+            url: BACKDROP_URL,
+            coordinates: [
+              [-180, 85],
+              [180, 85],
+              [180, -85],
+              [-180, -85]
+            ]
+          });
+
+          const beforeId = map.getLayer('base-raster') ? 'base-raster' : undefined;
+          map.addLayer(
+            {
+              id: 'tethys-backdrop',
+              type: 'raster',
+              source: 'tethys-backdrop',
+              minzoom: 0,
+              maxzoom: Math.max(0, Math.min(6, BACKDROP_MAX_ZOOM)),
+              paint: {
+                'raster-opacity': Math.max(0.05, Math.min(0.8, BACKDROP_OPACITY))
+              }
+            },
+            beforeId
+          );
+
+          if (map.getLayer('base-raster')) {
+            map.setPaintProperty('base-raster', 'raster-opacity', [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              0,
+              0.35,
+              2,
+              1
+            ]);
+          }
+        }
+
+        map.addSource('tethys-regions', { type: 'geojson', data: regionPoints });
+        map.addSource('tethys-areas', { type: 'geojson', data: regionAreas });
+
+        map.addLayer({
+          id: 'tethys-area-fill',
+          type: 'fill',
+          source: 'tethys-areas',
+          paint: {
+            'fill-color': [
+              'case',
+              ['==', ['get', 'current'], 1], '#f97316',
+              ['==', ['get', 'locked'], 1], '#1f2937',
+              '#0f172a'
+            ],
+            'fill-opacity': [
+              'case',
+              ['==', ['get', 'current'], 1], 0.14,
+              ['==', ['get', 'locked'], 1], 0.08,
+              0.1
+            ]
+          }
+        });
+
+        map.addLayer({
+          id: 'tethys-area-outline',
+          type: 'line',
+          source: 'tethys-areas',
+          paint: {
+            'line-color': [
+              'case',
+              ['==', ['get', 'current'], 1], '#fb923c',
+              ['==', ['get', 'locked'], 1], '#475569',
+              '#64748b'
+            ],
+            'line-width': [
+              'case',
+              ['==', ['get', 'current'], 1], 2.2,
+              1.1
+            ],
+            'line-opacity': [
+              'case',
+              ['==', ['get', 'locked'], 1], 0.4,
+              0.6
+            ]
+          }
+        });
+
+        map.addLayer({
+          id: 'tethys-markers-glow',
+          type: 'circle',
+          source: 'tethys-regions',
+          paint: {
+            'circle-radius': [
+              'case',
+              ['==', ['get', 'current'], 1], 12,
+              9
+            ],
+            'circle-color': [
+              'case',
+              ['==', ['get', 'current'], 1], '#fb923c',
+              '#0ea5e9'
+            ],
+            'circle-opacity': [
+              'case',
+              ['==', ['get', 'locked'], 1], 0.2,
+              0.25
+            ]
+          }
+        });
+
+        map.addLayer({
+          id: 'tethys-markers',
+          type: 'circle',
+          source: 'tethys-regions',
+          paint: {
+            'circle-radius': [
+              'case',
+              ['==', ['get', 'current'], 1], 6.5,
+              5
+            ],
+            'circle-color': [
+              'case',
+              ['==', ['get', 'current'], 1], '#f8fafc',
+              '#e2e8f0'
+            ],
+            'circle-stroke-color': [
+              'case',
+              ['==', ['get', 'locked'], 1], '#475569',
+              '#0f172a'
+            ],
+            'circle-stroke-width': 1.2,
+            'circle-opacity': [
+              'case',
+              ['==', ['get', 'locked'], 1], 0.35,
+              0.85
+            ]
+          }
+        });
+
+        map.addLayer({
+          id: 'tethys-labels',
+          type: 'symbol',
+          source: 'tethys-regions',
+          layout: {
+            'text-field': ['get', 'label'],
+            'text-size': 12,
+            'text-font': ['Open Sans Semibold', 'Arial Unicode MS Regular'],
+            'text-offset': [0, 1.2],
+            'text-anchor': 'top'
+          },
+          paint: {
+            'text-color': '#e2e8f0',
+            'text-halo-color': '#0b0a09',
+            'text-halo-width': 1,
+            'text-opacity': [
+              'case',
+              ['==', ['get', 'locked'], 1], 0.35,
+              0.7
+            ]
+          }
+        });
+
+        const coords = regionPoints.features.map((f) => f.geometry.coordinates);
+        if (coords.length) {
+          const bounds = coords.reduce(
+            (acc, coord) => {
+              acc[0][0] = Math.min(acc[0][0], coord[0]);
+              acc[0][1] = Math.min(acc[0][1], coord[1]);
+              acc[1][0] = Math.max(acc[1][0], coord[0]);
+              acc[1][1] = Math.max(acc[1][1], coord[1]);
+              return acc;
+            },
+            [[coords[0][0], coords[0][1]], [coords[0][0], coords[0][1]]]
+          );
+          map.fitBounds(bounds, { padding: 80, duration: 1200 });
+        }
+
+        setMapReady(true);
+      });
+    })();
+
+    return () => {
+      isMounted = false;
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [mapStyle, regionAreas, regionPoints]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const idleMs = Date.now() - lastInputRef.current;
+      const next = Math.max(0, Math.min(1, (idleMs - 1200) / 1800));
+      if (Math.abs(next - stillnessRef.current) > 0.01) {
+        stillnessRef.current = next;
+        setStillnessLevel(next);
+        onStillnessChange?.(next);
+      }
+    }, 300);
+    return () => clearInterval(interval);
+  }, [onStillnessChange]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    const pointsSource = map.getSource('tethys-regions');
+    if (pointsSource) pointsSource.setData(regionPoints);
+    const areaSource = map.getSource('tethys-areas');
+    if (areaSource) areaSource.setData(regionAreas);
+  }, [mapReady, regionAreas, regionPoints]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+
+    const handleClick = (event) => {
+      const feature = event.features?.[0];
+      if (!feature) return;
+      const { region, clickable } = feature.properties || {};
+      const canClick = Number(clickable ?? 1) !== 0;
+      if (!region || !canClick) return;
+
+      const original = event.originalEvent || {};
+      if (original.shiftKey || original.altKey) {
+        onInspect?.(region);
+      } else {
+        onTravel?.(region);
+      }
+    };
+
+    const setCursor = () => {
+      map.getCanvas().style.cursor = 'pointer';
+    };
+    const resetCursor = () => {
+      map.getCanvas().style.cursor = '';
+    };
+
+    map.on('click', 'tethys-markers', handleClick);
+    map.on('mouseenter', 'tethys-markers', setCursor);
+    map.on('mouseleave', 'tethys-markers', resetCursor);
+
+    return () => {
+      map.off('click', 'tethys-markers', handleClick);
+      map.off('mouseenter', 'tethys-markers', setCursor);
+      map.off('mouseleave', 'tethys-markers', resetCursor);
+    };
+  }, [mapReady, onInspect, onTravel]);
+
+  const watcherIntensity = watcherIntensityFor(currentLocation);
+  const volcanicMode = STYLE_MODE === 'volcanic';
+  const noiseOpacity = Math.min(0.45, 0.1 + weatherMistBoost * 0.7 + cloudIntensity * 0.2);
+  const ashOpacity = watcherIntensity === 'near' ? 0.22 : watcherIntensity === 'mid' ? 0.12 : 0.06;
+  const mycoOpacity = mycorrhizalActive ? Math.min(0.45, 0.18 + sporeSaturation * 0.35) : 0;
+  const foodOpacity = foodWebActive ? 0.25 : 0;
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-[80vh] overflow-hidden bg-[#0a0a0a] rounded-2xl border border-stone-800"
-      {...physics.handlers}
-    >
+    <div className="relative w-full h-[80vh] overflow-hidden rounded-2xl border border-stone-800 bg-[#050505]">
       <div
+        ref={mapContainerRef}
         className="absolute inset-0"
+        style={volcanicMode ? { filter: 'saturate(0.85) contrast(1.08) brightness(0.78)' } : undefined}
+      />
+
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
+
+      {volcanicMode && (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 20% 70%, rgba(251,146,60,0.22), transparent 60%), radial-gradient(circle at 80% 30%, rgba(239,68,68,0.18), transparent 55%)',
+            mixBlendMode: 'screen',
+            opacity: 0.7
+          }}
+        />
+      )}
+
+      <div
+        className="pointer-events-none absolute inset-0"
         style={{
-          transform: `translate3d(${physics.tx}px, ${physics.ty}px, 0) scale(${physics.scale})`,
-          transition: physics.handlers.onPointerDown ? 'transform 40ms linear' : 'none'
+          backgroundImage: `url(${cdn('/img/map/tethys-mist-noise.png')})`,
+          opacity: noiseOpacity,
+          mixBlendMode: 'soft-light'
         }}
-      >
-        <MapViewport
-          atlasUrl={cdn(mapAssets.atlas)}
-          reliefUrl={cdn(mapAssets.relief)}
-          mistUrl={cdn(mapAssets.mist)}
-          emberUrl={cdn(mapAssets.ember)}
-          ashUrl={cdn(mapAssets.ash)}
-          backgroundUrl={cdn(mapAssets.atlas)}
-          backgroundOpacity={0.1}
-          backgroundDelayMs={700}
-          stillnessLevel={physics.stillnessLevel}
-          transform={{ tx: physics.tx, ty: physics.ty, scale: physics.scale }}
-          fogPoints={[]}
-          bleedPoints={[]}
-          mode={pathMode}
-          truthProfile={truthProfile}
-          watcherIntensity={watcherIntensity}
-          envPressure={mergedRumbleIntensity}
-          fogBoost={fogBoost}
-          weatherMistBoost={mergedMistBoost}
-          cloudIntensity={cloudIntensity}
-          stormFrontActive={stormFrontActive}
-          stormFrontIntensity={mergedStormIntensity}
-          mycorrhizalActive={mycorrhizalActive}
-          mycorrhizalPoints={mycorrhizalPoints}
-          mycorrhizalVeins={mycorrhizalVeins}
+      />
+
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `url(${cdn('/img/map/tethys-ember-scar.png')})`,
+          opacity: ashOpacity,
+          mixBlendMode: 'screen'
+        }}
+      />
+
+      {stormFrontActive && (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: Math.max(0.15, Math.min(0.7, stormFrontIntensity)),
+            mixBlendMode: 'screen'
+          }}
         >
-          <MapFragments
-            fragmentsConfig={scopedFragments}
-            stillnessReady={stillnessReady}
-            cambriaActive={pathMode === 'mystic'}
-            lockedRegions={lockedRegions}
-            labelIds={labelIds}
-            labelOpacity={0.22}
-            ghosted
-            foodWebHints={foodWebHints}
-            foodWebActive={foodWebActive}
-            foodWebAliases={foodWebAliases}
-            analogHints={analogHints}
-            rootTunnelVisible={rootTunnelVisible}
-            onTravel={onTravel}
-            onInspect={onInspect}
-          />
-        </MapViewport>
-      </div>
+          <div className="absolute inset-0 storm-front-layer" />
+        </div>
+      )}
+
+      {mycorrhizalActive && (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: mycoOpacity,
+            backgroundImage: 'radial-gradient(circle at 40% 35%, rgba(16,185,129,0.45), transparent 60%)',
+            mixBlendMode: 'screen'
+          }}
+        />
+      )}
+
+      {foodWebActive && (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: foodOpacity,
+            backgroundImage: 'radial-gradient(circle at 70% 60%, rgba(34,211,238,0.35), transparent 55%)',
+            mixBlendMode: 'screen'
+          }}
+        />
+      )}
+
       {showStaffOverlay && equippedStaff ? (
         <div className="pointer-events-none absolute bottom-4 right-4 w-[220px] rounded-xl border border-stone-800/80 bg-black/70 p-3 shadow-[0_16px_30px_rgba(0,0,0,0.45)]">
           <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400">Staff Echo</p>
           <StaffVisualizer staffData={equippedStaff} heightClass="h-[200px]" />
         </div>
       ) : null}
+
+      {!satelliteConfigured && (
+        <div className="absolute left-4 top-4 rounded-full border border-stone-700/60 bg-black/60 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-stone-400">
+          Satellite tiles not configured
+        </div>
+      )}
+
+      <style jsx>{`
+        .storm-front-layer {
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(120deg, rgba(255,255,255,0) 10%, rgba(200,220,255,0.32) 40%, rgba(255,255,255,0) 70%);
+          background-size: 220% 100%;
+          animation: storm-front 18s linear infinite;
+          filter: blur(8px);
+        }
+        @keyframes storm-front {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 100% 50%; }
+        }
+      `}</style>
     </div>
   );
 }

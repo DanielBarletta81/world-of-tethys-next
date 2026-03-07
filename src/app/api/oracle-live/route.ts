@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
 import { graphqlFetchWithErrors } from '@/lib/graphql';
+import { getVertexClient } from '@/lib/genai';
+import { buildRateLimitHeaders, getClientIp, rateLimit } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 
-const GENAI_API_KEY = process.env.GOOGLE_GENAI_API_KEY;
 const WEATHER_KEY = process.env.OPENWEATHER_API_KEY;
 
 const MODEL = 'gemini-2.5-flash';
@@ -187,6 +187,13 @@ No real-world place names. Use in-world terminology only.`;
 }
 
 export async function GET(request: Request) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`oracle-live:${ip}`, 12, 60_000);
+  const rlHeaders = buildRateLimitHeaders(rl);
+  if (!rl.ok) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429, headers: rlHeaders });
+  }
+
   try {
     const [volcano, weather, lore, danian, hydro] = await Promise.all([
       getVolcanoStatus(),
@@ -203,11 +210,12 @@ export async function GET(request: Request) {
     if (weepVolume < 180000) jumpCondition = 'Thin Veil (Rock Impact Likely)';
     if (ledgeWind >= 12) jumpCondition = 'Gale Force (Lethal Drift)';
 
-    if (!GENAI_API_KEY) {
+    const ai = getVertexClient();
+    if (!ai) {
       const baseWhispers = lore.slice(0, 1).map((l) => l.title);
       const danianFlow = hydro?.danian?.flowCfs;
       const weepFlow = hydro?.weep?.flowCfs;
-      return NextResponse.json({
+      const response = NextResponse.json({
         ok: true,
         meta: {
           timestamp: new Date().toISOString(),
@@ -233,9 +241,10 @@ export async function GET(request: Request) {
           baseWhispers[0] || 'The archives are silent.'
         ]
       });
+      Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+      return response;
     }
 
-    const ai = new GoogleGenAI({ apiKey: GENAI_API_KEY });
     const result = await ai.models.generateContent({
       model: MODEL,
       contents: buildPrompt(volcano, weather, lore, danian, hydro, jumpCondition),
@@ -245,7 +254,7 @@ export async function GET(request: Request) {
     const cleaned = String(raw).replace(/```json|```/gi, '').trim();
     const parsed = JSON.parse(cleaned || '{}');
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       ok: true,
       meta: {
         timestamp: new Date().toISOString(),
@@ -267,13 +276,17 @@ export async function GET(request: Request) {
       threat_level: parsed.threat_level ?? 2,
       whispers: (parsed.whispers || []).map((w: string) => scrubRealWorld(w))
     });
+    Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+    return response;
   } catch (err: unknown) {
     console.error('Oracle Failure:', err);
-    return NextResponse.json({
+    const response = NextResponse.json({
       atmosphere: 'The link is severed. Static fills the void.',
       threat_level: 1,
       whispers: ['...silence...', '...silence...', '...silence...', '...silence...'],
       error: 'The Oracle is silent.'
     }, { status: 500 });
+    Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+    return response;
   }
 }

@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { getVertexClient } from '@/lib/genai';
 
 type EchoKind = 'spores' | 'rumble' | 'deep_rumble' | 'crack' | 'heartbeat' | 'silence';
 
@@ -107,13 +107,12 @@ export async function buildOracleResponse({
   terms?: OracleTerm[];
   facts?: OracleFacts;
 }): Promise<OracleResponse> {
-  const apiKey = process.env.GOOGLE_GENAI_API_KEY;
-  if (!apiKey) {
+  const ai = getVertexClient();
+  if (!ai) {
     return buildFallbackResponse(terms, facts);
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
     const prompt = buildPrompt(terms, facts);
     const result = await ai.models.generateContent({
       model: MODEL,

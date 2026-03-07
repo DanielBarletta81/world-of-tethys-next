@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { graphqlFetchWithErrors } from '@/lib/graphql';
+import { buildRateLimitHeaders, getClientIp, rateLimit } from '@/lib/ratelimit';
 import baseSeeder from '@/oracle_pool/ravel_seeder.json';
 
 const DEFAULT_SELECTORS = {
@@ -113,7 +114,14 @@ async function fetchOracleFromWp() {
   return primary.data?.loreEntries?.nodes ?? [];
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`oracle-pool:${ip}`, 60, 60_000);
+  const rlHeaders = buildRateLimitHeaders(rl);
+  if (!rl.ok) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429, headers: rlHeaders });
+  }
+
   const wpNodes = await fetchOracleFromWp();
   const wpResponses = Array.isArray(wpNodes)
     ? wpNodes.map(normalizeOracleEntry).filter((entry) => entry.text || entry.gibberish)
@@ -124,7 +132,7 @@ export async function GET() {
     ...(baseSeeder.responses ?? []),
   ];
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     id: baseSeeder.id,
     speaker: baseSeeder.speaker,
     selectors: baseSeeder.selectors,
@@ -137,6 +145,8 @@ export async function GET() {
       fetchedAt: new Date().toISOString(),
     },
   });
+  Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+  return response;
 }
 
 // World of Tethys || D.C. Barletta
