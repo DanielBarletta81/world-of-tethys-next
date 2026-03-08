@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { BACKGROUND_IMAGE_URLS, BOOK1_COVER_URL } from '@/lib/site-assets';
 
 const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
@@ -67,7 +68,12 @@ export default function Home() {
         </ul>
       </nav>
 
-      <section className="mt-10 grid gap-10 md:grid-cols-[1fr_1.1fr] items-center">
+      <section
+        className="mt-10 grid gap-10 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_1.1fr] md:p-8 items-center"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.82), rgba(5,4,3,0.88)), url(${BACKGROUND_IMAGE_URLS.homepage})`,
+        }}
+      >
         <div className="space-y-6">
           <h1 className="text-4xl md:text-6xl font-tethys-volcanic leading-tight text-stone-50">
             World of Tethys - A Prehistoric Epic by D.C. Barletta
@@ -82,7 +88,7 @@ export default function Home() {
 
         <div className="mx-auto w-full max-w-md">
           <Image
-            src="/img/books/book1-cover.png"
+            src={BOOK1_COVER_URL}
             alt="World of Tethys prehistoric volcanic landscape"
             width={720}
             height={1080}

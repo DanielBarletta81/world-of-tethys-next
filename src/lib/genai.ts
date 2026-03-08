@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { existsSync } from 'node:fs';
 
 type VertexConfig = {
   project: string;
@@ -15,10 +16,16 @@ export function getVertexConfig(): VertexConfig | null {
 export function getVertexClient(): GoogleGenAI | null {
   const config = getVertexConfig();
   if (!config) return null;
+  const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  if (credentialsPath && !existsSync(credentialsPath)) {
+    console.warn(
+      `[Vertex] GOOGLE_APPLICATION_CREDENTIALS does not exist at "${credentialsPath}". Falling back to non-AI oracle response.`
+    );
+    return null;
+  }
   return new GoogleGenAI({
     vertexai: true,
     project: config.project,
     location: config.location,
   });
 }
-

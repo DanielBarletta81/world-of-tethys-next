@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { HERO_IMAGE_URLS } from '@/lib/site-assets';
 
 export const metadata = {
   title: 'The World of Tethys | Lore Encyclopedia',
@@ -15,7 +16,12 @@ const lorePages = [
 
 export default function WorldOfTethysHubPage() {
   return (
-    <main className="mx-auto max-w-5xl px-6 py-16 md:py-24 text-stone-100">
+    <main
+      className="mx-auto max-w-5xl rounded-lg border border-stone-700 bg-cover bg-center px-6 py-16 md:py-24 text-stone-100"
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.84), rgba(5,4,3,0.9)), url(${HERO_IMAGE_URLS.worldHub})`,
+      }}
+    >
       <h1 className="text-4xl md:text-5xl font-tethys-volcanic text-stone-50">The World of Tethys</h1>
       <p className="mt-5 max-w-3xl text-stone-300 leading-relaxed">
         Encyclopedia entries for key regions, species, and pressures in the world.

@@ -93,17 +93,50 @@ async function getLoreTerms() {
   if (!nodes.length || primary?.errors?.length) {
     const fallback = await graphqlFetchWithErrors(
       `query OracleFallback($first: Int!) {
-        posts(first: $first, where: { orderby: { field: DATE, order: DESC } }) {
+        loreEntries(first: $first, where: { orderby: { field: DATE, order: DESC } }) {
           nodes { title }
         }
       }`,
       { first: 12 }
     );
-    nodes = fallback?.data?.posts?.nodes ?? [];
+    nodes = fallback?.data?.loreEntries?.nodes ?? [];
   }
 
   if (!nodes.length) return [];
   return nodes.sort(() => 0.5 - Math.random()).slice(0, 3);
+}
+
+function buildFallbackPayload(volcano: any, weather: any, hydro: any, lore: any[], jumpCondition: string) {
+  const baseWhispers = lore.slice(0, 1).map((l) => l.title);
+  const danianFlow = hydro?.danian?.flowCfs;
+  const weepFlow = hydro?.weep?.flowCfs;
+
+  return {
+    ok: true,
+    meta: {
+      timestamp: new Date().toISOString(),
+      sources: {
+        volcano: 'USGS/Kilauea',
+        pteros: 'OpenWeather/Fortaleza',
+        ledge: 'OpenWeather/CapePoint',
+        danian: 'USGS/Colorado',
+        weep: 'USGS/Niagara',
+        lore: 'WPGraphQL'
+      },
+      aiEnabled: false
+    },
+    hydroRaw: hydro,
+    weatherRaw: weather,
+    jumpCondition,
+    atmosphere: scrubRealWorld(`Watcher status ${volcano.status}. ${volcano.update}`),
+    threat_level: 2,
+    whispers: [
+      `The Watcher holds at ${volcano.status}.`,
+      danianFlow ? `Danian flow steadies at ${danianFlow} cfs.` : 'Danian signal is faint.',
+      weepFlow ? `The Weep thunders at ${weepFlow} cfs.` : 'The Weep is veiled.',
+      baseWhispers[0] || 'The archives are silent.'
+    ]
+  };
 }
 
 function parseUsgsValue(series: any[], siteId: string, code: string) {
@@ -212,47 +245,31 @@ export async function GET(request: Request) {
 
     const ai = getVertexClient();
     if (!ai) {
-      const baseWhispers = lore.slice(0, 1).map((l) => l.title);
-      const danianFlow = hydro?.danian?.flowCfs;
-      const weepFlow = hydro?.weep?.flowCfs;
       const response = NextResponse.json({
-        ok: true,
-        meta: {
-          timestamp: new Date().toISOString(),
-          sources: {
-            volcano: 'USGS/Kilauea',
-            pteros: 'OpenWeather/Fortaleza',
-            ledge: 'OpenWeather/CapePoint',
-            danian: 'USGS/Colorado',
-            weep: 'USGS/Niagara',
-            lore: 'WPGraphQL'
-          },
-          aiEnabled: false
-        },
-        hydroRaw: hydro,
-        weatherRaw: weather,
-        jumpCondition,
-        atmosphere: scrubRealWorld(`Watcher status ${volcano.status}. ${volcano.update}`),
-        threat_level: 2,
-        whispers: [
-          `The Watcher holds at ${volcano.status}.`,
-          danianFlow ? `Danian flow steadies at ${danianFlow} cfs.` : 'Danian signal is faint.',
-          weepFlow ? `The Weep thunders at ${weepFlow} cfs.` : 'The Weep is veiled.',
-          baseWhispers[0] || 'The archives are silent.'
-        ]
+        ...buildFallbackPayload(volcano, weather, hydro, lore, jumpCondition)
       });
       Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
       return response;
     }
 
-    const result = await ai.models.generateContent({
-      model: MODEL,
-      contents: buildPrompt(volcano, weather, lore, danian, hydro, jumpCondition),
-      config: { responseMimeType: 'application/json' }
-    });
-    const raw = result?.text ?? '';
-    const cleaned = String(raw).replace(/```json|```/gi, '').trim();
-    const parsed = JSON.parse(cleaned || '{}');
+    let parsed: any = {};
+    try {
+      const result = await ai.models.generateContent({
+        model: MODEL,
+        contents: buildPrompt(volcano, weather, lore, danian, hydro, jumpCondition),
+        config: { responseMimeType: 'application/json' }
+      });
+      const raw = result?.text ?? '';
+      const cleaned = String(raw).replace(/```json|```/gi, '').trim();
+      parsed = JSON.parse(cleaned || '{}');
+    } catch (aiErr) {
+      console.error('Oracle AI invocation failed, using fallback payload:', aiErr);
+      const response = NextResponse.json({
+        ...buildFallbackPayload(volcano, weather, hydro, lore, jumpCondition)
+      });
+      Object.entries(rlHeaders).forEach(([key, value]) => response.headers.set(key, value));
+      return response;
+    }
 
     const response = NextResponse.json({
       ok: true,

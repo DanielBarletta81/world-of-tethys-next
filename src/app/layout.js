@@ -9,8 +9,8 @@ import GuestUpgradeGate from '../components/GuestUpgradeGate';
 import IdleGrowthOverlay from '../components/IdleGrowthOverlay';
 import './globals.css';
 import Footer from '@/components/layout/Footer';
-import cdn from '@/lib/cdn';
 import Link from 'next/link';
+import { BOOK1_COVER_URL } from '@/lib/site-assets';
 
 const skySans = localFont({
   src: [
@@ -107,7 +107,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: cdn('/img/books/book1-cover.png'),
+        url: BOOK1_COVER_URL,
         width: 1200,
         height: 630,
         alt: 'World of Tethys prehistoric volcanic landscape',

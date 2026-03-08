@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { BACKGROUND_IMAGE_URLS, BOOK1_COVER_URL } from '@/lib/site-assets';
 
 const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
@@ -28,7 +29,12 @@ export default function WorldOfTethysBookOnePage() {
     <main className="mx-auto max-w-5xl px-6 py-16 md:py-24 text-stone-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
 
-      <header className="grid gap-8 md:grid-cols-[1fr_320px] items-start">
+      <header
+        className="grid gap-8 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_320px] md:p-8 items-start"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.82), rgba(5,4,3,0.9)), url(${BACKGROUND_IMAGE_URLS.bookPage})`,
+        }}
+      >
         <div>
           <h1 className="text-4xl md:text-5xl font-tethys-volcanic text-stone-50">World of Tethys - Book One</h1>
           <p className="mt-4 text-stone-300 leading-relaxed">
@@ -36,7 +42,7 @@ export default function WorldOfTethysBookOnePage() {
           </p>
         </div>
         <Image
-          src="/img/books/book1-cover.png"
+          src={BOOK1_COVER_URL}
           alt="World of Tethys Book 1 cover"
           width={720}
           height={1080}

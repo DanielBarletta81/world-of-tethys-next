@@ -32,6 +32,10 @@ const remotePatterns = [
     protocol: 'https',
     hostname: 'secure.gravatar.com', // WordPress Gravatars
   },
+  {
+    protocol: 'https',
+    hostname: 'world-of-tethys-site.s3.us-east-1.amazonaws.com',
+  },
 ];
 
 if (cdnPattern) {
