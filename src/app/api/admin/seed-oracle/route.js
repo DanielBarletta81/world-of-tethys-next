@@ -59,7 +59,7 @@ Example: [{"gibberish": "Kzzzt... orem...", "translation": "The mountain breathe
     });
 
     return NextResponse.json({ success: true, count: whispers.length });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Oracle seed error', error);
     return NextResponse.json({ error: error?.message || 'Oracle seed failed' }, { status: 500 });
   }
@@ -94,7 +94,7 @@ export async function GET(req) {
       count,
       lastSeededAt: newest || null
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Oracle status error', error);
     return NextResponse.json({ error: error?.message || 'Oracle status failed' }, { status: 500 });
   }

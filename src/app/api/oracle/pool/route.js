@@ -114,7 +114,7 @@ async function fetchOracleFromWp() {
   return primary.data?.loreEntries?.nodes ?? [];
 }
 
-export async function GET(request: Request) {
+export async function GET(request) {
   const ip = getClientIp(request);
   const rl = rateLimit(`oracle-pool:${ip}`, 60, 60_000);
   const rlHeaders = buildRateLimitHeaders(rl);

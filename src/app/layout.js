@@ -78,34 +78,65 @@ const handwriting = localFont({
 });
 
 const metadataBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const worldSiteUrl = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
 
 export const metadata = {
   metadataBase: new URL(metadataBaseUrl),
-  title: 'World of Tethys | The 111-MYA Archive',
-  description: 'A volcanic high-fantasy reconstruction of the Aptian Age. Explore the obsidian coast, decode ancient glyphs, and survive the tides.',
-  keywords: ['Fantasy', 'Worldbuilding', 'Paleontology', 'Interactive Fiction', 'RPG'],
+  title: {
+    default: 'World of Tethys by D.C. Barletta',
+    template: '%s | World of Tethys',
+  },
+  description:
+    'World of Tethys by D.C. Barletta: prehistoric fiction, dinosaur survival, evolutionary fantasy, and ecological storytelling. Available on Amazon.',
+  keywords: [
+    'world of tethys',
+    'dc barletta',
+    'prehistoric fiction',
+    'dinosaur survival novel',
+    'evolutionary fantasy',
+    'volcanic world novel',
+    'natural history fiction',
+  ],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'World of Tethys',
-    description: 'The ancient world is waking up. Will you listen to the roots or the magma?',
+    title: 'World of Tethys by D.C. Barletta',
+    description:
+      'Discover World of Tethys, a prehistoric epic novel set in a volcanic world of ancient forests, flying predators, and evolving ecosystems.',
     type: 'website',
     images: [
       {
-        url: cdn('/symbols/tethys-seal.png'),
+        url: cdn('/img/books/book1-cover.png'),
         width: 1200,
         height: 630,
-        alt: 'World of Tethys Map',
+        alt: 'World of Tethys prehistoric volcanic landscape',
       },
     ],
+  },
+  verification: {
+    other: {
+      'p:domain_verify': '0911a7e67a7bf1098d8b561256e29144',
+    },
   },
 };
 
 export default function RootLayout({ children }) {
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'D.C. Barletta',
+    url: metadataBaseUrl,
+    sameAs: [worldSiteUrl, 'https://www.youtube.com/@worldoftethysauthor'],
+  };
+
   return (
     <html
       lang="en"
       className={`${skySans.variable} ${naturalist.variable} ${volcanic.variable} ${fieldNotes.variable} ${mystic.variable} ${mono.variable} ${handwriting.variable}`}
     >
       <body className="bg-[#0c0a09] text-[#e7e5e4] antialiased">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         <Link
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-orange-600 focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-orange-400"

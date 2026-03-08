@@ -1,54 +1,165 @@
-'use client';
+import Link from 'next/link';
+import Image from 'next/image';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import cdn from '@/lib/cdn';
-import DeepTimeScene from '@/components/DeepTimeScene';
-import HomeBookBanner from '@/components/content/HomeBookBanner';
+const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
+const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
+
+export const metadata = {
+  title: 'World of Tethys - A Prehistoric Epic by D.C. Barletta',
+  description:
+    'Discover the world of Tethys, a prehistoric epic novel by D.C. Barletta featuring volcanic landscapes, ancient forests, and flying predators.',
+  keywords: [
+    'world of tethys',
+    'dc barletta',
+    'prehistoric fiction',
+    'evolutionary fantasy',
+    'dinosaur-era world',
+  ],
+};
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Books', href: '/world-of-tethys-book-1' },
+  { label: 'World of Tethys', href: '/world-of-tethys' },
+  { label: 'Natural History', href: '/natural-history' },
+  { label: 'About', href: '/about-dc-barletta' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Press Kit', href: '/press-kit' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const featuredLore = [
+  { label: 'Sky City', href: '/world-of-tethys/sky-city' },
+  { label: 'Stryker - Sky Predator', href: '/world-of-tethys/stryker' },
+  { label: 'The Watcher Volcano', href: '/world-of-tethys/the-watcher-volcano' },
+  { label: 'Ironwood Forest', href: '/world-of-tethys/ironwood-forest' },
+];
+
+const articlePreviews = [
+  { title: 'Could Humans Survive the Age of Dinosaurs?', href: '/blog/could-humans-survive-age-of-dinosaurs' },
+  { title: 'Why Pterosaurs Ruled the Ancient Sky', href: '/blog/why-pterosaurs-ruled-the-ancient-sky' },
+  { title: 'Life After the Permian Extinction', href: '/blog/life-after-the-permian-extinction' },
+  { title: 'Volcanic Forest Ecosystems', href: '/blog/ecology-of-volcanic-forests' },
+];
 
 export default function Home() {
-  const router = useRouter();
-  const [recordOpen, setRecordOpen] = useState(false);
-
   return (
-    <div className="relative min-h-screen bg-[#050403] text-stone-100 overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 opacity-30 pointer-events-none">
-          <DeepTimeScene />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-[#050403]" />
-        <div
-          className="absolute inset-0 opacity-20 mix-blend-screen"
-          style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
-        />
-      </div>
+    <main className="mx-auto max-w-6xl px-6 py-10 md:py-16 text-stone-100">
+      <nav className="rounded-lg border border-stone-700 p-4">
+        <ul className="flex flex-wrap gap-3 text-sm">
+          {navItems.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} className="rounded-md border border-stone-600 px-3 py-2 hover:border-orange-300">
+                {item.label}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <a
+              href={WORLD_SITE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-md border border-stone-600 px-3 py-2 hover:border-orange-300"
+            >
+              Explore World Atlas
+            </a>
+          </li>
+        </ul>
+      </nav>
 
-      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 text-center">
-        <h1 className="text-5xl md:text-6xl text-stone-200 tracking-wide font-serif">
-          World of Tethys
-        </h1>
-        <p className="mt-4 text-xs tracking-[0.4em] text-stone-500 uppercase font-mono">
-          Chronological Survey Record
-        </p>
-        <p className="mt-2 text-sm text-stone-600">Estimated age: 111 million years</p>
-
-        <button
-          type="button"
-          onClick={() => {
-            setRecordOpen(true);
-            router.push('/survey');
-          }}
-          className="mt-10 px-6 py-3 border border-stone-600 text-xs uppercase tracking-[0.35em] text-stone-200 hover:text-stone-100 hover:border-stone-400 transition-colors"
-        >
-          Open Record
-        </button>
-        {recordOpen ? (
-          <p className="mt-3 text-[10px] uppercase tracking-[0.3em] text-stone-600">
-            Record queued
+      <section className="mt-10 grid gap-10 md:grid-cols-[1fr_1.1fr] items-center">
+        <div className="space-y-6">
+          <h1 className="text-4xl md:text-6xl font-tethys-volcanic leading-tight text-stone-50">
+            World of Tethys - A Prehistoric Epic by D.C. Barletta
+          </h1>
+          <p className="text-lg text-stone-200 max-w-2xl">
+            An epic survival story set in a volcanic world of ancient forests, flying predators, and evolving ecosystems.
           </p>
-        ) : null}
-        <HomeBookBanner />
-      </main>
-    </div>
+          <a href={AMAZON_URL} className="inline-flex items-center justify-center rounded-md bg-orange-500 px-6 py-3 font-semibold text-black hover:bg-orange-400">
+            Read World of Tethys on Amazon
+          </a>
+        </div>
+
+        <div className="mx-auto w-full max-w-md">
+          <Image
+            src="/img/books/book1-cover.png"
+            alt="World of Tethys prehistoric volcanic landscape"
+            width={720}
+            height={1080}
+            className="h-auto w-full rounded-lg border border-stone-700 shadow-2xl"
+            priority
+          />
+        </div>
+      </section>
+
+      <section className="mt-16">
+        <h2 className="text-3xl font-semibold text-stone-100">The World of Tethys</h2>
+        <p className="mt-4 max-w-4xl text-stone-300 leading-relaxed">
+          World of Tethys is prehistoric fiction rooted in evolutionary fantasy and deep-time survival.
+          A dinosaur-era world of volcanic terrain, ancient ecosystems, and aerial predators tests every
+          settlement against ecological reality.
+        </p>
+        <a
+          href={WORLD_SITE_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300"
+        >
+          Explore the Immersive World at worldoftethys.com
+        </a>
+      </section>
+
+      <section className="mt-16">
+        <h2 className="text-3xl font-semibold text-stone-100">Featured Lore</h2>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {featuredLore.map((entry) => (
+            <Link key={entry.href} href={entry.href} className="rounded-lg border border-stone-700 p-5 hover:border-orange-300">
+              <h3 className="text-xl font-semibold">{entry.label}</h3>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-16 grid gap-6 md:grid-cols-[220px_1fr] items-start rounded-lg border border-stone-700 p-6">
+        <Image
+          src="/ray_smile.jpg"
+          alt="Author D.C. Barletta"
+          width={400}
+          height={400}
+          className="h-auto w-full rounded-md border border-stone-700"
+        />
+        <div>
+          <h2 className="text-3xl font-semibold text-stone-100">About the Author</h2>
+          <p className="mt-3 text-stone-300 leading-relaxed">
+            Author D.C. Barletta writes the World of Tethys series as prehistoric science fiction built on
+            biology, behavior, and environmental pressure.
+          </p>
+          <Link href="/about-dc-barletta" className="mt-4 inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300">
+            About the Author
+          </Link>
+        </div>
+      </section>
+
+      <section className="mt-16 rounded-lg border border-stone-700 p-6 md:p-8">
+        <h2 className="text-2xl font-semibold text-stone-100">The Natural History of Tethys</h2>
+        <p className="mt-3 text-stone-300">
+          Documentary-style world breakdowns that connect biology, lore, and story arcs.
+        </p>
+        <a href="https://www.youtube.com/@worldoftethysauthor" className="mt-4 inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300">
+          Watch on YouTube
+        </a>
+      </section>
+
+      <section className="mt-16">
+        <h2 className="text-3xl font-semibold text-stone-100">Blog and Articles</h2>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {articlePreviews.map((article) => (
+            <Link key={article.href} href={article.href} className="rounded-lg border border-stone-700 p-5 hover:border-orange-300">
+              <h3 className="text-lg font-semibold">{article.title}</h3>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }

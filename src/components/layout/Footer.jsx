@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { cdn } from '@/lib/cdn';
 
 const FOOTER_PLATES = [
@@ -14,6 +15,8 @@ const FOOTER_PLATES = [
 
 export default function SiteFooter() {
   const pathname = usePathname() || '/';
+  const worldSiteUrl = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
+  const amazonUrl = 'https://www.amazon.com/dp/B0GRHBR1HJ';
   const plate = (FOOTER_PLATES.find((x) => x.match(pathname)) ?? FOOTER_PLATES.at(-1)).plate;
   const isMystics = pathname.startsWith('/mystics');
   const isHome = pathname === '/';
@@ -54,6 +57,20 @@ export default function SiteFooter() {
       <div className="relative mx-auto max-w-6xl px-6 py-16 text-white/70">
         <div className="text-sm tracking-[0.28em] uppercase">
           D.C. Barletta • World of Tethys
+        </div>
+        <div className="mt-4 flex flex-wrap gap-4 text-xs">
+          <Link href="/world-of-tethys-book-1" className="underline underline-offset-4 hover:text-white">
+            Book Page
+          </Link>
+          <a href={amazonUrl} className="underline underline-offset-4 hover:text-white">
+            Buy on Amazon
+          </a>
+          <a href={worldSiteUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-white">
+            Explore worldoftethys.com
+          </a>
+          <Link href="/press-kit" className="underline underline-offset-4 hover:text-white">
+            Press Kit
+          </Link>
         </div>
         <div className="mt-2 text-xs text-white/45">© {new Date().getFullYear()}</div>
       </div>
