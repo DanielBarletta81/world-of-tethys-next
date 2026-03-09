@@ -1082,4 +1082,38 @@ img[src$='.svg'] {
     animation: none !important;
     transition: none !important;
   }
+
+  .ash-noise-layer,
+  .parallax-subtle {
+    animation: none !important;
+  }
+}
+
+/* Subtle ash-noise layer and low-motion parallax for hero surfaces */
+.ash-noise-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url('/noise.svg');
+  background-size: 320px 320px;
+  mix-blend-mode: screen;
+  animation: ash-drift 45s linear infinite;
+}
+
+.parallax-subtle {
+  background-size: cover;
+  background-position: center;
+  animation: parallax-subtle-shift 26s ease-in-out infinite alternate;
+}
+
+@keyframes ash-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-1.5%, -1%, 0); }
+  100% { transform: translate3d(-3%, -2%, 0); }
+}
+
+@keyframes parallax-subtle-shift {
+  0% { background-position: 50% 50%; }
+  100% { background-position: 50% 46%; }
 }

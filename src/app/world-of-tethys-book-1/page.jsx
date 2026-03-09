@@ -30,11 +30,12 @@ export default function WorldOfTethysBookOnePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
 
       <header
-        className="grid gap-8 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_320px] md:p-8 items-start"
+        className="relative grid gap-8 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_320px] md:p-8 items-start overflow-hidden parallax-subtle"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.82), rgba(5,4,3,0.9)), url(${BACKGROUND_IMAGE_URLS.bookPage})`,
         }}
       >
+        <div className="ash-noise-layer" />
         <div>
           <h1 className="text-4xl md:text-5xl font-tethys-volcanic text-stone-50">World of Tethys - Book One</h1>
           <p className="mt-4 text-stone-300 leading-relaxed">

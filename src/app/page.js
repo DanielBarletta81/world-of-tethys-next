@@ -70,11 +70,12 @@ export default function Home() {
       </nav>
 
       <section
-        className="mt-10 grid gap-10 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_1.1fr] md:p-8 items-center"
+        className="relative mt-10 grid gap-10 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_1.1fr] md:p-8 items-center overflow-hidden parallax-subtle"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.82), rgba(5,4,3,0.88)), url(${BACKGROUND_IMAGE_URLS.homepage})`,
         }}
       >
+        <div className="ash-noise-layer" />
         <div className="space-y-6">
           <h1 className="text-4xl md:text-6xl font-tethys-volcanic leading-tight text-stone-50">
             World of Tethys - A Prehistoric Epic by D.C. Barletta

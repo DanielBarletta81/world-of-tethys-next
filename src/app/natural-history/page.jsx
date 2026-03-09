@@ -15,11 +15,12 @@ const articles = [
 export default function NaturalHistoryPage() {
   return (
     <main
-      className="mx-auto max-w-5xl rounded-lg border border-stone-700 bg-cover bg-center px-6 py-16 text-stone-100"
+      className="relative mx-auto max-w-5xl rounded-lg border border-stone-700 bg-cover bg-center px-6 py-16 text-stone-100 overflow-hidden parallax-subtle"
       style={{
         backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.84), rgba(5,4,3,0.9)), url(${HERO_IMAGE_URLS.naturalHistory})`,
       }}
     >
+      <div className="ash-noise-layer" />
       <h1 className="text-4xl md:text-5xl font-tethys-volcanic text-stone-50">Natural History</h1>
       <p className="mt-4 max-w-3xl text-stone-300">
         The science authority zone: essays on prehistoric biology, ecological stress, and deep-time adaptation.
