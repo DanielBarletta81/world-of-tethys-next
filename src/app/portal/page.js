@@ -4,7 +4,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
 import StoneSideNav from '@/components/layout/navigation/StoneSideNav';
-import MarineShowcase from '@/components/data/MarineShowcase';
 import BookCarousel from '@/components/content/BookCarousel';
 import IdentityAirLock from '@/components/forms/IdentityAirLock';
 import IntroOverlay from '@/components/overlays/IntroOverlay';
@@ -328,9 +327,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
-              {/* Creature Showcase */}
-              <MarineShowcase />
 
               {/* Cinematic Feature + Audio */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

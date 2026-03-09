@@ -2,6 +2,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dcbarletta.com';
 
 const staticRoutes = [
   '',
+  '/author',
+  '/world',
   '/world-of-tethys-book-1',
   '/about-dc-barletta',
   '/world-of-tethys',

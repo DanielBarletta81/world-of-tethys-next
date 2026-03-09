@@ -53,6 +53,9 @@ export default function AboutDcBarlettaPage() {
       <p className="mt-3 text-stone-200">
         Explore the immersive world archive at <a href={worldSiteUrl} target="_blank" rel="noreferrer" className="underline hover:text-orange-300">worldoftethys.com</a>.
       </p>
+      <p className="mt-3 text-stone-200">
+        Visit the new <Link href="/author" className="underline hover:text-orange-300">Author Hub</Link> and <Link href="/world" className="underline hover:text-orange-300">World Hub</Link>.
+      </p>
     </main>
   );
 }

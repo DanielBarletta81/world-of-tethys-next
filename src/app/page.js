@@ -21,6 +21,8 @@ export const metadata = {
 
 const navItems = [
   { label: 'Home', href: '/' },
+  { label: 'Author Hub', href: '/author' },
+  { label: 'World Hub', href: '/world' },
   { label: 'Books', href: '/world-of-tethys-book-1' },
   { label: 'World of Tethys', href: '/world-of-tethys' },
   { label: 'Natural History', href: '/natural-history' },
@@ -108,14 +110,19 @@ export default function Home() {
           A dinosaur-era world of volcanic terrain, ancient ecosystems, and aerial predators tests every
           settlement against ecological reality.
         </p>
-        <a
-          href={WORLD_SITE_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300"
-        >
-          Explore the Immersive World at worldoftethys.com
-        </a>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link href="/world" className="inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300">
+            Enter the World Hub
+          </Link>
+          <a
+            href={WORLD_SITE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300"
+          >
+            Open worldoftethys.com
+          </a>
+        </div>
       </section>
 
       <section className="mt-16">
@@ -143,9 +150,22 @@ export default function Home() {
             Author D.C. Barletta writes the World of Tethys series as prehistoric science fiction built on
             biology, behavior, and environmental pressure.
           </p>
-          <Link href="/about-dc-barletta" className="mt-4 inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300">
-            About the Author
-          </Link>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link href="/author" className="inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300">
+              Author Hub
+            </Link>
+            <a
+              href="https://www.amazon.com/stores/author/B0G5LM24FM"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300"
+            >
+              Visit Amazon Author Page
+            </a>
+            <Link href="/about-dc-barletta" className="inline-flex rounded-md border border-stone-500 px-5 py-2 font-semibold hover:border-orange-300">
+              About the Author
+            </Link>
+          </div>
         </div>
       </section>
 

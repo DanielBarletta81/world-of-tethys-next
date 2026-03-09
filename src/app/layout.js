@@ -11,6 +11,7 @@ import './globals.css';
 import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
 import { BOOK1_COVER_URL } from '@/lib/site-assets';
+import PersistentNav from '@/components/layout/navigation/PersistentNav';
 
 const skySans = localFont({
   src: [
@@ -147,10 +148,11 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <TethysProvider>
             <AudioProvider>
+              <PersistentNav />
               <GlobalAtmosphere />
               <IdleGrowthOverlay />
               <AudioUnlockOverlay />
-              <div id="main-content" role="main" className="relative min-h-screen">
+              <div id="main-content" role="main" className="relative min-h-screen pt-24 md:pt-28">
                 {children}
               </div>
               <GuestUpgradeGate />

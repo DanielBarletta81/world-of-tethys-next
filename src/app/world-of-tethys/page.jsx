@@ -39,6 +39,9 @@ export default function WorldOfTethysHubPage() {
       <p className="mt-12 text-stone-200">
         Learn more about the novel World of Tethys <Link href="/world-of-tethys-book-1" className="underline hover:text-orange-300">here</Link>.
       </p>
+      <p className="mt-3 text-stone-200">
+        Enter the new <Link href="/world" className="underline hover:text-orange-300">World Hub</Link> or jump straight to the <Link href="/map" className="underline hover:text-orange-300">interactive map</Link>.
+      </p>
     </main>
   );
 }
