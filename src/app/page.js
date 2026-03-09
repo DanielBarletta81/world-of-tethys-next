@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BACKGROUND_IMAGE_URLS, BOOK1_COVER_URL } from '@/lib/site-assets';
+import BookCoverImage from '@/components/content/BookCoverImage';
 
 const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
@@ -87,8 +88,9 @@ export default function Home() {
         </div>
 
         <div className="mx-auto w-full max-w-md">
-          <Image
-            src={BOOK1_COVER_URL}
+          <BookCoverImage
+            primarySrc={BOOK1_COVER_URL}
+            fallbackSrc="/img/books/book1-hero-3.png"
             alt="World of Tethys prehistoric volcanic landscape"
             width={720}
             height={1080}
