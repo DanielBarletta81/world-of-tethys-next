@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function BookCoverImage({
   primarySrc,
-  fallbackSrc = '/img/books/book1-hero-3.png',
+  fallbackSrc = '/img/books/book1-cover.png',
   alt,
   width = 720,
   height = 1080,

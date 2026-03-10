@@ -72,7 +72,7 @@ export default function Home() {
       </nav>
 
       <section
-        className="relative mt-10 grid gap-10 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_1.1fr] md:p-8 items-center overflow-hidden parallax-subtle"
+        className="relative mt-10 grid gap-10 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_1.1fr] md:p-8 items-center overflow-hidden"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.82), rgba(5,4,3,0.88)), url(${BACKGROUND_IMAGE_URLS.homepage})`,
         }}
@@ -93,7 +93,7 @@ export default function Home() {
         <div className="mx-auto w-full max-w-md">
           <BookCoverImage
             primarySrc={BOOK1_COVER_URL}
-            fallbackSrc="/img/books/book1-hero-3.png"
+            fallbackSrc="/img/books/book1-cover.png"
             alt="World of Tethys prehistoric volcanic landscape"
             width={720}
             height={1080}

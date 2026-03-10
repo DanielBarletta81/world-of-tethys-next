@@ -30,7 +30,7 @@ export default function WorldOfTethysBookOnePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
 
       <header
-        className="relative grid gap-8 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_320px] md:p-8 items-start overflow-hidden parallax-subtle"
+        className="relative grid gap-8 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_320px] md:p-8 items-start overflow-hidden"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(5,4,3,0.82), rgba(5,4,3,0.9)), url(${BACKGROUND_IMAGE_URLS.bookPage})`,
         }}
@@ -44,7 +44,7 @@ export default function WorldOfTethysBookOnePage() {
         </div>
         <BookCoverImage
           primarySrc={BOOK1_COVER_URL}
-          fallbackSrc="/img/books/book1-hero-3.png"
+          fallbackSrc="/img/books/book1-cover.png"
           alt="World of Tethys Book 1 cover"
           width={720}
           height={1080}
