@@ -56,15 +56,21 @@ export default function SiteFooter() {
 
       <div className="relative mx-auto max-w-6xl px-6 py-16 text-white/70">
         <div className="text-sm tracking-[0.28em] uppercase">
-          D.C. Barletta • World of Tethys
+          D.C. Barletta • Author Site
         </div>
         <div className="mt-4 flex flex-wrap gap-4 text-xs">
+          <Link href="/author" className="underline underline-offset-4 hover:text-white">
+            Author Hub
+          </Link>
           <Link href="/world-of-tethys-book-1" className="underline underline-offset-4 hover:text-white">
             Book Page
           </Link>
           <a href={amazonUrl} className="underline underline-offset-4 hover:text-white">
             Buy on Amazon
           </a>
+          <Link href="/blog" className="underline underline-offset-4 hover:text-white">
+            Essays
+          </Link>
           <a href={worldSiteUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-white">
             Explore worldoftethys.com
           </a>
@@ -77,4 +83,3 @@ export default function SiteFooter() {
     </footer>
   );
 }
-// World of Tethys || D.C. Barletta

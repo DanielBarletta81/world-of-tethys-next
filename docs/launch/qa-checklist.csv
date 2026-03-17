@@ -1,0 +1,16 @@
+check_id,checkpoint,status,owner,evidence_link_or_screenshot,notes
+1,Live mode enabled in payment gateways,Not Started,,,Stripe and PayPal both set to Live mode
+2,Webhook health verified,Not Started,,,No failed webhook deliveries
+3,Card checkout test successful,Not Started,,,Use hidden low-price QA product
+4,PayPal checkout test successful,Not Started,,,Skip if PayPal disabled
+5,Order auto-completes and grants downloads,Not Started,,,Confirm access in My Account Downloads
+6,Customer receipt and download email received,Not Started,,,Check spam and deliverability
+7,Direct paid file URL blocked for logged-out users,Not Started,,,No public access to paid files
+8,Download limit and expiry enforced,Not Started,,,Test over-limit and expired behavior
+9,Refund revokes download access,Not Started,,,Confirm order status and file access policy
+10,Mobile checkout and download flow works,Not Started,,,Validate on iOS and Android
+11,Tax settings verified for your jurisdiction,Not Started,,,Sales tax or VAT configured as required
+12,Legal pages linked at checkout,Not Started,,,Terms Privacy and Refund policy
+13,Site speed and checkout load acceptable,Not Started,,,Core pages meet performance target
+14,Backup point created before launch,Not Started,,,Database and files snapshot completed
+15,First 3 real orders manually monitored,Not Started,,,Post-launch watch list complete

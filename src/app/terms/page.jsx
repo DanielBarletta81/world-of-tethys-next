@@ -17,7 +17,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xs uppercase tracking-[0.3em] text-stone-500 mb-3">Agreement</h2>
             <p>
-              These Terms govern your use of World of Tethys on worldoftethys.com and dcbarletta.com. By accessing the
+              These Terms govern your use of World of Tethys on worldoftethys.com. By accessing the
               service, you agree to these Terms.
             </p>
           </section>
@@ -78,4 +78,3 @@ export default function TermsPage() {
     </main>
   );
 }
-

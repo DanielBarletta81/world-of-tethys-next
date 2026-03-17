@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { signInWithPopup } from 'firebase/auth';
 import { getFirebaseAuth, getGoogleProvider } from '@/lib/firebaseClient';
 
@@ -177,7 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const value = useMemo<AuthContextValue>(() => ({
+  const value: AuthContextValue = {
     user,
     loading,
     loginEmail,
@@ -185,7 +185,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     registerEmail,
     logout,
     deleteAccount
-  }), [user, loading]);
+  };
 
   return (
     <AuthContext.Provider value={value}>

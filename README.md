@@ -1,44 +1,78 @@
-# new-tethys-map
+# World of Tethys
 
-## Project Brief: Cretaceous Map Narrative
+`worldoftethys.com` is a standalone Next.js platform for immersive world exploration, lore delivery, live Earth-linked environmental signals, and player progression.
 
-### Setting Snapshot
-This project is set in a fictional Late Cretaceous world where broad inland seas, young mountain belts, and dense fern lowlands shape migration corridors for dinosaur clades. The map should feel scientifically inspired but narratively flexible, blending believable paleo-environments with regional identities ("The Amber Delta," "Ashback Ridge," and "The Inland Shallows").
+This repo is the clean split from `dcbarletta.com`. It should behave like its own product, domain, SEO surface, and deployment target.
 
-### Intended Lore Elements
-- **Factions and species cultures:** herbivore caravans, apex predator territories, and pterosaur courier routes.
-- **Environmental pressure:** volcanic winters, seasonal flooding, and shifting coastlines that alter travel safety.
-- **Artifacts and mysteries:** fossil sites, meteor-glass landmarks, and archival histories tied to extinction signals.
-- **Conflict hooks:** contested nesting grounds, resource chokepoints, and diplomacy across migratory boundaries.
+## Product Direction
 
-### Storytelling Goals
-1. Build a map that supports both **exploration** and **political tension**.
-2. Let geography visibly drive story beats (migration, scarcity, alliances, and conflict).
-3. Keep room for episodic narrative additions by separating stable base geography from mutable event overlays.
-4. Maintain a clear visual hierarchy so readers can quickly distinguish terrain, routes, hazards, and lore markers.
+- Public site: immersive atlas, regional exploration, natural history, archive, signals, and onboarding.
+- Lore CMS: WordPress + WPGraphQL for stable history, canon, characters, locations, and long-form writing.
+- Player systems: Firebase Auth + Firestore for identity, progression, rewards, and session-backed player state.
+- Future VR bridge: signed player metadata payloads that can seed inventory, phenotype, and earned artifacts on world entry.
+- Rewarding early visitors: time-on-site, signup date, and discovery milestones should feed progression and unlock tables.
 
-## Primary Map Platform Decision
-Use **QGIS** as the primary authoring platform.
+## Core Stack
 
-**Why this platform:**
-- Strong desktop GIS tooling for layered worldbuilding and cartographic styling.
-- Easy export into web-friendly formats later if interactive delivery is needed.
-- Supports repeatable editing workflows with project files and symbology presets.
+- `Next.js` + `React`
+- `WordPress` + `WPGraphQL`
+- `Firebase Auth`
+- `Firestore`
+- optional Earth/environment feeds via server routes
 
-## Layer File Format Plan
+## Separation Rules
 
-| Layer Type | Primary Format | Purpose | Interactions |
-|---|---|---|---|
-| Base terrain/elevation | GeoTIFF (`.tif`) | Height and relief context for the continent and seafloor shelves | Used for hillshade generation and to guide biome/rivers placement |
-| Paleo-coastline and hydrography | GeoPackage (`.gpkg`) vector layers | Shorelines, rivers, marsh edges, inland sea extents | Snapped to terrain logic; clipped against scenario time-slices |
-| Biomes/vegetation regions | GeoJSON (`.geojson`) polygons | Fern forests, arid basins, conifer uplands, floodplains | Styled by category; intersected with species ranges for story triggers |
-| Migration/trade/flight routes | GeoJSON (`.geojson`) lines | Dinosaur corridors, pterosaur lanes, caravan tracks | Network analysis and route styling; toggled for chapter/event views |
-| Settlements, hazards, points of interest | GeoJSON (`.geojson`) points | Narrative POIs and dynamic markers | Linked to metadata table for chapter notes and encounter seeds |
-| Cartographic symbols & labels | SVG (`.svg`) assets | Reusable iconography (nests, ruins, hazard glyphs) | Referenced by QGIS styles and export-ready for web map symbol sets |
-| Final print/export compositions | PDF/PNG | Static atlas pages and narrative handouts | Generated from QGIS layouts using the same source layers |
+- Default site/domain metadata must point to `https://worldoftethys.com`.
+- Default CMS host must point to `https://cms.worldoftethys.com`.
+- No public SEO canonical, sitemap, or robots output should default to `dcbarletta.com`.
+- Author/creator content can exist, but the repo should present itself as the World of Tethys platform first.
 
-### Interoperability Rules
-- Keep editable master data in **GeoPackage + GeoTIFF** within QGIS.
-- Publish narrative-ready exchange layers as **GeoJSON** for downstream web or toolchain use.
-- Store icon system in **SVG** so symbols remain resolution-independent across print and web outputs.
-- Version time-specific story states as separate overlay files (e.g., `hazards_ch03.geojson`) rather than rewriting baseline geography.
+## Local Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create local env config from `.env.example`.
+
+3. Start development:
+
+```bash
+npm run dev
+```
+
+4. Validate before shipping:
+
+```bash
+npm run ci
+```
+
+## Important Env Vars
+
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_WORLD_SITE_URL`
+- `NEXT_PUBLIC_WP_URL`
+- `NEXT_PUBLIC_WORDPRESS_API_URL`
+- `WP_GRAPHQL_ENDPOINT`
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `FIREBASE_SERVICE_ACCOUNT_JSON` or server-only Firebase credential trio
+
+## Platform Notes
+
+- Firebase email/password and Google sign-in are already wired through server session cookies.
+- `/api/auth/*` handles auth exchange and session cookie issuance.
+- WordPress should hold canonical lore/history data.
+- Firestore should hold player identity, progression, rewards, and VR-facing metadata.
+
+## Planning Docs
+
+- [Platform Foundation](/Users/dbarletta_mb_pro/Desktop/world-of-tethys-next-clean/docs/platform-foundation.md)
+- [Deployment Checklist](/Users/dbarletta_mb_pro/Desktop/world-of-tethys-next-clean/deployment-checklist.md)
+- [WordPress Handbook](/Users/dbarletta_mb_pro/Desktop/world-of-tethys-next-clean/wordpress-handbook.md)

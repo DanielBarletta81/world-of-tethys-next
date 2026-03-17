@@ -327,18 +327,22 @@ export default function MapPage() {
     mapOpenLoggedRef.current = true;
     recordMapInteraction('map_open', 'atlas');
     const timer = setInterval(() => {
-      applyPlayerAction({
-        id: 'map_retention',
-        type: 'restorative',
-        intensity: 0.4,
-        xp: 1,
-        repeatPenalty: false,
-        envPressure: 0.05,
-        region: currentLocation
-      });
+      try {
+        applyPlayerAction({
+          id: 'map_retention',
+          type: 'restorative',
+          intensity: 0.4,
+          xp: 1,
+          repeatPenalty: false,
+          envPressure: 0.05,
+          region: currentLocation
+        });
+      } catch (error) {
+        console.error('[map] Failed to apply retention action:', error);
+      }
     }, 90000);
     return () => clearInterval(timer);
-  }, [viewState, applyPlayerAction, recordMapInteraction]);
+  }, [viewState, applyPlayerAction, recordMapInteraction, currentLocation]);
 
   useEffect(() => {
     const storedUi = playerProfile?.ui?.map?.satchelOpen;

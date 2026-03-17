@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTethys } from '@/context/TethysContext';
@@ -23,6 +23,27 @@ export default function LaminarSurgeController({ staffData, enabled = false }) {
       isLaminar
     };
   }, [staffData?.stats?.power, syncFrequency]);
+
+  const triggerSurge = useCallback(() => {
+    if (!enabled) return;
+    const frequency = Number(syncFrequency) || 528;
+    if (frequency < 417) return;
+    const direction = new THREE.Vector3();
+    camera.getWorldDirection(direction);
+    try {
+      window.dispatchEvent(
+        new CustomEvent('tethys:surge', {
+          detail: {
+            power: surgeStats.force,
+            origin: camera.position.clone(),
+            dir: direction.clone()
+          }
+        })
+      );
+    } catch (error) {
+      console.error('[vr] Failed to dispatch tethys:surge event:', error);
+    }
+  }, [enabled, syncFrequency, camera, surgeStats.force]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -53,24 +74,7 @@ export default function LaminarSurgeController({ staffData, enabled = false }) {
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
     };
-  }, [enabled, isCharging, surgeStats.force, surgeStats.isLaminar]);
-
-  const triggerSurge = () => {
-    if (!enabled) return;
-    const frequency = Number(syncFrequency) || 528;
-    if (frequency < 417) return;
-    const direction = new THREE.Vector3();
-    camera.getWorldDirection(direction);
-    window.dispatchEvent(
-      new CustomEvent('tethys:surge', {
-        detail: {
-          power: surgeStats.force,
-          origin: camera.position.clone(),
-          dir: direction.clone()
-        }
-      })
-    );
-  };
+  }, [enabled, isCharging, triggerSurge]);
 
   useFrame((state, delta) => {
     if (!surgeRef.current) return;

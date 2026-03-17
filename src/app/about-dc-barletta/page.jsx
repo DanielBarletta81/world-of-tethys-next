@@ -13,7 +13,7 @@ export default function AboutDcBarlettaPage() {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'D.C. Barletta',
-    url: 'https://dcbarletta.com/about-dc-barletta',
+    url: 'https://worldoftethys.com/about-dc-barletta',
     jobTitle: 'Author',
     knowsAbout: ['Prehistoric fiction', 'Natural history storytelling', 'Science fiction'],
   };

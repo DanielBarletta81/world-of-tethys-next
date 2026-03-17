@@ -18,7 +18,7 @@ const bookSchema = {
   name: 'World of Tethys',
   author: { '@type': 'Person', name: 'D.C. Barletta' },
   asin: 'B0GRHBR1HJ',
-  url: 'https://dcbarletta.com/world-of-tethys-book-1',
+  url: 'https://worldoftethys.com/world-of-tethys-book-1',
   sameAs: 'https://www.amazon.com/dp/B0GRHBR1HJ',
 };
 

@@ -4,7 +4,7 @@
 import { cdn } from './cdn.js';
 
 // Updated to match your Vercel Environment Variable
-const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? 'https://cms.dcbarletta.com/wp-json/wp/v2';
+const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? 'https://cms.worldoftethys.com/wp-json/wp/v2';
 
 export async function getTethysData(endpoint = 'posts', params = {}) {
   const query = new URLSearchParams({

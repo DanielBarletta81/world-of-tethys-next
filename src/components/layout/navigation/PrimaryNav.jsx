@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Instagram, Youtube, Music2 } from 'lucide-react';
+import { Instagram, Youtube, Music2, Pin, BookOpenText } from 'lucide-react';
 
 export const PRIMARY_NAV_ITEMS = [
   { id: 'map', label: 'Atlas', href: '/map', hint: 'Terrain, gates, fragments' },
@@ -38,10 +38,24 @@ export default function PrimaryNav({ className = '' }) {
     {
       id: 'youtube',
       label: 'YouTube',
-      href: 'https://www.youtube.com/@worldoftethysauthor',
+      href: 'https://www.youtube.com/@WorldofTethys',
       Icon: Youtube
-    }
-  ];
+    },
+    {
+      id: 'goodreads',
+      label: 'Goodreads',
+      href: 'https://www.goodreads.com/author/show/63851248.D_C_Barletta',
+      Icon: BookOpenText
+    },
+    process.env.NEXT_PUBLIC_PINTEREST_PROFILE_URL
+      ? {
+          id: 'pinterest',
+          label: 'Pinterest',
+          href: process.env.NEXT_PUBLIC_PINTEREST_PROFILE_URL,
+          Icon: Pin
+        }
+      : null
+  ].filter(Boolean);
 
   return (
     <nav

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useRef, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
 // Import the manifest file we just created
 import { AUDIO_TRACKS } from '../lib/audio-manifest';
 
@@ -67,7 +67,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           audioRef.current.play()
             .then(() => setRequiresGesture(false))
             .catch((e) => {
-              console.log('Autoplay prevented:', e);
+              console.error('[audio] Autoplay prevented:', e);
               setRequiresGesture(true);
               setIsPlaying(false);
             });
@@ -83,7 +83,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       audioRef.current.play()
         .then(() => setRequiresGesture(false))
         .catch((e) => {
-          console.log('Playback error:', e);
+          console.error('[audio] Playback error:', e);
           setRequiresGesture(true);
           setIsPlaying(false);
         });
@@ -127,7 +127,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       setIsPlaying(true);
       setRequiresGesture(false);
     } catch (e) {
-      console.log('Playback error:', e);
+      console.error('[audio] Playback error during unlock:', e);
       setRequiresGesture(true);
       setIsPlaying(false);
     }
@@ -138,7 +138,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setCurrentTrack(null);
   };
 
-  const value = useMemo<AudioContextValue>(() => ({
+  const value: AudioContextValue = {
     currentTrack,
     isPlaying,
     requiresGesture,
@@ -148,7 +148,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     togglePlay,
     unlockAudio,
     closePlayer
-  }), [currentTrack, isPlaying, requiresGesture, volume]);
+  };
 
   return (
     <AudioContext.Provider value={value}>

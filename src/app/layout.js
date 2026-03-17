@@ -78,34 +78,53 @@ const handwriting = localFont({
   display: 'swap',
 });
 
-const metadataBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const authorSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dcbarletta.com';
 const worldSiteUrl = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
+const authorSocialLinks = [
+  worldSiteUrl,
+  'https://www.youtube.com/@WorldofTethys',
+  'https://www.goodreads.com/author/show/63851248.D_C_Barletta',
+  'https://www.amazon.com/stores/D.C.-Barletta/author/B0G5LM24FM',
+  process.env.NEXT_PUBLIC_PINTEREST_PROFILE_URL
+].filter(Boolean);
 
 export const metadata = {
-  metadataBase: new URL(metadataBaseUrl),
+  metadataBase: new URL(authorSiteUrl),
   title: {
-    default: 'World of Tethys by D.C. Barletta',
-    template: '%s | World of Tethys',
+    default: 'D.C. Barletta | Author of World of Tethys',
+    template: '%s | D.C. Barletta',
   },
   description:
-    'World of Tethys by D.C. Barletta: prehistoric fiction, dinosaur survival, evolutionary fantasy, and ecological storytelling. Available on Amazon.',
+    'Official author site for D.C. Barletta, creator of World of Tethys. Read about the book, find essays and natural history writing, and follow the world archive at worldoftethys.com.',
   keywords: [
-    'world of tethys',
+    'd.c. barletta',
     'dc barletta',
-    'prehistoric fiction',
-    'dinosaur survival novel',
-    'evolutionary fantasy',
-    'volcanic world novel',
-    'natural history fiction',
+    'world of tethys author',
+    'prehistoric fiction author',
+    'natural history essays',
+    'author website',
   ],
   alternates: {
-    canonical: '/',
+    canonical: './',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
   },
   openGraph: {
-    title: 'World of Tethys by D.C. Barletta',
+    title: 'D.C. Barletta | Author of World of Tethys',
     description:
-      'Discover World of Tethys, a prehistoric epic novel set in a volcanic world of ancient forests, flying predators, and evolving ecosystems.',
+      'Author site for D.C. Barletta with book information, essays, and links into the World of Tethys archive.',
     type: 'website',
+    url: authorSiteUrl,
+    siteName: 'D.C. Barletta',
     images: [
       {
         url: BOOK1_COVER_URL,
@@ -127,8 +146,8 @@ export default function RootLayout({ children }) {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'D.C. Barletta',
-    url: metadataBaseUrl,
-    sameAs: [worldSiteUrl, 'https://www.youtube.com/@worldoftethysauthor'],
+    url: authorSiteUrl,
+    sameAs: authorSocialLinks,
   };
 
   return (
@@ -165,4 +184,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-// World of Tethys || D.C. Barletta

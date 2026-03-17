@@ -2,8 +2,8 @@
 # Tethys WordPress Dev Handbook (v1.0)
 
 **Role:** The Backend "Brain"  
-**Frontend:** dcbarletta.com (Next.js)  
-**CMS:** cms.dcbarletta.com (WordPress)
+**Frontend:** worldoftethys.com (Next.js)  
+**CMS:** cms.worldoftethys.com (WordPress)
 
 This guide defines the exact schema required for the API Routes to function without errors.
 

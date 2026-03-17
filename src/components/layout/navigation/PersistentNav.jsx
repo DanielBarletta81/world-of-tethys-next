@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
-  { href: '/author', label: 'Author', tone: 'amber' },
-  { href: '/world', label: 'World', tone: 'emerald' },
-  { href: '/world/map', label: 'Atlas', tone: 'cyan' },
+  { href: '/', label: 'Home', tone: 'amber' },
+  { href: '/author', label: 'Author', tone: 'stone' },
   { href: '/world-of-tethys-book-1', label: 'Book', tone: 'ember' },
-  { href: '/blog', label: 'Journal', tone: 'stone' },
-  { href: '/contact', label: 'Signal', tone: 'violet' },
+  { href: '/blog', label: 'Essays', tone: 'emerald' },
+  { href: '/press-kit', label: 'Press', tone: 'cyan' },
+  { href: '/contact', label: 'Contact', tone: 'violet' },
 ];
 
 function normalizePath(pathname) {
@@ -32,8 +32,7 @@ export default function PersistentNav() {
           {NAV_ITEMS.map((item) => {
             const active =
               pathname === item.href ||
-              pathname.startsWith(`${item.href}/`) ||
-              (item.href === '/world' && pathname.startsWith('/world-of-tethys'));
+              pathname.startsWith(`${item.href}/`);
 
             return (
               <li key={item.href}>

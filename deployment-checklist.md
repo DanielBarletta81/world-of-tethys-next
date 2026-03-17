@@ -3,7 +3,7 @@
 ## 1. Environment Variables (.env.local & Vercel)
 Ensure these are set in your local `.env` file and added to your Vercel Project Settings.
 
-- [ ] `NEXT_PUBLIC_WP_URL`: `https://cms.dcbarletta.com` (NO trailing slash!)
+- [ ] `NEXT_PUBLIC_WP_URL`: `https://cms.worldoftethys.com` (NO trailing slash!)
 - [ ] `WP_USER`: Your WordPress Username
 - [ ] `WP_APP_PASS`: Your Application Password (without spaces)
 - [ ] `GEMINI_API_KEY`: API Key for the Bio-Chimera Lab (Google AI Studio)

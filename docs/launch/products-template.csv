@@ -1,0 +1,6 @@
+sku,product_name,product_type,price_usd,category,format,download_limit,download_expiry_days,preview_type,preview_url,rights_check,status
+WOT-AUD-001,Tethys Theme Main Score,Simple Virtual Downloadable,4.99,Music,MP3 and WAV,5,30,Audio Snippet,https://cdn.example.com/previews/tethys-theme.mp3,Owned and cleared for direct sale,Draft
+WOT-AUD-002,Shatterbelt Ambient Pack,Simple Virtual Downloadable,12.99,Ambient,MP3 Bundle,5,30,Audio Snippet,https://cdn.example.com/previews/shatterbelt-pack.mp3,Owned and cleared for direct sale,Draft
+WOT-AUD-003,World of Tethys Lore Narration Vol 1,Simple Virtual Downloadable,19.99,Audio Lore,MP3 Audiobook,3,30,Trailer,https://cdn.example.com/previews/lore-vol1-trailer.mp3,Not in exclusive distribution program,Draft
+WOT-AUD-004,Creator Commentary and Field Notes,Simple Virtual Downloadable,9.99,Behind the Scenes,MP3,5,30,Short Clip,https://cdn.example.com/previews/commentary-clip.mp3,Owned and cleared for direct sale,Draft
+WOT-BND-005,Tethys Audio Starter Bundle,Simple Virtual Downloadable,29.99,Bundle,ZIP,3,45,Mixed Trailer,https://cdn.example.com/previews/starter-bundle.mp3,All included files rights-cleared,Draft

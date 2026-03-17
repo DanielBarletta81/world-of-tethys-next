@@ -785,7 +785,10 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
   const scanAtmosphere = useCallback(async () => {
     try {
       const res = await fetch('/api/oracle-live', { cache: 'no-store' });
-      if (!res.ok) return null;
+      if (!res.ok) {
+        console.error('[tethys] Oracle live request failed:', res.status);
+        return null;
+      }
       const data = await res.json();
 
       const threat = Number(data?.threat_level || 1);
@@ -857,7 +860,10 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     try {
       const mode = modeOverride || danianMode || 'auto';
       const res = await fetch(`/api/telemetry/danian?mode=${encodeURIComponent(mode)}`, { cache: 'no-store' });
-      if (!res.ok) return null;
+      if (!res.ok) {
+        console.error('[tethys] Danian telemetry request failed:', res.status);
+        return null;
+      }
       const data = await res.json();
       if (!data?.telemetry) return null;
       if (enforceMode && modeOverride && modeOverride !== 'auto' && data.mode !== modeOverride) {
@@ -892,8 +898,8 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') {
       try {
         window.localStorage.setItem('tethys_danian_mode', nextMode);
-      } catch {
-        /* ignore */
+      } catch (error) {
+        console.error('[tethys] Failed to persist danian mode:', error);
       }
     }
     const nowIso = new Date().toISOString();
@@ -928,7 +934,7 @@ export function TethysProvider({ children }: { children: React.ReactNode }) {
       active = false;
       if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [scanAtmosphere]);
 
   useEffect(() => {
     let timer;

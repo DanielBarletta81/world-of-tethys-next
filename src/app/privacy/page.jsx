@@ -18,7 +18,7 @@ export default function PrivacyPage() {
             <h2 className="text-xs uppercase tracking-[0.3em] text-stone-500 mb-3">Scope</h2>
             <p>
               This Privacy Policy describes how World of Tethys (a project by D.C. Barletta) collects, uses, and
-              shares information when you use our site and related services on worldoftethys.com and dcbarletta.com.
+              shares information when you use our site and related services on worldoftethys.com.
             </p>
           </section>
 
@@ -88,4 +88,3 @@ export default function PrivacyPage() {
     </main>
   );
 }
-
