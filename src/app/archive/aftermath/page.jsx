@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import ArtifactPlate from '@/components/ArtifactPlate';
-import { ARCHIVE_DOCUMENTS } from '@/data/archive-documents';
+import { ARCHIVE_DOCUMENTS } from '@/data/archive-documents.js';
 
 export default function ArchiveAftermathPage() {
   const document = useMemo(

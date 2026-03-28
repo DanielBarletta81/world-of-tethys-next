@@ -1,5 +1,5 @@
 // src/lib/vr-bridge.js
-import { ARCHIVE_DOCUMENTS } from '@/data/archive-documents';
+import { ARCHIVE_DOCUMENTS } from '@/data/archive-documents.js';
 import { TETHYS_CRUCIBLE_MAPPINGS } from '@/data/tethys-crucible';
 
 const VR_METADATA_VERSION = '3.0-NARRATIVE';

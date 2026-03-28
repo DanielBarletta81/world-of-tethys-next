@@ -27,6 +27,12 @@ This repo is the clean split from `dcbarletta.com`. It should behave like its ow
 - No public SEO canonical, sitemap, or robots output should default to `dcbarletta.com`.
 - Author/creator content can exist, but the repo should present itself as the World of Tethys platform first.
 
+## Dual-Domain Behavior
+
+- `worldoftethys.com` should render the immersive world-first portal and atlas experience.
+- `dcbarletta.com` should render the lighter author-first home while still routing readers into World of Tethys content.
+- Set `NEXT_PUBLIC_AUTHOR_SITE_URL=https://dcbarletta.com` in production projects that need author-route redirects and cross-links.
+
 ## Local Setup
 
 1. Install dependencies:
@@ -53,6 +59,7 @@ npm run ci
 
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_WORLD_SITE_URL`
+- `NEXT_PUBLIC_AUTHOR_SITE_URL`
 - `NEXT_PUBLIC_WP_URL`
 - `NEXT_PUBLIC_WORDPRESS_API_URL`
 - `WP_GRAPHQL_ENDPOINT`

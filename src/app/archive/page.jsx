@@ -45,10 +45,10 @@ const SECTORS = [
   },
   {
     id: 'record',
-    title: 'Recovered Audio',
+    title: 'Cambria Fragments',
     icon: <Database size={32} className="text-orange-600" />,
-    desc: 'Fragmented plates from Cambria.',
-    link: '/archive/record'
+    desc: 'Clay and slate witness fragments: storms, lost peoples, and route knowledge.',
+    link: '/archive/cambria'
   }
 ];
 

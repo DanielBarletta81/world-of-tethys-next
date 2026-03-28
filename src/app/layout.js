@@ -12,6 +12,7 @@ import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
 import { BOOK1_COVER_URL } from '@/lib/site-assets';
 import PersistentNav from '@/components/layout/navigation/PersistentNav';
+import { getConfiguredSiteUrls, getSiteVariantFromConfig } from '@/lib/site-variant';
 
 const skySans = localFont({
   src: [
@@ -78,32 +79,45 @@ const handwriting = localFont({
   display: 'swap',
 });
 
-const authorSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dcbarletta.com';
-const worldSiteUrl = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
-const authorSocialLinks = [
+const { worldSiteUrl, authorSiteUrl } = getConfiguredSiteUrls();
+const defaultSiteVariant = getSiteVariantFromConfig();
+const isAuthorDefaultSite = defaultSiteVariant === 'author';
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || (isAuthorDefaultSite ? authorSiteUrl : worldSiteUrl)).replace(/\/$/, '');
+const socialLinks = Array.from(new Set([
   worldSiteUrl,
+  authorSiteUrl,
   'https://www.youtube.com/@WorldofTethys',
   'https://www.goodreads.com/author/show/63851248.D_C_Barletta',
   'https://www.amazon.com/stores/D.C.-Barletta/author/B0G5LM24FM',
   process.env.NEXT_PUBLIC_PINTEREST_PROFILE_URL
-].filter(Boolean);
+].filter(Boolean)));
 
 export const metadata = {
-  metadataBase: new URL(authorSiteUrl),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: 'D.C. Barletta | Author of World of Tethys',
-    template: '%s | D.C. Barletta',
+    default: isAuthorDefaultSite ? 'D.C. Barletta | Author of World of Tethys' : 'World of Tethys | Immersive Atlas & Lore',
+    template: isAuthorDefaultSite ? '%s | D.C. Barletta' : '%s | World of Tethys',
   },
-  description:
-    'Official author site for D.C. Barletta, creator of World of Tethys. Read about the book, find essays and natural history writing, and follow the world archive at worldoftethys.com.',
-  keywords: [
-    'd.c. barletta',
-    'dc barletta',
-    'world of tethys author',
-    'prehistoric fiction author',
-    'natural history essays',
-    'author website',
-  ],
+  description: isAuthorDefaultSite
+    ? 'Official author platform for D.C. Barletta featuring World of Tethys books, essays, and publishing resources.'
+    : 'Explore World of Tethys: immersive atlas systems, deep lore, natural history, archive intelligence, and evolving world signals.',
+  keywords: isAuthorDefaultSite
+    ? [
+      'd.c. barletta',
+      'world of tethys author',
+      'prehistoric fiction author',
+      'science fiction books',
+      'author press kit',
+      'world of tethys book',
+    ]
+    : [
+      'world of tethys',
+      'tethys map',
+      'interactive lore',
+      'worldbuilding archive',
+      'prehistoric fantasy world',
+      'natural history fiction',
+    ],
   alternates: {
     canonical: './',
   },
@@ -119,12 +133,13 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: 'D.C. Barletta | Author of World of Tethys',
-    description:
-      'Author site for D.C. Barletta with book information, essays, and links into the World of Tethys archive.',
+    title: isAuthorDefaultSite ? 'D.C. Barletta | Author of World of Tethys' : 'World of Tethys | Immersive Atlas & Lore',
+    description: isAuthorDefaultSite
+      ? 'Author-first hub for D.C. Barletta with Book One, media resources, and routes into Cambria and the wider World of Tethys.'
+      : 'Explore the World of Tethys through map-driven lore, natural history, living archive systems, and immersive world pathways.',
     type: 'website',
-    url: authorSiteUrl,
-    siteName: 'D.C. Barletta',
+    url: siteUrl,
+    siteName: isAuthorDefaultSite ? 'D.C. Barletta' : 'World of Tethys',
     images: [
       {
         url: BOOK1_COVER_URL,
@@ -142,12 +157,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const siteVariant = getSiteVariantFromConfig();
+  const isAuthorSite = siteVariant === 'author';
   const organizationSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: 'D.C. Barletta',
-    url: authorSiteUrl,
-    sameAs: authorSocialLinks,
+    '@type': 'Organization',
+    name: isAuthorSite ? 'D.C. Barletta' : 'World of Tethys',
+    url: isAuthorSite ? authorSiteUrl : worldSiteUrl,
+    sameAs: socialLinks,
   };
 
   return (
@@ -155,7 +172,10 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${skySans.variable} ${naturalist.variable} ${volcanic.variable} ${fieldNotes.variable} ${mystic.variable} ${mono.variable} ${handwriting.variable}`}
     >
-      <body className="bg-[#0c0a09] text-[#e7e5e4] antialiased">
+      <body
+        data-site-variant={siteVariant}
+        className={isAuthorSite ? 'bg-[#f4efe6] text-[#2f241d] antialiased' : 'bg-[#0c0a09] text-[#e7e5e4] antialiased'}
+      >
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         <Link
           href="#main-content"
@@ -167,19 +187,19 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <TethysProvider>
             <AudioProvider>
-              <PersistentNav />
-              <GlobalAtmosphere />
-              <IdleGrowthOverlay />
-              <AudioUnlockOverlay />
+              <PersistentNav siteVariant={siteVariant} />
+              <GlobalAtmosphere siteVariant={siteVariant} />
+              {!isAuthorSite ? <IdleGrowthOverlay /> : null}
+              {!isAuthorSite ? <AudioUnlockOverlay /> : null}
               <div id="main-content" role="main" className="relative min-h-screen pt-24 md:pt-28">
                 {children}
               </div>
-              <GuestUpgradeGate />
-              <GlobalAudioPlayer/>
+              {!isAuthorSite ? <GuestUpgradeGate /> : null}
+              {!isAuthorSite ? <GlobalAudioPlayer /> : null}
             </AudioProvider>
           </TethysProvider>
         </AuthProvider>
-        <Footer />
+        <Footer siteVariant={siteVariant} />
       </body>
     </html>
   );

@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import { Float, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { useTethys } from '@/context/TethysContext';
-import { ARCHIVE_DOCUMENTS } from '@/data/archive-documents';
+import { ARCHIVE_DOCUMENTS } from '@/data/archive-documents.js';
 import cdn from '@/lib/cdn';
 
 function hashSeed(input = '') {

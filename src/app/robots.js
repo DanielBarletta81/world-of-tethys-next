@@ -1,4 +1,4 @@
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dcbarletta.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://worldoftethys.com';
 
 export default function robots() {
   return {

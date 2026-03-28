@@ -7,7 +7,7 @@ import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import Footer from '@/components/layout/Footer';
 import FieldNotebook from '@/components/content/FieldNotebook';
-import { BESTIARY } from '@/data/bestiary';
+import { BESTIARY } from '@/data/bestiary.js';
 import cdn from '@/lib/cdn';
 
 const CREATURES_BREADCRUMB = [

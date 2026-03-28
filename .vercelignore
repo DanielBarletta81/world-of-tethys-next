@@ -1,0 +1,5 @@
+.next_backup_*
+.next_backup_*/
+.env
+.env.*
+!.env.example

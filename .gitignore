@@ -1,6 +1,7 @@
 ### Node / Next.js outputs & build artifacts
 /node_modules/
 /.next/
+/.next_backup_*/
 /out/
 /build/
 /dist/
@@ -63,6 +64,7 @@ firebase-debug.log
 
 # next.js
 /.next/
+/.next_backup_*/
 /out/
 
 # production
@@ -134,3 +136,21 @@ notes/
 data/
 docs/*.pages
 docs/*.pdf
+
+# media assets (keep all images/videos out of GitHub)
+images/
+videos/
+public/img/
+public/videos/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.mp4
+*.mov
+*.webm
+*.m4v
+*.avi
+*.mkv

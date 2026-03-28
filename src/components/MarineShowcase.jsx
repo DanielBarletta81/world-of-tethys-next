@@ -2,7 +2,7 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BESTIARY } from '@/data/bestiary';
+import { BESTIARY } from '@/data/bestiary.js';
 import { cdn } from '@/lib/cdn';
 
 // Filter for only Marine/Survivor eras

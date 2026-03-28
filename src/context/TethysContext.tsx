@@ -16,7 +16,7 @@ import {
 import { DEFAULT_PLAYER_PROFILE } from '@/lib/player-defaults';
 import { applyPlayerAction as applyProgressionAction } from '@/lib/player-progression';
 import { evolvePlayerDna } from '@/lib/player-dna-evolve';
-import { BESTIARY } from '@/data/bestiary';
+import { BESTIARY } from '@/data/bestiary.js';
 
 const TethysContext = createContext<any>(null);
 

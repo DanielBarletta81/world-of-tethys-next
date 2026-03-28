@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 const articles = [
+  { href: '/natural-history/tethys-ocean', title: 'Tethys Ocean Research Brief (Aptian-Albian)' },
   { href: '/natural-history/pterosaurs', title: 'Why Pterosaurs Ruled the Sky' },
   { href: '/natural-history/life-after-the-permian-extinction', title: 'Evolution After Mass Extinction' },
   { href: '/natural-history/could-humans-survive-dinosaur-era', title: 'Could Humans Survive Dinosaur Era Ecosystems?' },

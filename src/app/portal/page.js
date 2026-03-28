@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTethys } from "@/context/TethysContext";
 import LandingSequence from '@/components/LandingSequence';
-import StoneSideNav from '@/components/layout/navigation/StoneSideNav';
 import BookCarousel from '@/components/content/BookCarousel';
 import IdentityAirLock from '@/components/forms/IdentityAirLock';
 import IntroOverlay from '@/components/overlays/IntroOverlay';
 import CaveWallTerminal from '@/components/page-specific/science/CaveWallTerminal';
 import OnboardingRitual from '@/components/features/onboarding/OnboardingRitual';
-import { Gem, User, Activity, Globe, Zap, Power, Sprout, LogIn, Trash2 } from "lucide-react";
+import GoodreadsWidget from '@/components/content/GoodreadsWidget';
+import KindleGiveawayBanner from '@/components/content/KindleGiveawayBanner';
+import { Gem, User, Activity, Globe, Zap, Power, Sprout, Trash2 } from "lucide-react";
 import Link from "next/link";
 import cdn from "@/lib/cdn";
-import PrimaryNav from "@/components/layout/navigation/PrimaryNav";
 
 export default function Home() {
   const { user, loading: authLoading, logout, deleteAccount } = useAuth();
@@ -207,12 +207,8 @@ export default function Home() {
               </nav>
             </header>
 
-            <StoneSideNav />
-
             {/* MAIN CONTENT AREA */}
             <main role="main" id="main-content" className="relative z-10 pt-32 pb-24 max-w-7xl mx-auto px-4 md:px-6 space-y-20">
-              <PrimaryNav className="mb-6" />
-              
               {/* HERO SECTION */}
               <section className="text-center space-y-6 mt-8">
                 <h2 className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-stone-100 to-stone-600 tracking-tight uppercase leading-[0.9]">
@@ -223,6 +219,8 @@ export default function Home() {
                   Choose your vector: Science, Mysticism, or the Chronicle.
                 </p>
               </section>
+
+              <KindleGiveawayBanner className="max-w-5xl mx-auto" />
 
               {!hasOnboarded && (
                 <OnboardingRitual />
@@ -256,7 +254,15 @@ export default function Home() {
                 />
               </div>
 
-              {/* NAVIGATION GATEWAY */}
+              <section className="max-w-5xl mx-auto rounded-2xl border border-stone-700/80 bg-black/35 p-5 md:p-6">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-amber-300/80">Book First</p>
+                  <h3 className="mt-1 text-xl font-semibold text-stone-100">Reader Reviews</h3>
+                </div>
+                <div className="mt-3">
+                  <GoodreadsWidget />
+                </div>
+              </section>
 
               {/* DASHBOARD GRID */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -415,7 +421,6 @@ export default function Home() {
 
             </main>
           </div>
-          <StickyObsidianNav />
         </>
       )}
     </div>
@@ -467,22 +472,6 @@ function QuickAction({ title, desc, href, icon, accent, onClickOverride }) {
     <Link href={href} className="block">
       {body}
     </Link>
-  );
-}
-
-function StickyObsidianNav() {
-  return (
-    <div className="fixed bottom-4 right-4 z-40">
-      <div className="bg-black/40 border border-stone-800 rounded-full px-3 py-2 flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity shadow-[0_0_25px_rgba(255,125,42,0.15)]">
-        <Link href="/map" className="text-xs uppercase tracking-[0.2em] text-stone-200 hover:text-white">Map</Link>
-        <div className="w-[1px] h-4 bg-stone-700" />
-        <Link href="/science" className="text-xs uppercase tracking-[0.2em] text-cyan-200 hover:text-white">Science</Link>
-        <div className="w-[1px] h-4 bg-stone-700" />
-        <Link href="/mystics" className="text-xs uppercase tracking-[0.2em] text-purple-200 hover:text-white">Mystics</Link>
-        <div className="w-[1px] h-4 bg-stone-700" />
-        <a href="#slate" className="text-xs uppercase tracking-[0.2em] text-amber-200 hover:text-white">Slate</a>
-      </div>
-    </div>
   );
 }
 // World of Tethys || D.C. Barletta
