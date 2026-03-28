@@ -76,15 +76,14 @@ export default function TethysOceanNaturalHistoryPage() {
           isAuthorSite ? 'text-[#6f4f38]' : 'text-amber-300/80'
         }`}
       >
-        Natural History • Tethys Ocean Research
+        Natural History • Tethys Ocean
       </p>
       <h1 className={`relative z-10 mt-4 text-4xl font-tethys-volcanic md:text-6xl ${titleClass}`}>
         Aptian-Albian Tethys Ocean Brief
       </h1>
       <p className={`relative z-10 mt-5 max-w-4xl leading-relaxed ${bodyClass}`}>
-        This briefing translates established paleoceanographic research into practical worldbuilding language. The
-        goal is to keep World of Tethys grounded in real Earth-system dynamics while preserving your dark, volcanic,
-        reflective-sea aesthetic.
+        Established paleoceanographic research, translated into black water, shelf storms, and Earth-system
+        dynamics.
       </p>
 
       <section className="relative z-10 mt-10 grid gap-4 md:grid-cols-2">
@@ -99,14 +98,14 @@ export default function TethysOceanNaturalHistoryPage() {
                   : 'border-stone-700/80 bg-black/30 text-stone-200'
               }`}
             >
-              <span className="font-semibold">World translation:</span> {item.worldSignal}
+              <span className="font-semibold">Signal:</span> {item.worldSignal}
             </p>
           </article>
         ))}
       </section>
 
       <section className={`relative z-10 mt-10 ${sectionCardClass}`}>
-        <h2 className={`text-2xl font-tethys-volcanic md:text-3xl ${titleClass}`}>Writing and Art Direction Cues</h2>
+        <h2 className={`text-2xl font-tethys-volcanic md:text-3xl ${titleClass}`}>Waterline</h2>
         <div className="mt-5 grid gap-3 md:grid-cols-2">
           {TETHYS_OCEAN_WRITING_ANGLES.map((entry) => (
             <article
@@ -125,7 +124,7 @@ export default function TethysOceanNaturalHistoryPage() {
       </section>
 
       <section className={`relative z-10 mt-10 ${sectionCardClass}`}>
-        <h2 className={`text-2xl font-tethys-volcanic md:text-3xl ${titleClass}`}>Research Base</h2>
+        <h2 className={`text-2xl font-tethys-volcanic md:text-3xl ${titleClass}`}>Sources</h2>
         <ul className="mt-4 space-y-2">
           {TETHYS_OCEAN_SOURCE_NOTES.map((source) => (
             <li key={source} className={`text-sm leading-relaxed ${bodyClass}`}>
@@ -144,7 +143,7 @@ export default function TethysOceanNaturalHistoryPage() {
               : 'border-orange-400/50 bg-orange-500/20 text-orange-100 hover:border-orange-300 hover:bg-orange-500/30'
           }`}
         >
-          Open World Hub
+          World
         </Link>
         <Link
           href="/world-of-tethys-book-1"

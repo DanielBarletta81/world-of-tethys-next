@@ -9,47 +9,47 @@ const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldo
 export const metadata = {
   title: 'Author | D.C. Barletta',
   description:
-    'Author hub for D.C. Barletta with Book One, essays, press, and direct routes into Cambria and the wider World of Tethys.',
+    'Book One. A name. Fragments of Tethys.',
 };
 
 const primaryRoutes = [
   {
     title: 'Book One',
-    description: 'The main series entry: synopsis, format links, reviews, and the current release frame.',
+    description: 'The first opening.',
     href: '/world-of-tethys-book-1',
     imageSrc: '/img/books/book1-cover.png',
     imageAlt: 'World of Tethys Book One cover',
-    cta: 'Open Book One',
+    cta: 'Book One',
     Icon: BookOpenText,
     external: false,
   },
   {
-    title: 'About D.C. Barletta',
-    description: 'Background, creative process, and the natural-history logic shaping the fiction.',
+    title: 'D.C. Barletta',
+    description: 'The name above the waterline.',
     href: '/about-dc-barletta',
     imageSrc: '/ray_smile.jpg',
     imageAlt: 'Portrait of D.C. Barletta',
-    cta: 'Read the author profile',
+    cta: 'The Author',
     Icon: Feather,
     external: false,
   },
   {
-    title: 'Essays and Updates',
-    description: 'Writing around ecology, pressure, prehistoric imagination, and the ideas driving the project forward.',
+    title: 'Field Notes',
+    description: 'Ash, weather, and drift.',
     href: '/blog',
     imageSrc: '/img/watcher-eruption1.png',
     imageAlt: 'World of Tethys volcanic eruption visual',
-    cta: 'Read essays',
+    cta: 'Essays',
     Icon: ScrollText,
     external: false,
   },
   {
-    title: 'Press Kit',
-    description: 'Fast access for media, podcasters, interview requests, and publishing context.',
+    title: 'Press',
+    description: 'A thin record.',
     href: '/press-kit',
     imageSrc: '/img/plates/footer/footer-home-watcher.webp',
-    imageAlt: 'Press kit visual',
-    cta: 'Open press kit',
+    imageAlt: 'Press visual',
+    cta: 'Press',
     Icon: Newspaper,
     external: false,
   },
@@ -58,25 +58,25 @@ const primaryRoutes = [
 const outsideChannels = [
   {
     title: 'worldoftethys.com',
-    description: 'The larger world domain for atlas pages, Cambria fragments, and deeper in-world systems.',
+    description: 'The larger ruin.',
     href: WORLD_SITE_URL,
     external: true,
   },
   {
     title: 'Amazon Author Page',
-    description: 'Official Amazon storefront and author profile.',
+    description: 'The book in the wild.',
     href: AMAZON_AUTHOR_URL,
     external: true,
   },
   {
     title: 'Goodreads Profile',
-    description: 'Reader-side author profile and discovery shelf.',
+    description: 'Reader echoes.',
     href: GOODREADS_PROFILE_URL,
     external: true,
   },
   {
     title: 'YouTube Channel',
-    description: 'Trailers, shorts, and outward-facing World of Tethys media.',
+    description: 'Signals.',
     href: 'https://www.youtube.com/@WorldofTethys',
     external: true,
   },
@@ -105,13 +105,12 @@ export default function AuthorHubPage() {
         <div className="relative z-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="space-y-6">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Author Directory</p>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Waterline</p>
               <h1 className="mt-3 text-4xl font-tethys-volcanic text-[#2f1f14] md:text-6xl">
-                Book, author, and world paths kept close together.
+                A name at the edge of Tethys.
               </h1>
               <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#3f3024] md:text-lg">
-                This page serves as the short map of the author side: Book One, biography,
-                essays, press, and a direct jump into the wider World of Tethys.
+                Book One surfaced first. More is still rising.
               </p>
             </div>
 
@@ -120,7 +119,7 @@ export default function AuthorHubPage() {
                 href="/world-of-tethys-book-1"
                 className="rounded-full border border-[#6d4c36] bg-[#2f2219] px-6 py-3 text-sm font-medium tracking-[0.04em] text-[#f7eee2] transition hover:-translate-y-0.5 hover:bg-[#20160f]"
               >
-                Book One First
+                Book One
               </Link>
               <Link
                 href="/blog"
@@ -134,33 +133,30 @@ export default function AuthorHubPage() {
                 rel="noreferrer"
                 className="rounded-full border border-[#8b6b53] bg-[#f8f2e8] px-6 py-3 text-sm font-medium tracking-[0.04em] text-[#3b2a1f] transition hover:-translate-y-0.5 hover:bg-[#efe4d3]"
               >
-                World Site
+                World
               </a>
             </div>
           </div>
 
           <div className="rounded-[1.8rem] border border-[#8e765b]/18 bg-white/55 p-5 shadow-[0_14px_30px_rgba(33,20,10,0.08)]">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">Where To Begin</p>
+            <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">Three Marks</p>
             <div className="mt-4 space-y-4">
               <div className="flex items-start gap-3">
                 <BookOpenText className="mt-0.5 h-4 w-4 shrink-0 text-[#7a4f30]" />
                 <p className="text-sm leading-relaxed text-[#4f3c30]">
-                  <span className="font-semibold text-[#2f1f14]">New reader:</span> start with
-                  Book One.
+                  Book One broke the surface.
                 </p>
               </div>
               <div className="flex items-start gap-3">
                 <Feather className="mt-0.5 h-4 w-4 shrink-0 text-[#7a4f30]" />
                 <p className="text-sm leading-relaxed text-[#4f3c30]">
-                  <span className="font-semibold text-[#2f1f14]">Need author context:</span> use
-                  the bio and essay pages.
+                  The name stayed above the waterline.
                 </p>
               </div>
               <div className="flex items-start gap-3">
                 <Compass className="mt-0.5 h-4 w-4 shrink-0 text-[#7a4f30]" />
                 <p className="text-sm leading-relaxed text-[#4f3c30]">
-                  <span className="font-semibold text-[#2f1f14]">Want the deeper world:</span> go
-                  to worldoftethys.com for the atlas, Cambria fragments, and deeper archive layers.
+                  The deeper record waits below.
                 </p>
               </div>
             </div>
@@ -171,11 +167,11 @@ export default function AuthorHubPage() {
       <section className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Primary Routes</p>
-            <h2 className="mt-2 text-3xl font-semibold text-[#2f1f14]">What most visitors actually need</h2>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Thresholds</p>
+            <h2 className="mt-2 text-3xl font-semibold text-[#2f1f14]">Nearest the surface.</h2>
           </div>
           <p className="max-w-2xl text-sm leading-relaxed text-[#5a4638]">
-            Use the author side for orientation, then cross into the world domain when you want the denser excavation.
+            Only a few openings show from here.
           </p>
         </div>
 
@@ -197,7 +193,7 @@ export default function AuthorHubPage() {
                   <div className="min-w-0">
                     <div className="inline-flex items-center gap-2 rounded-full border border-[#8e765b]/14 bg-white/60 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-[#7c6250]">
                       <Icon className="h-3.5 w-3.5" />
-                      Route
+                      Threshold
                     </div>
                     <h3 className="mt-3 text-xl font-semibold text-[#312115] transition-colors group-hover:text-[#24170f]">
                       {card.title}
@@ -239,24 +235,22 @@ export default function AuthorHubPage() {
 
       <section className="mt-10 grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
         <div className={`${surfaceClass} p-6`}>
-          <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Why This Site Exists</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Author-first, but still clearly Tethys</h2>
+          <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Waterline</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Only part of it is visible here.</h2>
           <p className="mt-3 text-sm leading-relaxed text-[#4f3c30]">
-            The author domain should explain the work quickly: who is writing it, where Book One
-            begins, and where the larger Tethys material, including Cambria, keeps unfolding.
+            The rest keeps its depth.
           </p>
           <div className="mt-5 rounded-[1.4rem] border border-[#8e765b]/18 bg-white/60 p-4">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">Current Shape</p>
+            <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">Below</p>
             <p className="mt-2 text-sm leading-relaxed text-[#4f3c30]">
-              Book One stays in front. Essays and media support the author conversation. The world
-              site remains the larger destination for maps, Cambria fragments, and natural-history depth.
+              Book One above. Cambria below.
             </p>
           </div>
         </div>
 
         <div className={`${surfaceClass} p-6`}>
-          <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Outside Channels</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Use external platforms intentionally</h2>
+          <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Outer Water</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Elsewhere</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {outsideChannels.map((item) => (
               <a

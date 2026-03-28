@@ -4,51 +4,49 @@ const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
 
 export const metadata = {
-  title: 'Press Kit | D.C. Barletta',
-  description: 'Press kit for D.C. Barletta and World of Tethys with author bio, book details, and media links.',
+  title: 'Press | D.C. Barletta',
+  description: 'A thin record for D.C. Barletta and World of Tethys.',
 };
 
 export default function PressKitPage() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-14 md:py-20 text-[#2a1f17]">
       <section className="rounded-3xl border border-amber-900/30 bg-[linear-gradient(145deg,#fbf6ee,#e9dac5)] p-8 shadow-[0_20px_46px_rgba(35,20,8,0.14)] md:p-10">
-        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Media Resources</p>
-        <h1 className="mt-3 text-4xl md:text-5xl font-tethys-volcanic text-[#2f1f14]">Press Kit</h1>
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Record</p>
+        <h1 className="mt-3 text-4xl md:text-5xl font-tethys-volcanic text-[#2f1f14]">Press</h1>
         <p className="mt-4 leading-relaxed text-[#3f3024]">
-          D.C. Barletta writes prehistoric science fiction in the World of Tethys series. Core themes include
-          ecological survival, deep-time adaptation, and volcanic world systems.
+          A few details above deeper water.
         </p>
       </section>
 
       <section className="mt-8 rounded-2xl border border-amber-900/25 bg-[#f8f2e8]/95 p-6 shadow-[0_10px_24px_rgba(33,20,10,0.08)]">
-        <h2 className="text-2xl font-semibold text-[#2f2015]">Book</h2>
-        <p className="mt-3 text-[#4f3c30]">World of Tethys - Book One (ASIN: B0GRHBR1HJ)</p>
+        <h2 className="text-2xl font-semibold text-[#2f2015]">Book One</h2>
+        <p className="mt-3 text-[#4f3c30]">World of Tethys. ASIN: B0GRHBR1HJ.</p>
         <a
           href={AMAZON_URL}
           className="mt-4 inline-flex rounded-full border border-[#c6854e] bg-[#d28b4f] px-5 py-2 text-sm font-semibold tracking-[0.04em] text-[#2a1a10] transition hover:-translate-y-0.5 hover:bg-[#bf7a42]"
         >
-          Buy on Amazon
+          Amazon
         </a>
       </section>
 
       <section className="mt-6 rounded-2xl border border-amber-900/25 bg-[#f8f2e8]/95 p-6 shadow-[0_10px_24px_rgba(33,20,10,0.08)]">
-        <h2 className="text-2xl font-semibold text-[#2f2015]">Author Bio</h2>
+        <h2 className="text-2xl font-semibold text-[#2f2015]">The Name</h2>
         <p className="mt-3 leading-relaxed text-[#4f3c30]">
-          D.C. Barletta builds fiction around natural history logic, using environmental pressure and
-          species interaction as central narrative forces.
+          Biology. Deep time. Pressure.
         </p>
         <p className="mt-3 text-[#4f3c30]">
-          Full author page:{' '}
+          More at{' '}
           <Link href="/about-dc-barletta" className="underline text-[#7a4f30] transition hover:text-[#5f3c23]">
-            About D.C. Barletta
+            The Author
           </Link>
         </p>
       </section>
 
       <section className="mt-6 rounded-2xl border border-amber-900/25 bg-[#f8f2e8]/95 p-6 shadow-[0_10px_24px_rgba(33,20,10,0.08)]">
-        <h2 className="text-2xl font-semibold text-[#2f2015]">World Resources</h2>
+        <h2 className="text-2xl font-semibold text-[#2f2015]">Below</h2>
         <p className="mt-3 text-[#4f3c30]">
-          Immersive atlas and archive:{' '}
+          The larger ruin lives at{' '}
           <a
             href={WORLD_SITE_URL}
             target="_blank"

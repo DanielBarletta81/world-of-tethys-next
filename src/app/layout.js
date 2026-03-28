@@ -135,7 +135,7 @@ export const metadata = {
   openGraph: {
     title: isAuthorDefaultSite ? 'D.C. Barletta | Author of World of Tethys' : 'World of Tethys | Immersive Atlas & Lore',
     description: isAuthorDefaultSite
-      ? 'Author-first hub for D.C. Barletta with Book One, media resources, and routes into Cambria and the wider World of Tethys.'
+      ? 'Book One. A name above the waterline. An older world below.'
       : 'Explore the World of Tethys through map-driven lore, natural history, living archive systems, and immersive world pathways.',
     type: 'website',
     url: siteUrl,

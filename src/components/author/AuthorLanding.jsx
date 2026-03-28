@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, BookOpenText, Compass, Feather, ScrollText, Waves } from 'lucide-react';
+import { ArrowUpRight, Compass, Feather, Waves } from 'lucide-react';
 import GoodreadsWidget from '@/components/content/GoodreadsWidget';
-import KindleGiveawayBanner from '@/components/content/KindleGiveawayBanner';
 import { TETHYS_OCEAN_RESEARCH_BRIEF } from '@/data/tethys-ocean-research';
 
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
@@ -10,68 +9,63 @@ const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
 const AUTHOR_SEAL_URL = '/img/icons/tethys-seal-coin.svg';
 
 const heroMarks = [
-  { label: 'Primary Entry', value: 'Book One' },
-  { label: 'Current Focus', value: 'Sky City + Cambria' },
-  { label: 'Best Use', value: 'Readers, Press, Essays' },
+  { label: 'First Breach', value: 'Book One' },
+  { label: 'Waterline', value: 'Sky City' },
+  { label: 'Older Name', value: 'Cambria' },
 ];
 
 const routeCards = [
   {
-    title: 'Start with Book One',
-    description:
-      'Use the novel page first for the main reader path into the series, the format options, and the main release copy.',
+    title: 'Book One',
+    description: 'The first opening.',
     href: '/world-of-tethys-book-1',
     imageSrc: '/img/books/book1-cover.png',
     imageAlt: 'World of Tethys Book One cover art',
-    cta: 'Open Book One',
+    cta: 'Book One',
     external: false,
   },
   {
-    title: 'Meet D.C. Barletta',
-    description:
-      'Get the author background, the natural-history lens behind the work, and the through-line connecting the fiction.',
+    title: 'D.C. Barletta',
+    description: 'A name above the waterline.',
     href: '/about-dc-barletta',
     imageSrc: '/ray_smile.jpg',
     imageAlt: 'Portrait of D.C. Barletta',
-    cta: 'Read the author profile',
+    cta: 'The Author',
     external: false,
   },
   {
-    title: 'Read Essays and Updates',
-    description:
-      'Follow posts on ecology, prehistoric imagination, and the ideas shaping the larger project while the world keeps growing.',
+    title: 'Field Notes',
+    description: 'Ash, weather, and drift.',
     href: '/blog',
     imageSrc: '/img/watcher_mountain3.png',
     imageAlt: 'World of Tethys volcanic mountain landscape',
-    cta: 'Explore essays',
+    cta: 'Essays',
     external: false,
   },
   {
-    title: 'Enter the Wider World',
-    description:
-      'Go to the world domain for maps, Cambria fragments, natural-history briefs, and the deeper in-world record.',
+    title: 'The World',
+    description: 'The larger ruin below.',
     href: WORLD_SITE_URL,
     imageSrc: '/img/plates/footer/footer-home-watcher.webp',
     imageAlt: 'World of Tethys atmosphere artwork',
-    cta: 'Visit worldoftethys.com',
+    cta: 'World',
     external: true,
   },
 ];
 
 const deepWorldRoutes = [
   {
-    title: 'Tethys Ocean Research',
-    description: 'Sea routes, climate pressure, and the paleoclimate scaffolding beneath the fiction.',
+    title: 'Tethys Ocean',
+    description: 'Salt, pressure, old currents.',
     href: '/natural-history/tethys-ocean',
-    cta: 'Read the research brief',
+    cta: 'Ocean',
     Icon: Waves,
   },
   {
-    title: 'Cambria Archive Fragments',
-    description:
-      'Recovered first-person records on storms, routes, and lost-city peoples from a prequel civilization older than Sky City.',
+    title: 'Cambria',
+    description: 'A lost city speaking in fragments.',
     href: '/archive/cambria',
-    cta: 'Open the fragments',
+    cta: 'Cambria',
     Icon: Compass,
   },
 ];
@@ -80,17 +74,17 @@ const outerChannels = [
   {
     label: 'Amazon',
     href: AMAZON_URL,
-    body: 'Direct purchase route for Book One.',
+    body: 'The book in the wild.',
   },
   {
     label: 'YouTube',
     href: 'https://www.youtube.com/@WorldofTethys',
-    body: 'Trailers, shorts, and outward-facing media.',
+    body: 'Signals from the edge.',
   },
   {
     label: 'Goodreads',
     href: 'https://www.goodreads.com/book/show/249368560-world-of-tethys',
-    body: 'Reviews and reader-side discovery.',
+    body: 'Reader echoes.',
   },
 ];
 
@@ -135,14 +129,10 @@ export default function AuthorLanding() {
                 D.C. Barletta // Author Site
               </p>
               <h1 className="max-w-4xl text-4xl font-tethys-volcanic leading-[0.92] text-[#2f1f14] md:text-6xl">
-                Prehistoric science-fantasy led by <span className="text-[#845639]">Book One</span> and backed by a living world older than Sky City.
+                A world rising out of ash, salt, and rumor.
               </h1>
               <p className="max-w-3xl text-base leading-relaxed text-[#3f3024] md:text-lg">
-                This is the primary author site for D.C. Barletta. Start with <em>World of Tethys</em>{' '}
-                Book One, use the author pages and essays for context, and cross into{' '}
-                <span className="font-semibold text-[#6a4b37]">worldoftethys.com</span> when you
-                want the atlas, the Cambria remnants, the archive, and deeper natural-history
-                layers.
+                Book One breaks the surface. The rest waits below.
               </p>
             </div>
 
@@ -151,19 +141,19 @@ export default function AuthorLanding() {
                 href="/world-of-tethys-book-1"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#6d4c36] bg-[#2f2219] px-6 py-3 text-sm font-medium tracking-[0.04em] text-[#f7eee2] transition hover:-translate-y-0.5 hover:bg-[#20160f]"
               >
-                Start with Book One
+                Book One
               </Link>
               <Link
                 href="/about-dc-barletta"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#8d5b36] bg-[#f2e2cd] px-6 py-3 text-sm font-medium tracking-[0.04em] text-[#3a2617] transition hover:-translate-y-0.5 hover:bg-[#e8d2b7]"
               >
-                About D.C. Barletta
+                The Author
               </Link>
               <Link
                 href="/blog"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#7a8b8d]/30 bg-[#eef4f1] px-6 py-3 text-sm font-medium tracking-[0.04em] text-[#264041] transition hover:-translate-y-0.5 hover:bg-[#e3efea]"
               >
-                Read Essays
+                Essays
               </Link>
               <a
                 href={WORLD_SITE_URL}
@@ -171,7 +161,7 @@ export default function AuthorLanding() {
                 rel="noreferrer"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-[#8b6b53] bg-[#f8f2e8] px-6 py-3 text-sm font-medium tracking-[0.04em] text-[#3b2a1f] transition hover:-translate-y-0.5 hover:bg-[#efe4d3]"
               >
-                Enter the World
+                World
               </a>
             </div>
 
@@ -202,31 +192,21 @@ export default function AuthorLanding() {
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.16))]" />
               </div>
               <div className="mt-4 rounded-[1.35rem] border border-[#8e765b]/18 bg-white/55 p-4">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">Current Release</p>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">First Opening</p>
                 <p className="mt-2 text-lg font-semibold text-[#2f1f14]">World of Tethys Book One</p>
                 <p className="mt-2 text-sm leading-relaxed text-[#4d3a2c]">
-                  Sky City is the strongest starting point for new readers before the world opens
-                  into Cambria remnants and the larger archive.
+                  Sky City breaks the surface first.
                 </p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="rounded-[1.6rem] border border-[#8e765b]/18 bg-white/60 p-5 shadow-[0_10px_22px_rgba(33,20,10,0.08)]">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">How To Use This Site</p>
-                <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#433225]">
-                  <div className="flex items-start gap-3">
-                    <BookOpenText className="mt-0.5 h-4 w-4 shrink-0 text-[#805239]" />
-                    <p>Start with Book One when you want the clearest introduction to the story.</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <ScrollText className="mt-0.5 h-4 w-4 shrink-0 text-[#805239]" />
-                    <p>Use the author and essay pages for background, process, and publishing context.</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Compass className="mt-0.5 h-4 w-4 shrink-0 text-[#805239]" />
-                    <p>Go to the world domain when you want maps, Cambria archive depth, and field-record detail.</p>
-                  </div>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">Ledge Script</p>
+                <div className="mt-4 space-y-2 text-sm leading-relaxed text-[#433225]">
+                  <p>Sky City above.</p>
+                  <p>Cambria below.</p>
+                  <p>Signals crossing the dark.</p>
                 </div>
               </div>
 
@@ -239,11 +219,9 @@ export default function AuthorLanding() {
                   }}
                 />
                 <div className="p-5">
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">World Still Expanding</p>
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">Below the Waterline</p>
                   <p className="mt-2 text-sm leading-relaxed text-[#433225]">
-                    Most of the current writing push is moving deeper into Tethys itself,
-                    especially older Cambria strata and lost-city remnants. This site stays
-                    lighter and clearer; the world domain carries the heavier excavation.
+                    More of Tethys is still surfacing.
                   </p>
                 </div>
               </div>
@@ -252,19 +230,16 @@ export default function AuthorLanding() {
         </div>
       </section>
 
-      <KindleGiveawayBanner className="mt-8" theme="light" />
-
       <section className="mt-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Choose Your Route</p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Openings</p>
             <h2 className="mt-2 text-3xl font-semibold text-[#2f1f14] md:text-4xl">
-              Four routes into the project
+              Four thresholds.
             </h2>
           </div>
           <p className="max-w-2xl text-sm leading-relaxed text-[#5a4638]">
-            Keep the author site readable and fast: book first, author context second, world depth
-            one step beyond.
+            Only a few names are showing.
           </p>
         </div>
 
@@ -323,12 +298,10 @@ export default function AuthorLanding() {
 
       <section className="mt-12 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         <div className={`${sectionSurfaceClass} p-6 md:p-8`}>
-          <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">In-World Signals</p>
-          <h2 className="mt-2 text-3xl font-semibold text-[#2f1f14]">The world behind the books stays visible here</h2>
+          <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Strata</p>
+          <h2 className="mt-2 text-3xl font-semibold text-[#2f1f14]">What stays beneath</h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4f3c30]">
-            The author site stays lighter, but it should still hint at the systems underneath:
-            sea pressure, Cambria remnants, lost routes, and the natural-history logic holding the
-            fiction together.
+            Pressure. Salt. Lost routes.
           </p>
 
           <div className="mt-5 grid gap-3 md:grid-cols-3">
@@ -340,7 +313,6 @@ export default function AuthorLanding() {
                 <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4f38]">
                   {entry.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#4f3c30]">{entry.summary}</p>
               </article>
             ))}
           </div>
@@ -376,19 +348,16 @@ export default function AuthorLanding() {
 
         <div className="space-y-6">
           <div className={`${sectionSurfaceClass} p-6 md:p-8`}>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Reader Signals</p>
-            <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Goodreads reviews stay close to the book</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#4f3c30]">
-              Keep the social proof near the reader path without turning the author site into a cluttered media wall.
-            </p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Echoes</p>
+            <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Reader echoes</h2>
             <div className="mt-3">
-              <GoodreadsWidget theme="light" headerText="Reader reviews for World of Tethys" />
+              <GoodreadsWidget theme="light" headerText="Echoes around Book One" />
             </div>
           </div>
 
           <div className={`${sectionSurfaceClass} p-6`}>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Outer Channels</p>
-            <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Use external platforms when they add value</h2>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Outer Water</p>
+            <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Elsewhere</h2>
             <div className="mt-4 space-y-3">
               {outerChannels.map((item) => (
                 <a

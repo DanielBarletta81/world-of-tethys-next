@@ -65,6 +65,9 @@ firebase-debug.log
 # next.js
 /.next/
 /.next_backup_*/
+/.sst/
+/.sst_backup_*/
+/.sst.backup*/
 /out/
 
 # production

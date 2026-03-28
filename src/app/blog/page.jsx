@@ -3,7 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'World of Tethys Blog | Prehistoric Fiction and Natural History',
   description:
-    'Explore the World of Tethys blog archive: prehistoric survival, pterosaurs, deep time ecology, and volcanic worldbuilding.',
+    'Field notes from the waterline of Tethys.',
 };
 
 const posts = [
@@ -29,10 +29,10 @@ export default function BlogPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-14 md:py-20 text-[#2a1f17]">
       <section className="rounded-3xl border border-amber-900/30 bg-[linear-gradient(145deg,#fbf6ee,#e9dac5)] p-8 shadow-[0_20px_46px_rgba(35,20,8,0.14)] md:p-10">
-        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Blog and Essays</p>
-        <h1 className="mt-3 text-4xl md:text-5xl font-tethys-volcanic text-[#2f1f14]">World of Tethys Blog and Archive</h1>
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Field Notes</p>
+        <h1 className="mt-3 text-4xl md:text-5xl font-tethys-volcanic text-[#2f1f14]">Fragments from the edge.</h1>
         <p className="mt-5 max-w-3xl text-[#3f3024] leading-relaxed">
-          Articles connecting prehistoric science, ecological fiction, and the worldbuilding behind World of Tethys.
+          Teeth, weather, ash, and older systems.
         </p>
         <div className="mt-5 flex flex-wrap gap-2 text-xs uppercase tracking-wide text-[#5b4432]">
           <span className="rounded-full border border-amber-900/25 bg-[#f8f2e8]/95 px-3 py-1">Natural History</span>
@@ -55,7 +55,7 @@ export default function BlogPage() {
       </section>
 
       <section className="mt-8 rounded-2xl border border-amber-900/25 bg-[#f8f2e8]/95 p-6 shadow-[0_10px_24px_rgba(33,20,10,0.08)]">
-        <h2 className="text-2xl font-semibold text-[#2f2015]">Reader and Media Links</h2>
+        <h2 className="text-2xl font-semibold text-[#2f2015]">Elsewhere</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href="/world-of-tethys-book-1"
@@ -67,7 +67,7 @@ export default function BlogPage() {
             href="/press-kit"
             className="rounded-full border border-[#8d5b36] bg-[#f2e2cd] px-5 py-2 text-xs uppercase tracking-[0.14em] text-[#3a2617] transition hover:-translate-y-0.5 hover:bg-[#e8d2b7]"
           >
-            Press Kit
+            Press
           </Link>
         </div>
       </section>

@@ -59,27 +59,24 @@ export default function SiteFooter({ siteVariant = 'world' }) {
                 D.C. Barletta • Author Site
               </p>
               <h2 className="mt-4 text-2xl font-semibold text-[#2b1d13]">
-                Book first. Author-forward. Tethys still visible.
+                Only fragments surface here.
               </h2>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#5e4b3f]">
-                Use this site for Book One, the author profile, essays, and media resources. Cross
-                into{' '}
-                <span className="font-semibold text-[#4b382a]">worldoftethys.com</span> for the
-                atlas, Cambria fragments, and the deeper in-world record.
+                Book One. A name. A few signals.
               </p>
             </div>
 
             <div>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[#7a5f4c]">Start Here</p>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-[#7a5f4c]">Near</p>
               <div className="mt-4 flex flex-col gap-3 text-sm text-[#3d3027]">
                 <Link href="/" className="transition-colors hover:text-[#1f1712]">
-                  Landing Page
+                  Home
                 </Link>
                 <Link href="/world-of-tethys-book-1" className="transition-colors hover:text-[#1f1712]">
                   Book One
                 </Link>
                 <Link href="/about-dc-barletta" className="transition-colors hover:text-[#1f1712]">
-                  About D.C. Barletta
+                  The Author
                 </Link>
                 <Link href="/blog" className="transition-colors hover:text-[#1f1712]">
                   Essays
@@ -88,16 +85,16 @@ export default function SiteFooter({ siteVariant = 'world' }) {
             </div>
 
             <div>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[#7a5f4c]">Go Deeper</p>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-[#7a5f4c]">Below</p>
               <div className="mt-4 flex flex-col gap-3 text-sm text-[#3d3027]">
                 <Link href="/press-kit" className="transition-colors hover:text-[#1f1712]">
-                  Press Kit
+                  Press
                 </Link>
                 <Link href="/archive/cambria" className="transition-colors hover:text-[#1f1712]">
-                  Cambria Fragments
+                  Cambria
                 </Link>
                 <a href={amazonUrl} className="transition-colors hover:text-[#1f1712]">
-                  Buy on Amazon
+                  Amazon
                 </a>
                 <a
                   href={worldSiteUrl}
@@ -105,14 +102,14 @@ export default function SiteFooter({ siteVariant = 'world' }) {
                   rel="noreferrer"
                   className="transition-colors hover:text-[#1f1712]"
                 >
-                  Explore worldoftethys.com
+                  World
                 </a>
               </div>
             </div>
           </div>
 
           <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-[#8e765b]/14 pt-5 text-xs text-[#6c5443]">
-            <p>Book and author pages live here. The larger atlas and archive live on the world domain.</p>
+            <p>The rest stays under water.</p>
             <p>© {new Date().getFullYear()} D.C. Barletta</p>
           </div>
         </div>

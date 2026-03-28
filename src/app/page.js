@@ -10,14 +10,14 @@ export function generateMetadata() {
     return {
       title: 'D.C. Barletta | Author of World of Tethys',
       description:
-        'Author-first home for D.C. Barletta with Book One in front, essays and media on hand, and direct routes into Cambria and the wider World of Tethys.',
+        'Book One. A name above the waterline. An older world below.',
       alternates: {
         canonical: authorSiteUrl,
       },
       openGraph: {
         title: 'D.C. Barletta | Author of World of Tethys',
         description:
-          'Prehistoric science-fantasy by D.C. Barletta with Book One in front and the wider World of Tethys, including Cambria, one step deeper.',
+          'A name above the waterline. Tethys below.',
         url: authorSiteUrl,
       },
     };

@@ -1,27 +1,28 @@
 import Link from 'next/link';
 import { Compass, Feather, Microscope, Waves } from 'lucide-react';
+import { PAST_RESEARCH } from '@/data/past-research';
 
 export const metadata = {
   title: 'About D.C. Barletta',
   description:
-    'About D.C. Barletta, author of World of Tethys, with a focus on biology, natural history, deep-time systems, Cambria, and prehistoric science-fantasy storytelling.',
+    'D.C. Barletta and the older world behind World of Tethys.',
   keywords: ['about dc barletta', 'world of tethys author', 'prehistoric fiction author', 'natural history storytelling'],
 };
 
 const buildPillars = [
   {
-    title: 'Biology in the frame',
-    body: 'Predator dynamics, migration, and environmental pressure are not decoration. They help determine what the world can do.',
+    title: 'Biology',
+    body: 'Teeth. migration. hunger.',
     Icon: Microscope,
   },
   {
-    title: 'Systems under strain',
-    body: 'Cities, routes, food webs, and resource logic all matter because pressure changes what people choose and what survives.',
+    title: 'Pressure',
+    body: 'Cities fail like organisms.',
     Icon: Waves,
   },
   {
-    title: 'Wonder with consequence',
-    body: 'The aim is a world that still feels mythic and uncanny, but behaves as if it has history, cost, weight, and buried layers like Cambria.',
+    title: 'Wonder',
+    body: 'Myth with a fossil spine.',
     Icon: Compass,
   },
 ];
@@ -47,16 +48,13 @@ export default function AboutDcBarlettaPage() {
         <div className="relative z-10">
           <p className="inline-flex items-center gap-2 rounded-full border border-[#8e765b]/18 bg-white/55 px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">
             <Feather className="h-3.5 w-3.5" />
-            About The Author
+            The Name
           </p>
           <h1 className="mt-4 text-4xl font-tethys-volcanic text-[#2f1f14] md:text-6xl">
-            D.C. Barletta writes prehistoric science-fantasy under pressure.
+            D.C. Barletta
           </h1>
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#3f3024] md:text-lg">
-            The work is shaped by biology, natural history, and the logic of systems that fail,
-            adapt, or mutate over time. <em>World of Tethys</em> grows out of that tension: living
-            environments, engineered order, older civilizations like Cambria, and people trying to
-            survive where clean stories rarely hold.
+            Biology. Deep time. Pressure.
           </p>
         </div>
       </section>
@@ -81,19 +79,48 @@ export default function AboutDcBarlettaPage() {
       </section>
 
       <section className="mt-8 rounded-[1.95rem] border border-[#8e765b]/20 bg-[linear-gradient(180deg,rgba(250,244,235,0.96),rgba(239,229,211,0.92))] p-6 shadow-[0_12px_28px_rgba(33,20,10,0.08)] md:p-8">
-        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">How Tethys Gets Built</p>
-        <h2 className="mt-2 text-2xl font-semibold text-[#2f2015]">The world works because the underlying logic works</h2>
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Understructure</p>
+        <h2 className="mt-2 text-2xl font-semibold text-[#2f2015]">Teeth, weather, stone.</h2>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4f3c30]">
-          Tethys is not meant to feel random. Ecologies, routes, climate tension, institutional
-          control, and the residue of older civilizations such as Cambria all push on the same
-          characters at once. That is where the narrative pressure comes from. The fantasy opens
-          up because the underlying system feels stable enough to be worth breaking.
+          The world holds because its pressures hold.
         </p>
       </section>
 
+      <section className="mt-8 rounded-[1.95rem] border border-[#8e765b]/20 bg-[linear-gradient(180deg,rgba(245,239,230,0.96),rgba(232,223,205,0.92))] p-6 shadow-[0_12px_28px_rgba(33,20,10,0.08)] md:p-8">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Past Research</p>
+        <h2 className="mt-2 text-2xl font-semibold text-[#2f2015]">Earlier strata.</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4f3c30]">
+          Marine algae. Cell walls. Work before Tethys.
+        </p>
+
+        <div className="mt-6 grid gap-4">
+          {PAST_RESEARCH.map((entry) => (
+            <article
+              key={entry.title}
+              className="rounded-[1.45rem] border border-[#8e765b]/18 bg-white/60 p-5 shadow-[0_10px_22px_rgba(33,20,10,0.08)]"
+            >
+              <p className="text-[10px] uppercase tracking-[0.28em] text-[#7c6250]">{entry.label}</p>
+              <h3 className="mt-3 text-xl font-semibold text-[#2f2015]">{entry.title}</h3>
+              <p className="mt-1 text-sm uppercase tracking-[0.14em] text-[#6f4f38]">{entry.focus}</p>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#4f3c30]">{entry.summary}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {entry.marks.map((mark) => (
+                  <span
+                    key={mark}
+                    className="rounded-full border border-[#8e765b]/18 bg-[#f8f2e8] px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-[#5a4638]"
+                  >
+                    {mark}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="mt-8 rounded-[1.95rem] border border-[#8e765b]/20 bg-[linear-gradient(180deg,rgba(250,244,235,0.96),rgba(239,229,211,0.92))] p-6 shadow-[0_12px_28px_rgba(33,20,10,0.08)] md:p-8">
-        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Key Routes</p>
-        <h2 className="mt-2 text-2xl font-semibold text-[#2f2015]">Use the route that fits the moment</h2>
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Openings</p>
+        <h2 className="mt-2 text-2xl font-semibold text-[#2f2015]">Only a few names.</h2>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
             href="/world-of-tethys-book-1"
@@ -111,7 +138,7 @@ export default function AboutDcBarlettaPage() {
             href="/press-kit"
             className="rounded-full border border-[#8d5b36] bg-[#f2e2cd] px-5 py-2 text-xs uppercase tracking-[0.14em] text-[#3a2617] transition hover:-translate-y-0.5 hover:bg-[#e8d2b7]"
           >
-            Press Kit
+            Press
           </Link>
           <a
             href={worldSiteUrl}
