@@ -29,19 +29,6 @@ export default function SiteFooter({ siteVariant = 'world' }) {
         role="contentinfo"
         className="relative overflow-hidden border-t border-[#8e765b]/18 bg-[linear-gradient(180deg,#efe4d2,#e8dcc8)]"
       >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-multiply"
-          style={{ backgroundImage: `url(${cdn('/noise.svg')})`, backgroundSize: '420px 420px' }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.1] mix-blend-multiply"
-          style={{
-            backgroundImage: `url(${cdn('/img/map/tethys-atlas-clean.png')})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-
         <Image
           src={cdn('/img/icons/tethys-seal-coin.svg')}
           alt=""
@@ -131,11 +118,6 @@ export default function SiteFooter({ siteVariant = 'world' }) {
         backgroundPosition: isMystics ? 'center top' : isHome ? '50% 50%' : 'center',
       }}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
-        style={{ backgroundImage: `url(${cdn('/noise.svg')})`, backgroundSize: '420px 420px' }}
-      />
-
       <Image
         src={cdn('/img/icons/tethys-seal-coin.svg')}
         alt=""
@@ -152,11 +134,11 @@ export default function SiteFooter({ siteVariant = 'world' }) {
 
       <div className="relative mx-auto max-w-6xl px-6 py-16 text-white/70">
         <div className="text-sm tracking-[0.28em] uppercase">
-          World of Tethys • Living Atlas and Archive
+          World of Tethys
         </div>
         <div className="mt-4 flex flex-wrap gap-4 text-xs">
           <Link href="/world" className="underline underline-offset-4 hover:text-white">
-            World Hub
+            World
           </Link>
           <Link href="/world/map" className="underline underline-offset-4 hover:text-white">
             Atlas
@@ -171,7 +153,7 @@ export default function SiteFooter({ siteVariant = 'world' }) {
             Buy on Amazon
           </a>
           <a href={`${authorSiteUrl.replace(/\/$/, '')}/author`} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-white">
-            Author Hub
+            Author
           </a>
           <Link href="/world-of-tethys-book-1" className="underline underline-offset-4 hover:text-white">
             Book Page

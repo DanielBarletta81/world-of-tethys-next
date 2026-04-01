@@ -92,10 +92,6 @@ export default function StrataNav() {
                 </div>
               </div>
 
-              <div
-                className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
-                style={{ backgroundImage: `url(${cdn("/noise.svg")})` }}
-              />
             </motion.div>
           );
         })}

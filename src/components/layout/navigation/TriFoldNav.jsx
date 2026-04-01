@@ -49,7 +49,7 @@ export default function TriFoldNav({ onSelect, className = '', sticky = true }) 
     <nav
       className={`${stickyClass} self-start w-56 bg-[#0c0a09]/80 border border-stone-800 rounded-xl shadow-lg backdrop-blur-md z-30 px-2 py-3 ${className}`}
       role="navigation"
-      aria-label="Atlas quick links"
+      aria-label="Secondary navigation"
     >
       <div className="flex flex-col gap-2">
         {PATHS.map(path => {

@@ -11,7 +11,6 @@ export const metadata = {
   title: 'World of Tethys Book 1 - Prehistoric Epic by D.C. Barletta',
   description:
     'World of Tethys Book One. Sky City above. Older stone below.',
-  keywords: ['world of tethys book 1', 'prehistoric fiction', 'dinosaur survival novel', 'evolutionary fantasy'],
   alternates: {
     canonical: BOOK_PATH,
   },

@@ -6,7 +6,6 @@ export const metadata = {
   title: 'About D.C. Barletta',
   description:
     'D.C. Barletta and the older world behind World of Tethys.',
-  keywords: ['about dc barletta', 'world of tethys author', 'prehistoric fiction author', 'natural history storytelling'],
 };
 
 const buildPillars = [

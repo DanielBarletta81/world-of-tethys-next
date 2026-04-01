@@ -44,7 +44,7 @@ const worldPathways = [
     href: '/natural-history/tethys-ocean',
     title: 'Tethys Ocean Research',
     description: 'Ground world sea routes in Aptian-Albian climate, current systems, and anoxic ocean dynamics.',
-    cta: 'Read sea brief',
+    cta: 'Explore research',
     image: '/img/bg/obsidian-coast-4k.jpg',
   },
 ];
@@ -92,11 +92,10 @@ export default function WorldHubPage() {
       <div className="ash-noise-layer" />
       <section className="relative z-10">
         <p className="text-[11px] uppercase tracking-[0.3em] text-amber-300/80">World of Tethys • 2026 Atlas</p>
-        <h1 className="mt-4 text-4xl font-tethys-volcanic text-stone-50 md:text-6xl">Civilization World Hub</h1>
+        <h1 className="mt-4 text-4xl font-tethys-volcanic text-stone-50 md:text-6xl">World of Tethys</h1>
         <p className="mt-5 max-w-3xl leading-relaxed text-stone-300">
           Explore the full history of civilization in the World of Tethys, from early ashline settlements to modern
-          signal-age expeditions. This hub is the deep-dive center for map intelligence, regional lore, and archive
-          records.
+          signal-age expeditions.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
@@ -109,7 +108,7 @@ export default function WorldHubPage() {
             href="/world-of-tethys"
             className="rounded-full border border-stone-500/60 bg-black/40 px-6 py-3 text-sm font-semibold tracking-[0.04em] text-stone-200 transition hover:border-stone-300"
           >
-            Open Regional Lore Hub
+            Regional Lore
           </Link>
         </div>
       </section>
@@ -162,8 +161,7 @@ export default function WorldHubPage() {
           Tethys Ocean Research Signals
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-stone-300">
-          Treat the sea as a live system, not a static backdrop. These research-derived signals keep your dark,
-          reflective, volcanic-water aesthetic tethered to real Earth history.
+          Aptian-Albian climate signals grounding the Tethys sea routes, current systems, and volcanic coastal dynamics.
         </p>
         <div className="mt-6 grid gap-3 md:grid-cols-2">
           {TETHYS_OCEAN_RESEARCH_BRIEF.slice(0, 4).map((entry) => (
@@ -177,14 +175,6 @@ export default function WorldHubPage() {
           ))}
         </div>
         <div className="mt-5 grid gap-3 md:grid-cols-2">
-          {TETHYS_OCEAN_WRITING_ANGLES.slice(0, 2).map((entry) => (
-            <article key={entry.label} className="rounded-xl border border-stone-700/80 bg-black/25 p-4">
-              <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-200">{entry.label}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-stone-300">{entry.guidance}</p>
-            </article>
-          ))}
-        </div>
-        <div className="mt-5">
           <Link
             href="/natural-history/tethys-ocean"
             className="inline-flex rounded-full border border-cyan-400/40 bg-cyan-500/15 px-4 py-2 text-xs uppercase tracking-[0.16em] text-cyan-100 transition hover:border-cyan-300 hover:bg-cyan-500/25"
@@ -213,7 +203,7 @@ export default function WorldHubPage() {
         <p className="text-[10px] uppercase tracking-[0.28em] text-amber-300/80">Book First</p>
         <h2 className="mt-2 text-2xl font-tethys-volcanic text-stone-100 md:text-3xl">Reader Reviews</h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-stone-300">
-          Keep the reading entry point clear, then branch visitors into atlas and lore exploration.
+          Book One — the first reader entry into the world.
         </p>
         <div className="mt-3">
           <GoodreadsWidget />

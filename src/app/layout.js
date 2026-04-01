@@ -101,36 +101,12 @@ export const metadata = {
   description: isAuthorDefaultSite
     ? 'Official author platform for D.C. Barletta featuring World of Tethys books, essays, and publishing resources.'
     : 'Explore World of Tethys: immersive atlas systems, deep lore, natural history, archive intelligence, and evolving world signals.',
-  keywords: isAuthorDefaultSite
-    ? [
-      'd.c. barletta',
-      'world of tethys author',
-      'prehistoric fiction author',
-      'science fiction books',
-      'author press kit',
-      'world of tethys book',
-    ]
-    : [
-      'world of tethys',
-      'tethys map',
-      'interactive lore',
-      'worldbuilding archive',
-      'prehistoric fantasy world',
-      'natural history fiction',
-    ],
   alternates: {
     canonical: './',
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1,
-    },
   },
   openGraph: {
     title: isAuthorDefaultSite ? 'D.C. Barletta | Author of World of Tethys' : 'World of Tethys | Immersive Atlas & Lore',

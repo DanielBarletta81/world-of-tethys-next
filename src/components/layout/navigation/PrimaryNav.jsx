@@ -29,7 +29,7 @@ const authorHref = !isAuthorBuild && hasSplitDomains ? withPath(AUTHOR_SITE_URL,
 
 export const PRIMARY_NAV_ITEMS = [
   { id: 'book', label: 'Book', href: '/world-of-tethys-book-1', hint: 'First opening' },
-  { id: 'world', label: 'World', href: worldHref, hint: 'Civilization hub' },
+  { id: 'world', label: 'World', href: worldHref },
   { id: 'author', label: 'Author', href: authorHref, hint: 'D.C. Barletta' },
 ];
 

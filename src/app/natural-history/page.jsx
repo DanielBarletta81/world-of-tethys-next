@@ -24,7 +24,7 @@ export default function NaturalHistoryPage() {
       <div className="ash-noise-layer" />
       <h1 className="text-4xl md:text-5xl font-tethys-volcanic text-stone-50">Natural History</h1>
       <p className="mt-4 max-w-3xl text-stone-300">
-        The science authority zone: essays on prehistoric biology, ecological stress, and deep-time adaptation.
+        Essays on prehistoric biology, ecological stress, and deep-time adaptation.
       </p>
       <section className="mt-8 grid gap-4">
         {articles.map((article) => (
