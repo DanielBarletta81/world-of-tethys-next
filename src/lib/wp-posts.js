@@ -96,12 +96,14 @@ export async function fetchBlogPosts(limit = 50) {
     const staticOnly = STATIC_POSTS.filter((p) => !wpSlugs.has(p.slug));
 
     return [
-      ...wpNodes.map((n) => ({
-        slug: n.slug,
-        title: n.title,
-        excerpt: n.excerpt ? n.excerpt.replace(/<[^>]+>/g, '').trim() : null,
-        date: n.date ?? null,
-        fromWP: true,
+      ...wpNodes
+        .filter((n) => n.slug !== 'hello-world')
+        .map((n) => ({
+          slug: n.slug,
+          title: n.title,
+          excerpt: n.excerpt ? n.excerpt.replace(/<[^>]+>/g, '').trim() : null,
+          date: n.date ?? null,
+          fromWP: true,
       })),
       ...staticOnly,
     ];
