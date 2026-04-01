@@ -12,6 +12,7 @@ import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
 import { BOOK1_COVER_URL } from '@/lib/site-assets';
 import PersistentNav from '@/components/layout/navigation/PersistentNav';
+import SocialRail from '@/components/layout/SocialRail';
 import { getConfiguredSiteUrls, getSiteVariantFromConfig } from '@/lib/site-variant';
 
 const skySans = localFont({
@@ -164,6 +165,7 @@ export default function RootLayout({ children }) {
           <TethysProvider>
             <AudioProvider>
               <PersistentNav siteVariant={siteVariant} />
+              <SocialRail />
               <GlobalAtmosphere siteVariant={siteVariant} />
               {!isAuthorSite ? <IdleGrowthOverlay /> : null}
               {!isAuthorSite ? <AudioUnlockOverlay /> : null}

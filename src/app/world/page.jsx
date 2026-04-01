@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import cdn from '@/lib/cdn';
-import GoodreadsWidget from '@/components/content/GoodreadsWidget';
 import KindleGiveawayBanner from '@/components/content/KindleGiveawayBanner';
 import { BACKGROUND_IMAGE_URLS } from '@/lib/site-assets';
 import { TETHYS_OCEAN_RESEARCH_BRIEF, TETHYS_OCEAN_WRITING_ANGLES } from '@/data/tethys-ocean-research';
@@ -200,14 +199,28 @@ export default function WorldHubPage() {
       </section>
 
       <section className="relative z-10 mt-10 rounded-2xl border border-stone-700/80 bg-black/30 p-6">
-        <p className="text-[10px] uppercase tracking-[0.28em] text-amber-300/80">Book First</p>
-        <h2 className="mt-2 text-2xl font-tethys-volcanic text-stone-100 md:text-3xl">Reader Reviews</h2>
+        <p className="text-[10px] uppercase tracking-[0.28em] text-amber-300/80">Reader Community</p>
+        <h2 className="mt-2 text-2xl font-tethys-volcanic text-stone-100 md:text-3xl">Rate &amp; Review on Goodreads</h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-stone-300">
-          Book One — the first reader entry into the world.
+          Book One is on Goodreads. Add it to your shelf, leave a rating, or join the reader community.
         </p>
-        <div className="mt-3">
-          <GoodreadsWidget />
-        </div>
+        <a
+          href="https://www.goodreads.com/author/show/63851248.D_C_Barletta"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="mt-5 inline-flex items-center gap-3 rounded-xl border border-[#f4f1ea]/20 bg-[#f4f1ea]/10 px-5 py-3 text-[#f4f1ea] transition hover:bg-[#f4f1ea]/20 hover:border-[#f4f1ea]/40"
+          aria-label="Visit author page on Goodreads"
+        >
+          {/* Goodreads logo */}
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="16" cy="16" r="15" fill="#F4F1EA" stroke="#e8dfd0" strokeWidth="0.5"/>
+            <text x="16" y="22" textAnchor="middle" fontFamily="Georgia, serif" fontWeight="bold" fontSize="18" fill="#553B08">g</text>
+          </svg>
+          <span className="text-base font-medium">Find it on Goodreads</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4 8h8M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </a>
       </section>
     </main>
   );

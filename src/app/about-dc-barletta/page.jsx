@@ -118,6 +118,25 @@ export default function AboutDcBarlettaPage() {
       </section>
 
       <section className="mt-8 rounded-[1.95rem] border border-[#8e765b]/20 bg-[linear-gradient(180deg,rgba(250,244,235,0.96),rgba(239,229,211,0.92))] p-6 shadow-[0_12px_28px_rgba(33,20,10,0.08)] md:p-8">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Foundation</p>
+        <h2 className="mt-2 text-2xl font-semibold text-[#2f2015]">Rhode Island College</h2>
+        <p className="mt-3 text-sm leading-relaxed text-[#4f3c30]">
+          Biology, early 2000s. Where the older systems first became legible.
+        </p>
+        <a
+          href="https://www.ric.edu"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#6d8f7a]/40 bg-[#eef4f0] px-5 py-2 text-xs uppercase tracking-[0.14em] text-[#264041] transition hover:-translate-y-0.5 hover:bg-[#e3efea]"
+        >
+          Rhode Island College
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </a>
+      </section>
+
+      <section className="mt-8 rounded-[1.95rem] border border-[#8e765b]/20 bg-[linear-gradient(180deg,rgba(250,244,235,0.96),rgba(239,229,211,0.92))] p-6 shadow-[0_12px_28px_rgba(33,20,10,0.08)] md:p-8">
         <p className="text-[11px] uppercase tracking-[0.3em] text-[#6f4f38]">Openings</p>
         <h2 className="mt-2 text-2xl font-semibold text-[#2f2015]">Only a few names.</h2>
         <div className="mt-5 flex flex-wrap gap-3">
