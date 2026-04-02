@@ -19,7 +19,6 @@ import RelayLog from '@/components/RelayLog';
 import RavelWeatherOracle from '@/components/weather/RavelWeatherOracle';
 import StaffVisualizer from '@/components/StaffVisualizer';
 import StaffWorkbench from '@/components/features/forge/StaffWorkbench';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import cdn from '@/lib/cdn';
 import Satchel from '@/components/features/player/Satchel';

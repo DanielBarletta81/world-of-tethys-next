@@ -15,7 +15,6 @@ import CaveWallTerminal from '@/components/page-specific/science/CaveWallTermina
 import ProxyCityWeatherPanel from '@/components/weather/ProxyCityWeatherPanel';
 import { ASSET_MANIFEST } from '@/lib/assets-manifest';
 import cdn from '@/lib/cdn';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
 import ArtifactViewer from '@/components/features/vr/ArtifactViewer';
@@ -125,7 +124,7 @@ export default function FieldStationPage() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
         <div className="max-w-7xl mx-auto w-full px-4 md:px-6 space-y-3">
-          <PrimaryNav className="mb-4" />
+          
           <BreadcrumbTrail trail={SCIENCE_BREADCRUMB} />
         </div>
         <header role="banner" className="flex flex-col md:flex-row justify-between items-end border-b border-cyan-500/20 bg-[#050607]/80 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
@@ -220,24 +219,18 @@ export default function FieldStationPage() {
                     <div className="space-y-8">
                       <PterosDashboard />
 
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div>
-                          <h3 className="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4 border-l-2 border-cyan-500 pl-3">
-                            Latest Recovery
-                          </h3>
-                          <CaveWallTerminal
-                            mediaId="trailer_sky_city_melden"
-                            title="Sky City: Melden"
-                            type="video"
-                            src="https://world-of-tethys-site.s3.us-east-1.amazonaws.com/video/Sky-City-Melden.MP4"
-                            thumbnail={cdn('/img/locations/A_Cambria_Seal.png')}
-                            rewards={{ lore: 25, kith: 10 }}
-                          />
-                        </div>
-
-                        <div className="bg-cyan-950/20 border border-cyan-900/30 p-6 rounded-lg flex items-center justify-center text-cyan-700/50 text-xs uppercase tracking-widest font-bold">
-                          [ Awaiting Drone Feed 02 ]
-                        </div>
+                      <div className="max-w-2xl">
+                        <h3 className="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4 border-l-2 border-cyan-500 pl-3">
+                          Latest Recovery
+                        </h3>
+                        <CaveWallTerminal
+                          mediaId="trailer_sky_city_melden"
+                          title="Sky City: Melden"
+                          type="video"
+                          src="https://world-of-tethys-site.s3.us-east-1.amazonaws.com/video/Sky-City-Melden.MP4"
+                          thumbnail={cdn('/img/locations/A_Cambria_Seal.png')}
+                          rewards={{ lore: 25, kith: 10 }}
+                        />
                       </div>
                     </div>
                   )}

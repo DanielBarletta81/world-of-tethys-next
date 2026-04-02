@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import CaveWallTerminal from '@/components/page-specific/science/CaveWallTerminal';
 import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import cdn from '@/lib/cdn';
 import { fetchMediaManifest } from '@/lib/media-manifest';
 import { PTEROS_FALLBACK_MEDIA } from '@/data/pteros-media';
@@ -111,7 +110,7 @@ export default function PterosTerminalPage() {
       </Script>
       <div className="sticky top-0 z-40 border-b border-stone-900/80 bg-[#060605]/90 backdrop-blur">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-4">
-          <PrimaryNav className="mb-0" />
+          
           <TriFoldNav className="ml-auto w-60" sticky={false} />
         </div>
       </div>

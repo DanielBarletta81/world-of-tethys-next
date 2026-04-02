@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import { PTEROS_SIGNAL_WINDOW } from '@/data/pteros-signal-window';
@@ -163,7 +162,7 @@ export default function SignalsPage() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
         <div className="relative z-10 px-6 pt-28 pb-16 max-w-6xl mx-auto space-y-6">
-          <PrimaryNav className="mb-1" />
+          
           <BreadcrumbTrail trail={trail} className="mb-2" />
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>

@@ -3,9 +3,7 @@
 import React from 'react';
 import BookBanner from '@/components/content/BookBanner';
 import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
-import Footer from '@/components/layout/Footer';
 import FieldNotebook from '@/components/content/FieldNotebook';
 import { BESTIARY } from '@/data/bestiary.js';
 import cdn from '@/lib/cdn';
@@ -25,7 +23,7 @@ export default function CreaturesPage() {
       <div className="fixed inset-0 bg-gradient-to-b from-[#0c0a09] via-transparent to-[#0c0a09] z-0" />
 
       <div className="relative z-10 pt-6 px-4 md:px-8">
-        <PrimaryNav className="mb-1" />
+        
         <BreadcrumbTrail trail={CREATURES_BREADCRUMB} />
       </div>
 
@@ -48,7 +46,6 @@ export default function CreaturesPage() {
 
         <BookBanner />
       </div>
-      <Footer />
     </main>
   );
 }

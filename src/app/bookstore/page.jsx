@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import BreadcrumbTrail from "@/components/layout/BreadcrumbTrail";
-import PrimaryNav from "@/components/layout/navigation/PrimaryNav";
 import CelestialDisk from "@/components/CelestialDisk";
 import { cdn } from "@/lib/cdn";
 
@@ -119,7 +118,7 @@ export default function BookstorePage() {
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,120,60,0.12),transparent_60%)]" />
       </div>
-      <PrimaryNav className="mb-4" />
+      
       <BreadcrumbTrail trail={BOOKSTORE_BREADCRUMB} className="mb-8" />
       <header className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-6">

@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react';
 import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import ContrabandItem from '@/components/ContrabandItem';
 import { ARCHIVE_CRATE } from '@/lib/library';
@@ -43,7 +42,7 @@ export default function StudyPage() {
       </div>
 
       <div className="relative z-10 pt-6 px-4 md:px-8">
-        <PrimaryNav className="mb-1" />
+        
         <BreadcrumbTrail trail={STUDY_BREADCRUMB} />
       </div>
 

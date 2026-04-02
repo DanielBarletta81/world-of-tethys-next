@@ -5,7 +5,6 @@ import { ArrowLeft, Skull, Shield, Database, Microscope } from 'lucide-react';
 import Link from 'next/link';
 import nextDynamic from 'next/dynamic';
 import StrataNav from '@/components/layout/navigation/StrataNav';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import NpcRumorCard from '@/components/npc/NpcRumorCard';
 
@@ -65,7 +64,7 @@ export default function ArchiveIndex() {
     <main className="relative min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif bg-stone-grain p-6 md:p-8 pb-36 md:pb-20">
 
       <div className="max-w-6xl mx-auto px-0 py-8 space-y-2">
-        <PrimaryNav className="mb-1" />
+        
         <BreadcrumbTrail trail={ARCHIVE_BREADCRUMB} />
       </div>
 

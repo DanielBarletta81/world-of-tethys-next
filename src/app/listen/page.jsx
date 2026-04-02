@@ -4,7 +4,6 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import cdn from '@/lib/cdn';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -179,7 +178,7 @@ export default function ListenerPage() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-cyan-900/10 blur-[120px] rounded-full" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-8 space-y-2">
-          <PrimaryNav className="mb-1" />
+          
           <BreadcrumbTrail trail={LISTEN_BREADCRUMB} />
         </div>
 

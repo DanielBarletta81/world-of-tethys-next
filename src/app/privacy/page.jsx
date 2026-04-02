@@ -1,4 +1,3 @@
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 
 const UPDATED_AT = 'February 19, 2026';
 
@@ -6,7 +5,7 @@ export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif">
       <div className="max-w-5xl mx-auto px-6 pt-10">
-        <PrimaryNav className="mb-6" />
+        
         <div className="mb-10">
           <p className="text-[10px] uppercase tracking-[0.3em] text-stone-500">World of Tethys</p>
           <h1 className="text-3xl md:text-5xl font-semibold text-stone-100 mt-3">Privacy Policy</h1>

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import TriFoldNav from '@/components/layout/navigation/TriFoldNav';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 
 const PEEK_BREADCRUMB = [
@@ -84,7 +83,7 @@ export default function CommunityPage() {
     <>
       <main className="min-h-screen bg-[#0c0a09] text-[#e7e5e4] font-serif selection:bg-amber-900 selection:text-white relative overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-6 space-y-2 mt-10">
-          <PrimaryNav className="mb-1" />
+          
           <BreadcrumbTrail trail={PEEK_BREADCRUMB} />
         </div>
         <TriFoldNav />

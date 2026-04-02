@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight, Compass, Feather, Waves } from 'lucide-react';
 import GoodreadsWidget from '@/components/content/GoodreadsWidget';
+import SubscribeSection from '@/components/content/SubscribeSection';
 import { TETHYS_OCEAN_RESEARCH_BRIEF } from '@/data/tethys-ocean-research';
 
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
@@ -377,6 +378,10 @@ export default function AuthorLanding() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="mt-12 px-2">
+        <SubscribeSection siteVariant="author" />
       </section>
     </main>
   );

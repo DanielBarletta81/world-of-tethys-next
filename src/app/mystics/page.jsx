@@ -6,7 +6,6 @@ import MysticsClient from '@/components/page-specific/mystics/MysticsClient'; //
 import PathSelector from '@/components/features/onboarding/PathSelector';
 import StaffSequencer from '@/components/features/onboarding/StaffSequencer';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import NpcRumorCard from '@/components/npc/NpcRumorCard';
 import SensoryNetwork from '@/components/SensoryNetwork';
 import PithSignals from '@/components/pith/PithSignals';
@@ -51,7 +50,7 @@ export default function MysticsPage() {
 
       <main role="main" id="main-content" className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto px-0 space-y-2 mb-8">
-          <PrimaryNav className="mb-1" />
+          
           <BreadcrumbTrail
             trail={[
               { label: 'Home', href: '/' },

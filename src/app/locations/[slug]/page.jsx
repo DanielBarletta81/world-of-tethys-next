@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import PrimaryNav from '@/components/layout/navigation/PrimaryNav';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import NpcRumorCard from '@/components/npc/NpcRumorCard';
 
@@ -59,7 +58,7 @@ export default function LocationPlaceholder() {
   return (
     <main className="min-h-screen bg-[#0c0a09] text-stone-200 p-8 pt-32">
       <div className="max-w-7xl mx-auto px-0 space-y-2 pb-8">
-        <PrimaryNav className="mb-1" />
+        
         <BreadcrumbTrail trail={locationBreadcrumb} />
       </div>
       <div className="max-w-3xl mx-auto space-y-6">
