@@ -4,7 +4,7 @@ export const PERMIAN_RESEARCH_BRIEF = [
     summary:
       'The end-Permian mass extinction (~251.9 Ma) eliminated an estimated 96% of marine species and 70% of terrestrial vertebrate species — the most severe biological crisis in Earth history. The proximate cause was the Siberian Traps Large Igneous Province: a volcanic province that erupted over 1–2 million years, releasing CO₂, SO₂, and halogenated gases in quantities sufficient to acidify oceans, collapse the ozone layer, and raise global temperatures by 8–10°C. The ocean stratified. The shelves went anoxic. The reef systems that had persisted for 100 million years dissolved.',
     worldSignal:
-      'The Cambrian Sages recognized this pattern as the "First Silence." Lysippus wrote formally on what he called the "Universal Struggle" — not metaphor but observation: "The ocean's first scream lasted a million years. The second was quieter. That is the one to fear." He was describing pulse extinctions: the primary collapse followed by repeated secondary waves as ecosystems failed to stabilize.',
+      'The Cambrian Sages recognized this pattern as the "First Silence." Lysippus wrote formally on what he called the "Universal Struggle" — not metaphor but observation: "The ocean\'s first scream lasted a million years. The second was quieter. That is the one to fear." He was describing pulse extinctions: the primary collapse followed by repeated secondary waves as ecosystems failed to stabilize.',
   },
   {
     title: 'Faunal Turnover: The Lystrosaurus Monoculture',

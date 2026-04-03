@@ -18,7 +18,7 @@ export const PTEROSAURS_RESEARCH_BRIEF = [
     summary:
       'Quetzalcoatlus northropi reached estimated wingspans of 10–11 meters. Hatzegopteryx, recovered from the Cretaceous island-dwarf fauna of Transylvania, may have matched or exceeded this, with a neck estimated at over 3 meters and a skull length of 3 meters. Both almost certainly launched via a quad-launch — all four limbs propelling off the ground simultaneously — reaching flight speed within a single bound.',
     worldSignal:
-      'Hatzegopteryx was the specific constraint Cambria designed around. Fabbri's structural notes for the monofilament aerial grid record the calculation: 3.2-meter neck strike angle, 12-meter wingspan approach vector, grid spacing precisely 2.1 meters. The defense against beauty is always precise.',
+      'Hatzegopteryx was the specific constraint Cambria designed around. Fabbri\'s structural notes for the monofilament aerial grid record the calculation: 3.2-meter neck strike angle, 12-meter wingspan approach vector, grid spacing precisely 2.1 meters. The defense against beauty is always precise.',
   },
   {
     title: 'Beak and Crest Specializations',
