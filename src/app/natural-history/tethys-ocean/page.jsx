@@ -6,6 +6,7 @@ import {
 } from '@/data/tethys-ocean-research';
 import { HERO_IMAGE_URLS } from '@/lib/site-assets';
 import { getConfiguredSiteUrls, getSiteVariantFromConfig } from '@/lib/site-variant';
+import DynxEvent from '@/components/ads/DynxEvent';
 
 export function generateMetadata() {
   const siteVariant = getSiteVariantFromConfig();
@@ -70,6 +71,7 @@ export default function TethysOceanNaturalHistoryPage() {
     >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <div className={isAuthorSite ? 'ash-noise-layer opacity-[0.05]' : 'ash-noise-layer'} />
+      <DynxEvent itemId="tethys-ocean" pageType="article" />
 
       <p
         className={`relative z-10 text-[11px] uppercase tracking-[0.3em] ${

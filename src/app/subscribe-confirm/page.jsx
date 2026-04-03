@@ -14,6 +14,11 @@ export default function SubscribeConfirmPage() {
       window.gtag('event', 'conversion', {
         send_to: 'AW-17612201186/60E2CMC8uJQcEOK5k85B',
       });
+      window.gtag('event', 'view_item', {
+        send_to: 'AW-17612201186',
+        dynx_itemid: 'subscribe',
+        dynx_pagetype: 'purchase',
+      });
     }
   }, []);
 

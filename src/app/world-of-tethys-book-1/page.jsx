@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { BACKGROUND_IMAGE_URLS, BOOK1_COVER_URL } from '@/lib/site-assets';
 import BookCoverImage from '@/components/content/BookCoverImage';
 import { getSiteVariantFromConfig } from '@/lib/site-variant';
+import DynxEvent from '@/components/ads/DynxEvent';
 
 const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
@@ -46,6 +47,7 @@ export default function WorldOfTethysBookOnePage() {
     return (
       <main className="mx-auto max-w-6xl px-6 py-14 md:py-20 text-[#2a1f17]">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
+        <DynxEvent itemId="book-1" pageType="product" />
 
         <header className="grid gap-8 rounded-3xl border border-amber-900/30 bg-[linear-gradient(145deg,#fbf6ee,#e9dac5)] p-8 shadow-[0_24px_60px_rgba(35,20,8,0.14)] md:grid-cols-[1fr_320px] md:p-10">
           <div>
@@ -166,6 +168,7 @@ export default function WorldOfTethysBookOnePage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-16 md:py-24 text-stone-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
+      <DynxEvent itemId="book-1" pageType="product" />
 
       <header
         className="relative grid gap-8 rounded-lg border border-stone-700 bg-cover bg-center p-6 md:grid-cols-[1fr_320px] md:p-8 items-start overflow-hidden"
