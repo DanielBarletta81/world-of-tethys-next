@@ -32,7 +32,7 @@ export const PTEROSAURS_RESEARCH_BRIEF = [
     summary:
       'Endocast studies of pterosaur braincases show an enlarged flocculus — the cerebellar region responsible for processing vestibular input and coordinating flight balance. Visual cortex volume was proportionally huge. Magnetite deposits found in related archosaurs suggest magnetic field detection was likely, enabling long-distance navigation across featureless ocean corridors without landmarks.',
     worldSignal:
-      'The Matsu-knot slipcode was not simple reins. Reed-bone resonance tubes threaded through the harness coupled the rider to the Pteroswift's sensory field — tremor, vibration, and infrasound. At 2.0 Bol (approximately 100 mph), human vestibular systems flatline. The slipcode borrowed the animal's flocculus to keep the rider oriented.',
+      'The Matsu-knot slipcode was not simple reins. Reed-bone resonance tubes threaded through the harness coupled the rider to the Pteroswift\'s sensory field — tremor, vibration, and infrasound. At 2.0 Bol (approximately 100 mph), human vestibular systems flatline. The slipcode borrowed the animal\'s flocculus to keep the rider oriented.',
   },
   {
     title: 'Dominance Without Competition: 160 Million Years',
