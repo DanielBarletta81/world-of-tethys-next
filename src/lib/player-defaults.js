@@ -11,7 +11,8 @@ export const DEFAULT_PLAYER_PROFILE = {
     voice: { preferredNarrator: 'ravel', muteVoiceovers: false }
   },
   history: {
-    mediaConsumed: []
+    mediaConsumed: [],
+    loreDiscoveries: {}
   },
   onboarding: {
     status: 'new',
@@ -72,6 +73,9 @@ export const DEFAULT_PLAYER_PROFILE = {
     xp: 0,
     next: 100,
     stage: 'spark',
+    loreDiscoveryCount: 0,
+    loreDiscoveredRegions: [],
+    book1DiscoveredRegions: [],
     regionUnlocks: {},
     weatherUnlocked: false,
     oracleConsultedAt: null,
@@ -148,6 +152,14 @@ export const DEFAULT_PLAYER_PROFILE = {
   telemetry: {
     danianMode: 'auto',
     updatedAt: null
+  },
+  marketing: {
+    newsletter: {
+      promptedAt: null,
+      decisionAt: null,
+      optedIn: null,
+      source: null
+    }
   },
   adornmentUnlockedAt: {},
   worldState: {}

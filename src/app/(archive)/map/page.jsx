@@ -19,14 +19,18 @@ import RelayLog from '@/components/RelayLog';
 import RavelWeatherOracle from '@/components/weather/RavelWeatherOracle';
 import StaffVisualizer from '@/components/StaffVisualizer';
 import StaffWorkbench from '@/components/features/forge/StaffWorkbench';
+import PostLoginNewsletterCard from '@/components/features/player/PostLoginNewsletterCard';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import cdn from '@/lib/cdn';
 import Satchel from '@/components/features/player/Satchel';
 import LoreRevealPanel from '@/components/features/map/LoreRevealPanel';
+import LoreArtifactShelf from '@/components/features/map/LoreArtifactShelf';
+import RouteMemoryLedger from '@/components/features/map/RouteMemoryLedger';
 import SporeSatchel from '@/components/features/player/SporeSatchel';
 import RavelToolkit from '@/components/content/RavelToolkit';
 import { SKY_CITY_VARIABLE_AGENTS } from '@/data/skycity-variable-agents';
 import { IRONWOOD_COUNTER_DOCS } from '@/data/ironwood-counter-docs';
+import { MAP_LORE_ARTIFACT_NODES, MAP_LORE_ARTIFACT_BY_REGION } from '@/data/map-lore-artifacts';
 import { selectLoreSeeds, getDefaultLoreContext } from '@/lib/lore-seed-runtime';
 import { logMapInteraction } from '@/lib/playerApi';
 
@@ -73,6 +77,98 @@ const PATH_CONFIG = [
 
 const BASE_STAFF_STATS = { geology: 4, creature: 4, lore: 4, human: 4 };
 const STAFF_INVENTORY_OVERRIDE = ['Map_fragment'];
+const BOOK1_CORE_REGIONS = ['sky-city'];
+const BOOK1_DISCOVERY_RULES = {
+  'sky-city': [
+    { unlock: 'the-weep', minTotal: 1 },
+    { unlock: 'silurian-riverlands', minGood: 1, minTotal: 1 }
+  ],
+  'the-weep': [{ unlock: 'the-ledge', minTotal: 1 }],
+  'the-ledge': [{ unlock: 'mystic-woods', minTotal: 1 }],
+  'mystic-woods': [
+    { unlock: 'ironwoods', minTotal: 1 },
+    { unlock: 'purgess', minBad: 1, minTotal: 1 }
+  ],
+  purgess: [{ unlock: 'watcher-volcano', minTotal: 1 }],
+  ironwoods: [{ unlock: 'arnn-ridge', minTotal: 1 }],
+  'arnn-ridge': [
+    { unlock: 'northern-mountains', minTotal: 1 },
+    { unlock: 'dier-lake', minGood: 1, minTotal: 2 },
+    { unlock: 'watcher-volcano', minBad: 1, minTotal: 1 }
+  ],
+  'silurian-riverlands': [{ unlock: 'danian-river', minTotal: 1 }],
+  'dier-lake': [{ unlock: 'danian-river', minTotal: 1 }],
+  'danian-river': [
+    { unlock: 'pteros', minTotal: 1 },
+    { unlock: 'twin-straits-of-dier', minGood: 1, minTotal: 2 }
+  ],
+  pteros: [{ unlock: 'twin-straits-of-dier', minTotal: 1 }],
+  'twin-straits-of-dier': [{ unlock: 'danian-delta', minTotal: 1 }],
+  'watcher-volcano': [{ unlock: 'danian-delta', minBad: 1, minTotal: 1 }]
+};
+const ROUTE_SURPRISE_TABLE = [
+  {
+    id: 'good_exile_survival',
+    kind: 'good',
+    baseWeight: 0.14,
+    when: ({ regionId }) => regionId === 'the-weep' || regionId === 'the-ledge',
+    message: 'Against all odds, the exile line holds. Survival itself opens the next route.',
+    statusId: 'exile_survival'
+  },
+  {
+    id: 'good_ravel_guidance',
+    kind: 'good',
+    baseWeight: 0.16,
+    when: ({ regionId }) => regionId === 'mystic-woods' || regionId === 'ironwoods',
+    message: 'Root-listener guidance cuts through false trails. Your memory map sharpens.',
+    statusId: 'ravel_guidance'
+  },
+  {
+    id: 'bad_hypercane',
+    kind: 'bad',
+    baseWeight: 0.15,
+    when: ({ mapCondition, regionId }) =>
+      mapCondition === 'storm' || mapCondition === 'rain' || regionId === 'danian-delta',
+    message: 'Hypercane shear tears the corridor. Retreat and reroute are mandatory.',
+    lockSteps: 2,
+    statusId: 'hypercane'
+  },
+  {
+    id: 'bad_predator_frenzy',
+    kind: 'bad',
+    baseWeight: 0.18,
+    when: ({ regionId }) =>
+      ['pteros', 'twin-straits-of-dier', 'danian-river', 'dier-lake', 'danian-delta'].includes(regionId),
+    message: 'Predator frenzy erupts at the waterline. Movement window collapses.',
+    lockSteps: 1,
+    statusId: 'predator_frenzy'
+  },
+  {
+    id: 'bad_watcher_ashfall',
+    kind: 'bad',
+    baseWeight: 0.14,
+    when: ({ regionId }) => ['watcher-volcano', 'purgess', 'arnn-ridge', 'danian-delta'].includes(regionId),
+    message: 'Ashfall from the Watcher blinds the route. Bearings fail and supplies drop.',
+    lockSteps: 1,
+    statusId: 'watcher_ashfall'
+  },
+  {
+    id: 'good_glow_tide_window',
+    kind: 'good',
+    baseWeight: 0.12,
+    when: ({ regionId }) => regionId === 'danian-delta',
+    message: 'Glow Tide aligns with current and wind. You gain a narrow but real survival window.',
+    statusId: 'glow_tide_window'
+  },
+  {
+    id: 'neutral_quiet',
+    kind: 'neutral',
+    baseWeight: 0.2,
+    when: () => true,
+    message: 'Quiet passage. No gain, no loss. Record and move.',
+    statusId: 'quiet_passage'
+  }
+];
 
 const MAP_BREADCRUMB = [
   { label: 'Home', href: '/' },
@@ -103,7 +199,9 @@ export default function MapPage() {
     setPlayerProfile,
     setEquippedStaff,
     hatchFromTemplate,
-    applyPlayerAction
+    applyPlayerAction,
+    lockAccess,
+    applyStatus
   } = useTethys();
   const { user, loading: authLoading } = useAuth();
   const { playTrack } = useAudio();
@@ -163,6 +261,8 @@ export default function MapPage() {
   const [mapPresenceMs, setMapPresenceMs] = useState(0);
   const [subMapRegion, setSubMapRegion] = useState(null);
   const [subMapTransform, setSubMapTransform] = useState({ x: 0, y: 0, scale: 1.1 });
+  const [latestRouteEvent, setLatestRouteEvent] = useState(null);
+  const [mapScope, setMapScope] = useState('book1');
   const [satchelOpen, setSatchelOpen] = useState(false);
   const [sporeSatchelOpen, setSporeSatchelOpen] = useState(false);
   const [mycorrhizalActive, setMycorrhizalActive] = useState(false);
@@ -250,6 +350,209 @@ export default function MapPage() {
         limit: 4
       }),
     [currentLocation, loreContext]
+  );
+  const routeMemory = playerProfile?.history?.routeMemory || {};
+  const discoveredBook1Regions = playerProfile?.progression?.book1DiscoveredRegions || [];
+  const visibleBook1Regions = useMemo(() => {
+    const dynamic = Array.isArray(discoveredBook1Regions) ? discoveredBook1Regions : [];
+    const allow = new Set([...BOOK1_CORE_REGIONS, ...dynamic, currentLocation]);
+    return Array.from(allow);
+  }, [currentLocation, discoveredBook1Regions]);
+  const activeVisibleRegions = mapScope === 'book1' ? visibleBook1Regions : null;
+  const loreArtifactNodes = useMemo(() => {
+    if (mapScope !== 'book1') return MAP_LORE_ARTIFACT_NODES;
+    const allow = new Set(visibleBook1Regions);
+    return MAP_LORE_ARTIFACT_NODES.filter((node) => allow.has(node.regionId));
+  }, [mapScope, visibleBook1Regions]);
+  const activeLoreRegionId = useMemo(() => {
+    const preferred = subMapRegion || currentLocation;
+    if (loreArtifactNodes.some((node) => node.regionId === preferred)) return preferred;
+    return loreArtifactNodes[0]?.regionId || preferred;
+  }, [currentLocation, loreArtifactNodes, subMapRegion]);
+  const markLoreDiscovery = useCallback(
+    (regionId, source = 'map') => {
+      if (!regionId || !MAP_LORE_ARTIFACT_BY_REGION[regionId]) return;
+      const nowIso = new Date().toISOString();
+      const alreadyDiscovered = Boolean(playerProfile?.history?.loreDiscoveries?.[regionId]?.firstDiscoveredAt);
+
+      setPlayerProfile((prev) => {
+        const prevHistory = prev?.history || {};
+        const prevProgression = prev?.progression || {};
+        const loreDiscoveries = prevHistory?.loreDiscoveries || {};
+        const existing = loreDiscoveries[regionId] || null;
+        const nextDiscovery = {
+          regionId,
+          firstDiscoveredAt: existing?.firstDiscoveredAt || nowIso,
+          lastOpenedAt: nowIso,
+          openCount: (existing?.openCount || 0) + 1,
+          source
+        };
+        const nextRegions = Array.isArray(prevProgression.loreDiscoveredRegions)
+          ? prevProgression.loreDiscoveredRegions.includes(regionId)
+            ? prevProgression.loreDiscoveredRegions
+            : [...prevProgression.loreDiscoveredRegions, regionId]
+          : [regionId];
+
+        return {
+          ...prev,
+          history: {
+            ...prevHistory,
+            loreDiscoveries: {
+              ...loreDiscoveries,
+              [regionId]: nextDiscovery
+            }
+          },
+          progression: {
+            ...prevProgression,
+            loreDiscoveredRegions: nextRegions,
+            loreDiscoveryCount: Math.max(prevProgression?.loreDiscoveryCount || 0, nextRegions.length)
+          }
+        };
+      });
+
+      if (!alreadyDiscovered) {
+        applyPlayerAction({
+          id: `lore_discovery_${regionId}`,
+          type: 'restorative',
+          restorative: true,
+          xp: 12
+        });
+        recordMapInteraction('lore_discovered', regionId);
+      }
+    },
+    [
+      applyPlayerAction,
+      playerProfile?.history?.loreDiscoveries,
+      recordMapInteraction,
+      setPlayerProfile
+    ]
+  );
+
+  useEffect(() => {
+    if (!subMapRegion) return;
+    markLoreDiscovery(subMapRegion, 'sub_map_open');
+  }, [markLoreDiscovery, subMapRegion]);
+
+  useEffect(() => {
+    if (!user) return;
+    const preferredScope = playerProfile?.ui?.map?.scope;
+    if (preferredScope === 'full' || preferredScope === 'book1') {
+      setMapScope(preferredScope);
+    }
+  }, [playerProfile?.ui?.map?.scope, user]);
+
+  const persistMapScope = useCallback(
+    (scope) => {
+      setMapScope(scope);
+      setPlayerProfile((profile) => ({
+        ...profile,
+        ui: {
+          ...(profile?.ui || {}),
+          map: {
+            ...(profile?.ui?.map || {}),
+            scope
+          }
+        }
+      }));
+    },
+    [setPlayerProfile]
+  );
+
+  const rollRouteSurprise = useCallback(
+    (regionId, volatileRegions) => {
+      const ctx = {
+        regionId,
+        mapCondition,
+        stillnessLevel,
+        hazardBoost: volatileRegions.includes(regionId) ? 0.12 : 0
+      };
+
+      const entries = ROUTE_SURPRISE_TABLE.filter((entry) => entry.when(ctx)).map((entry) => {
+        let weight = entry.baseWeight;
+        if (entry.kind === 'good') weight += Math.max(0, stillnessLevel - 0.45) * 0.18;
+        if (entry.kind === 'bad') weight += ctx.hazardBoost + (mapCondition === 'storm' ? 0.08 : 0);
+        return { ...entry, weight: Math.max(0.01, weight) };
+      });
+      if (!entries.length) return null;
+
+      const total = entries.reduce((sum, entry) => sum + entry.weight, 0);
+      let roll = Math.random() * total;
+      for (const entry of entries) {
+        roll -= entry.weight;
+        if (roll <= 0) return entry;
+      }
+      return entries[entries.length - 1];
+    },
+    [mapCondition, stillnessLevel]
+  );
+
+  const updateRouteMemory = useCallback(
+    (regionId, routeEvent) => {
+      if (!regionId || !routeEvent) return;
+      const nowIso = new Date().toISOString();
+      setPlayerProfile((prev) => {
+        const prevHistory = prev?.history || {};
+        const routeMemoryState = prevHistory.routeMemory || {};
+        const current = routeMemoryState[regionId] || {
+          good: 0,
+          bad: 0,
+          neutral: 0,
+          total: 0,
+          lastAt: null,
+          lastEvent: null
+        };
+        const good = current.good + (routeEvent.kind === 'good' ? 1 : 0);
+        const bad = current.bad + (routeEvent.kind === 'bad' ? 1 : 0);
+        const neutral = current.neutral + (routeEvent.kind === 'neutral' ? 1 : 0);
+        const total = current.total + 1;
+        const nextRegionMemory = {
+          ...current,
+          good,
+          bad,
+          neutral,
+          total,
+          lastAt: nowIso,
+          lastEvent: routeEvent.id
+        };
+        const nextHistory = {
+          ...prevHistory,
+          routeMemory: {
+            ...routeMemoryState,
+            [regionId]: nextRegionMemory
+          }
+        };
+
+        const progression = prev?.progression || {};
+        const existingDiscoveries = Array.isArray(progression.book1DiscoveredRegions)
+          ? [...progression.book1DiscoveredRegions]
+          : [];
+        const discoveryRules = BOOK1_DISCOVERY_RULES[regionId] || [];
+        const unlockedFromRules = discoveryRules
+          .filter((rule) => {
+            if (!rule?.unlock) return false;
+            if (existingDiscoveries.includes(rule.unlock)) return false;
+            if (typeof rule.minTotal === 'number' && total < rule.minTotal) return false;
+            if (typeof rule.minGood === 'number' && good < rule.minGood) return false;
+            if (typeof rule.minBad === 'number' && bad < rule.minBad) return false;
+            if (typeof rule.minNeutral === 'number' && neutral < rule.minNeutral) return false;
+            return true;
+          })
+          .map((rule) => rule.unlock);
+        const nextDiscovered = unlockedFromRules.length
+          ? [...existingDiscoveries, ...unlockedFromRules]
+          : existingDiscoveries;
+
+        return {
+          ...prev,
+          history: nextHistory,
+          progression: {
+            ...progression,
+            book1DiscoveredRegions: nextDiscovered
+          }
+        };
+      });
+    },
+    [setPlayerProfile]
   );
 
   const syncEquippedStaff = useCallback(() => {
@@ -498,11 +801,63 @@ export default function MapPage() {
         return;
       }
       recordMapInteraction('node_travel', regionId);
+      const volatileRegions = Object.entries(playerProfile?.path?.accessLocks || {})
+        .filter(([, value]) => (value?.remaining || 0) > 0)
+        .map(([key]) => key);
+      const routeEvent = rollRouteSurprise(regionId, volatileRegions);
+      if (routeEvent) {
+        setLatestRouteEvent({ ...routeEvent, regionId, at: Date.now() });
+        updateRouteMemory(regionId, routeEvent);
+        applyStatus(routeEvent.statusId, {
+          kind: routeEvent.kind,
+          regionId,
+          note: routeEvent.message,
+          at: new Date().toISOString()
+        });
+
+        if (routeEvent.kind === 'bad' && routeEvent.lockSteps) {
+          lockAccess(regionId, routeEvent.lockSteps);
+          setLockNotice({
+            regionId,
+            message: routeEvent.message,
+            at: Date.now()
+          });
+        }
+
+        if (routeEvent.kind === 'good') {
+          applyPlayerAction({
+            id: `route_luck_${routeEvent.id}`,
+            type: 'restorative',
+            restorative: true,
+            xp: 10
+          });
+        } else if (routeEvent.kind === 'bad') {
+          applyPlayerAction({
+            id: `route_strain_${routeEvent.id}`,
+            type: 'aggressive',
+            aggressive: true,
+            xp: 4
+          });
+        }
+      }
       if (regionId === 'pteros') {
         router.push('/pteros');
       }
     },
-    [router, travelTo, hasOnboarded, equippedStaff, playerProfile?.staff?.activeStaffId, recordMapInteraction]
+    [
+      router,
+      travelTo,
+      hasOnboarded,
+      equippedStaff,
+      playerProfile?.staff?.activeStaffId,
+      playerProfile?.path?.accessLocks,
+      recordMapInteraction,
+      rollRouteSurprise,
+      updateRouteMemory,
+      applyStatus,
+      lockAccess,
+      applyPlayerAction
+    ]
   );
 
   useEffect(() => {
@@ -512,6 +867,12 @@ export default function MapPage() {
     }, 2200);
     return () => clearTimeout(timer);
   }, [lockNotice]);
+
+  useEffect(() => {
+    if (!latestRouteEvent) return;
+    const timer = setTimeout(() => setLatestRouteEvent(null), 3600);
+    return () => clearTimeout(timer);
+  }, [latestRouteEvent]);
 
   const handleStillnessChange = useCallback(
     (level) => {
@@ -758,14 +1119,38 @@ export default function MapPage() {
             )}
           </div>
           {viewState === 'map' && (
-            <div
-              className={`h-fit px-3 py-2 border rounded-sm text-[9px] uppercase tracking-[0.3em] transition-all duration-500 ${
-                mapHovered
-                  ? 'border-stone-400/80 text-stone-200 bg-black/40'
-                  : 'border-stone-700/60 text-stone-500 bg-black/20'
-              }`}
-            >
-              Map focus {mapHovered ? 'active' : 'idle'}
+            <div className="flex items-center gap-2">
+              <div
+                className={`h-fit px-3 py-2 border rounded-sm text-[9px] uppercase tracking-[0.3em] transition-all duration-500 ${
+                  mapHovered
+                    ? 'border-stone-400/80 text-stone-200 bg-black/40'
+                    : 'border-stone-700/60 text-stone-500 bg-black/20'
+                }`}
+              >
+                Map focus {mapHovered ? 'active' : 'idle'}
+              </div>
+              <button
+                type="button"
+                onClick={() => persistMapScope('book1')}
+                className={`px-3 py-2 border rounded-sm text-[9px] uppercase tracking-[0.25em] ${
+                  mapScope === 'book1'
+                    ? 'border-cyan-500/70 bg-cyan-950/25 text-cyan-200'
+                    : 'border-stone-700/60 text-stone-500 bg-black/20 hover:border-stone-500'
+                }`}
+              >
+                Book 1
+              </button>
+              <button
+                type="button"
+                onClick={() => persistMapScope('full')}
+                className={`px-3 py-2 border rounded-sm text-[9px] uppercase tracking-[0.25em] ${
+                  mapScope === 'full'
+                    ? 'border-cyan-500/70 bg-cyan-950/25 text-cyan-200'
+                    : 'border-stone-700/60 text-stone-500 bg-black/20 hover:border-stone-500'
+                }`}
+              >
+                Full Atlas
+              </button>
             </div>
           )}
           {viewState !== 'map' && (
@@ -1028,6 +1413,7 @@ export default function MapPage() {
                 <TethysNexus
                   pathMode={pathMode}
                   lockedRegions={lockedRegions}
+                  visibleRegions={activeVisibleRegions}
                   currentLocation={currentLocation}
                   equippedStaff={equippedStaff}
                   unlockedNodes={unlockedNodes}
@@ -1057,6 +1443,14 @@ export default function MapPage() {
                   onStillnessChange={handleStillnessChange}
                   onTravel={handleMapSelect}
                 />
+                {latestRouteEvent && (
+                  <div className="absolute left-6 top-6 z-40 max-w-md rounded-xl border border-stone-700/70 bg-black/70 px-4 py-3 shadow-[0_16px_30px_rgba(0,0,0,0.45)]">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400">
+                      Route Event · {latestRouteEvent.kind}
+                    </p>
+                    <p className="mt-1 text-sm text-stone-200">{latestRouteEvent.message}</p>
+                  </div>
+                )}
                 <AnimatePresence>
                   {lockNotice && (
                     <motion.div
@@ -1080,6 +1474,13 @@ export default function MapPage() {
                 <RavelWeatherOracle focus="pteros" className="mb-6" />
                 
                 <RelayLog focus="all" />
+
+                <PostLoginNewsletterCard
+                  user={user}
+                  playerProfile={playerProfile}
+                  setPlayerProfile={setPlayerProfile}
+                  applyPlayerAction={applyPlayerAction}
+                />
 
                 {/* Your Staff (Inventory Display) */}
                 <div className="bg-[#1c1917] p-6 border border-stone-800 rounded-lg">
@@ -1125,6 +1526,18 @@ export default function MapPage() {
                   compact
                   onSelect={(item) => setSporeSatchelOpen(true)}
                 />
+
+                <LoreArtifactShelf
+                  nodes={loreArtifactNodes}
+                  activeRegionId={activeLoreRegionId}
+                  onSelectRegion={(regionId) => {
+                    if (!regionId) return;
+                    setSubMapRegion(regionId);
+                    recordMapInteraction('lore_open', regionId);
+                  }}
+                />
+
+                <RouteMemoryLedger memory={routeMemory} />
 
                 {mapLoreSeeds.length > 0 && (
                   <div className="bg-[#11100f] p-6 border border-stone-800 rounded-lg">

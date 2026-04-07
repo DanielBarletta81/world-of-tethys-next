@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { signInWithPopup } from 'firebase/auth';
+import { browserLocalPersistence, setPersistence, signInWithPopup } from 'firebase/auth';
 import { getFirebaseAuth, getGoogleProvider } from '@/lib/firebaseClient';
 
 type AuthUser = {
@@ -30,6 +30,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let active = true;
     const loadSession = async () => {
+      try {
+        const auth = getFirebaseAuth();
+        await setPersistence(auth, browserLocalPersistence);
+      } catch (err) {
+        console.warn('[auth] persistence init warning', err);
+      }
+
       try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
         if (!res.ok) {
@@ -109,6 +116,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const code = err?.code;
       if (code === 'auth/popup-closed-by-user') {
         throw new Error('Sign-in window closed.');
+      }
+      if (code === 'auth/unauthorized-domain') {
+        throw new Error('Google sign-in domain is not authorized. Add this domain in Firebase and Google OAuth settings.');
+      }
+      if (code === 'auth/popup-blocked') {
+        throw new Error('Popup blocked. Allow popups for this site and try again.');
       }
       console.error('[auth] google popup error', err);
       throw new Error('Google sign-in failed.');

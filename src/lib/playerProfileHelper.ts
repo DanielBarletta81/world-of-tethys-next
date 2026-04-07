@@ -35,13 +35,28 @@ export async function ensurePlayerProfile(uid, overrides = {}) {
   const data = snap.data() || {};
   const patch = {
     lastLoginAt: new Date().toISOString(),
+    history: {
+      ...base.history,
+      ...(data.history || {})
+    },
     guide: data.guide || base.guide,
     progress: data.progress || base.progress,
-    progression: data.progression || base.progression,
+    progression: {
+      ...base.progression,
+      ...(data.progression || {})
+    },
     dna: data.dna || base.dna,
     aura: data.aura || base.aura,
     protection: data.protection || base.protection,
     drift: data.drift || base.drift,
+    marketing: {
+      ...base.marketing,
+      ...(data.marketing || {}),
+      newsletter: {
+        ...(base.marketing?.newsletter || {}),
+        ...(data.marketing?.newsletter || {})
+      }
+    },
     adornmentUnlockedAt: data.adornmentUnlockedAt || {}
   };
 

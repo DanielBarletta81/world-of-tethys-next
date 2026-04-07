@@ -6,6 +6,7 @@ import {
   getServerTimestamp
 } from '@/lib/auth/firebaseServer';
 import { SESSION_COOKIE_NAME, SESSION_MAX_AGE_SEC } from '@/lib/auth/session';
+import { getSessionCookieOptions } from '@/lib/auth/session-options';
 
 export const runtime = 'nodejs';
 
@@ -38,11 +39,7 @@ export async function POST(req) {
     res.cookies.set({
       name: SESSION_COOKIE_NAME,
       value: sessionCookie,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: SESSION_MAX_AGE_SEC
+      ...getSessionCookieOptions(SESSION_MAX_AGE_SEC)
     });
 
     console.info('[auth/register] success', { uid: authData.localId });

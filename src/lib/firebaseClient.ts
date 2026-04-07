@@ -20,5 +20,11 @@ export function getFirebaseAuth() {
 }
 
 export function getGoogleProvider() {
-  return new GoogleAuthProvider();
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({
+    prompt: 'select_account'
+  });
+  provider.addScope('email');
+  provider.addScope('profile');
+  return provider;
 }

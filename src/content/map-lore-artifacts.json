@@ -1,0 +1,184 @@
+[
+  {
+    "regionId": "sky-city",
+    "label": "Sky City",
+    "era": "Post-Rising Consolidation",
+    "history": "The first permanent elevation doctrine was written here after repeated lowland collapses during geoidal surges.",
+    "subLocations": [
+      "Triumvirate Crown",
+      "The Weep Gate",
+      "Lower Lattice Barracks",
+      "Political Holding Cells"
+    ],
+    "artifact": {
+      "name": "Stormglass Survey Prism",
+      "class": "Navigation Instrument",
+      "note": "Used to triangulate safe ascent windows when mist columns hide ridge edges."
+    }
+  },
+  {
+    "regionId": "the-weep",
+    "label": "The Weep",
+    "era": "Exile Corridor Era",
+    "history": "Sentences once ended at the waterfall edge. Igzier's survival rewrote exile doctrine and city fear.",
+    "artifact": {
+      "name": "Rim Hook Brace",
+      "class": "Fall Survival Gear",
+      "note": "A bent ascent hook found near the plunge shelf where condemned climbers vanished."
+    }
+  },
+  {
+    "regionId": "the-ledge",
+    "label": "The Ledge",
+    "era": "Sea-City Boundary Period",
+    "history": "Where tide and stone negotiate each hour. Scouts learned to read predator wakes against the wall shadow.",
+    "artifact": {
+      "name": "Saltline Route Tablet",
+      "class": "Tidal Chart",
+      "note": "Marks narrow crossing windows between surge pulses and hunting swarms."
+    }
+  },
+  {
+    "regionId": "silurian-riverlands",
+    "label": "Silurian Riverlands",
+    "era": "Hidden Territory Recognition",
+    "history": "Sky City traded on denial while Silurian settlements watched every channel, seen and unseen.",
+    "artifact": {
+      "name": "Kel's Flood Marker",
+      "class": "River Intelligence Instrument",
+      "note": "A movable depth glyph used to map ambush currents through reed canyons."
+    }
+  },
+  {
+    "regionId": "mystic-woods",
+    "label": "Mystic Woods (Asphodel)",
+    "era": "Early Cambrian Archive Period",
+    "history": "Root Whisperer circles converted toxin-heavy fungal belts into controlled pharmacology corridors.",
+    "artifact": {
+      "name": "Lye-Washed Sclerotium Case",
+      "class": "Field Pharmacopeia",
+      "note": "Carries processed clotting compounds and thermal-safe dosage slips."
+    }
+  },
+  {
+    "regionId": "ironwoods",
+    "label": "Ironwoods (Tartarus)",
+    "era": "Steel Labyrinth Fortification Phase",
+    "history": "Defensive growth shifted from manpower scaling to armored automation and corridor chokepoint engineering.",
+    "artifact": {
+      "name": "Ironback Laminar Plate",
+      "class": "Defensive Template",
+      "note": "Patterned after sturgeon scute geometry for high-impact shelling zones."
+    }
+  },
+  {
+    "regionId": "purgess",
+    "label": "Purgess Flats",
+    "era": "Ash Runoff Migration",
+    "history": "The west flats became a pressure valve for ash and panic as Watcher cycles intensified.",
+    "artifact": {
+      "name": "Basalt Drift Compass",
+      "class": "Volcanic Navigation",
+      "note": "Needle oscillates with charged ash plumes, warning caravans of unstable air."
+    }
+  },
+  {
+    "regionId": "watcher-volcano",
+    "label": "Watcher Volcano",
+    "era": "Watcher Wake Phase",
+    "history": "When the cone stirs, every map lies. Stryker flights logged plume vectors instead of borders.",
+    "artifact": {
+      "name": "Stryker Wing Ledger",
+      "class": "Aerial Recon Archive",
+      "note": "Heat-scored route cards from emergency flyovers over the crater throat."
+    }
+  },
+  {
+    "regionId": "arnn-ridge",
+    "label": "Arnn Ridge",
+    "era": "Ridgehold Marches",
+    "history": "Ridge camps linked inland factions after exile routes collapsed, binding Sae's coalition by necessity.",
+    "artifact": {
+      "name": "Ironwood Oath Spike",
+      "class": "Alliance Relic",
+      "note": "Driven into ridge granite at pact-signing; still stained with seal resin."
+    }
+  },
+  {
+    "regionId": "northern-mountains",
+    "label": "Northern Mountains",
+    "era": "Cold Route Trials",
+    "history": "High passes culled weak planning. Only crews with memory maps and ration discipline crossed alive.",
+    "artifact": {
+      "name": "Rimeproof Satchel Lining",
+      "class": "Expedition Gear",
+      "note": "Insulated weave that protected knot-codes during freeze winds."
+    }
+  },
+  {
+    "regionId": "dier-lake",
+    "label": "Dier Lake",
+    "era": "Mirrorwater Surveillance",
+    "history": "The eastern lake reflected storm fronts hours before impact, making it a strategic warning basin.",
+    "artifact": {
+      "name": "Mirrorwake Pole",
+      "class": "Hydro-Signal Tool",
+      "note": "Lake-skin probe for reading vibration signatures of large aquatic predators."
+    }
+  },
+  {
+    "regionId": "straits-of-dier",
+    "label": "Straits of Dier",
+    "era": "Maritime Relay Expansion",
+    "history": "Neutral transit charters were negotiated here to preserve courier movement through predator-heavy channels.",
+    "artifact": {
+      "name": "Matsu-Knot Transit Sleeve",
+      "class": "Signal Cryptography",
+      "note": "Encodes route class, urgency, and hand-to-hand restrictions for open-water relays."
+    }
+  },
+  {
+    "regionId": "twin-straits-of-dier",
+    "label": "Twin Straits of Dier",
+    "era": "Split Current Campaign",
+    "history": "The Danian split around Pteros turned one passage into two lethal choices, each with different luck.",
+    "artifact": {
+      "name": "Dual Current Knotline",
+      "class": "Route Selection Code",
+      "note": "Two-strand knot language for signaling safe branch choice under pursuit."
+    }
+  },
+  {
+    "regionId": "danian-river",
+    "label": "Danian River",
+    "era": "Book I Return Circuit",
+    "history": "Jairo and Kel held close to city influence here while Igzier's inland arc bent toward reunion.",
+    "artifact": {
+      "name": "Riverfork Dead-Reckoner",
+      "class": "Current Navigation",
+      "note": "Bone-scribed current wheel used to estimate split times before channel divergence."
+    }
+  },
+  {
+    "regionId": "danian-delta",
+    "label": "Danian Delta",
+    "era": "Glow Tide Ashfall",
+    "history": "At Glow Tide the ash began to fall, the Watcher woke, and every political lie in Sky City came due.",
+    "artifact": {
+      "name": "Glow-Ash Filter Veil",
+      "class": "Survival Cloth",
+      "note": "Worn by delta crews during the first ash rain while extraction routes collapsed."
+    }
+  },
+  {
+    "regionId": "pteros",
+    "label": "Pteros Island",
+    "era": "Eyrie Charter Standardization",
+    "history": "The island became a logistics hinge where aerial relay ethics were codified across rival settlements and where a hybrid escape changed the city's balance of fear.",
+    "artifact": {
+      "name": "Resin-Sealed Reed Tube",
+      "class": "Courier Payload",
+      "note": "Windproof message carrier with horn-stamp verification scar."
+    }
+  }
+]

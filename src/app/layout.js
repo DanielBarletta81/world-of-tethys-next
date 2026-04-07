@@ -105,6 +105,9 @@ export const metadata = {
     : 'Explore World of Tethys: immersive atlas systems, deep lore, natural history, archive intelligence, and evolving world signals.',
   alternates: {
     canonical: './',
+    types: {
+      'application/rss+xml': '/feed.xml',
+    },
   },
   robots: {
     index: true,

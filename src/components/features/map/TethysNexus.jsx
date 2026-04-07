@@ -22,9 +22,17 @@ const submapSatellite = (slug, options = {}) => {
 
 export const MAP_FRAGMENTS = [
   { id: 'skycity', label: 'Sky City', region: 'sky-city', anchor: { x: 0.26, y: 0.84 }, icon: '/img/icons/sky-city.svg', coords: { lat: -16.5, lng: -68.15 }, extent: 2.8, satellite: submapSatellite('sky-city', { opacity: 0.46 }) },
+  { id: 'the-weep', label: 'The Weep', region: 'the-weep', anchor: { x: 0.28, y: 0.8 }, coords: { lat: -15.9, lng: -67.5 }, extent: 2.2, satellite: submapSatellite('the-weep', { opacity: 0.5 }) },
+  { id: 'the-ledge', label: 'The Ledge', region: 'the-ledge', anchor: { x: 0.31, y: 0.77 }, coords: { lat: -15.1, lng: -66.8 }, extent: 2.2, satellite: submapSatellite('the-ledge', { opacity: 0.48 }) },
+  { id: 'silurian-riverlands', label: 'Silurian Riverlands', region: 'silurian-riverlands', anchor: { x: 0.34, y: 0.73 }, icon: '/img/icons/silurian.svg', coords: { lat: -13.6, lng: -65.4 }, extent: 3.0, satellite: submapSatellite('silurian-riverlands', { opacity: 0.5 }) },
   { id: 'cimmerian', label: 'Cimmerian Mtns', region: 'cimmerian-mtns', anchor: { x: 0.16, y: 0.73 }, showPin: false, clickable: false, coords: { lat: -19.5, lng: -69.4 }, extent: 3.4 },
   { id: 'denisova', label: 'Denisova', region: 'denisova', anchor: { x: 0.28, y: 0.56 }, showPin: false, clickable: false, coords: { lat: 51.4, lng: 84.7 }, extent: 3.2 },
   { id: 'siluria', label: 'Siluria', region: 'siluria', anchor: { x: 0.18, y: 0.44 }, icon: '/img/icons/silurian.svg', clickable: false, coords: { lat: 30.4, lng: 34.9 }, extent: 4.0 },
+  { id: 'watcher-volcano', label: 'Watcher Volcano', region: 'watcher-volcano', anchor: { x: 0.58, y: 0.16 }, coords: { lat: 38.2, lng: 16.0 }, extent: 2.6, satellite: submapSatellite('watcher-volcano', { opacity: 0.6, blend: 'screen' }) },
+  { id: 'purgess', label: 'Purgess Flats', region: 'purgess', anchor: { x: 0.57, y: 0.23 }, coords: { lat: 35.8, lng: 13.4 }, extent: 2.5, satellite: submapSatellite('purgess', { opacity: 0.56 }) },
+  { id: 'arnn-ridge', label: 'Arnn Ridge', region: 'arnn-ridge', anchor: { x: 0.6, y: 0.25 }, coords: { lat: 44.8, lng: -120.4 }, extent: 2.6, satellite: submapSatellite('arnn-ridge', { opacity: 0.5 }) },
+  { id: 'northern-mountains', label: 'Northern Mountains', region: 'northern-mountains', anchor: { x: 0.62, y: 0.14 }, coords: { lat: 48.2, lng: -120.9 }, extent: 3.1, satellite: submapSatellite('northern-mountains', { opacity: 0.5 }) },
+  { id: 'dier-lake', label: 'Dier Lake', region: 'dier-lake', anchor: { x: 0.66, y: 0.27 }, coords: { lat: 41.6, lng: -71.2 }, extent: 2.3, satellite: submapSatellite('dier-lake', { opacity: 0.52 }) },
   { id: 'karst', label: 'Karst Drains', region: 'karst-drains', anchor: { x: 0.22, y: 0.3 }, coords: { lat: 25.2, lng: 110.3 }, extent: 3.2, satellite: submapSatellite('karst-drains', { opacity: 0.5 }) },
   { id: 'younger', label: 'Younger Woods', region: 'younger-woods', anchor: { x: 0.3, y: 0.22 }, showPin: false, clickable: false, coords: { lat: 47.2, lng: -122.5 }, extent: 2.8 },
   { id: 'ironwoods', label: 'Ironwoods', region: 'ironwoods', anchor: { x: 0.62, y: 0.2 }, icon: '/img/icons/ironwood.svg', coords: { lat: 45.5, lng: -122.7 }, extent: 2.8, satellite: submapSatellite('ironwoods', { opacity: 0.5 }) },
@@ -32,7 +40,10 @@ export const MAP_FRAGMENTS = [
   { id: 'mystic-woods', label: 'Mystic Woods', region: 'mystic-woods', anchor: { x: 0.54, y: 0.28 }, icon: '/img/icons/mystics.svg', coords: { lat: 3.1, lng: 101.7 }, extent: 3.4, satellite: submapSatellite('mystic-woods', { opacity: 0.55 }) },
   { id: 'mt-cinder', label: 'Mt. Cinder', region: 'mt-cinder', anchor: { x: 0.82, y: 0.12 }, icon: '/img/icons/mount-shastea.svg', coords: { lat: 37.7, lng: 15.0 }, extent: 2.4, satellite: submapSatellite('mt-cinder', { opacity: 0.62, blend: 'screen', position: '52% 48%' }) },
   { id: 'straits', label: 'Straits of Dier', region: 'straits-of-dier', anchor: { x: 0.43, y: 0.48 }, icon: '/img/icons/straits-of-dier.svg', coords: { lat: 41.6, lng: -71.2 }, extent: 2.6, satellite: submapSatellite('straits-of-dier', { opacity: 0.52 }) },
+  { id: 'twin-straits', label: 'Twin Straits of Dier', region: 'twin-straits-of-dier', anchor: { x: 0.47, y: 0.5 }, icon: '/img/icons/straits-of-dier.svg', coords: { lat: 40.8, lng: -70.1 }, extent: 2.6, satellite: submapSatellite('twin-straits-of-dier', { opacity: 0.52 }) },
+  { id: 'danian-river', label: 'Danian River', region: 'danian-river', anchor: { x: 0.5, y: 0.54 }, coords: { lat: 7.8, lng: -44.0 }, extent: 2.7, satellite: submapSatellite('danian-river', { opacity: 0.5 }) },
   { id: 'pteros', label: 'Pteros Island', region: 'pteros', anchor: { x: 0.46, y: 0.56 }, icon: '/img/icons/pteros_island.svg', coords: { lat: -3.7, lng: -38.5 }, extent: 2.6, satellite: submapSatellite('pteros', { opacity: 0.56 }) },
+  { id: 'danian-delta', label: 'Danian Delta', region: 'danian-delta', anchor: { x: 0.52, y: 0.61 }, coords: { lat: 5.2, lng: -36.7 }, extent: 2.7, satellite: submapSatellite('danian-delta', { opacity: 0.57 }) },
   { id: 'mammoth', label: 'Mammoth Island', region: 'mammoth-hand-island', anchor: { x: 0.72, y: 0.46 }, icon: '/img/icons/mammoth-hand-island.svg', coords: { lat: 61.2, lng: -149.9 }, extent: 4.2, satellite: submapSatellite('mammoth-hand-island', { opacity: 0.5 }) },
   { id: 'thal', label: 'Thal Territory', region: 'thal-territory', anchor: { x: 0.74, y: 0.51 }, showPin: false, clickable: false, labelOffset: { x: 7, y: 7 }, coords: { lat: -2.3, lng: 34.8 }, extent: 4.6, satellite: submapSatellite('thal-territory', { opacity: 0.48 }) },
   { id: 'amber-plains', label: 'Amber Plains', region: 'amber-plains', anchor: { x: 0.68, y: 0.72 }, icon: '/img/icons/nubian-sandbar.svg', coords: { lat: -1.4, lng: 35.2 }, extent: 4.2, satellite: submapSatellite('amber-plains', { opacity: 0.52, blend: 'soft-light' }) },
@@ -89,6 +100,7 @@ function buildRasterStyle(tileUrl, attribution, mode) {
 export default function TethysNexus({
   currentLocation = 'pteros',
   lockedRegions = [],
+  visibleRegions = null,
   unlockedNodes = [],
   onTravel,
   onInspect,
@@ -125,10 +137,16 @@ export default function TethysNexus({
     return buildRasterStyle(tileUrl, attribution, STYLE_MODE);
   }, []);
 
+  const visibleFragments = useMemo(() => {
+    if (!Array.isArray(visibleRegions) || !visibleRegions.length) return MAP_FRAGMENTS;
+    const allow = new Set(visibleRegions);
+    return MAP_FRAGMENTS.filter((fragment) => allow.has(fragment.region));
+  }, [visibleRegions]);
+
   const regionPoints = useMemo(() => {
     return {
       type: 'FeatureCollection',
-      features: MAP_FRAGMENTS.filter((f) => f.coords).map((f) => ({
+      features: visibleFragments.filter((f) => f.coords).map((f) => ({
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -144,12 +162,12 @@ export default function TethysNexus({
         }
       }))
     };
-  }, [currentLocation, lockedRegions]);
+  }, [currentLocation, lockedRegions, visibleFragments]);
 
   const regionAreas = useMemo(() => {
     return {
       type: 'FeatureCollection',
-      features: MAP_FRAGMENTS.filter((f) => f.coords && f.extent).map((f) => {
+      features: visibleFragments.filter((f) => f.coords && f.extent).map((f) => {
         const span = f.extent || 2.5;
         const minLng = f.coords.lng - span;
         const maxLng = f.coords.lng + span;
@@ -177,7 +195,7 @@ export default function TethysNexus({
         };
       })
     };
-  }, [currentLocation, lockedRegions]);
+  }, [currentLocation, lockedRegions, visibleFragments]);
 
   useEffect(() => {
     let isMounted = true;
@@ -407,7 +425,7 @@ export default function TethysNexus({
         mapRef.current = null;
       }
     };
-  }, [mapStyle, regionAreas, regionPoints]);
+  }, [mapStyle]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -430,6 +448,24 @@ export default function TethysNexus({
     const areaSource = map.getSource('tethys-areas');
     if (areaSource) areaSource.setData(regionAreas);
   }, [mapReady, regionAreas, regionPoints]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    const coords = regionPoints.features.map((f) => f.geometry.coordinates);
+    if (!coords.length) return;
+    const bounds = coords.reduce(
+      (acc, coord) => {
+        acc[0][0] = Math.min(acc[0][0], coord[0]);
+        acc[0][1] = Math.min(acc[0][1], coord[1]);
+        acc[1][0] = Math.max(acc[1][0], coord[0]);
+        acc[1][1] = Math.max(acc[1][1], coord[1]);
+        return acc;
+      },
+      [[coords[0][0], coords[0][1]], [coords[0][0], coords[0][1]]]
+    );
+    map.fitBounds(bounds, { padding: 80, duration: 900 });
+  }, [mapReady, regionPoints]);
 
   useEffect(() => {
     const map = mapRef.current;
