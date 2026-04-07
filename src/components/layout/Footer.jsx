@@ -140,9 +140,9 @@ export default function SiteFooter({ siteVariant = 'world' }) {
           <Link href="/world" className="underline underline-offset-4 hover:text-white">
             World
           </Link>
-          <Link href="/world/map" className="underline underline-offset-4 hover:text-white">
+          <a href={`${worldSiteUrl.replace(/\/$/, '')}/map`} className="underline underline-offset-4 hover:text-white">
             Atlas
-          </Link>
+          </a>
           <Link href="/archive" className="underline underline-offset-4 hover:text-white">
             Archive
           </Link>

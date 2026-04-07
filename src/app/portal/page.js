@@ -14,6 +14,8 @@ import { Gem, User, Activity, Globe, Zap, Power, Sprout, Trash2 } from "lucide-r
 import Link from "next/link";
 import cdn from "@/lib/cdn";
 
+const WORLD_MAP_URL = `${(process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com').replace(/\/$/, '')}/map`;
+
 export default function Home() {
   const { user, loading: authLoading, logout, deleteAccount } = useAuth();
   const { stats, isGuest, loadingData, hasOnboarded, playerProfile } = useTethys();
@@ -297,9 +299,9 @@ export default function Home() {
                     <p className="text-stone-400 text-xs md:text-sm max-w-md hidden sm:block">Turbulence detected in the West Strait. Biological assets deployed.</p>
                   </div>
 
-                  <Link href="/map" className="absolute inset-0 z-20 focus:outline-none" aria-label="Enter Map">
+                  <a href={WORLD_MAP_URL} className="absolute inset-0 z-20 focus:outline-none" aria-label="Enter Map">
                      <span className="sr-only">Enter</span>
-                  </Link>
+                  </a>
                 </div>
 
                 {/* Status Modules */}

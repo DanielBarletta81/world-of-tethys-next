@@ -6,7 +6,8 @@ import PathSelector from '@/components/features/onboarding/PathSelector';
 import StarterLoadout from '@/components/features/onboarding/StarterLoadout';
 import Incubator from '@/components/features/onboarding/Incubator';
 import { Flame, Compass, Shield } from 'lucide-react';
-import Link from 'next/link';
+
+const WORLD_MAP_URL = `${(process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com').replace(/\/$/, '')}/map`;
 
 const PATH_TO_PRIMARY = {
   'root-whisper': 'wild',
@@ -186,12 +187,12 @@ export default function OnboardingRitual() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Link
-                href="/map"
+              <a
+                href={WORLD_MAP_URL}
                 className="px-4 py-2 text-[10px] uppercase tracking-[0.3em] bg-amber-600 text-[#0c0a09] rounded shadow-[0_0_20px_rgba(255,120,60,0.3)] hover:bg-amber-500"
               >
                 Enter Atlas
-              </Link>
+              </a>
               <button
                 onClick={handleDismiss}
                 className="px-4 py-2 text-[10px] uppercase tracking-[0.3em] bg-[#1a120e] border border-stone-700 text-stone-300 rounded hover:border-amber-400"

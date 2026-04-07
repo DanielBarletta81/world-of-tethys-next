@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { UserPlus, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -9,11 +9,11 @@ const TRACK_KEY = 'tethys_guest_pages_v1';
 const SHOWN_KEY = 'tethys_guest_upgrade_shown_v1';
 const MIN_PAGES = 3;
 const EXCLUDED_PATHS = new Set(['/login']);
+const WORLD_MAP_URL = `${(process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com').replace(/\/$/, '')}/map`;
 
 export default function GuestUpgradeGate() {
   const { user } = useAuth();
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function GuestUpgradeGate() {
           <button
             onClick={() => {
               setOpen(false);
-              router.push('/map');
+              window.location.assign(WORLD_MAP_URL);
             }}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-emerald-900/20 border border-emerald-500/40 text-emerald-200 uppercase tracking-[0.2em] text-[11px] rounded-sm hover:bg-emerald-900/40 transition-colors"
           >

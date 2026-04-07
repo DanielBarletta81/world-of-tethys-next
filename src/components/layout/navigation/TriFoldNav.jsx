@@ -4,13 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 
+const WORLD_MAP_URL = `${(process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com').replace(/\/$/, '')}/map`;
+
 const PATHS = [
   {
     id: 'world',
     label: 'World',
     color: 'emerald',
     items: [
-      { id: 'map', label: 'Atlas', href: '/map' },
+      { id: 'map', label: 'Atlas', href: WORLD_MAP_URL, external: true },
       { id: 'weather', label: 'Atmosphere', href: '/science' },
       { id: 'cycle', label: 'Cycle', href: '/study' }
     ]
@@ -84,10 +86,14 @@ export default function TriFoldNav({ onSelect, className = '', sticky = true }) 
               >
                 {path.items.map(item => {
                   const linkProps = item.href ? { href: item.href } : { href: '#' };
+                  const externalProps = item.external
+                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                    : {};
                   return (
                     <Link
                       key={item.id}
                       {...linkProps}
+                      {...externalProps}
                       onClick={(e) => {
                         if (onSelect) {
                           e.preventDefault();

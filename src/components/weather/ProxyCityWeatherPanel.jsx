@@ -3,8 +3,9 @@
 
 import { useState, useEffect } from 'react';
 import { MapPin, Cloud, Wind, Thermometer, RefreshCw, AlertCircle, ExternalLink } from 'lucide-react';
-import Link from 'next/link';
 import { calculateSurvivability, getSurvivabilityColors, getWeatherIcon, PROXY_REGION_MAP } from './weatherUtils';
+
+const WORLD_MAP_URL = `${(process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com').replace(/\/$/, '')}/map`;
 
 /**
  * ProxyCityWeatherPanel - Displays real-time weather from all proxy cities
@@ -212,13 +213,13 @@ export default function ProxyCityWeatherPanel({ className = '', showAllCities = 
                     {/* Link to Map (if region has map access) */}
                     {regionInfo && (
                       <div className="pt-2 border-t border-stone-800">
-                        <Link
-                          href="/map"
+                        <a
+                          href={WORLD_MAP_URL}
                           className="flex items-center justify-between text-[10px] text-cyan-600 hover:text-cyan-400 uppercase tracking-widest transition-colors group/link"
                         >
                           <span>View on Atlas</span>
                           <ExternalLink size={12} className="group-hover/link:translate-x-1 transition-transform" />
-                        </Link>
+                        </a>
                       </div>
                     )}
 
