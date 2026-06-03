@@ -4,6 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── PORTAL HERO ANIMATIONS ─────────────────────────────────────────────── */
+/* Cinematic image: fades in and very slightly de-zooms from 1.06 → 1.0 */
+.hero-reveal {
+  animation: hero-reveal 3.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes hero-reveal {
+  0%   { opacity: 0; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Hero copy: slides up from 24px below, fades in with 0.5s delay */
+.hero-copy-reveal {
+  animation: hero-copy-reveal 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) 0.5s both;
+}
+@keyframes hero-copy-reveal {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 @layer components {
   .tethys-cta {
     @apply font-tethys-volcanic font-bold uppercase tracking-[0.25em];

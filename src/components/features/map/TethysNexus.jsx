@@ -54,7 +54,10 @@ export const MAP_FRAGMENTS = [
 ];
 
 const DEFAULT_VIEW = { center: [18, 18], zoom: 2.1 };
-const OSM_FALLBACK = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+// ESRI World Imagery — free satellite tiles, no API key required.
+// Override with NEXT_PUBLIC_TETHYS_SATELLITE_TILES for a custom tileset.
+// For custom per-region satellite overlays set NEXT_PUBLIC_TETHYS_SUBMAP_SATELLITE_BASE.
+const ESRI_SATELLITE = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const STYLE_MODE = (process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_MODE || 'volcanic').toLowerCase();
 const BACKDROP_URL = process.env.NEXT_PUBLIC_TETHYS_WORLD_BACKDROP_URL || '';
 const BACKDROP_OPACITY = Number(process.env.NEXT_PUBLIC_TETHYS_WORLD_BACKDROP_OPACITY || 0.35);
@@ -130,9 +133,9 @@ export default function TethysNexus({
     const styleUrl = process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_URL;
     if (styleUrl) return styleUrl;
 
-    const tileUrl = process.env.NEXT_PUBLIC_TETHYS_SATELLITE_TILES || OSM_FALLBACK;
+    const tileUrl = process.env.NEXT_PUBLIC_TETHYS_SATELLITE_TILES || ESRI_SATELLITE;
     const attribution = process.env.NEXT_PUBLIC_TETHYS_SATELLITE_ATTRIBUTION
-      || (tileUrl.includes('openstreetmap') ? '© OpenStreetMap contributors' : '');
+      || (tileUrl === ESRI_SATELLITE ? '© Esri — Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP' : '');
 
     return buildRasterStyle(tileUrl, attribution, STYLE_MODE);
   }, []);
