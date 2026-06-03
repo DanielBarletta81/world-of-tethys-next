@@ -21,8 +21,9 @@ export default function Home() {
   const { stats, isGuest, loadingData, hasOnboarded, playerProfile } = useTethys();
   
   // State Management
-  const [hasInteracted, setHasInteracted] = useState(false); // Gatekeeper state
-  const [introFinished, setIntroFinished] = useState(false); // Sequence state
+  // null = unknown (pre-mount), false = needs intro, true = already interacted
+  const [hasInteracted, setHasInteracted] = useState(null); // Gatekeeper state
+  const [introFinished, setIntroFinished] = useState(null); // Sequence state
   const [showLogin, setShowLogin] = useState(false);         // Airlock state
   const [slateText, setSlateText] = useState("");
   const [slates, setSlates] = useState([]);
@@ -37,7 +38,6 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const skipIntro = params.get('skipIntro');
     const stored = localStorage.getItem('tethys_intro_complete');
@@ -50,6 +50,10 @@ export default function Home() {
       } catch {
         /* ignore */
       }
+    } else {
+      // First visit — show the intro overlay
+      setHasInteracted(false);
+      setIntroFinished(false);
     }
   }, []);
 
@@ -97,12 +101,13 @@ export default function Home() {
     <div className="min-h-screen bg-[#050403] text-slate-100 font-serif overflow-x-hidden relative selection:bg-emerald-900 selection:text-white">
 
       {/* 1. THE GATEKEEPER (Forces Audio Unlock) */}
-      {!hasInteracted && (
+      {/* hasInteracted===null means we haven't read localStorage yet — render nothing to avoid flash */}
+      {hasInteracted === false && (
         <IntroOverlay onStart={() => setHasInteracted(true)} />
       )}
 
       {/* 2. THE CINEMATIC (Only plays AFTER interaction) */}
-      {hasInteracted && !introFinished && (
+      {hasInteracted === true && introFinished === false && (
         <LandingSequence
           onComplete={() => {
             setIntroFinished(true);
@@ -116,7 +121,7 @@ export default function Home() {
    )}
 
       {/* 3. THE MAIN SITE */}
-      {introFinished && (
+      {introFinished === true && (
         <>
           {/* Skip Navigation Link for Screen Readers */}
           <a

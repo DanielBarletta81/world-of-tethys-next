@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
-import { getConfiguredSiteUrls } from '@/lib/site-variant';
 
+// (archive)/map → canonical /map (local-first)
 export default function LegacyMapRoutePage() {
-  const { worldSiteUrl } = getConfiguredSiteUrls();
-  redirect(`${worldSiteUrl}/map`);
+  redirect('/map');
 }

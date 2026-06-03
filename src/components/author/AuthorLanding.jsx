@@ -4,10 +4,11 @@ import { ArrowUpRight, Compass, Feather, Waves } from 'lucide-react';
 import GoodreadsWidget from '@/components/content/GoodreadsWidget';
 import SubscribeSection from '@/components/content/SubscribeSection';
 import { TETHYS_OCEAN_RESEARCH_BRIEF } from '@/data/tethys-ocean-research';
+import { cdn } from '@/lib/cdn';
 
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
 const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
-const AUTHOR_SEAL_URL = '/img/icons/tethys-seal-coin.svg';
+const AUTHOR_SEAL_URL = cdn('/img/icons/tethys-seal-coin.svg');
 
 const heroMarks = [
   { label: 'First Breach', value: 'Book One' },
@@ -183,7 +184,7 @@ export default function AuthorLanding() {
             <div className="relative overflow-hidden rounded-[2rem] border border-[#8e765b]/20 bg-[#f5ebdc]/90 p-3 shadow-[0_18px_42px_rgba(35,20,8,0.14)]">
               <div className="relative overflow-hidden rounded-[1.55rem] border border-[#8e765b]/18 bg-[#ece1cf]">
                 <Image
-                  src="/img/books/book1-cover.png"
+                  src={cdn('/img/books/book1-cover.png')}
                   alt="World of Tethys Book One cover"
                   width={720}
                   height={1080}

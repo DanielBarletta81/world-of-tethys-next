@@ -2,6 +2,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import IdentityAirLock from '@/components/forms/IdentityAirLock';
+import { cdn } from '@/lib/cdn';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function LoginPage() {
           <div className="absolute -inset-3 rounded-full kith-aura" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/img/kith-portrait.jpg"
+            src={cdn('/img/kith-portrait.jpg')}
             alt="Kith portrait"
             className="relative z-10 w-16 h-16 rounded-full object-cover border border-emerald-400/60 shadow-[0_0_20px_rgba(16,185,129,0.25)]"
           />

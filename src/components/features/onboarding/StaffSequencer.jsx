@@ -7,6 +7,7 @@ import { generateStaffProfile } from '@/lib/staff-utils';
 import { useTethys } from '@/context/TethysContext';
 import { Hammer, Check, Loader2 } from 'lucide-react';
 import StaffVisualizer from '@/components/StaffVisualizer';
+import { cdn } from '@/lib/cdn';
 
 export default function StaffSequencer({ initialStats, initialPath, inventoryOverride, onProfile, onFinalize }) {
   const [stats, setStats] = useState(initialStats || { geology: 0, creature: 0, lore: 0, human: 0 });
@@ -73,7 +74,7 @@ export default function StaffSequencer({ initialStats, initialPath, inventoryOve
           >
             <span className="relative h-8 w-8 overflow-hidden rounded-full border border-amber-400/40 bg-black/30">
               <Image
-                src="/symbols/tethys-seal.png"
+                src={cdn('/symbols/tethys-seal.png')}
                 alt=""
                 fill
                 sizes="32px"

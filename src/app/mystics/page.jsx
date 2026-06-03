@@ -12,6 +12,7 @@ import PithSignals from '@/components/pith/PithSignals';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { cdn } from '@/lib/cdn';
 
 export default function MysticsPage() {
   const [activeRitual, setActiveRitual] = useState('path'); 
@@ -31,7 +32,7 @@ export default function MysticsPage() {
       >
         <span className="relative h-9 w-9 overflow-hidden rounded-full border border-amber-400/50 bg-black/40">
           <Image
-            src="/symbols/tethys-seal.png"
+            src={cdn('/symbols/tethys-seal.png')}
             alt="World of Tethys"
             fill
             sizes="36px"
