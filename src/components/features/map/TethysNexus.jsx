@@ -81,6 +81,7 @@ function buildRasterStyle(tileUrl, attribution, mode) {
   }
   return {
     version: 8,
+    glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
     sources: {
       base: {
         type: 'raster',
@@ -241,43 +242,46 @@ export default function TethysNexus({
         if (!mapRef.current) return;
 
         if (BACKDROP_URL) {
-          map.addSource('tethys-backdrop', {
-            type: 'image',
-            url: BACKDROP_URL,
-            coordinates: [
-              [-180, 85],
-              [180, 85],
-              [180, -85],
-              [-180, -85]
-            ]
-          });
-
-          const beforeId = map.getLayer('base-raster') ? 'base-raster' : undefined;
-          map.addLayer(
-            {
-              id: 'tethys-backdrop',
-              type: 'raster',
-              source: 'tethys-backdrop',
-              minzoom: 0,
-              maxzoom: Math.max(0, Math.min(6, BACKDROP_MAX_ZOOM)),
-              paint: {
-                'raster-opacity': Math.max(0.05, Math.min(0.8, BACKDROP_OPACITY))
-              }
-            },
-            beforeId
-          );
-
-          if (map.getLayer('base-raster')) {
-            map.setPaintProperty('base-raster', 'raster-opacity', [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              0,
-              0.35,
-              2,
-              1
-            ]);
-          }
+          // Pre-validate the image before handing it to MapLibre — MapLibre's
+          // image source fetch is async and its errors escape a try/catch.
+          const probe = new window.Image();
+          probe.crossOrigin = 'anonymous';
+          probe.onload = () => {
+            if (!mapRef.current) return;
+            map.addSource('tethys-backdrop', {
+              type: 'image',
+              url: BACKDROP_URL,
+              coordinates: [
+                [-180, 85],
+                [180, 85],
+                [180, -85],
+                [-180, -85]
+              ]
+            });
+            const beforeId = map.getLayer('base-raster') ? 'base-raster' : undefined;
+            map.addLayer(
+              {
+                id: 'tethys-backdrop',
+                type: 'raster',
+                source: 'tethys-backdrop',
+                minzoom: 0,
+                maxzoom: Math.max(0, Math.min(6, BACKDROP_MAX_ZOOM)),
+                paint: {
+                  'raster-opacity': Math.max(0.05, Math.min(0.8, BACKDROP_OPACITY))
+                }
+              },
+              beforeId
+            );
+            if (map.getLayer('base-raster')) {
+              map.setPaintProperty('base-raster', 'raster-opacity', [
+                'interpolate', ['linear'], ['zoom'], 0, 0.35, 2, 1
+              ]);
+            }
+          };
+          probe.onerror = () => {
+            console.warn('[TethysNexus] Backdrop image not accessible — skipping overlay.', BACKDROP_URL);
+          };
+          probe.src = BACKDROP_URL;
         }
 
         map.addSource('tethys-regions', { type: 'geojson', data: regionPoints });
