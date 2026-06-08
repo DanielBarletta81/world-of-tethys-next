@@ -2,6 +2,9 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ArrowDown, Activity, Radio } from 'lucide-react';
+import cdn from '@/lib/cdn';
+
+const ATLAS_MAP_BG = cdn('/img/map/tethys-atlas-clean.png');
 
 export default function ArchiveLog({ context, activeSection, sectionMeta }) {
   const depth = sectionMeta?.depth ?? context?.startDepth;
@@ -12,7 +15,7 @@ export default function ArchiveLog({ context, activeSection, sectionMeta }) {
     <div className="space-y-6 opacity-80 hover:opacity-100 transition-opacity">
       <div className="p-1 rounded-2xl bg-gradient-to-b from-stone-800 to-stone-900 border border-stone-800 shadow-xl">
         <div className="relative h-48 rounded-xl bg-black overflow-hidden group">
-          <div className="absolute inset-0 bg-[url('/img/map/tethys-atlas-clean.png')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all duration-700" />
+          <div className="absolute inset-0 bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all duration-700" style={{ backgroundImage: `url(${ATLAS_MAP_BG})` }} />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
 
           <div className="absolute inset-0 flex items-center justify-center">

@@ -6,11 +6,11 @@ import Link from 'next/link';
 import { cdn } from '@/lib/cdn';
 
 const FOOTER_PLATES = [
-  { match: (p) => p === '/', plate: '/img/plates/footer/footer-home-watcher.webp' },
-  { match: (p) => p.startsWith('/map'), plate: '/img/plates/footer/footer-map-ghostrelief.webp' },
-  { match: (p) => p.startsWith('/creatures'), plate: '/img/plates/footer/footer-creatures-rookery.webp' },
-  { match: (p) => p.startsWith('/mystics'), plate: '/img/plates/footer/footer-mystics-moonwater.webp' },
-  { match: () => true, plate: '/img/plates/footer/footer-home-watcher.webp' },
+  { match: (p) => p === '/', plate: cdn('/img/plates/footer/footer-home-watcher.webp') },
+  { match: (p) => p.startsWith('/map'), plate: cdn('/img/plates/footer/footer-map-ghostrelief.webp') },
+  { match: (p) => p.startsWith('/creatures'), plate: cdn('/img/plates/footer/footer-creatures-rookery.webp') },
+  { match: (p) => p.startsWith('/mystics'), plate: cdn('/img/plates/footer/footer-mystics-moonwater.webp') },
+  { match: () => true, plate: cdn('/img/plates/footer/footer-home-watcher.webp') },
 ];
 
 export default function SiteFooter({ siteVariant = 'world' }) {

@@ -102,7 +102,7 @@ export default function Home() {
         <div className="mx-auto w-full max-w-md">
           <BookCoverImage
             primarySrc={BOOK1_COVER_URL}
-            fallbackSrc="/img/books/book1-cover.png"
+            fallbackSrc={BOOK1_COVER_URL}
             alt="World of Tethys prehistoric volcanic landscape"
             width={720}
             height={1080}

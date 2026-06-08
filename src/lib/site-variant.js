@@ -22,32 +22,37 @@ export function getRequestHost(headerStore) {
 export function getConfiguredSiteUrls() {
   const worldSiteUrl = (process.env.NEXT_PUBLIC_WORLD_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_WORLD_URL).replace(/\/$/, '');
   const authorSiteUrl = (process.env.NEXT_PUBLIC_AUTHOR_SITE_URL || worldSiteUrl).replace(/\/$/, '');
-  return { worldSiteUrl, authorSiteUrl };
+  const atlasSiteUrl = (process.env.NEXT_PUBLIC_ATLAS_SITE_URL || '').replace(/\/$/, '');
+  return { worldSiteUrl, authorSiteUrl, atlasSiteUrl };
 }
 
 export function getSiteVariantFromConfig() {
-  const { worldSiteUrl, authorSiteUrl } = getConfiguredSiteUrls();
+  const { worldSiteUrl, authorSiteUrl, atlasSiteUrl } = getConfiguredSiteUrls();
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || worldSiteUrl).replace(/\/$/, '');
-  const worldHost = toHost(worldSiteUrl);
+  const worldHost  = toHost(worldSiteUrl);
   const authorHost = toHost(authorSiteUrl, worldSiteUrl);
-  const siteHost = toHost(siteUrl, worldSiteUrl);
+  const atlasHost  = atlasSiteUrl ? toHost(atlasSiteUrl) : '';
+  const siteHost   = toHost(siteUrl, worldSiteUrl);
 
-  if (authorHost && authorHost !== worldHost && siteHost === authorHost) {
-    return 'author';
-  }
+  // Explicit override — set NEXT_PUBLIC_SITE_VARIANT=atlas in Vercel env
+  if (process.env.NEXT_PUBLIC_SITE_VARIANT === 'atlas') return 'atlas';
+  if (process.env.NEXT_PUBLIC_SITE_VARIANT === 'author') return 'author';
+
+  if (atlasHost  && atlasHost  !== worldHost && siteHost === atlasHost)  return 'atlas';
+  if (authorHost && authorHost !== worldHost && siteHost === authorHost) return 'author';
 
   return 'world';
 }
 
 export function getSiteVariantFromHost(host) {
   const normalizedHost = normalizeHost(host);
-  const { worldSiteUrl, authorSiteUrl } = getConfiguredSiteUrls();
-  const worldHost = toHost(worldSiteUrl);
+  const { worldSiteUrl, authorSiteUrl, atlasSiteUrl } = getConfiguredSiteUrls();
+  const worldHost  = toHost(worldSiteUrl);
   const authorHost = toHost(authorSiteUrl, worldSiteUrl);
+  const atlasHost  = atlasSiteUrl ? toHost(atlasSiteUrl) : '';
 
-  if (authorHost && authorHost !== worldHost && normalizedHost === authorHost) {
-    return 'author';
-  }
+  if (atlasHost  && atlasHost  !== worldHost && normalizedHost === atlasHost)  return 'atlas';
+  if (authorHost && authorHost !== worldHost && normalizedHost === authorHost) return 'author';
 
   return 'world';
 }

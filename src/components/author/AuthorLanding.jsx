@@ -4,10 +4,11 @@ import { ArrowUpRight, Compass, Feather, Waves } from 'lucide-react';
 import GoodreadsWidget from '@/components/content/GoodreadsWidget';
 import SubscribeSection from '@/components/content/SubscribeSection';
 import { TETHYS_OCEAN_RESEARCH_BRIEF } from '@/data/tethys-ocean-research';
+import { cdn } from '@/lib/cdn';
 
 const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldoftethys.com';
 const AMAZON_URL = 'https://www.amazon.com/dp/B0GRHBR1HJ';
-const AUTHOR_SEAL_URL = '/img/icons/tethys-seal-coin.svg';
+const AUTHOR_SEAL_URL = cdn('/img/icons/tethys-seal-coin.svg');
 
 const heroMarks = [
   { label: 'First Breach', value: 'Book One' },
@@ -20,7 +21,7 @@ const routeCards = [
     title: 'Book One',
     description: 'The first opening.',
     href: '/world-of-tethys-book-1',
-    imageSrc: '/img/books/book1-cover.png',
+    imageSrc: cdn('/img/books/book1-cover.png'),
     imageAlt: 'World of Tethys Book One cover art',
     cta: 'Book One',
     external: false,
@@ -38,7 +39,7 @@ const routeCards = [
     title: 'Field Notes',
     description: 'Ash, weather, and drift.',
     href: '/blog',
-    imageSrc: '/img/watcher_mountain3.png',
+    imageSrc: cdn('/img/watcher_mountain3.png'),
     imageAlt: 'World of Tethys volcanic mountain landscape',
     cta: 'Essays',
     external: false,
@@ -47,7 +48,7 @@ const routeCards = [
     title: 'The World',
     description: 'The larger ruin below.',
     href: WORLD_SITE_URL,
-    imageSrc: '/img/plates/footer/footer-home-watcher.webp',
+    imageSrc: cdn('/img/plates/footer/footer-home-watcher.webp'),
     imageAlt: 'World of Tethys atmosphere artwork',
     cta: 'World',
     external: true,
@@ -183,7 +184,7 @@ export default function AuthorLanding() {
             <div className="relative overflow-hidden rounded-[2rem] border border-[#8e765b]/20 bg-[#f5ebdc]/90 p-3 shadow-[0_18px_42px_rgba(35,20,8,0.14)]">
               <div className="relative overflow-hidden rounded-[1.55rem] border border-[#8e765b]/18 bg-[#ece1cf]">
                 <Image
-                  src="/img/books/book1-cover.png"
+                  src={cdn('/img/books/book1-cover.png')}
                   alt="World of Tethys Book One cover"
                   width={720}
                   height={1080}
