@@ -1,0 +1,206 @@
+/*
+ * Atlas Variant Theme — Volcanic / Sulfuric / Sinister
+ * Activated when body[data-site-variant="atlas"]
+ * Overrides the default world-site token set.
+ */
+
+body[data-site-variant="atlas"] {
+  /* ── Core surface palette ─────────────────────────────────────────────── */
+  --atlas-bg:           #07060200;           /* transparent → set on body */
+  --atlas-surface:      #0f0d04;
+  --atlas-card:         #141005;
+  --atlas-card-hover:   #1c1708;
+  --atlas-border:       #27230506;
+  --atlas-border-glow:  #453c0a;
+  --atlas-border-lava:  #5c1e0a;
+
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --atlas-text:         #cec4ae;
+  --atlas-text-muted:   #7a7060;
+  --atlas-text-dim:     #46413a;
+
+  /* ── Sulfur accent ────────────────────────────────────────────────────── */
+  --atlas-sulfur:       #c9a227;
+  --atlas-sulfur-pale:  #e8c84a;
+  --atlas-sulfur-dim:   #7a6118;
+  --atlas-sulfur-glow:  rgba(201, 162, 39, 0.18);
+
+  /* ── Lava / magma ─────────────────────────────────────────────────────── */
+  --atlas-lava:         #c2410c;
+  --atlas-lava-deep:    #7c1d07;
+  --atlas-lava-glow:    rgba(194, 65, 12, 0.2);
+
+  /* ── Sulfur gas (toxic green-yellow) ──────────────────────────────────── */
+  --atlas-gas:          #6b8a14;
+  --atlas-gas-pale:     #8faa22;
+  --atlas-gas-glow:     rgba(107, 138, 20, 0.15);
+
+  /* ── Ash ──────────────────────────────────────────────────────────────── */
+  --atlas-ash:          #8c847c;
+  --atlas-ash-pale:     #b0a898;
+
+  /* ── Map-specific ─────────────────────────────────────────────────────── */
+  --atlas-marker-fill:  #c9a227;
+  --atlas-marker-ring:  #e8c84a;
+  --atlas-panel-bg:     rgba(10, 8, 3, 0.94);
+  --atlas-panel-border: #2e2908;
+}
+
+/* ── Body background ───────────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] {
+  background:
+    radial-gradient(ellipse at 15% 85%, rgba(194, 65, 12, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 15%, rgba(107, 138, 20, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(201, 162, 39, 0.03) 0%, transparent 70%),
+    #080603;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] ::-webkit-scrollbar {
+  width: 5px;
+  background: #080603;
+}
+body[data-site-variant="atlas"] ::-webkit-scrollbar-thumb {
+  background: #2a2604;
+  border-radius: 3px;
+}
+body[data-site-variant="atlas"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--atlas-sulfur-dim);
+}
+
+/* ── Selection ─────────────────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] ::selection {
+  background: rgba(201, 162, 39, 0.2);
+  color: var(--atlas-sulfur-pale);
+}
+
+/* ── Link colors ───────────────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] a {
+  color: var(--atlas-sulfur);
+}
+body[data-site-variant="atlas"] a:hover {
+  color: var(--atlas-sulfur-pale);
+}
+
+/* ── Atlas card overrides ──────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] .atlas-card,
+body[data-site-variant="atlas"] [class*="bg-tethys-card"] {
+  background: var(--atlas-card);
+  border-color: var(--atlas-border);
+}
+body[data-site-variant="atlas"] .atlas-card:hover,
+body[data-site-variant="atlas"] [class*="bg-tethys-card"]:hover {
+  border-color: var(--atlas-border-glow);
+}
+
+/* ── Lore panel (map sidebar) ──────────────────────────────────────────────── */
+body[data-site-variant="atlas"] .lore-panel {
+  background: var(--atlas-panel-bg);
+  border-color: var(--atlas-panel-border);
+}
+
+/* ── Atlas heading glow ────────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] .atlas-heading {
+  color: var(--atlas-sulfur);
+  text-shadow: 0 0 24px rgba(201, 162, 39, 0.35);
+}
+
+/* ── Sulfur pulse animation ────────────────────────────────────────────────── */
+@keyframes atlas-sulfur-pulse {
+  0%, 100% { box-shadow: 0 0 8px  rgba(201, 162, 39, 0.15), 0 0 24px rgba(201, 162, 39, 0.06); }
+  50%       { box-shadow: 0 0 16px rgba(201, 162, 39, 0.35), 0 0 40px rgba(201, 162, 39, 0.12); }
+}
+
+body[data-site-variant="atlas"] .atlas-pulse {
+  animation: atlas-sulfur-pulse 3.2s ease-in-out infinite;
+}
+
+/* ── Lava seam divider ─────────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] .atlas-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--atlas-border-lava) 20%,
+    var(--atlas-sulfur-dim) 50%,
+    var(--atlas-border-lava) 80%,
+    transparent
+  );
+  margin: 1.5rem 0;
+  position: relative;
+}
+body[data-site-variant="atlas"] .atlas-divider::after {
+  content: '';
+  position: absolute;
+  inset: -1px 30%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(201, 162, 39, 0.3),
+    transparent
+  );
+  filter: blur(4px);
+}
+
+/* ── Sulfur gas mist overlay (map atmosphere) ──────────────────────────────── */
+@keyframes atlas-gas-drift {
+  0%   { transform: translateX(-5%) translateY(0)   scaleY(1.0); opacity: 0.4; }
+  50%  { transform: translateX(5%)  translateY(-8%) scaleY(1.04); opacity: 0.6; }
+  100% { transform: translateX(-5%) translateY(0)   scaleY(1.0); opacity: 0.4; }
+}
+
+body[data-site-variant="atlas"] .atlas-gas-mist {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 30% 70%,
+    rgba(107, 138, 20, 0.06) 0%,
+    transparent 55%
+  ),
+  radial-gradient(
+    ellipse at 70% 30%,
+    rgba(194, 65, 12, 0.04) 0%,
+    transparent 50%
+  );
+  animation: atlas-gas-drift 18s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+/* ── CTA button atlas variant ──────────────────────────────────────────────── */
+body[data-site-variant="atlas"] .tethys-cta {
+  border-color: var(--atlas-sulfur-dim);
+  color: var(--atlas-sulfur);
+}
+body[data-site-variant="atlas"] .tethys-cta:hover {
+  background: var(--atlas-sulfur-glow);
+  border-color: var(--atlas-sulfur);
+  color: var(--atlas-sulfur-pale);
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.2);
+}
+
+/* ── Input / focus ring ────────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] input:focus-visible,
+body[data-site-variant="atlas"] textarea:focus-visible,
+body[data-site-variant="atlas"] select:focus-visible,
+body[data-site-variant="atlas"] button:focus-visible {
+  outline-color: var(--atlas-sulfur);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2);
+}
+
+/* ── Faction color overrides (atlas tones) ─────────────────────────────────── */
+body[data-site-variant="atlas"] {
+  --faction-thal:       #c9a227;   /* Sulfur */
+  --faction-silurian:   #c2410c;   /* Lava   */
+  --faction-triumvirate: #6b8a14;  /* Gas    */
+  --faction-mystic:     #8c7bb5;   /* Ash violet */
+}
+
+/* ── Nav bar atlas variant ─────────────────────────────────────────────────── */
+body[data-site-variant="atlas"] header nav a {
+  color: var(--atlas-text-muted);
+}
+body[data-site-variant="atlas"] header nav a:hover {
+  color: var(--atlas-sulfur);
+}

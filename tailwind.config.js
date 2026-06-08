@@ -47,7 +47,25 @@ const config = {
         // Paper/Study Mode
         'ancient-bg': '#e7e5e4',    // Stone 200
         'ancient-ink': '#292524',   // Stone 800
-        'ancient-accent': '#78350f' // Amber 900
+        'ancient-accent': '#78350f', // Amber 900
+
+        // Atlas Volcanic Palette
+        'atlas-bg':           '#080603',
+        'atlas-surface':      '#0f0d04',
+        'atlas-card':         '#141005',
+        'atlas-border':       '#272305',
+        'atlas-border-glow':  '#453c0a',
+        'atlas-border-lava':  '#5c1e0a',
+        'atlas-text':         '#cec4ae',
+        'atlas-muted':        '#7a7060',
+        'atlas-sulfur':       '#c9a227',
+        'atlas-sulfur-pale':  '#e8c84a',
+        'atlas-sulfur-dim':   '#7a6118',
+        'atlas-lava':         '#c2410c',
+        'atlas-lava-deep':    '#7c1d07',
+        'atlas-gas':          '#6b8a14',
+        'atlas-gas-pale':     '#8faa22',
+        'atlas-ash':          '#8c847c',
       },
 
       // 3. ANIMATIONS (The Magic)
