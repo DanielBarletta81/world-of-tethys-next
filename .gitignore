@@ -137,6 +137,7 @@ Tethys Sea Climate and Environments.pdf
 # local notes/data archives (non-deploy)
 notes/
 data/
+!src/data/
 docs/*.pages
 docs/*.pdf
 
