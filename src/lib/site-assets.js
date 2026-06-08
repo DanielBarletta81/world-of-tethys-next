@@ -1,6 +1,6 @@
 import cdn from '@/lib/cdn';
 
-export const BOOK1_COVER_URL = '/img/books/book1-cover.png';
+export const BOOK1_COVER_URL = cdn('/img/books/book1-cover.png');
 
 export const HERO_IMAGE_URLS = {
   homepage:

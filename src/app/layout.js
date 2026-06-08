@@ -4,7 +4,6 @@ import { AuthProvider } from '../context/AuthContext';
 import { TethysProvider } from '../context/TethysContext';
 import { AudioProvider } from '../context/AudioContext';
 import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
-import GuestUpgradeGate from '../components/GuestUpgradeGate';
 import IdleGrowthOverlay from '../components/IdleGrowthOverlay';
 import './globals.css';
 import Footer from '@/components/layout/Footer';
@@ -184,7 +183,6 @@ export default function RootLayout({ children }) {
               <div id="main-content" role="main" className="relative min-h-screen pt-24 md:pt-28">
                 {children}
               </div>
-              {!isAuthorSite ? <GuestUpgradeGate /> : null}
               {!isAuthorSite ? <GlobalAudioPlayer /> : null}
             </AudioProvider>
           </TethysProvider>

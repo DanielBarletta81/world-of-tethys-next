@@ -2,10 +2,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import cdn from '@/lib/cdn';
+
+const DEFAULT_COVER = cdn('/img/books/book1-cover.png');
 
 export default function BookCoverImage({
   primarySrc,
-  fallbackSrc = '/img/books/book1-cover.png',
+  fallbackSrc = DEFAULT_COVER,
   alt,
   width = 720,
   height = 1080,

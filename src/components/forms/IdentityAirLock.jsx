@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Fingerprint, Ghost, X, Sprout, Wind, Eye, Mail, KeyRound } from 'lucide-react';
 import { cdn } from '@/lib/cdn';
 import { useAuth } from '@/context/AuthContext';
+import { useTethysLineage } from '@/hooks/useTethysLineage';
+import LineageCard from '@/components/features/player/LineageCard';
 
 const WHISPERS = [
   "The soil remembers your footfall...",
@@ -14,8 +16,18 @@ const WHISPERS = [
   "Quiet. The Kith speaks."
 ];
 
+// Faction header colors for the woven state
+const FACTION_HEADER = {
+  thal:        { bg: 'from-amber-950/60',  border: 'border-amber-700/40',  icon: 'text-amber-400',    label: 'Thal' },
+  silurian:    { bg: 'from-cyan-950/60',   border: 'border-cyan-700/40',   icon: 'text-cyan-400',     label: 'Silurian' },
+  triumvirate: { bg: 'from-violet-950/60', border: 'border-violet-700/40', icon: 'text-violet-400',   label: 'Triumvirate' },
+  mystic:      { bg: 'from-emerald-950/60',border: 'border-emerald-700/40',icon: 'text-emerald-400',  label: 'Mystic' },
+  default:     { bg: 'from-stone-950/60',  border: 'border-stone-700/40',  icon: 'text-stone-400',    label: 'Unknown' },
+};
+
 export default function IdentityAirlock({ isOpen, onClose }) {
   const { user, loginEmail, loginGoogle, registerEmail, logout } = useAuth();
+  const { lineage } = useTethysLineage(user?.uid ?? null);
   const [status, setStatus] = useState('dormant');
   const [whisper, setWhisper] = useState(WHISPERS[0]);
   const [mode, setMode] = useState('choice');
@@ -24,6 +36,9 @@ export default function IdentityAirlock({ isOpen, onClose }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const showModal = isOpen ?? true;
+
+  const factionCfg = FACTION_HEADER[lineage?.dominantLineage ?? ''] ?? FACTION_HEADER.default;
+
   const particles = useMemo(() => {
     const count = 15;
     let seed = 924173;
@@ -73,7 +88,7 @@ export default function IdentityAirlock({ isOpen, onClose }) {
       setStatus('woven');
       setTimeout(() => {
         onClose?.();
-      }, 600);
+      }, 2500);
     } catch (err) {
       setStatus('dormant');
       setError(err?.message || 'Google sign-in failed.');
@@ -95,7 +110,7 @@ export default function IdentityAirlock({ isOpen, onClose }) {
       setStatus('woven');
       setTimeout(() => {
         onClose?.();
-      }, 600);
+      }, 2500);
     } catch (err) {
       setError(err?.message || 'Login failed.');
     } finally {
@@ -115,7 +130,7 @@ export default function IdentityAirlock({ isOpen, onClose }) {
       setStatus('woven');
       setTimeout(() => {
         onClose?.();
-      }, 600);
+      }, 2500);
     } catch (err) {
       setError(err?.message || 'Registration failed.');
     } finally {
@@ -154,40 +169,71 @@ export default function IdentityAirlock({ isOpen, onClose }) {
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="w-full max-w-sm bg-[#0c0a09] border border-emerald-900/40 rounded-xl shadow-[0_0_80px_rgba(16,185,129,0.15)] relative overflow-hidden group"
+            className={`w-full max-w-sm bg-[#0c0a09] border rounded-xl relative overflow-hidden group transition-all duration-700 ${
+              status === 'woven'
+                ? `${factionCfg.border} shadow-[0_0_80px_rgba(0,0,0,0.5)]`
+                : 'border-emerald-900/40 shadow-[0_0_80px_rgba(16,185,129,0.15)]'
+            }`}
           >
-            {/* ... (Keep existing Header/Body UI from previous turn) ... */}
+            {/* THE SPORE FIELD */}
             
-            <div className="relative h-48 flex flex-col items-center justify-center border-b border-emerald-900/20 overflow-hidden bg-gradient-to-b from-emerald-950/20 to-transparent">
-              <div
-                className="absolute inset-0 opacity-20 mix-blend-overlay"
-                style={{ backgroundImage: `url(${cdn('/noise.svg')})` }}
-              />
-              
-              <div className="relative z-10 mb-4">
-                <div className={`absolute inset-0 bg-emerald-500/30 blur-2xl rounded-full transition-all duration-1000 ${status === 'sensing' ? 'scale-150 opacity-100' : 'scale-100 opacity-40'}`} />
-                <div className={`relative p-4 rounded-full border border-emerald-500/30 bg-[#0c0a09] transition-all duration-500 ${status === 'sensing' ? 'shadow-[0_0_30px_#10b981]' : ''}`}>
+            <div className={`relative h-40 flex flex-col items-center justify-center border-b overflow-hidden bg-gradient-to-b to-transparent transition-all duration-700 ${
+              status === 'woven' ? `${factionCfg.border} ${factionCfg.bg}` : 'border-emerald-900/20 from-emerald-950/20'
+            }`}>
+              <div className="relative z-10 mb-3">
+                <div className={`absolute inset-0 blur-2xl rounded-full transition-all duration-1000 ${
+                  status === 'sensing' ? 'bg-emerald-500/30 scale-150 opacity-100' :
+                  status === 'woven'   ? `bg-current/20 scale-125 opacity-60` :
+                  'bg-emerald-500/20 scale-100 opacity-40'
+                }`} />
+                <div className={`relative p-4 rounded-full border bg-[#0c0a09] transition-all duration-500 ${
+                  status === 'woven'   ? `${factionCfg.border}` :
+                  status === 'sensing' ? 'border-emerald-500/30 shadow-[0_0_30px_#10b981]' :
+                  'border-emerald-500/30'
+                }`}>
                   {status === 'sensing' ? (
-                    <Eye size={32} className="text-emerald-400 animate-pulse" />
+                    <Eye size={28} className="text-emerald-400 animate-pulse" />
                   ) : status === 'woven' ? (
-                    <Fingerprint size={32} className="text-emerald-400" />
+                    <Fingerprint size={28} className={factionCfg.icon} />
                   ) : (
-                    <Sprout size={32} className="text-stone-500 group-hover:text-emerald-500 transition-colors" />
+                    <Sprout size={28} className="text-stone-500 group-hover:text-emerald-500 transition-colors" />
                   )}
                 </div>
               </div>
-              
               <div className="relative z-10 text-center px-6">
-                <h2 className="text-lg font-serif text-emerald-100/90 tracking-widest uppercase mb-1">
-                  {status === 'sensing' ? 'Ravel is Listening...' : 'Commune with Kith'}
+                <h2 className={`text-base font-tethys-volcanic tracking-widest uppercase mb-0.5 ${
+                  status === 'woven' ? factionCfg.icon : 'text-emerald-100/90'
+                }`}>
+                  {status === 'sensing' ? 'Ravel is Listening...' :
+                   status === 'woven'   ? `${factionCfg.label} Heritage Confirmed` :
+                   'Commune with Kith'}
                 </h2>
-                <p className="text-[10px] font-mono text-emerald-500/60 uppercase tracking-[0.3em] h-4">
-                  {status === 'sensing' ? whisper : 'Identity Required'}
+                <p className="text-[10px] font-mono text-stone-500 uppercase tracking-[0.3em] h-4">
+                  {status === 'sensing' ? whisper :
+                   status === 'woven'   ? (user?.displayName ?? user?.email ?? 'Connected') :
+                   'Identity Required'}
                 </p>
               </div>
             </div>
 
-            <div className="p-8 space-y-6 relative z-10 bg-[#0c0a09]">
+            <div className="p-6 space-y-4 relative z-10 bg-[#0c0a09]">
+              {/* ── WOVEN STATE: faction lineage card ─────────────────────── */}
+              {status === 'woven' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <LineageCard lineage={lineage} />
+                  <button
+                    onClick={onClose}
+                    className={`mt-4 w-full py-2.5 rounded-lg border text-[10px] uppercase tracking-[0.25em] transition-colors ${factionCfg.border} ${factionCfg.icon} hover:bg-stone-900`}
+                  >
+                    Enter Atlas
+                  </button>
+                </motion.div>
+              )}
+
               {status === 'dormant' && mode === 'choice' && (
                 <>
                   <p className="text-xs text-stone-500 text-center font-serif italic leading-relaxed">

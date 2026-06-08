@@ -3,6 +3,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { cdn } from '@/lib/cdn';
 import StaffVisualizer from '@/components/StaffVisualizer';
+import { REGION_FOOD_WEB } from '@/data/tethys-food-web';
+
+// Food web track color map — used to tint region areas when foodWebActive
+const FOOD_WEB_COLORS = {
+  chemosynthetic: 'rgba(8, 145, 178, 0.32)',   // cyan  — sulfur-driven
+  photosynthetic: 'rgba(34, 197, 94, 0.28)',    // green — solar-driven
+  mixed:          'rgba(234, 179, 8, 0.28)',    // amber — dual track
+  default:        'rgba(100, 116, 139, 0.15)',  // slate — no data
+};
+
+function foodWebColor(regionId) {
+  const track = REGION_FOOD_WEB[regionId]?.dominantTrack ?? 'default';
+  return FOOD_WEB_COLORS[track] ?? FOOD_WEB_COLORS.default;
+}
 
 const SUBMAP_SATELLITE_BASE = process.env.NEXT_PUBLIC_TETHYS_SUBMAP_SATELLITE_BASE || '';
 const submapSatellite = (slug, options = {}) => {
@@ -21,42 +35,83 @@ const submapSatellite = (slug, options = {}) => {
 };
 
 export const MAP_FRAGMENTS = [
-  { id: 'skycity', label: 'Sky City', region: 'sky-city', anchor: { x: 0.26, y: 0.84 }, icon: '/img/icons/sky-city.svg', coords: { lat: -16.5, lng: -68.15 }, extent: 2.8, satellite: submapSatellite('sky-city', { opacity: 0.46 }) },
-  { id: 'the-weep', label: 'The Weep', region: 'the-weep', anchor: { x: 0.28, y: 0.8 }, coords: { lat: -15.9, lng: -67.5 }, extent: 2.2, satellite: submapSatellite('the-weep', { opacity: 0.5 }) },
-  { id: 'the-ledge', label: 'The Ledge', region: 'the-ledge', anchor: { x: 0.31, y: 0.77 }, coords: { lat: -15.1, lng: -66.8 }, extent: 2.2, satellite: submapSatellite('the-ledge', { opacity: 0.48 }) },
-  { id: 'silurian-riverlands', label: 'Silurian Riverlands', region: 'silurian-riverlands', anchor: { x: 0.34, y: 0.73 }, icon: '/img/icons/silurian.svg', coords: { lat: -13.6, lng: -65.4 }, extent: 3.0, satellite: submapSatellite('silurian-riverlands', { opacity: 0.5 }) },
-  { id: 'cimmerian', label: 'Cimmerian Mtns', region: 'cimmerian-mtns', anchor: { x: 0.16, y: 0.73 }, showPin: false, clickable: false, coords: { lat: -19.5, lng: -69.4 }, extent: 3.4 },
-  { id: 'denisova', label: 'Denisova', region: 'denisova', anchor: { x: 0.28, y: 0.56 }, showPin: false, clickable: false, coords: { lat: 51.4, lng: 84.7 }, extent: 3.2 },
-  { id: 'siluria', label: 'Siluria', region: 'siluria', anchor: { x: 0.18, y: 0.44 }, icon: '/img/icons/silurian.svg', clickable: false, coords: { lat: 30.4, lng: 34.9 }, extent: 4.0 },
-  { id: 'watcher-volcano', label: 'Watcher Volcano', region: 'watcher-volcano', anchor: { x: 0.58, y: 0.16 }, coords: { lat: 38.2, lng: 16.0 }, extent: 2.6, satellite: submapSatellite('watcher-volcano', { opacity: 0.6, blend: 'screen' }) },
-  { id: 'purgess', label: 'Purgess Flats', region: 'purgess', anchor: { x: 0.57, y: 0.23 }, coords: { lat: 35.8, lng: 13.4 }, extent: 2.5, satellite: submapSatellite('purgess', { opacity: 0.56 }) },
-  { id: 'arnn-ridge', label: 'Arnn Ridge', region: 'arnn-ridge', anchor: { x: 0.6, y: 0.25 }, coords: { lat: 44.8, lng: -120.4 }, extent: 2.6, satellite: submapSatellite('arnn-ridge', { opacity: 0.5 }) },
-  { id: 'northern-mountains', label: 'Northern Mountains', region: 'northern-mountains', anchor: { x: 0.62, y: 0.14 }, coords: { lat: 48.2, lng: -120.9 }, extent: 3.1, satellite: submapSatellite('northern-mountains', { opacity: 0.5 }) },
-  { id: 'dier-lake', label: 'Dier Lake', region: 'dier-lake', anchor: { x: 0.66, y: 0.27 }, coords: { lat: 41.6, lng: -71.2 }, extent: 2.3, satellite: submapSatellite('dier-lake', { opacity: 0.52 }) },
-  { id: 'karst', label: 'Karst Drains', region: 'karst-drains', anchor: { x: 0.22, y: 0.3 }, coords: { lat: 25.2, lng: 110.3 }, extent: 3.2, satellite: submapSatellite('karst-drains', { opacity: 0.5 }) },
-  { id: 'younger', label: 'Younger Woods', region: 'younger-woods', anchor: { x: 0.3, y: 0.22 }, showPin: false, clickable: false, coords: { lat: 47.2, lng: -122.5 }, extent: 2.8 },
-  { id: 'ironwoods', label: 'Ironwoods', region: 'ironwoods', anchor: { x: 0.62, y: 0.2 }, icon: '/img/icons/ironwood.svg', coords: { lat: 45.5, lng: -122.7 }, extent: 2.8, satellite: submapSatellite('ironwoods', { opacity: 0.5 }) },
-  { id: 'ironwood-spires', label: 'Ironwood Spires', region: 'ironwood-spires', anchor: { x: 0.36, y: 0.78 }, icon: '/img/icons/sky-city.svg', showPin: false, clickable: false, coords: { lat: 44.2, lng: -121.7 }, extent: 2.4 },
-  { id: 'mystic-woods', label: 'Mystic Woods', region: 'mystic-woods', anchor: { x: 0.54, y: 0.28 }, icon: '/img/icons/mystics.svg', coords: { lat: 3.1, lng: 101.7 }, extent: 3.4, satellite: submapSatellite('mystic-woods', { opacity: 0.55 }) },
-  { id: 'mt-cinder', label: 'Mt. Cinder', region: 'mt-cinder', anchor: { x: 0.82, y: 0.12 }, icon: '/img/icons/mount-shastea.svg', coords: { lat: 37.7, lng: 15.0 }, extent: 2.4, satellite: submapSatellite('mt-cinder', { opacity: 0.62, blend: 'screen', position: '52% 48%' }) },
-  { id: 'straits', label: 'Straits of Dier', region: 'straits-of-dier', anchor: { x: 0.43, y: 0.48 }, icon: '/img/icons/straits-of-dier.svg', coords: { lat: 41.6, lng: -71.2 }, extent: 2.6, satellite: submapSatellite('straits-of-dier', { opacity: 0.52 }) },
-  { id: 'twin-straits', label: 'Twin Straits of Dier', region: 'twin-straits-of-dier', anchor: { x: 0.47, y: 0.5 }, icon: '/img/icons/straits-of-dier.svg', coords: { lat: 40.8, lng: -70.1 }, extent: 2.6, satellite: submapSatellite('twin-straits-of-dier', { opacity: 0.52 }) },
-  { id: 'danian-river', label: 'Danian River', region: 'danian-river', anchor: { x: 0.5, y: 0.54 }, coords: { lat: 7.8, lng: -44.0 }, extent: 2.7, satellite: submapSatellite('danian-river', { opacity: 0.5 }) },
-  { id: 'pteros', label: 'Pteros Island', region: 'pteros', anchor: { x: 0.46, y: 0.56 }, icon: '/img/icons/pteros_island.svg', coords: { lat: -3.7, lng: -38.5 }, extent: 2.6, satellite: submapSatellite('pteros', { opacity: 0.56 }) },
-  { id: 'danian-delta', label: 'Danian Delta', region: 'danian-delta', anchor: { x: 0.52, y: 0.61 }, coords: { lat: 5.2, lng: -36.7 }, extent: 2.7, satellite: submapSatellite('danian-delta', { opacity: 0.57 }) },
-  { id: 'mammoth', label: 'Mammoth Island', region: 'mammoth-hand-island', anchor: { x: 0.72, y: 0.46 }, icon: '/img/icons/mammoth-hand-island.svg', coords: { lat: 61.2, lng: -149.9 }, extent: 4.2, satellite: submapSatellite('mammoth-hand-island', { opacity: 0.5 }) },
-  { id: 'thal', label: 'Thal Territory', region: 'thal-territory', anchor: { x: 0.74, y: 0.51 }, showPin: false, clickable: false, labelOffset: { x: 7, y: 7 }, coords: { lat: -2.3, lng: 34.8 }, extent: 4.6, satellite: submapSatellite('thal-territory', { opacity: 0.48 }) },
-  { id: 'amber-plains', label: 'Amber Plains', region: 'amber-plains', anchor: { x: 0.68, y: 0.72 }, icon: '/img/icons/nubian-sandbar.svg', coords: { lat: -1.4, lng: 35.2 }, extent: 4.2, satellite: submapSatellite('amber-plains', { opacity: 0.52, blend: 'soft-light' }) },
-  { id: 'tethys-sea', label: 'Tethys Sea', region: 'tethys-sea', anchor: { x: 0.53, y: 0.64 }, showPin: false, clickable: false, coords: { lat: 34.5, lng: 18.5 }, extent: 6.5, satellite: submapSatellite('tethys-sea', { opacity: 0.45, blend: 'screen' }) },
-  { id: 'rogue', label: 'Rogue Island', region: 'rogue-island', anchor: { x: 0.74, y: 0.73 }, showPin: false, clickable: false, coords: { lat: -4.6, lng: 55.5 }, extent: 3.8, satellite: submapSatellite('rogue-island', { opacity: 0.5 }) },
-  { id: 'new-tethys', label: 'New Tethys', region: 'new-tethys', anchor: { x: 0.78, y: 0.9 }, showPin: false, clickable: false, coords: { lat: -14.6, lng: 78.2 }, extent: 6.2, satellite: submapSatellite('new-tethys', { opacity: 0.48 }) },
-  { id: 'permian-desert', label: 'Permian Desert', region: 'permian-desert', anchor: { x: 0.9, y: 0.9 }, coords: { lat: -23.4, lng: -69.3 }, extent: 4.8, satellite: submapSatellite('permian-desert', { opacity: 0.5, blend: 'soft-light' }) }
+  // ── CORE VOLCANIC ARC — Java (centered on Mount Merapi) ───────────────────────
+  { id: 'skycity',          label: 'Sky City',           region: 'sky-city',           anchor: { x: 0.26, y: 0.84 }, icon: cdn('/img/icons/sky-city.svg'),          coords: { lat: -7.0,  lng: 107.5  }, extent: 2.8, satellite: submapSatellite('sky-city',           { opacity: 0.46 }) },
+  { id: 'the-weep',         label: 'The Weep',           region: 'the-weep',           anchor: { x: 0.28, y: 0.80 },                                                  coords: { lat: -8.8,  lng: 107.2  }, extent: 2.2, satellite: submapSatellite('the-weep',           { opacity: 0.50 }) },
+  { id: 'the-ledge',        label: 'The Ledge',          region: 'the-ledge',          anchor: { x: 0.31, y: 0.77 },                                                  coords: { lat: -9.2,  lng: 108.0  }, extent: 2.2, satellite: submapSatellite('the-ledge',          { opacity: 0.48 }) },
+  // Watcher = Mount Merapi exact (7.54°S, 110.44°E)
+  { id: 'watcher-volcano',  label: 'Watcher Volcano',    region: 'watcher-volcano',    anchor: { x: 0.58, y: 0.16 },                                                  coords: { lat: -7.54, lng: 110.44 }, extent: 2.6, satellite: submapSatellite('watcher-volcano',  { opacity: 0.60, blend: 'screen' }) },
+  // Mt. Cinder = Mount Sumbing analog — volcanic sister to the west
+  { id: 'mt-cinder',        label: 'Mt. Cinder',         region: 'mt-cinder',          anchor: { x: 0.82, y: 0.12 }, icon: cdn('/img/icons/mount-shastea.svg'),      coords: { lat: -7.4,  lng: 109.9  }, extent: 2.4, satellite: submapSatellite('mt-cinder',          { opacity: 0.62, blend: 'screen', position: '52% 48%' }) },
+  // Purgess = Yogyakarta ash plain east of Merapi
+  { id: 'purgess',          label: 'Purgess Flats',      region: 'purgess',            anchor: { x: 0.57, y: 0.23 },                                                  coords: { lat: -7.9,  lng: 111.3  }, extent: 2.5, satellite: submapSatellite('purgess',            { opacity: 0.56 }) },
+  // Mystic Woods = central Java highlands between volcano complex and the river delta
+  { id: 'mystic-woods',     label: 'Mystic Woods',       region: 'mystic-woods',       anchor: { x: 0.54, y: 0.28 }, icon: cdn('/img/icons/mystics.svg'),            coords: { lat: -7.2,  lng: 112.5  }, extent: 3.4, satellite: submapSatellite('mystic-woods',      { opacity: 0.55 }) },
+  // Cimmerian Mtns = far western Java/Sunda hills — blocks northern approach to Sky City
+  { id: 'cimmerian',        label: 'Cimmerian Mtns',     region: 'cimmerian-mtns',     anchor: { x: 0.16, y: 0.73 }, showPin: false, clickable: false,               coords: { lat: -7.5,  lng: 105.5  }, extent: 3.4 },
+
+  // ── DANIAN RIVER SYSTEM — Solo/Brantas River analog ───────────────────────────
+  // River flows: Mystic Woods highlands → north Java coast → Silurian delta
+  { id: 'danian-river',     label: 'Danian River',       region: 'danian-river',       anchor: { x: 0.50, y: 0.54 },                                                  coords: { lat: -7.0,  lng: 111.0  }, extent: 2.7, satellite: submapSatellite('danian-river',      { opacity: 0.50 }) },
+  // Silurian Riverlands = north Java coastal estuary — controls tidal gates to Java Sea
+  { id: 'silurian-riverlands', label: 'Silurian Riverlands', region: 'silurian-riverlands', anchor: { x: 0.34, y: 0.73 }, icon: cdn('/img/icons/silurian.svg'),    coords: { lat: -6.5,  lng: 111.8  }, extent: 3.0, satellite: submapSatellite('silurian-riverlands', { opacity: 0.50 }) },
+  // Danian Delta = river delta mouth, north Java coast
+  { id: 'danian-delta',     label: 'Danian Delta',       region: 'danian-delta',       anchor: { x: 0.52, y: 0.61 },                                                  coords: { lat: -6.8,  lng: 112.0  }, extent: 2.7, satellite: submapSatellite('danian-delta',      { opacity: 0.57 }) },
+
+  // ── EASTERN ISLAND ARC — Bali / Lombok / Sumbawa analogs ─────────────────────
+  // Pteros = Bali — the estuary island hub, central to all sea routes
+  { id: 'pteros',           label: 'Pteros Island',      region: 'pteros',             anchor: { x: 0.46, y: 0.56 }, icon: cdn('/img/icons/pteros_island.svg'),      coords: { lat: -8.3,  lng: 114.6  }, extent: 2.6, satellite: submapSatellite('pteros',             { opacity: 0.56 }) },
+  // Straits of Dier = Lombok Strait (between Bali and Lombok) — deep-current narrows
+  { id: 'straits',          label: 'Straits of Dier',    region: 'straits-of-dier',    anchor: { x: 0.43, y: 0.48 }, icon: cdn('/img/icons/straits-of-dier.svg'),    coords: { lat: -8.5,  lng: 115.8  }, extent: 2.6, satellite: submapSatellite('straits-of-dier',   { opacity: 0.52 }) },
+  // Twin Straits = Sape Strait (between Sumbawa and Flores) — split current zone
+  { id: 'twin-straits',     label: 'Twin Straits of Dier', region: 'twin-straits-of-dier', anchor: { x: 0.47, y: 0.50 }, icon: cdn('/img/icons/straits-of-dier.svg'), coords: { lat: -8.8,  lng: 117.0  }, extent: 2.6, satellite: submapSatellite('twin-straits-of-dier', { opacity: 0.52 }) },
+  // Dier Lake = Lake Matano analog (Sulawesi — deepest lake in Indonesia)
+  { id: 'dier-lake',        label: 'Dier Lake',          region: 'dier-lake',          anchor: { x: 0.66, y: 0.27 },                                                  coords: { lat: -2.5,  lng: 121.3  }, extent: 2.3, satellite: submapSatellite('dier-lake',          { opacity: 0.52 }) },
+
+  // ── BORNEO ZONE — Ironwoods / Northern highlands ──────────────────────────────
+  { id: 'ironwoods',        label: 'Ironwoods',          region: 'ironwoods',          anchor: { x: 0.62, y: 0.20 }, icon: cdn('/img/icons/ironwood.svg'),           coords: { lat: 1.0,   lng: 113.5  }, extent: 2.8, satellite: submapSatellite('ironwoods',          { opacity: 0.50 }) },
+  { id: 'ironwood-spires',  label: 'Ironwood Spires',    region: 'ironwood-spires',    anchor: { x: 0.36, y: 0.78 }, icon: cdn('/img/icons/sky-city.svg'), showPin: false, clickable: false, coords: { lat: -0.5, lng: 113.0 }, extent: 2.4 },
+  { id: 'younger',          label: 'Younger Woods',      region: 'younger-woods',      anchor: { x: 0.30, y: 0.22 }, showPin: false, clickable: false,               coords: { lat: 1.5,   lng: 115.0  }, extent: 2.8 },
+  // Arnn Ridge = north-central ridge (Crocker Range, Sabah — highest in Borneo)
+  { id: 'arnn-ridge',       label: 'Arnn Ridge',         region: 'arnn-ridge',         anchor: { x: 0.60, y: 0.25 },                                                  coords: { lat: 5.8,   lng: 116.5  }, extent: 2.6, satellite: submapSatellite('arnn-ridge',         { opacity: 0.50 }) },
+  // Northern Mountains = Trusmadi Range / northern Sabah highlands
+  { id: 'northern-mountains', label: 'Northern Mountains', region: 'northern-mountains', anchor: { x: 0.62, y: 0.14 },                                               coords: { lat: 6.5,   lng: 117.5  }, extent: 3.1, satellite: submapSatellite('northern-mountains', { opacity: 0.50 }) },
+  // Karst Drains = Maros-Pangkep Karst (south Sulawesi — world's largest tropical karst)
+  { id: 'karst',            label: 'Karst Drains',       region: 'karst-drains',       anchor: { x: 0.22, y: 0.30 },                                                  coords: { lat: -4.8,  lng: 119.8  }, extent: 3.2, satellite: submapSatellite('karst-drains',       { opacity: 0.50 }) },
+
+  // ── SULAWESI ZONE — Thal Territory / Amber Plains ────────────────────────────
+  // Amber Plains = Wakatobi / South Sulawesi grasslands (Thal titan-walker territory)
+  { id: 'amber-plains',     label: 'Amber Plains',       region: 'amber-plains',       anchor: { x: 0.68, y: 0.72 }, icon: cdn('/img/icons/nubian-sandbar.svg'),     coords: { lat: -4.0,  lng: 120.5  }, extent: 4.2, satellite: submapSatellite('amber-plains',       { opacity: 0.52, blend: 'soft-light' }) },
+  { id: 'thal',             label: 'Thal Territory',     region: 'thal-territory',     anchor: { x: 0.74, y: 0.51 }, showPin: false, clickable: false, labelOffset: { x: 7, y: 7 }, coords: { lat: -1.8, lng: 121.0 }, extent: 4.6, satellite: submapSatellite('thal-territory', { opacity: 0.48 }) },
+  // Siluria = Halmahera/North Maluku (far eastern background, ancient territory)
+  { id: 'siluria',          label: 'Siluria',            region: 'siluria',            anchor: { x: 0.18, y: 0.44 }, icon: cdn('/img/icons/silurian.svg'), clickable: false, coords: { lat: 0.5, lng: 128.0 }, extent: 4.0 },
+
+  // ── MAMMOTH ISLAND — East Central (Sulawesi/Maluku) ──────────────────────────
+  { id: 'mammoth',          label: 'Mammoth Island',     region: 'mammoth-hand-island', anchor: { x: 0.72, y: 0.46 }, icon: cdn('/img/icons/mammoth-hand-island.svg'), coords: { lat: 0.5, lng: 124.5 }, extent: 4.2, satellite: submapSatellite('mammoth-hand-island', { opacity: 0.50 }) },
+  // Denisova = far east, Papua region (ancient deep-background territory)
+  { id: 'denisova',         label: 'Denisova',           region: 'denisova',           anchor: { x: 0.28, y: 0.56 }, showPin: false, clickable: false,               coords: { lat: -1.0,  lng: 136.0  }, extent: 3.2 },
+
+  // ── TETHYS SEA — Open Indian Ocean south of Java ─────────────────────────────
+  { id: 'tethys-sea',       label: 'Tethys Sea',         region: 'tethys-sea',         anchor: { x: 0.53, y: 0.64 }, showPin: false, clickable: false,               coords: { lat: -12.0, lng: 113.0  }, extent: 6.5, satellite: submapSatellite('tethys-sea',        { opacity: 0.45, blend: 'screen' }) },
+  { id: 'rogue',            label: 'Rogue Island',       region: 'rogue-island',       anchor: { x: 0.74, y: 0.73 }, showPin: false, clickable: false,               coords: { lat: -16.0, lng: 114.5  }, extent: 3.8, satellite: submapSatellite('rogue-island',       { opacity: 0.50 }) },
+  { id: 'new-tethys',       label: 'New Tethys',         region: 'new-tethys',         anchor: { x: 0.78, y: 0.90 }, showPin: false, clickable: false,               coords: { lat: -22.0, lng: 116.0  }, extent: 6.2, satellite: submapSatellite('new-tethys',         { opacity: 0.48 }) },
+
+  // ── PERMIAN DESERT — FAR NORTH (Khorat Plateau, Thailand) ────────────────────
+  // The Khorat Basin IS geographically north of Indonesia — red beds, evaporites,
+  // seasonal aridity. Perfect satellite imagery for the salt-flat Permian Desert.
+  { id: 'permian-desert',   label: 'Permian Desert',     region: 'permian-desert',     anchor: { x: 0.90, y: 0.90 },                                                  coords: { lat: 15.5,  lng: 103.0  }, extent: 4.8, satellite: submapSatellite('permian-desert',    { opacity: 0.50, blend: 'soft-light' }) },
 ];
 
-const DEFAULT_VIEW = { center: [18, 18], zoom: 2.1 };
+const DEFAULT_VIEW = { center: [113.0, -6.0], zoom: 3.8 };
 // ESRI World Imagery — free satellite tiles, no API key required.
 // Override with NEXT_PUBLIC_TETHYS_SATELLITE_TILES for a custom tileset.
 // For custom per-region satellite overlays set NEXT_PUBLIC_TETHYS_SUBMAP_SATELLITE_BASE.
+//
+// VOLCANIC ACTIVITY INTEGRATION (future):
+// The world is centered on Mount Merapi, Indonesia (7.54°S, 110.44°E) — the most
+// monitored active volcano on Earth. Real-world tectonic/volcanic data will feed
+// into map event triggers via NEXT_PUBLIC_TETHYS_VOLCANO_API when implemented.
+// PVMBG API: https://magma.esdm.go.id/v1/
 const ESRI_SATELLITE = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const STYLE_MODE = (process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_MODE || 'volcanic').toLowerCase();
 const BACKDROP_URL = process.env.NEXT_PUBLIC_TETHYS_WORLD_BACKDROP_URL || '';
@@ -73,11 +128,13 @@ function watcherIntensityFor(regionId) {
 function buildRasterStyle(tileUrl, attribution, mode) {
   const paint = { 'raster-opacity': 1 };
   if (mode === 'volcanic') {
-    paint['raster-saturation'] = -0.35;
-    paint['raster-contrast'] = 0.12;
-    paint['raster-brightness-min'] = 0.12;
-    paint['raster-brightness-max'] = 0.8;
-    paint['raster-hue-rotate'] = 18;
+    // Shift SE Asia green palette toward amber/obsidian while keeping geological
+    // texture visible. Less dark than before — still clearly alien, not black.
+    paint['raster-saturation'] = -0.30;
+    paint['raster-contrast'] = 0.08;
+    paint['raster-brightness-min'] = 0.22;
+    paint['raster-brightness-max'] = 0.88;
+    paint['raster-hue-rotate'] = 175;
   }
   return {
     version: 8,
@@ -126,9 +183,9 @@ export default function TethysNexus({
   const [stillnessLevel, setStillnessLevel] = useState(0);
   const lastInputRef = useRef(Date.now());
   const stillnessRef = useRef(0);
-  const satelliteConfigured = Boolean(
-    process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_URL || process.env.NEXT_PUBLIC_TETHYS_SATELLITE_TILES
-  );
+  // satelliteConfigured — only false if explicitly using a broken custom tile URL
+  // ESRI_SATELLITE is always available as fallback, so this should almost never show
+  const satelliteConfigured = true;
 
   const mapStyle = useMemo(() => {
     const styleUrl = process.env.NEXT_PUBLIC_TETHYS_MAP_STYLE_URL;
@@ -225,8 +282,12 @@ export default function TethysNexus({
       mapRef.current = map;
 
       map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
-      map.addControl(new maplibregl.ScaleControl({ maxWidth: 140, unit: 'metric' }), 'bottom-left');
-      map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+      // Scale and attribution rendered manually inside counter-flip wrapper (MapLibre's
+      // internal controls sit inside the mirrored canvas div and appear backwards)
+      // Hide MapLibre's built-in scale + attribution via injected CSS
+      const ctrlStyle = document.createElement('style');
+      ctrlStyle.textContent = '.maplibregl-ctrl-attrib, .maplibregl-ctrl-scale { display: none !important; }';
+      document.head.appendChild(ctrlStyle);
 
       const markInput = () => {
         lastInputRef.current = Date.now();
@@ -474,6 +535,39 @@ export default function TethysNexus({
     map.fitBounds(bounds, { padding: 80, duration: 900 });
   }, [mapReady, regionPoints]);
 
+  // Food web trophic coloring — tints region areas by dominant track when active
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+
+    if (foodWebActive) {
+      const regionColorExpression = ['match', ['get', 'region']];
+      visibleFragments.forEach((f) => {
+        regionColorExpression.push(f.region, foodWebColor(f.region));
+      });
+      regionColorExpression.push(FOOD_WEB_COLORS.default);
+      try {
+        map.setPaintProperty('tethys-area-fill', 'fill-color', regionColorExpression);
+        map.setPaintProperty('tethys-area-fill', 'fill-opacity', 0.55);
+      } catch (_) { /* layer not ready */ }
+    } else {
+      try {
+        map.setPaintProperty('tethys-area-fill', 'fill-color', [
+          'case',
+          ['==', ['get', 'current'], 1], '#f97316',
+          ['==', ['get', 'locked'], 1], '#1f2937',
+          '#0f172a'
+        ]);
+        map.setPaintProperty('tethys-area-fill', 'fill-opacity', [
+          'case',
+          ['==', ['get', 'current'], 1], 0.14,
+          ['==', ['get', 'locked'], 1], 0.08,
+          0.1
+        ]);
+      } catch (_) { /* layer not ready */ }
+    }
+  }, [mapReady, foodWebActive, visibleFragments]);
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
@@ -519,12 +613,19 @@ export default function TethysNexus({
   const foodOpacity = foodWebActive ? 0.25 : 0;
 
   return (
-    <div className="relative w-full h-[80vh] overflow-hidden rounded-2xl border border-stone-800 bg-[#050505]">
+    <div className="relative w-full h-[80vh] overflow-hidden rounded-2xl border border-stone-800 bg-[#050505]"
+      style={volcanicMode ? { transform: 'scaleX(-1)' } : undefined}
+    >
       <div
         ref={mapContainerRef}
         className="absolute inset-0"
-        style={volcanicMode ? { filter: 'saturate(0.85) contrast(1.08) brightness(0.78)' } : undefined}
+        style={volcanicMode ? {
+          filter: 'saturate(0.82) contrast(1.06) brightness(0.90)',
+        } : undefined}
       />
+
+      {/* Counter-flip overlay wrapper so UI text/controls read correctly */}
+      <div className="absolute inset-0" style={volcanicMode ? { transform: 'scaleX(-1)' } : undefined}>
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
 
@@ -582,14 +683,23 @@ export default function TethysNexus({
       )}
 
       {foodWebActive && (
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            opacity: foodOpacity,
-            backgroundImage: 'radial-gradient(circle at 70% 60%, rgba(34,211,238,0.35), transparent 55%)',
-            mixBlendMode: 'screen'
-          }}
-        />
+        <div className="pointer-events-none absolute bottom-16 left-4 rounded-xl border border-stone-700/60 bg-black/70 px-3 py-2 text-[10px] backdrop-blur-sm">
+          <p className="uppercase tracking-[0.25em] text-stone-400 mb-1.5">Trophic Track</p>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#0891b2' }} />
+              <span className="text-cyan-300">Chemosynthetic — sulfur-driven</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#22c55e' }} />
+              <span className="text-emerald-300">Photosynthetic — solar-driven</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#eab308' }} />
+              <span className="text-amber-300">Mixed dual-track</span>
+            </div>
+          </div>
+        </div>
       )}
 
       {showStaffOverlay && equippedStaff ? (
@@ -619,6 +729,24 @@ export default function TethysNexus({
           100% { background-position: 100% 50%; }
         }
       `}</style>
+
+      {/* Scale bar + attribution — inside counter-flip so text reads correctly */}
+      <div className="pointer-events-none absolute bottom-2 left-3 flex items-end gap-3">
+        {/* Scale bar — approximate: at zoom 3.8 over Indonesia, ~140px ≈ 1000km */}
+        <div className="flex flex-col items-start gap-0.5">
+          <span className="text-[8px] font-mono text-stone-500">1000 km</span>
+          <div className="flex">
+            <div className="w-[70px] h-[3px] bg-stone-400/70" />
+            <div className="w-[70px] h-[3px] bg-stone-700/70" />
+          </div>
+          <div className="w-[140px] h-px bg-stone-500/50" />
+        </div>
+      </div>
+      <div className="pointer-events-none absolute bottom-1 right-2 text-[9px] text-stone-600/60 font-mono">
+        © Esri · World Imagery
+      </div>
+
+      </div>{/* end counter-flip wrapper */}
     </div>
   );
 }

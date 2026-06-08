@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight, BookOpenText, Compass, Feather, Newspaper, ScrollText } from 'lucide-react';
+import cdn from '@/lib/cdn';
 
 const GOODREADS_PROFILE_URL = 'https://www.goodreads.com/author/show/63851248.D_C_Barletta';
 const AMAZON_AUTHOR_URL = 'https://www.amazon.com/stores/D.C.-Barletta/author/B0G5LM24FM';
@@ -17,7 +18,7 @@ const primaryRoutes = [
     title: 'Book One',
     description: 'The first opening.',
     href: '/world-of-tethys-book-1',
-    imageSrc: '/img/books/book1-cover.png',
+    imageSrc: cdn('/img/books/book1-cover.png'),
     imageAlt: 'World of Tethys Book One cover',
     cta: 'Book One',
     Icon: BookOpenText,
@@ -37,7 +38,7 @@ const primaryRoutes = [
     title: 'Field Notes',
     description: 'Ash, weather, and drift.',
     href: '/blog',
-    imageSrc: '/img/watcher-eruption1.png',
+    imageSrc: cdn('/img/watcher-eruption1.png'),
     imageAlt: 'World of Tethys volcanic eruption visual',
     cta: 'Essays',
     Icon: ScrollText,
@@ -47,7 +48,7 @@ const primaryRoutes = [
     title: 'Press',
     description: 'A thin record.',
     href: '/press-kit',
-    imageSrc: '/img/plates/footer/footer-home-watcher.webp',
+    imageSrc: cdn('/img/plates/footer/footer-home-watcher.webp'),
     imageAlt: 'Press visual',
     cta: 'Press',
     Icon: Newspaper,

@@ -93,7 +93,7 @@ export default function WorldOfTethysBookOnePage() {
 
           <BookCoverImage
             primarySrc={BOOK1_COVER_URL}
-            fallbackSrc="/img/books/book1-cover.png"
+            fallbackSrc={BOOK1_COVER_URL}
             alt="World of Tethys Book 1 cover"
             width={720}
             height={1080}
@@ -185,7 +185,7 @@ export default function WorldOfTethysBookOnePage() {
         </div>
         <BookCoverImage
           primarySrc={BOOK1_COVER_URL}
-          fallbackSrc="/img/books/book1-cover.png"
+          fallbackSrc={BOOK1_COVER_URL}
           alt="World of Tethys Book 1 cover"
           width={720}
           height={1080}

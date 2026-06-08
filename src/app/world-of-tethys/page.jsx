@@ -13,31 +13,31 @@ const lorePages = [
     href: '/world-of-tethys/sky-city',
     title: 'Sky City',
     description: 'Political summit zone across upper tiers, terraces, and brittle alliances.',
-    image: '/img/locations/sky_city_terrace_hero.PNG',
+    image: cdn('/img/locations/sky_city_terrace_hero.PNG'),
   },
   {
     href: '/world-of-tethys/stryker',
     title: 'Stryker',
     description: 'Industrial faultline frontier shaped by extraction, unrest, and hard adaptation.',
-    image: '/img/characters/stryker_hero_alt1.PNG',
+    image: cdn('/img/characters/stryker_hero_alt1.PNG'),
   },
   {
     href: '/world-of-tethys/the-watcher-volcano',
     title: 'The Watcher Volcano',
     description: 'Volcanic pressure engine whose cycles rewrite routes, weather, and settlement logic.',
-    image: '/img/locations/watcher_mountain_hero.png',
+    image: cdn('/img/locations/watcher_mountain_hero.png'),
   },
   {
     href: '/world-of-tethys/ironwood-forest',
     title: 'Ironwood Forest',
     description: 'Dense fungal and root systems where mystic channels and biological drift converge.',
-    image: '/img/locations/mystic-ironwoods.jpg',
+    image: cdn('/img/locations/mystic-ironwoods.jpg'),
   },
   {
     href: '/world-of-tethys/danian-delta',
     title: 'Danian Delta',
     description: 'Hydraulic chokepoint linking river civilizations to contested estuary corridors.',
-    image: '/img/map/tethys-ember-scar.png',
+    image: cdn('/img/map/tethys-ember-scar.png'),
   },
 ];
 
