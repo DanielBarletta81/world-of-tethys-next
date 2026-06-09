@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import BreadcrumbTrail from '@/components/layout/BreadcrumbTrail';
 import LoreRevealPanel from '@/components/features/map/LoreRevealPanel';
 import IdentityAirLock from '@/components/forms/IdentityAirLock';
-import { getRegion } from '@/data/region-registry';
+import { getRegionByAlias } from '@/data/region-registry';
 import { useDwellTracker } from '@/hooks/useDwellTracker';
 import { useVolcanoStatus } from '@/hooks/useVolcanoStatus';
 import { useAuth } from '@/context/AuthContext';
@@ -77,7 +77,7 @@ export default function MapPage() {
     onLorePanelOpen(regionId);
   }, [onLorePanelOpen]);
 
-  const selectedFragment = getRegion(selectedRegion);
+  const selectedFragment = getRegionByAlias(selectedRegion);
   const [mycorrhizalActive, setMycorrhizalActive] = useState(false);
   const [foodWebActive, setFoodWebActive] = useState(false);
 

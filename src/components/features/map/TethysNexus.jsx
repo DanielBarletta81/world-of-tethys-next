@@ -77,7 +77,7 @@ export const MAP_FRAGMENTS = [
   // Northern Mountains = Trusmadi Range / northern Sabah highlands
   { id: 'northern-mountains', label: 'Northern Mountains', region: 'northern-mountains', anchor: { x: 0.62, y: 0.14 },                                               coords: { lat: 6.5,   lng: 117.5  }, extent: 3.1, satellite: submapSatellite('northern-mountains', { opacity: 0.50 }) },
   // Karst Drains = Maros-Pangkep Karst (south Sulawesi — world's largest tropical karst)
-  { id: 'karst',            label: 'Karst Drains',       region: 'karst-drains',       anchor: { x: 0.22, y: 0.30 },                                                  coords: { lat: -4.8,  lng: 119.8  }, extent: 3.2, satellite: submapSatellite('karst-drains',       { opacity: 0.50 }) },
+  { id: 'karst',            label: 'Karst Drains',       region: 'karst-drains',       anchor: { x: 0.22, y: 0.30 }, showPin: false, clickable: false,               coords: { lat: -4.8,  lng: 119.8  }, extent: 3.2, satellite: submapSatellite('karst-drains',       { opacity: 0.50 }) },
 
   // ── SULAWESI ZONE — Thal Territory / Amber Plains ────────────────────────────
   // Amber Plains = Wakatobi / South Sulawesi grasslands (Thal titan-walker territory)
@@ -348,6 +348,8 @@ export default function TethysNexus({
         map.addSource('tethys-regions', { type: 'geojson', data: regionPoints });
         map.addSource('tethys-areas', { type: 'geojson', data: regionAreas });
 
+        // Area fill — invisible normally, activated by food web toggle and current-location pulse.
+        // Area outline intentionally omitted — no visible boxes around regions.
         map.addLayer({
           id: 'tethys-area-fill',
           type: 'fill',
@@ -356,42 +358,17 @@ export default function TethysNexus({
             'fill-color': [
               'case',
               ['==', ['get', 'current'], 1], '#f97316',
-              ['==', ['get', 'locked'], 1], '#1f2937',
               '#0f172a'
             ],
             'fill-opacity': [
               'case',
-              ['==', ['get', 'current'], 1], 0.14,
-              ['==', ['get', 'locked'], 1], 0.08,
-              0.1
+              ['==', ['get', 'current'], 1], 0.08,
+              0
             ]
           }
         });
 
-        map.addLayer({
-          id: 'tethys-area-outline',
-          type: 'line',
-          source: 'tethys-areas',
-          paint: {
-            'line-color': [
-              'case',
-              ['==', ['get', 'current'], 1], '#fb923c',
-              ['==', ['get', 'locked'], 1], '#475569',
-              '#64748b'
-            ],
-            'line-width': [
-              'case',
-              ['==', ['get', 'current'], 1], 2.2,
-              1.1
-            ],
-            'line-opacity': [
-              'case',
-              ['==', ['get', 'locked'], 1], 0.4,
-              0.6
-            ]
-          }
-        });
-
+        // Outer glow ring — sulfur-amber for active, dimmed for locked
         map.addLayer({
           id: 'tethys-markers-glow',
           type: 'circle',
@@ -399,22 +376,26 @@ export default function TethysNexus({
           paint: {
             'circle-radius': [
               'case',
-              ['==', ['get', 'current'], 1], 12,
-              9
+              ['==', ['get', 'current'], 1], 16,
+              11
             ],
             'circle-color': [
               'case',
               ['==', ['get', 'current'], 1], '#fb923c',
-              '#0ea5e9'
+              ['==', ['get', 'locked'], 1], '#374151',
+              '#c9a227'
             ],
             'circle-opacity': [
               'case',
-              ['==', ['get', 'locked'], 1], 0.2,
-              0.25
-            ]
+              ['==', ['get', 'locked'], 1], 0.15,
+              ['==', ['get', 'current'], 1], 0.40,
+              0.28
+            ],
+            'circle-blur': 0.7
           }
         });
 
+        // Sharp center dot
         map.addLayer({
           id: 'tethys-markers',
           type: 'circle',
@@ -422,24 +403,26 @@ export default function TethysNexus({
           paint: {
             'circle-radius': [
               'case',
-              ['==', ['get', 'current'], 1], 6.5,
+              ['==', ['get', 'current'], 1], 7,
               5
             ],
             'circle-color': [
               'case',
-              ['==', ['get', 'current'], 1], '#f8fafc',
-              '#e2e8f0'
+              ['==', ['get', 'current'], 1], '#ffffff',
+              ['==', ['get', 'locked'], 1], '#94a3b8',
+              '#e8c84a'
             ],
             'circle-stroke-color': [
               'case',
-              ['==', ['get', 'locked'], 1], '#475569',
-              '#0f172a'
+              ['==', ['get', 'current'], 1], '#f97316',
+              ['==', ['get', 'locked'], 1], '#1e293b',
+              '#78450a'
             ],
-            'circle-stroke-width': 1.2,
+            'circle-stroke-width': 1.5,
             'circle-opacity': [
               'case',
-              ['==', ['get', 'locked'], 1], 0.35,
-              0.85
+              ['==', ['get', 'locked'], 1], 0.40,
+              1
             ]
           }
         });
@@ -481,6 +464,9 @@ export default function TethysNexus({
           );
           map.fitBounds(bounds, { padding: 80, duration: 1200 });
         }
+
+        // Override MapLibre's default grab cursor — use clean default
+        map.getCanvas().style.cursor = 'default';
 
         setMapReady(true);
       });
@@ -555,14 +541,12 @@ export default function TethysNexus({
         map.setPaintProperty('tethys-area-fill', 'fill-color', [
           'case',
           ['==', ['get', 'current'], 1], '#f97316',
-          ['==', ['get', 'locked'], 1], '#1f2937',
           '#0f172a'
         ]);
         map.setPaintProperty('tethys-area-fill', 'fill-opacity', [
           'case',
-          ['==', ['get', 'current'], 1], 0.14,
-          ['==', ['get', 'locked'], 1], 0.08,
-          0.1
+          ['==', ['get', 'current'], 1], 0.08,
+          0
         ]);
       } catch (_) { /* layer not ready */ }
     }
@@ -578,30 +562,33 @@ export default function TethysNexus({
       const { region, clickable } = feature.properties || {};
       const canClick = Number(clickable ?? 1) !== 0;
       if (!region || !canClick) return;
-
-      const original = event.originalEvent || {};
-      if (original.shiftKey || original.altKey) {
-        onInspect?.(region);
-      } else {
-        onTravel?.(region);
-      }
+      onInspect?.(region);
     };
 
     const setCursor = () => {
       map.getCanvas().style.cursor = 'pointer';
     };
     const resetCursor = () => {
-      map.getCanvas().style.cursor = '';
+      map.getCanvas().style.cursor = 'default';
     };
 
+    // Click works on both the sharp dot and the surrounding glow ring
     map.on('click', 'tethys-markers', handleClick);
+    map.on('click', 'tethys-markers-glow', handleClick);
+    map.on('click', 'tethys-area-fill', handleClick);
     map.on('mouseenter', 'tethys-markers', setCursor);
+    map.on('mouseenter', 'tethys-markers-glow', setCursor);
     map.on('mouseleave', 'tethys-markers', resetCursor);
+    map.on('mouseleave', 'tethys-markers-glow', resetCursor);
 
     return () => {
       map.off('click', 'tethys-markers', handleClick);
+      map.off('click', 'tethys-markers-glow', handleClick);
+      map.off('click', 'tethys-area-fill', handleClick);
       map.off('mouseenter', 'tethys-markers', setCursor);
+      map.off('mouseenter', 'tethys-markers-glow', setCursor);
       map.off('mouseleave', 'tethys-markers', resetCursor);
+      map.off('mouseleave', 'tethys-markers-glow', resetCursor);
     };
   }, [mapReady, onInspect, onTravel]);
 

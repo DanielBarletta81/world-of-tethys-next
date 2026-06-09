@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getRegion } from '@/data/region-registry';
+import { getRegionByAlias } from '@/data/region-registry';
 import { FOOD_WEB_NODES, TROPHIC_TRACKS } from '@/data/tethys-food-web';
 import OraclePool from './OraclePool';
 import { useAuth } from '@/context/AuthContext';
@@ -430,7 +430,7 @@ export default function LoreRevealPanel({
   const isFoodWebOn = foodWebActive ?? false;
   const panelId = useMemo(() => 'tethys-lore-reveal', []);
 
-  const region = selectedRegionId ? getRegion(selectedRegionId) : null;
+  const region = selectedRegionId ? getRegionByAlias(selectedRegionId) : null;
 
   // Notify parent (→ dwell tracker → Firestore) whenever a region lore is opened
   useEffect(() => {

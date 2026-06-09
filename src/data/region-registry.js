@@ -1034,17 +1034,23 @@ export function getRegion(id) {
  * Falls back to exact id match.
  */
 const ALIAS_MAP = {
-  'watcher-volcano': 'watcher-volcano',
-  'watcher':         'watcher-volcano',
-  'watcher-flats':   'watcher-volcano',
-  'mountain-estuary': 'sky-city',
-  'sky-city-estuary': 'sky-city',
-  'ironwood':        'ironwoods',
-  'mount-shastea':   'mt-cinder',
-  'thal-territory':  'amber-plains',
-  'mammoth-hand-island': 'mammoth',
-  'pteros-island':   'pteros',
-  'pteros-rookery':  'pteros',
+  'watcher-volcano':    'watcher-volcano',
+  'watcher':            'watcher-volcano',
+  'watcher-flats':      'watcher-volcano',
+  'mountain-estuary':   'sky-city',
+  'sky-city-estuary':   'sky-city',
+  'ironwood':           'ironwoods',
+  'mount-shastea':      'mt-cinder',
+  'thal-territory':     'amber-plains',
+  'mammoth-hand-island':'mammoth',
+  'pteros-island':      'pteros',
+  'pteros-rookery':     'pteros',
+  'straits-of-dier':    'straits-of-dier',
+  'twin-straits-of-dier': 'twin-straits-of-dier',
+  'silurian-riverlands': 'silurian-riverlands',
+  'danian-river':       'danian-river',
+  'danian-delta':       'danian-delta',
+  'cimmerian-mtns':     'sky-city',  // no dedicated entry — proxies to sky-city lore
 };
 
 export function getRegionByAlias(id) {
