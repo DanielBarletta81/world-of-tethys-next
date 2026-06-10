@@ -368,16 +368,17 @@ export default function TethysNexus({
           }
         });
 
-        // Outer glow ring — sulfur-amber for active, dimmed for locked
+        // Outer glow ring — sulfur-amber pulse
         map.addLayer({
           id: 'tethys-markers-glow',
           type: 'circle',
           source: 'tethys-regions',
+          filter: ['==', ['get', 'clickable'], 1],
           paint: {
             'circle-radius': [
               'case',
-              ['==', ['get', 'current'], 1], 16,
-              11
+              ['==', ['get', 'current'], 1], 18,
+              14
             ],
             'circle-color': [
               'case',
@@ -387,41 +388,42 @@ export default function TethysNexus({
             ],
             'circle-opacity': [
               'case',
-              ['==', ['get', 'locked'], 1], 0.15,
-              ['==', ['get', 'current'], 1], 0.40,
-              0.28
+              ['==', ['get', 'locked'], 1], 0.18,
+              ['==', ['get', 'current'], 1], 0.55,
+              0.42
             ],
-            'circle-blur': 0.7
+            'circle-blur': 0.6
           }
         });
 
-        // Sharp center dot
+        // Sharp center dot — always fully opaque for clickable regions
         map.addLayer({
           id: 'tethys-markers',
           type: 'circle',
           source: 'tethys-regions',
+          filter: ['==', ['get', 'clickable'], 1],
           paint: {
             'circle-radius': [
               'case',
-              ['==', ['get', 'current'], 1], 7,
-              5
+              ['==', ['get', 'current'], 1], 8,
+              6
             ],
             'circle-color': [
               'case',
               ['==', ['get', 'current'], 1], '#ffffff',
               ['==', ['get', 'locked'], 1], '#94a3b8',
-              '#e8c84a'
+              '#f0d060'
             ],
             'circle-stroke-color': [
               'case',
               ['==', ['get', 'current'], 1], '#f97316',
               ['==', ['get', 'locked'], 1], '#1e293b',
-              '#78450a'
+              '#92600a'
             ],
-            'circle-stroke-width': 1.5,
+            'circle-stroke-width': 2,
             'circle-opacity': [
               'case',
-              ['==', ['get', 'locked'], 1], 0.40,
+              ['==', ['get', 'locked'], 1], 0.50,
               1
             ]
           }
@@ -611,8 +613,9 @@ export default function TethysNexus({
         } : undefined}
       />
 
-      {/* Counter-flip overlay wrapper so UI text/controls read correctly */}
-      <div className="absolute inset-0" style={volcanicMode ? { transform: 'scaleX(-1)' } : undefined}>
+      {/* Counter-flip overlay wrapper so UI text/controls read correctly.
+           pointer-events-none lets clicks fall through to the MapLibre canvas below. */}
+      <div className="absolute inset-0 pointer-events-none" style={volcanicMode ? { transform: 'scaleX(-1)' } : undefined}>
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
 
