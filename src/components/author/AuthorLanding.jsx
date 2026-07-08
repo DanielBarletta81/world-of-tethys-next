@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, Compass, Feather, Waves } from 'lucide-react';
+import { ArrowUpRight, BookOpenText, Compass, Feather, Waves } from 'lucide-react';
 import GoodreadsWidget from '@/components/content/GoodreadsWidget';
 import SubscribeSection from '@/components/content/SubscribeSection';
 import { TETHYS_OCEAN_RESEARCH_BRIEF } from '@/data/tethys-ocean-research';
@@ -226,6 +226,53 @@ export default function AuthorLanding() {
                     More of Tethys is still surfacing.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Amazon Book CTA — Product Forward */}
+      <section className="mt-10">
+        <div className={`${sectionSurfaceClass} p-6 md:p-8`}>
+          <div className="relative z-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#c6854e]/30 bg-[#fef7ef] px-3 py-1.5 text-[10px] uppercase tracking-[0.3em] text-[#8b5e32]">
+                <BookOpenText className="h-3.5 w-3.5" />
+                Available Now
+              </div>
+              <h2 className="mt-4 text-2xl font-tethys-volcanic text-[#2f1f14] md:text-3xl">
+                World of Tethys Book One
+              </h2>
+              <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#4f3c30]">
+                Prehistoric epic. Sky City above. Ancient stone below. Available on Amazon in Kindle and Paperback.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <a
+                  href={AMAZON_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-full border border-[#c6854e] bg-[#d28b4f] px-7 py-3 text-sm font-bold tracking-[0.04em] text-[#2a1a10] transition hover:-translate-y-0.5 hover:bg-[#bf7a42] hover:shadow-[0_8px_20px_rgba(198,133,78,0.4)]"
+                >
+                  Buy on Amazon
+                </a>
+                <Link
+                  href="/world-of-tethys-book-1"
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-full border border-[#8e765b]/40 bg-white/70 px-7 py-3 text-sm font-medium tracking-[0.04em] text-[#3a2617] transition hover:-translate-y-0.5 hover:bg-white"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center justify-center lg:justify-end">
+              <div className="relative w-48 overflow-hidden rounded-[1.6rem] border border-[#8e765b]/20 bg-[#ece1cf] shadow-[0_14px_32px_rgba(33,20,10,0.12)] md:w-56">
+                <Image
+                  src={cdn('/img/books/book1-cover.png')}
+                  alt="World of Tethys Book One"
+                  width={400}
+                  height={600}
+                  className="h-auto w-full"
+                />
               </div>
             </div>
           </div>

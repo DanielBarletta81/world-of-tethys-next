@@ -10,7 +10,7 @@ const WORLD_SITE_URL = process.env.NEXT_PUBLIC_WORLD_SITE_URL || 'https://worldo
 export const metadata = {
   title: 'Author | D.C. Barletta',
   description:
-    'Book One. A name. Fragments of Tethys.',
+    'D.C. Barletta — author of World of Tethys Book One. Writer, builder, and researcher exploring deep time through speculative natural history.',
 };
 
 const primaryRoutes = [
