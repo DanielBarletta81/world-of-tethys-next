@@ -107,7 +107,7 @@ export default function AuthorLanding() {
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.16] mix-blend-multiply"
           style={{
-            backgroundImage: 'url(/img/map/tethys-atlas-canon.png)',
+            backgroundImage: `url(${cdn('/img/map/tethys-atlas-canon.png')})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -218,7 +218,7 @@ export default function AuthorLanding() {
                   className="h-28 w-full border-b border-[#8e765b]/15 bg-cover bg-center"
                   style={{
                     backgroundImage:
-                      'linear-gradient(180deg,rgba(255,255,255,0.08),rgba(0,0,0,0.22)), url(/img/map/tethys-atlas-canon.png)',
+                      `linear-gradient(180deg,rgba(255,255,255,0.08),rgba(0,0,0,0.22)), url(${cdn('/img/map/tethys-atlas-canon.png')})`,
                   }}
                 />
                 <div className="p-5">
