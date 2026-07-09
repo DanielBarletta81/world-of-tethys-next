@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowUpRight, BookOpenText, Compass, Feather, Waves } from 'lucide-react';
 import GoodreadsWidget from '@/components/content/GoodreadsWidget';
 import SubscribeSection from '@/components/content/SubscribeSection';
+import BookCarousel from '@/components/content/BookCarousel';
 import { TETHYS_OCEAN_RESEARCH_BRIEF } from '@/data/tethys-ocean-research';
 import { cdn } from '@/lib/cdn';
 
@@ -30,7 +31,7 @@ const routeCards = [
     title: 'D.C. Barletta',
     description: 'A name above the waterline.',
     href: '/about-dc-barletta',
-    imageSrc: '/ray_smile.jpg',
+    imageSrc: cdn('/img/bg/scribe-maros-hero.png'),
     imageAlt: 'Portrait of D.C. Barletta',
     cta: 'The Author',
     external: false,
@@ -39,8 +40,8 @@ const routeCards = [
     title: 'Field Notes',
     description: 'Ash, weather, and drift.',
     href: '/blog',
-    imageSrc: cdn('/img/watcher_mountain3.png'),
-    imageAlt: 'World of Tethys volcanic mountain landscape',
+    imageSrc: cdn('/img/bg/mystical-view.png'),
+    imageAlt: 'World of Tethys mystical landscape',
     cta: 'Essays',
     external: false,
   },
@@ -277,6 +278,11 @@ export default function AuthorLanding() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Rolling Book Banner */}
+      <section className="mt-10">
+        <BookCarousel compact={false} className="" />
       </section>
 
       <section className="mt-12">
