@@ -15,19 +15,7 @@ export async function middleware(request) {
     authorSiteHost = '';
   }
 
-  const authorOwnedExactRoutes = new Set([
-    '/author',
-    '/about-dc-barletta',
-    '/world-of-tethys-book-1',
-    '/press-kit',
-    '/contact',
-    '/blog',
-  ]);
-
-  const isAuthorOwnedRoute =
-    authorOwnedExactRoutes.has(pathname) ||
-    pathname.startsWith('/blog/');
-
+  // Redirect HTTP to HTTPS in production
   if (process.env.NODE_ENV === 'production' && protocol === 'http') {
     return NextResponse.redirect(
       `https://${hostname}${request.nextUrl.pathname}${request.nextUrl.search}`,
@@ -35,14 +23,9 @@ export async function middleware(request) {
     );
   }
 
+  // Redirect legacy /portal route
   if (pathname === '/portal') {
     return NextResponse.redirect(new URL('/', request.url), 308);
-  }
-
-  if (isAuthorOwnedRoute && authorSiteHost && authorSiteHost !== requestHost) {
-    const target = new URL(`${authorSiteBase}${pathname}`);
-    target.search = request.nextUrl.search;
-    return NextResponse.redirect(target, 301);
   }
 
   if (pathname === '/world-of-tethys') {
