@@ -21,6 +21,34 @@ const articles = [
       'For 160 million years, no vertebrate challenged their dominance. The architecture of hollow bones, thermal corridors, and neural superiority — and the Cambrian engineering response to living beneath them.',
   },
   {
+    href: '/natural-history/flora-and-fauna',
+    label: 'Flora & Fauna',
+    title: 'The Green Architecture of Tethys',
+    summary:
+      'Cycads, ferns, and early angiosperms constructed the lowland canopy. But the Ironwood Groves — still carrying markers of Permian origin — represent something older, more resilient, and fiercely territorial.',
+  },
+  {
+    href: '/natural-history/fungi',
+    label: 'Fungi',
+    title: 'Kingdom of Decomposition',
+    summary:
+      'The unseen infrastructure. Mycorrhizal networks, wood-rot specialists, and the enigmatic Veil Spore — a fungal lineage that predates most flowering plants and may trace to a Permian origin no modern taxonomy can confirm.',
+  },
+  {
+    href: '/natural-history/marine-life',
+    label: 'Marine Life',
+    title: 'Tethys Beneath the Surface',
+    summary:
+      'Mosasaurs, pliosaurs, ammonites, and the glass rays of the continental shelf. An ocean layered by oxygen zones, carbonate chemistry, and predator hierarchies — where some lineages still whisper of Permian origin.',
+  },
+  {
+    href: '/natural-history/food-web',
+    label: 'Ecosystem',
+    title: 'The Architecture of Energy Flow',
+    summary:
+      'Producer, consumer, decomposer — the trophic cascade that sustains a greenhouse world. But certain nodes in the web defy placement: relict species, anachronistic survivors, lineages that predate the Triassic rebound.',
+  },
+  {
     href: '/natural-history/life-after-the-permian-extinction',
     label: 'Mass Extinction',
     title: 'Life After the Permian Extinction',

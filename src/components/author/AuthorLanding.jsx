@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight, BookOpenText, Compass, Feather, Waves } from 'lucide-react';
-import GoodreadsWidget from '@/components/content/GoodreadsWidget';
 import SubscribeSection from '@/components/content/SubscribeSection';
 import BookCarousel from '@/components/content/BookCarousel';
 import { TETHYS_OCEAN_RESEARCH_BRIEF } from '@/data/tethys-ocean-research';
@@ -402,14 +401,6 @@ export default function AuthorLanding() {
         </div>
 
         <div className="space-y-6">
-          <div className={`${sectionSurfaceClass} p-6 md:p-8`}>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Echoes</p>
-            <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Reader echoes</h2>
-            <div className="mt-3">
-              <GoodreadsWidget theme="light" headerText="Echoes around Book One" />
-            </div>
-          </div>
-
           <div className={`${sectionSurfaceClass} p-6`}>
             <p className="text-[11px] uppercase tracking-[0.3em] text-[#7c6250]">Outer Water</p>
             <h2 className="mt-2 text-2xl font-semibold text-[#2f1f14]">Elsewhere</h2>
