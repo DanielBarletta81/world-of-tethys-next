@@ -15,15 +15,6 @@ export const dynamic = "force-dynamic";
 
 const BOOKS = [
   {
-    id: "sky-city",
-    title: "Sky City of Tethys",
-    format: "Kindle + Paperback",
-    description:
-      "A volcanic sky-archipelago opens after the seal breaks. Follow the first signal-bearers as they map the wind-forged cities and the war-horned gates that guard them.",
-    coverUrl: cdn("/img/books/book1-cover.png"),
-    amazonLink: "https://www.amazon.com/dp/B0G572X42L"
-  },
-  {
     id: "ravel",
     title: "Unraveling Ravel",
     format: "Kindle",

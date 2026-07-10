@@ -6,12 +6,6 @@ import { cdn } from '@/lib/cdn';
 
 const BOOKS = [
   {
-    id: 1,
-    title: 'Sky City of Tethys',
-    coverUrl: cdn('/img/books/book1-cover.png'),
-    amazonLink: 'https://www.amazon.com/dp/B0G572X42L'
-  },
-  {
     id: 2,
     title: 'Unraveling Ravel',
     coverUrl: cdn('/img/books/ravel-kindle.png'),
@@ -29,7 +23,7 @@ export default function BookCarousel({ compact = false, className = '' }) {
   const strip = [...BOOKS, ...BOOKS]; // Duplicate for seamless loop
   const spacing = compact ? 'py-2' : 'py-5';
   const margin = compact ? 'mb-0' : 'mb-6';
-  const coverSize = compact ? 'w-16 h-24' : 'w-28 h-40';
+  const coverSize = compact ? 'w-20 h-28' : 'w-36 h-52';
   const titleSize = compact ? 'text-xs' : 'text-base';
   const gap = compact ? 'gap-4' : 'gap-6';
 

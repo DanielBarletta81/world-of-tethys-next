@@ -6,12 +6,6 @@ import { cdn } from '@/lib/cdn';
 
 const BOOKS = [
   {
-    id: 1,
-    title: 'Sky City of Tethys',
-    coverUrl: cdn('/img/books/book1-cover.png'),
-    amazonLink: 'https://www.amazon.com/dp/B0G572X42L'
-  },
-  {
     id: 2,
     title: 'Unraveling Ravel',
     coverUrl: cdn('/img/books/ravel-kindle.png'),
@@ -45,7 +39,7 @@ const BookBanner = () => {
             rel="noopener noreferrer"
             className="group flex items-center gap-4 pr-10 opacity-90 hover:opacity-100 hover:translate-y-[-2px] transition-all duration-700"
           >
-            <div className="relative isolate z-20 w-28 h-40 flex-shrink-0 rounded-sm border border-amber-700/60 bg-[#14110f] shadow-[0_18px_34px_rgba(0,0,0,0.6)] group-hover:shadow-[0_0_55px_rgba(255,132,0,0.6)] group-hover:border-amber-300/90 transition-all duration-500">
+            <div className="relative isolate z-20 w-36 h-52 flex-shrink-0 rounded-sm border border-amber-700/60 bg-[#14110f] shadow-[0_18px_34px_rgba(0,0,0,0.6)] group-hover:shadow-[0_0_55px_rgba(255,132,0,0.6)] group-hover:border-amber-300/90 transition-all duration-500">
               <div className="absolute -inset-3 bg-[radial-gradient(circle,rgba(255,112,0,0.4),transparent_65%)] opacity-50 blur-xl group-hover:opacity-90 transition-opacity duration-500 pointer-events-none" />
               <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40 pointer-events-none" />
               <div className="absolute -inset-6 bg-gradient-to-r from-transparent via-[#ffb648]/55 to-transparent opacity-0 translate-x-[-70%] group-hover:opacity-100 group-hover:translate-x-[70%] transition-all duration-700 pointer-events-none" />
@@ -55,7 +49,7 @@ const BookBanner = () => {
                   src={book.coverUrl}
                   alt={book.title}
                   fill
-                  sizes="112px"
+                  sizes="144px"
                   className="object-cover rounded-[2px] shadow-[0_12px_20px_rgba(0,0,0,0.55)] group-hover:-translate-y-1 transition-transform duration-500"
                   unoptimized
                 />
