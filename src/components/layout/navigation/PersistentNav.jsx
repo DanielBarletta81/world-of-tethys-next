@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { cdn } from '@/lib/cdn';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://worldoftethys.com').replace(/\/$/, '');
 const AUTHOR_SITE_URL = (process.env.NEXT_PUBLIC_AUTHOR_SITE_URL || SITE_URL).replace(/\/$/, '');
@@ -85,8 +87,31 @@ export default function PersistentNav({ siteVariant = 'world' }) {
       className="persistent-nav-shell fixed inset-x-0 top-3 z-[120] flex justify-center px-2"
     >
       <div className={panelClassName}>
-        <ul className="flex flex-wrap items-center justify-center gap-2">
-          {navItems.map((item) => {
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          {/* Logo and Brand */}
+          <Link 
+            href="/" 
+            className="flex items-center gap-3 px-2 py-1 rounded-lg transition-opacity hover:opacity-80"
+            aria-label="World of Tethys Home"
+          >
+            <Image
+              src={cdn('/img/icons/tethys-seal-coin.svg')}
+              alt="World of Tethys"
+              width={32}
+              height={32}
+              className={isAuthorSite ? 'opacity-80' : 'opacity-90'}
+              unoptimized
+            />
+            <span className={`text-sm font-semibold tracking-wide ${
+              isAuthorSite ? 'text-[#3d2b1f]' : 'text-stone-200'
+            }`}>
+              World of Tethys
+            </span>
+          </Link>
+
+          {/* Navigation Items */}
+          <ul className="flex flex-wrap items-center justify-center gap-2">
+            {navItems.map((item) => {
             const active = !item.external && (pathname === item.href || pathname.startsWith(`${item.href}/`));
             const className = `persistent-nav-link ${isAuthorSite ? 'author-nav-link' : ''} tone-${item.tone} ${active ? 'is-active' : ''}`;
 
@@ -111,6 +136,7 @@ export default function PersistentNav({ siteVariant = 'world' }) {
             );
           })}
         </ul>
+        </div>
         {isGiveawayActive ? (
           <div className="mt-2 flex justify-center">
             <a

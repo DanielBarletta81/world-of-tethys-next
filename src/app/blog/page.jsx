@@ -22,7 +22,7 @@ export default async function BlogPage() {
         </p>
         <div className="mt-5 flex flex-wrap gap-2 text-xs uppercase tracking-wide text-[#5b4432]">
           <span className="rounded-full border border-amber-900/25 bg-[#f8f2e8]/95 px-3 py-1">Natural History</span>
-          <span className="rounded-full border border-amber-900/25 bg-[#f8f2e8]/95 px-3 py-1">Tethys Lore</span>
+          <span className="rounded-full border border-amber-900/25 bg-[#f8f2e8]/95 px-3 py-1">World of Tethys Lore</span>
         </div>
       </section>
 

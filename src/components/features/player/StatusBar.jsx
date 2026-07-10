@@ -35,7 +35,7 @@ export default function StatusBar() {
         <div className="status-pulse" aria-hidden="true" />
       )}
       <div className="status-content">
-        <span className="status-title">Tethys</span>
+        <span className="status-title">World of Tethys</span>
         <span className="status-divider" aria-hidden="true" />
         <span className="status-path">{pathLabel}</span>
         {currentLocation && (

@@ -353,7 +353,7 @@ export default function FieldStationPage() {
                               onChange={(e) => setAnalogSort(e.target.value)}
                               className="bg-transparent text-cyan-200 outline-none"
                             >
-                              <option value="tethys">Tethys A–Z</option>
+                              <option value="tethys">World of Tethys A–Z</option>
                               <option value="region">Region A–Z</option>
                             </select>
                           </label>
