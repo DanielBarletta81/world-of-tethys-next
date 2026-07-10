@@ -37,11 +37,11 @@ const worldPathways = [
     title: 'Natural History',
     description: 'Study species adaptation, food webs, and evolutionary pressure in Tethys biomes.',
     cta: 'Study ecology',
-    image: cdn('/img/locations/mystic-ironwoods.jpg'),
+    image: cdn('/img/bg/mystical-view.png'),
   },
   {
     href: '/natural-history/tethys-ocean',
-    title: 'Tethys Ocean Research',
+    title: 'World of Tethys Ocean Research',
     description: 'Ground world sea routes in Aptian-Albian climate, current systems, and anoxic ocean dynamics.',
     cta: 'Explore research',
     image: cdn('/img/bg/obsidian-coast-4k.jpg'),

@@ -6,7 +6,7 @@ export const metadata = {
     canonical: '/map',
   },
   openGraph: {
-    title: 'Tethys Atlas | Interactive World Map',
+    title: 'World of Tethys Atlas | Interactive World Map',
     description:
       'Navigate the prehistoric Tethys Sea — from Pteros Island to the Watcher Volcano. An evolving atlas driven by exploration and lore.',
     type: 'website',

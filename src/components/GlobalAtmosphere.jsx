@@ -12,7 +12,7 @@ import cdn from '@/lib/cdn';
 const SCENES = {
   '/': cdn('/img/bg/obsidian-coast-4k.jpg'),       // Dark, volcanic shore
   '/study': cdn('/img/bg/laboratory-6515519.jpg'), // Ancient stone shelves, dust motes
-  '/mystics': cdn('/forest-2107470.jpg'),          // Dark jungle, glowing spores
+  '/mystics': cdn('/img/bg/mystical-view.png'),          // Dark jungle, glowing spores
   '/science': cdn('/img/bg/laboratory-6515519.jpg'), // Clean, cold light, bones
   '/map': cdn('/img/bg/parchment-map-table.png'),  // Top-down wooden table feel
 };

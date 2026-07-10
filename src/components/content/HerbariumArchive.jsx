@@ -11,7 +11,7 @@ export default function HerbariumArchive() {
   const [selectedId, setSelectedId] = useState(keys[0]);
   const activePlant = HERBARIUM_REGISTRY[selectedId];
 
-  const background = activePlant?.background || cdn('/img/bg/forest-2107470.jpg');
+  const background = activePlant?.background || cdn('/img/bg/mystical-view.png');
 
   return (
     <div className="relative flex flex-col lg:flex-row gap-8 bg-[#050403] border border-stone-800 p-8 rounded-sm font-serif overflow-hidden">

@@ -31,7 +31,7 @@ const lorePages = [
     href: '/world-of-tethys/ironwood-forest',
     title: 'Ironwood Forest',
     description: 'Dense fungal and root systems where mystic channels and biological drift converge.',
-    image: cdn('/img/locations/mystic-ironwoods.jpg'),
+    image: cdn('/img/bg/mystical-view.png'),
   },
   {
     href: '/world-of-tethys/danian-delta',

@@ -35,7 +35,7 @@ export const BACKGROUND_IMAGE_URLS = {
     cdn('/img/bg/magma-forge-hero.jpg'),
   lorePage:
     process.env.NEXT_PUBLIC_LORE_BG_URL ||
-    cdn('/img/bg/pteros_island_hero.png'),
+    cdn('/img/bg/watcher-ptero-hero.png'),
   authorHub:
     process.env.NEXT_PUBLIC_AUTHOR_BG_URL ||
     cdn('/img/bg/magma-forge-hero.jpg'),

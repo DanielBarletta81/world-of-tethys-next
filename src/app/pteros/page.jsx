@@ -117,7 +117,7 @@ export default function PterosTerminalPage() {
       <div className="relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-45"
-          style={{ backgroundImage: `url(${cdn('/img/locations/pteros_island_hero.png')})` }}
+          style={{ backgroundImage: `url(${cdn('/img/bg/watcher-ptero-hero.png')})` }}
         />
         <div
           className="absolute inset-0 opacity-25 mix-blend-screen"

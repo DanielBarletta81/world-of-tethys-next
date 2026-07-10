@@ -29,7 +29,7 @@ const cambrianNine = [
     archetype: 'Cohort',
     color: 'text-rose-glow',
     image: cdn('/img/characters/karys_hero.png'),
-    background: cdn('/img/bg/forest-2107470.jpg'),
+    background: cdn('/img/bg/mystical-view.png'),
     desc: 'Keeps seedlings alive under a law that forbids it.'
   },
   {
@@ -38,7 +38,7 @@ const cambrianNine = [
     archetype: 'Symbiote',
     color: 'text-emerald-glow',
     image: cdn('/img/characters/ravel_hero.PNG'),
-    background: cdn('/img/bg/forest-2107470.jpg'),
+    background: cdn('/img/bg/mystical-view.png'),
     desc: 'Maps bad ideas. The roots answer.'
   },
   {
@@ -56,7 +56,7 @@ const cambrianNine = [
     archetype: 'Guardian',
     color: 'text-amber-glow',
     image: cdn('/img/characters/stryker_hero_alt1.PNG'),
-    background: cdn('/img/bg/magma-forge-hero.png'),
+    background: cdn('/img/bg/magma-forge-hero.jpg'),
     desc: 'Ash-bond. Teeth like a warning.'
   },
   {
