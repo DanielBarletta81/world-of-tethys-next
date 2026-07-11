@@ -11,7 +11,6 @@ import Link from 'next/link';
 import { BOOK1_COVER_URL } from '@/lib/site-assets';
 import PersistentNav from '@/components/layout/navigation/PersistentNav';
 import SocialRail from '@/components/layout/SocialRail';
-import LivingBorder from '@/components/layout/LivingBorder';
 import { getConfiguredSiteUrls, getSiteVariantFromConfig } from '@/lib/site-variant';
 
 const skySans = localFont({
@@ -180,7 +179,6 @@ export default function RootLayout({ children }) {
             <AudioProvider>
               <PersistentNav siteVariant={siteVariant} />
               <SocialRail />
-              {!isAuthorSite ? <LivingBorder /> : null}
               {!isAuthorSite ? <IdleGrowthOverlay /> : null}
               <div id="main-content" role="main" className="relative min-h-screen pt-24 md:pt-28">
                 {children}
